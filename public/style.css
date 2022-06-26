@@ -1,0 +1,78 @@
+:root {
+    --menu-button-bg: hsl(280, 100%, 92%);
+    --menu-button-hover-bg: hsl(280, 100%, 82%);
+    --menu-button-active-bg: hsl(280, 100%, 72%);
+    --menu-button-fg: hsl(280, 100%, 35%);
+    --menu-button-hover-fg: hsl(280, 100%, 25%);
+    --menu-button-active-fg: hsl(280, 100%, 15%);
+}
+
+body {
+  font-size: 1rem;
+  font-family: "Inter", sans-serif;
+  color: #000000;
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4rem;
+  color: #000000;
+  margin: 5rem 0 2.5rem 0;
+}
+
+.title-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--menu-button-fg);
+  background-color: var(--menu-button-bg);
+  margin: 1em auto;
+  padding: 0.6em 0.6em 0.6em 0.6em;
+  border: none;
+  border-radius: 0.6em;
+}
+
+.title-button:hover {
+  color: var(--menu-button-hover-fg);
+  background-color: var(--menu-button-hover-bg);
+}
+
+.title-button:active {
+  color: var(--menu-button-active-fg);
+  background-color: var(--menu-button-active-bg);
+  transition: all 0s;
+  transform: scale(0.90);
+}
+.navbar {
+    background-color: #FFFFFF;
+    width: auto;
+    height: auto;
+    padding: 0.5em;
+}
+
+.navbar-container {
+    margin: 0.15em 0.25em 0.15em 0.25em;
+}
+
+.links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 1rem;
+  margin-top: 2.5rem;
+}
+
+.logo {
+  width: 2rem;
+  height: 2rem;
+  vertical-align: bottom;
+}
+
+.logo-link {
+  line-height: 1;
+}
