@@ -27,8 +27,15 @@ fetch("./roles.json")
         var test = new Role(roleTypes.Doctor)
 
         console.log(test)
-        var p1 = new Player("petos", new Role(roleTypes.Framer))
+        var p1 = new Player("petos", new Role(roleTypes.Villager))
+        var p2 = new Player("petos2", new Role(roleTypes.Investigator))
+        var p3 = new Player("petos3", new Role(roleTypes.Doctor))
         console.log(p1)
+        console.log(p2)
+        console.log(p2.role.type)
+        Player.useAbility(p2, p1)
+        Player.useAbility(p3, p2)
+
     })
     .catch((err) => {
         // Do something for an error here
@@ -36,6 +43,7 @@ fetch("./roles.json")
 
 
 function Role(type) {
+    this.type = type
     if (type == roleTypes.Villager) {
         this.name = jsonData["roles"]["good"]["villager"]["name"]
         this.description = jsonData["roles"]["good"]["villager"]["description"]
@@ -178,4 +186,26 @@ function Player(
     this.isTargeted = isTargeted;
     this.isBlocked = isBlocked;
     this.isDisguised = isDisguised;
+}
+
+/**
+ * use ability of player
+ * @param {Player} player 
+ * @param {Player} target 
+ */
+Player.useAbility = function(player, target) {
+    if (player.role.hasNightAbility) {
+        if (player.isBlocked == false) {
+            if (player.role.type == roleTypes.Investigator) {
+                console.log(target.playerName, "is:", target.role.team)
+            }
+            if (player.role.type == roleTypes.Doctor) {
+                console.log("You protect", target.playerName)
+                target.isProtected = true
+                console.log(target.isProtected)
+
+            }
+        }
+        
+    }
 }
