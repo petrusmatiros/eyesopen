@@ -1,3 +1,5 @@
+// var Timer = require('lib/easytimer/dist/easytimer.min.js');
+
 const roleTypes = {
     Villager: "villager",
     Investigator: "investigator",
@@ -27,18 +29,26 @@ fetch("./roles.json")
         var test = new Role(roleTypes.Doctor)
 
         console.log(test)
-        var p1 = new Player("petos", new Role(roleTypes.Villager))
-        var p2 = new Player("petos2", new Role(roleTypes.Investigator))
-        var p3 = new Player("petos3", new Role(roleTypes.Doctor))
+        var theVillager = new Player("petos", new Role(roleTypes.Villager))
+        var theInvestigator = new Player("petos2", new Role(roleTypes.Investigator))
+        var theDoctor = new Player("petos3", new Role(roleTypes.Doctor))
+        var theTrapper = new Player("petos4", new Role(roleTypes.Trapper))
+        var theFramer = new Player("petos5", new Role(roleTypes.Framer))
         players = []
-        players.push(p1)
-        players.push(p2)
-        players.push(p3)
-        console.log(p1)
-        console.log(p2)
-        console.log(p2.role.type)
-        Player.useAbility(p2, p1)
-        Player.useAbility(p3, p2)
+        players.push(theVillager)
+        players.push(theInvestigator)
+        players.push(theDoctor)
+        players.push(theTrapper)
+        players.push(theFramer)
+        // console.log(p1)
+        // console.log(p2)
+        // console.log(p2.role.type)
+        Player.useAbility(theInvestigator, theVillager)
+        Player.useAbility(theFramer, theDoctor)
+        Player.useAbility(theInvestigator, theFramer)
+        Player.useAbility(theInvestigator, theDoctor)
+        Player.useAbility(theTrapper, theFramer)
+        Player.useAbility(theFramer, Villager)
 
     })
     .catch((err) => {
@@ -202,7 +212,12 @@ Player.useAbility = function(player, target) {
     if (player.role.hasNightAbility) {
         if (player.isBlocked == false) {
             if (player.role.type == roleTypes.Investigator) {
-                console.log(target.playerName, "is:", target.role.team)
+                if (target.isDisguised) {
+                    console.log(target.playerName, "is:", target.fakeTeam)
+                    
+                } else {
+                    console.log(target.playerName, "is:", target.role.team)
+                }
             }
             else if (player.role.type == roleTypes.Doctor) {
                 if (player == target && player.role.selfUsage == 1) {
@@ -241,6 +256,7 @@ Player.useAbility = function(player, target) {
                     console.log("You plant evidence on", target.playerName)
                     target.isDisguised = true
                     console.log(target.isDisguised)
+                    disguiseChecker()
                 }
             }
         }
@@ -253,10 +269,20 @@ Player.vote = function(player, target) {
 }
 
 Player.kill = function(player, target) {
+    if (player.isBlocked == false) {
+        if (target.isProtected == false) {
+            if (player.role.type == roleTypes.Serial_Killer) {
+                console.log("You kill", target.playerName)
+                target.isKilled = true
+                console.log(target.isKilled)
+            }
+        }
 
+    }
 }
 
 function disguiseChecker() {
+    console.log("it is working")
     players.forEach(player => {
         if (player.isDisguised) {
             if (player.role.team == "good") {
@@ -267,4 +293,9 @@ function disguiseChecker() {
             }
         }
     })
+}
+
+function newCycle() {
+    // reset player values if player is NOT lynched or NOT killed
+    // exception for executioner where they will be alive, but their target can be dead (they turn into jester)
 }
