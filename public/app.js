@@ -23,156 +23,151 @@ fetch("./roles.json")
     .then((data) => {
         // Work with JSON data here
         // getJson(data)
-        var test = new Role(roleTypes.Doctor, data)
+        jsonData = data
+        var test = new Role(roleTypes.Doctor)
+
         console.log(test)
+        var p1 = new Player("petos", new Role(roleTypes.Framer))
+        console.log(p1)
     })
     .catch((err) => {
         // Do something for an error here
     });
 
-// var jsonData = JSON.parse(data)
-// console.log(jsonData)
 
-
-function Role(type, data) {
+function Role(type) {
     if (type == roleTypes.Villager) {
-        this.name = data["roles"]["good"]["villager"]["name"]
-        this.description = data["roles"]["good"]["villager"]["description"]
-        this.mission = data["roles"]["good"]["villager"]["mission"]
+        this.name = jsonData["roles"]["good"]["villager"]["name"]
+        this.description = jsonData["roles"]["good"]["villager"]["description"]
+        this.mission = jsonData["roles"]["good"]["villager"]["mission"]
         this.team = "good"
-        this.hasNightAbility = data["roles"]["good"]["villager"]["hasNightAbility"]
-        this.voteCount = data["roles"]["good"]["villager"]["voteCount"]
+        this.hasNightAbility = jsonData["roles"]["good"]["villager"]["hasNightAbility"]
+        this.voteCount = jsonData["roles"]["good"]["villager"]["voteCount"]
     }
     else if (type == roleTypes.Investigator) {
-        this.name = data["roles"]["good"]["investigator"]["name"]
-        this.description = data["roles"]["good"]["investigator"]["description"]
-        this.mission = data["roles"]["good"]["investigator"]["mission"]
+        this.name = jsonData["roles"]["good"]["investigator"]["name"]
+        this.description = jsonData["roles"]["good"]["investigator"]["description"]
+        this.mission = jsonData["roles"]["good"]["investigator"]["mission"]
         this.team = "good"
-        this.hasNightAbility = data["roles"]["good"]["investigator"]["hasNightAbility"]
-        this.voteCount = data["roles"]["good"]["investigator"]["voteCount"]
+        this.hasNightAbility = jsonData["roles"]["good"]["investigator"]["hasNightAbility"]
+        this.voteCount = jsonData["roles"]["good"]["investigator"]["voteCount"]
     }
     else if (type == roleTypes.Doctor) {
-        this.name = data["roles"]["good"]["doctor"]["name"]
-        this.description = data["roles"]["good"]["doctor"]["description"]
-        this.mission = data["roles"]["good"]["doctor"]["mission"]
+        this.name = jsonData["roles"]["good"]["doctor"]["name"]
+        this.description = jsonData["roles"]["good"]["doctor"]["description"]
+        this.mission = jsonData["roles"]["good"]["doctor"]["mission"]
         this.team = "good"
-        this.hasNightAbility = data["roles"]["good"]["doctor"]["hasNightAbility"]
-        this.voteCount = data["roles"]["good"]["doctor"]["voteCount"]
-        this.selfUsage = data["roles"]["good"]["doctor"]["selfUsage"]
+        this.hasNightAbility = jsonData["roles"]["good"]["doctor"]["hasNightAbility"]
+        this.voteCount = jsonData["roles"]["good"]["doctor"]["voteCount"]
+        this.selfUsage = jsonData["roles"]["good"]["doctor"]["selfUsage"]
     }
     else if (type == roleTypes.Mayor) {
-        this.name = data["roles"]["good"]["mayor"]["name"]
-        this.description = data["roles"]["good"]["mayor"]["description"]
-        this.mission = data["roles"]["good"]["mayor"]["mission"]
+        this.name = jsonData["roles"]["good"]["mayor"]["name"]
+        this.description = jsonData["roles"]["good"]["mayor"]["description"]
+        this.mission = jsonData["roles"]["good"]["mayor"]["mission"]
         this.team = "good"
-        this.hasNightAbility = data["roles"]["good"]["mayor"]["hasNightAbility"]
-        this.voteCount = data["roles"]["good"]["mayor"]["voteCount"]
+        this.hasNightAbility = jsonData["roles"]["good"]["mayor"]["hasNightAbility"]
+        this.voteCount = jsonData["roles"]["good"]["mayor"]["voteCount"]
     }
     else if (type == roleTypes.Trapper) {
-        this.name = data["roles"]["good"]["trapper"]["name"]
-        this.description = data["roles"]["good"]["trapper"]["description"]
-        this.mission = data["roles"]["good"]["trapper"]["mission"]
+        this.name = jsonData["roles"]["good"]["trapper"]["name"]
+        this.description = jsonData["roles"]["good"]["trapper"]["description"]
+        this.mission = jsonData["roles"]["good"]["trapper"]["mission"]
         this.team = "good"
-        this.hasNightAbility = data["roles"]["good"]["trapper"]["hasNightAbility"]
-        this.voteCount = data["roles"]["good"]["trapper"]["voteCount"]
+        this.hasNightAbility = jsonData["roles"]["good"]["trapper"]["hasNightAbility"]
+        this.voteCount = jsonData["roles"]["good"]["trapper"]["voteCount"]
     }
     else if (type == roleTypes.Godfather) {
-        this.name = data["roles"]["evil"]["godfather"]["name"]
-        this.description = data["roles"]["evil"]["godfather"]["description"]
-        this.mission = data["roles"]["evil"]["godfather"]["mission"]
+        this.name = jsonData["roles"]["evil"]["godfather"]["name"]
+        this.description = jsonData["roles"]["evil"]["godfather"]["description"]
+        this.mission = jsonData["roles"]["evil"]["godfather"]["mission"]
         this.team = "evil"
-        this.hasNightAbility = data["roles"]["evil"]["godfather"]["hasNightAbility"]
-        this.voteCount = data["roles"]["evil"]["godfather"]["voteCount"]
-        this.killVoteCount = data["roles"]["evil"]["godfather"]["killVoteCount"]
+        this.hasNightAbility = jsonData["roles"]["evil"]["godfather"]["hasNightAbility"]
+        this.voteCount = jsonData["roles"]["evil"]["godfather"]["voteCount"]
+        this.killVoteCount = jsonData["roles"]["evil"]["godfather"]["killVoteCount"]
     }
     else if (type == roleTypes.Mafioso) {
-        this.name = data["roles"]["evil"]["mafioso"]["name"]
-        this.description = data["roles"]["evil"]["mafioso"]["description"]
-        this.mission = data["roles"]["evil"]["mafioso"]["mission"]
+        this.name = jsonData["roles"]["evil"]["mafioso"]["name"]
+        this.description = jsonData["roles"]["evil"]["mafioso"]["description"]
+        this.mission = jsonData["roles"]["evil"]["mafioso"]["mission"]
         this.team = "evil"
-        this.hasNightAbility = data["roles"]["evil"]["mafioso"]["hasNightAbility"]
-        this.voteCount = data["roles"]["evil"]["mafioso"]["voteCount"]
-        this.killVoteCount = data["roles"]["evil"]["mafioso"]["killVoteCount"]
+        this.hasNightAbility = jsonData["roles"]["evil"]["mafioso"]["hasNightAbility"]
+        this.voteCount = jsonData["roles"]["evil"]["mafioso"]["voteCount"]
+        this.killVoteCount = jsonData["roles"]["evil"]["mafioso"]["killVoteCount"]
     }
     else if (type == roleTypes.Surgeon) {
-        this.name = data["roles"]["evil"]["surgeon"]["name"]
-        this.description = data["roles"]["evil"]["surgeon"]["description"]
-        this.mission = data["roles"]["evil"]["surgeon"]["mission"]
+        this.name = jsonData["roles"]["evil"]["surgeon"]["name"]
+        this.description = jsonData["roles"]["evil"]["surgeon"]["description"]
+        this.mission = jsonData["roles"]["evil"]["surgeon"]["mission"]
         this.team = "evil"
-        this.hasNightAbility = data["roles"]["evil"]["surgeon"]["hasNightAbility"]
-        this.voteCount = data["roles"]["evil"]["surgeon"]["voteCount"]
-        this.killVoteCount = data["roles"]["evil"]["surgeon"]["killVoteCount"]
-        this.selfUsage = data["roles"]["evil"]["surgeon"]["selfUsage"]
+        this.hasNightAbility = jsonData["roles"]["evil"]["surgeon"]["hasNightAbility"]
+        this.voteCount = jsonData["roles"]["evil"]["surgeon"]["voteCount"]
+        this.killVoteCount = jsonData["roles"]["evil"]["surgeon"]["killVoteCount"]
+        this.selfUsage = jsonData["roles"]["evil"]["surgeon"]["selfUsage"]
     }
     else if (type == roleTypes.Witch) {
-        this.name = data["roles"]["evil"]["witch"]["name"]
-        this.description = data["roles"]["evil"]["witch"]["description"]
-        this.mission = data["roles"]["evil"]["witch"]["mission"]
+        this.name = jsonData["roles"]["evil"]["witch"]["name"]
+        this.description = jsonData["roles"]["evil"]["witch"]["description"]
+        this.mission = jsonData["roles"]["evil"]["witch"]["mission"]
         this.team = "evil"
-        this.hasNightAbility = data["roles"]["evil"]["witch"]["hasNightAbility"]
-        this.voteCount = data["roles"]["evil"]["witch"]["voteCount"]
-        this.killVoteCount = data["roles"]["evil"]["witch"]["killVoteCount"]
+        this.hasNightAbility = jsonData["roles"]["evil"]["witch"]["hasNightAbility"]
+        this.voteCount = jsonData["roles"]["evil"]["witch"]["voteCount"]
+        this.killVoteCount = jsonData["roles"]["evil"]["witch"]["killVoteCount"]
     }
     else if (type == roleTypes.Framer) {
-        this.name = data["roles"]["evil"]["framer"]["name"]
-        this.description = data["roles"]["evil"]["framer"]["description"]
-        this.mission = data["roles"]["evil"]["framer"]["mission"]
+        this.name = jsonData["roles"]["evil"]["framer"]["name"]
+        this.description = jsonData["roles"]["evil"]["framer"]["description"]
+        this.mission = jsonData["roles"]["evil"]["framer"]["mission"]
         this.team = "evil"
-        this.hasNightAbility = data["roles"]["evil"]["framer"]["hasNightAbility"]
-        this.voteCount = data["roles"]["evil"]["framer"]["voteCount"]
-        this.killVoteCount = data["roles"]["evil"]["framer"]["killVoteCount"]
+        this.hasNightAbility = jsonData["roles"]["evil"]["framer"]["hasNightAbility"]
+        this.voteCount = jsonData["roles"]["evil"]["framer"]["voteCount"]
+        this.killVoteCount = jsonData["roles"]["evil"]["framer"]["killVoteCount"]
     }
     else if (type == roleTypes.Jester) {
-        this.name = data["roles"]["neutral"]["jester"]["name"]
-        this.description = data["roles"]["neutral"]["jester"]["description"]
-        this.mission = data["roles"]["neutral"]["jester"]["mission"]
+        this.name = jsonData["roles"]["neutral"]["jester"]["name"]
+        this.description = jsonData["roles"]["neutral"]["jester"]["description"]
+        this.mission = jsonData["roles"]["neutral"]["jester"]["mission"]
         this.team = "neutral"
-        this.hasNightAbility = data["roles"]["neutral"]["jester"]["hasNightAbility"]
-        this.voteCount = data["roles"]["neutral"]["jester"]["voteCount"]
+        this.hasNightAbility = jsonData["roles"]["neutral"]["jester"]["hasNightAbility"]
+        this.voteCount = jsonData["roles"]["neutral"]["jester"]["voteCount"]
     }
     else if (type == roleTypes.Serial_Killer) {
-        this.name = data["roles"]["neutral"]["serial_killer"]["name"]
-        this.description = data["roles"]["neutral"]["serial_killer"]["description"]
-        this.mission = data["roles"]["neutral"]["serial_killer"]["mission"]
+        this.name = jsonData["roles"]["neutral"]["serial_killer"]["name"]
+        this.description = jsonData["roles"]["neutral"]["serial_killer"]["description"]
+        this.mission = jsonData["roles"]["neutral"]["serial_killer"]["mission"]
         this.team = "neutral"
-        this.hasNightAbility = data["roles"]["neutral"]["serial_killer"]["hasNightAbility"]
-        this.voteCount = data["roles"]["neutral"]["serial_killer"]["voteCount"]
-        this.killVoteCount = data["roles"]["neutral"]["serial_killer"]["killVoteCount"]
+        this.hasNightAbility = jsonData["roles"]["neutral"]["serial_killer"]["hasNightAbility"]
+        this.voteCount = jsonData["roles"]["neutral"]["serial_killer"]["voteCount"]
+        this.killVoteCount = jsonData["roles"]["neutral"]["serial_killer"]["killVoteCount"]
     }
     else if (type == roleTypes.Executioner) {
-        this.name = data["roles"]["neutral"]["executioner"]["name"]
-        this.description = data["roles"]["neutral"]["executioner"]["description"]
-        this.mission = data["roles"]["neutral"]["executioner"]["mission"]
+        this.name = jsonData["roles"]["neutral"]["executioner"]["name"]
+        this.description = jsonData["roles"]["neutral"]["executioner"]["description"]
+        this.mission = jsonData["roles"]["neutral"]["executioner"]["mission"]
         this.team = "neutral"
-        this.hasNightAbility = data["roles"]["neutral"]["executioner"]["hasNightAbility"]
-        this.voteCount = data["roles"]["neutral"]["executioner"]["voteCount"]
+        this.hasNightAbility = jsonData["roles"]["neutral"]["executioner"]["hasNightAbility"]
+        this.voteCount = jsonData["roles"]["neutral"]["executioner"]["voteCount"]
     }
     else if (type == roleTypes.Lawyer) {
-        this.name = data["roles"]["neutral"]["lawyer"]["name"]
-        this.description = data["roles"]["neutral"]["lawyer"]["description"]
-        this.mission = data["roles"]["neutral"]["lawyer"]["mission"]
+        this.name = jsonData["roles"]["neutral"]["lawyer"]["name"]
+        this.description = jsonData["roles"]["neutral"]["lawyer"]["description"]
+        this.mission = jsonData["roles"]["neutral"]["lawyer"]["mission"]
         this.team = "neutral"
-        this.hasNightAbility = data["roles"]["neutral"]["lawyer"]["hasNightAbility"]
-        this.voteCount = data["roles"]["neutral"]["lawyer"]["voteCount"]
+        this.hasNightAbility = jsonData["roles"]["neutral"]["lawyer"]["hasNightAbility"]
+        this.voteCount = jsonData["roles"]["neutral"]["lawyer"]["voteCount"]
     }
 }
-
-function getJson(data) {
-    console.log(data["roles"]["good"])
-}
-
-
 
 function Player(
     playerName,
     role,
-    isKilled,
-    isLynched,
-    killedBy,
-    isProtected,
-    isTargeted,
-    isBlocked,
-    isDisguised
+    isKilled = false,
+    isLynched = false,
+    killedBy = false,
+    isProtected = false,
+    isTargeted = false,
+    isBlocked = false,
+    isDisguised = false
 ) {
     this.playerName = playerName;
     this.role = role;
