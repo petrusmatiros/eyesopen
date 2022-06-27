@@ -9,7 +9,8 @@ var mimetypes = {
     'js': 'text/javascript',
     'png': 'image/png',
     'jpeg': 'image/jpeg',
-    'jpg': 'image/jpg'
+    'jpg': 'image/jpg',
+    'json': 'application/json'
 };
 
 var portname = '127.0.0.1';

@@ -1,0 +1,16 @@
+{
+  "name": "eyesopen",
+  "version": "1.0.0",
+  "description": "Mafia/Werewolf/ToS inspired web based game",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github-personal:petrusmatiros/eyesopen.git"
+  },
+  "author": "petrus matiros",
+  "license": "ISC"
+}
