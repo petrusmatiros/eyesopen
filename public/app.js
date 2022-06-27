@@ -30,6 +30,10 @@ fetch("./roles.json")
         var p1 = new Player("petos", new Role(roleTypes.Villager))
         var p2 = new Player("petos2", new Role(roleTypes.Investigator))
         var p3 = new Player("petos3", new Role(roleTypes.Doctor))
+        players = []
+        players.push(p1)
+        players.push(p2)
+        players.push(p3)
         console.log(p1)
         console.log(p2)
         console.log(p2.role.type)
@@ -186,6 +190,7 @@ function Player(
     this.isTargeted = isTargeted;
     this.isBlocked = isBlocked;
     this.isDisguised = isDisguised;
+    this.fakeTeam = ""
 }
 
 /**
@@ -199,13 +204,67 @@ Player.useAbility = function(player, target) {
             if (player.role.type == roleTypes.Investigator) {
                 console.log(target.playerName, "is:", target.role.team)
             }
-            if (player.role.type == roleTypes.Doctor) {
+            else if (player.role.type == roleTypes.Doctor) {
+                if (player == target && player.role.selfUsage == 1) {
+                    player.role.selfUsage = 0
+                    console.log("Your self uses:", player.role.selfUsage)
+                }
                 console.log("You protect", target.playerName)
                 target.isProtected = true
                 console.log(target.isProtected)
-
+            }
+            else if (player.role.type == roleTypes.Trapper) {
+                console.log("You trap", target.playerName)
+                target.isBlocked = true
+                console.log(target.isBlocked)
+            }
+            else if (player.role.type == roleTypes.Surgeon) {
+                if (target.team == "evil") {
+                    if (player == target && player.role.selfUsage == 1) {
+                        player.role.selfUsage = 0
+                        console.log("Your self uses:", player.role.selfUsage)
+                    }
+                    console.log("You disguise", target.playerName)
+                    target.isDisguised = true
+                    console.log(target.isDisguised)
+                }
+            }
+            else if (player.role.type == roleTypes.Witch) {
+                if (target.team != "evil") {
+                    console.log("You cast a freeze spell on", target.playerName)
+                    target.isBlocked = true
+                    console.log(target.isBlocked)
+                }
+            }
+            else if (player.role.type == roleTypes.Framer) {
+                if (target.team != "evil") {
+                    console.log("You plant evidence on", target.playerName)
+                    target.isDisguised = true
+                    console.log(target.isDisguised)
+                }
             }
         }
         
     }
+}
+
+Player.vote = function(player, target) {
+
+}
+
+Player.kill = function(player, target) {
+
+}
+
+function disguiseChecker() {
+    players.forEach(player => {
+        if (player.isDisguised) {
+            if (player.role.team == "good") {
+                player.fakeTeam = "evil"
+            }
+            else if (player.role.team == "evil") {
+                player.fakeTeam = "good"
+            }
+        }
+    })
 }
