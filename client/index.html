@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Eyes Open</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="author" href="petrus.matiros@gmail.com" />
+    <!-- Favicon -->
+    <!-- <link rel="icon" href="img/favicon.ico" type="image/x-icon"> -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="icons/favicon-16x16.png"
+    />
+
+    <link rel="stylesheet" href="./style.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.min.js"></script>
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <div id="join-room-overlay"></div>
+    <div class="navbar">
+      <div class="navbar-container"><a href="#" class="logo-link"><img class="logo" src="icons/eyesopen128x128.png"/></a>
+      </div>
+      <div class="navbar-container"></div>
+    </div>
+    
+    <div id="join-room">
+      <div class="close">
+        <img class="close-button" onclick="hideJoin()" src="icons/close40x40.png"/>
+
+      </div>
+      <div class="join-info">Enter the room code</div>
+      <input type="text" id="code" name="code" required
+      minlength="5" maxlength="5" size="3">
+      <div class="join-button">Join</div>
+
+    </div>
+
+  
+    <h1 class="title">Eyes Open</h1>
+    <!--Opens new tab-->
+    <div class="title-button-container">
+      <a class="title-button" href="lobby.html">Host new game</a>
+      <div class="title-button" onclick="displayJoin()">Join game</div>
+      <!-- <a class="title-button" onclick="join()" href="">Join game</a> -->
+    </div>
+    <p class="clock" id="time"></p>
+
+    <!-- <a href="https://www.google.com/" target="_blank">test_link</a> -->
+
+    <div class="links">
+      <p class="designed-by">illustration by Beatriz Ines Avila Cutiño</p>
+      <p class="designed-by">designed by Petrus Matiros</p>
+      <a
+        href="https://github.com/petrusmatiros"
+        target="_blank"
+        aria-label="Homepage"
+        class="footer-octicon"
+        title="GitHub"
+      >
+        <svg
+          aria-hidden="true"
+          class="octicon octicon-mark-github"
+          height="24"
+          version="1.1"
+          viewBox="0 0 16 16"
+          width="24"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+          ></path>
+        </svg>
+      </a>
+    </div>
+  </body>
+</html>
