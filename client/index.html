@@ -4,7 +4,11 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Eyes Open</title>
-    <meta name="description" content="" />
+    <meta
+      name="description"
+      content="Mafia/Werewolf/ToS inspired web based game"
+    />
+    <meta name="robots" content="index" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="author" href="petrus.matiros@gmail.com" />
@@ -31,24 +35,40 @@
   <body>
     <div id="join-room-overlay"></div>
     <div class="navbar">
-      <div class="navbar-container"><a href="#" class="logo-link"><img class="logo" src="icons/eyesopen128x128.png"/></a>
+      <div class="navbar-container">
+        <a href="#" class="logo-link"
+          ><img
+            class="logo"
+            src="icons/eyesopen128x128.png"
+            alt="eyesopen logo"
+        /></a>
       </div>
       <div class="navbar-container"></div>
     </div>
-    
+
     <div id="join-room">
       <div class="close">
-        <img class="close-button" onclick="hideJoin()" src="icons/close40x40.png"/>
-
+        <img
+          class="close-button"
+          onclick="hideJoin()"
+          src="icons/close40x40.png"
+          alt="close x icon"
+        />
       </div>
       <div class="join-info">Enter the room code</div>
-      <input type="text" id="code" name="code" required
-      minlength="5" maxlength="5" size="3">
-      <div class="join-button">Join</div>
-
+      <p class="join-help" id="join-help"></p>
+      <input
+        type="text"
+        id="code"
+        name="code"
+        required
+        minlength="5"
+        maxlength="5"
+        size="3"
+      />
+      <div class="join-button" onclick="checkRoomCode()">Join</div>
     </div>
 
-  
     <h1 class="title">Eyes Open</h1>
     <!--Opens new tab-->
     <div class="title-button-container">
@@ -56,7 +76,9 @@
       <div class="title-button" onclick="displayJoin()">Join game</div>
       <!-- <a class="title-button" onclick="join()" href="">Join game</a> -->
     </div>
-    <p class="clock" id="time"></p>
+    <div class="clock-container">
+      <p class="clock" id="time">0</p>
+    </div>
 
     <!-- <a href="https://www.google.com/" target="_blank">test_link</a> -->
 

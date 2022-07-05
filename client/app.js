@@ -1,12 +1,13 @@
 const socket = io("http://localhost:3000/")
 
+
 socket.on("connect", () => {
     console.log("You connect with id", socket.id)
-    socket.emit('sendll', "wihooo im in!")
 });
 
-socket.on("recieve", message => {
-    console.log(message)
+socket.on('counter', function(count) {
+    var display = document.querySelector('#time')
+    display.innerText = count
 })
 
 function displayJoin() {
@@ -17,8 +18,23 @@ function displayJoin() {
 function hideJoin() {
     document.getElementById("join-room-overlay").style.display = "none";
     document.getElementById("join-room").style.display = "none";
+    document.getElementById("join-help").style.display = "none";
+    document.getElementById("code").value = "";
+    document.getElementById("code").style.border = "2px solid #b1b1b1";
 }
 
+function checkRoomCode() {
+    var inputVal = document.getElementById("code").value;
+    if (inputVal.length !== 5) {
+        document.getElementById("join-help").style.display = "flex";
+        document.getElementById("code").style.border = "2px solid #b1b1b1";
+        document.getElementById("join-help").innerText = "Code needs to be 5 characters long";
+    } else {
+        document.getElementById("join-help").style.display = "none";
+        document.getElementById("code").style.border = "2px solid hsl(123, 100%, 45%)";
+    }
+    // check if room exists (has been created)
+}
 
 const roleTypes = {
     Villager: "villager",

@@ -1,10 +1,10 @@
 :root {
-    --menu-button-bg: hsl(280, 100%, 92%);
-    --menu-button-hover-bg: hsl(280, 100%, 82%);
-    --menu-button-active-bg: hsl(280, 100%, 72%);
-    --menu-button-fg: hsl(280, 100%, 35%);
-    --menu-button-hover-fg: hsl(280, 100%, 25%);
-    --menu-button-active-fg: hsl(280, 100%, 15%);
+  --menu-button-bg: hsl(280, 100%, 92%);
+  --menu-button-hover-bg: hsl(280, 100%, 82%);
+  --menu-button-active-bg: hsl(280, 100%, 72%);
+  --menu-button-fg: hsl(280, 100%, 35%);
+  --menu-button-hover-fg: hsl(280, 100%, 25%);
+  --menu-button-active-fg: hsl(280, 100%, 15%);
 }
 
 body {
@@ -12,6 +12,10 @@ body {
   font-family: "Inter", sans-serif;
   color: #000000;
   background-color: #eeeeee;
+  margin: 0;
+}
+
+p {
   margin: 0;
 }
 
@@ -55,17 +59,17 @@ body {
   color: var(--menu-button-active-fg);
   background-color: var(--menu-button-active-bg);
   transition: all 0s;
-  transform: scale(0.90);
+  transform: scale(0.9);
 }
 .navbar {
-    background-color: #FFFFFF;
-    width: auto;
-    height: auto;
-    padding: 0.5em;
+  background-color: #ffffff;
+  width: auto;
+  height: auto;
+  padding: 0.5em;
 }
 
 .navbar-container {
-    margin: 0.15em 0.25em 0.15em 0.25em;
+  margin: 0.15em 0.25em 0.15em 0.25em;
 }
 
 .links {
@@ -90,14 +94,19 @@ body {
   line-height: 1;
 }
 
-.clock {
-  display: inline-flex;
+.clock-container {
+  display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0.5em;
+}
+
+.clock {
+  text-align: center;
   background-color: #2d2d2d;
   border-radius: 0.6em;
   padding: 0.5em;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 #join-room-overlay {
@@ -124,7 +133,7 @@ body {
   /* bring your own prefixes */
   transform: translate(-50%, -50%);
   align-items: center;
-  background: #FFFFFF;
+  background: #ffffff;
   color: #000000;
   padding: 0.75em;
   border-radius: 0.6em;
@@ -140,6 +149,24 @@ body {
   width: 2rem;
   height: 2rem;
   vertical-align: bottom;
+  border-radius: 0.6em;
+}
+
+.close-button:hover {
+  background-color: hsl(0, 0%, 95%);
+}
+
+.close-button:active {
+  background-color: hsl(0, 0%, 85%);
+}
+
+.join-help {
+  display: none;
+  text-align: center;
+  font-weight: 400;
+  font-size: 0.75em;
+  color: #000000;
+  margin: 0.3em 1em 0.3em 1em;
 }
 
 .join-info {
@@ -149,21 +176,20 @@ body {
   color: #000000;
   margin: 0.5em 1em 0.5em 1em;
 }
-  
+
 input[type="text"] {
+  background-color: #ffffff;
   font-family: "Inter", sans-serif;
   text-align: center;
   font-size: 1rem;
   margin: 0.5em 1em 0.5em 1em;
   padding: 0.5em 1em 0.5em 1em;
   border-radius: 0.6em;
-  border: 3px solid #b1b1b1
-  
+  border: 2px solid #b1b1b1;
 }
 
 input[type="text"]:focus {
-  border: 3px solid #000000
-  
+  border: 2px solid #000000;
 }
 
 .join-button {
@@ -179,7 +205,6 @@ input[type="text"]:focus {
   border: none;
   border-radius: 0.6em;
   text-decoration: none;
-
 }
 
 .join-button:hover {
@@ -191,7 +216,5 @@ input[type="text"]:focus {
   color: var(--menu-button-active-fg);
   background-color: var(--menu-button-active-bg);
   transition: all 0s;
-  transform: scale(0.90);
+  transform: scale(0.9);
 }
-
-
