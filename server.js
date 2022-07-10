@@ -15,26 +15,19 @@ app.use(
   session({
     secret: "k4JxZ9GB6OKzSOpcM1OKhEpguEYr8QUb",
     saveUninitialized: false,
-    cookie: {httpOnly: true, sameSite: 'lax' },
+    cookie: { httpOnly: true, sameSite: "lax" },
     resave: false,
   })
 );
 
 var __dirname = "/mnt/c/Users/petru/Documents/Code/eyesopen/client";
 
-// random string generator
+// // random string generator
 var randomstring = require("randomstring");
-var roomCode = randomstring.generate(5);
-console.log("Random room code:", roomCode);
-var pID = randomstring.generate(6);
-console.log("Random player id (cookie):", pID);
-
-// parsing the incoming data
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-
-// // cookie parser middleware
-// app.use(cookieParser());
+// var roomCode = randomstring.generate(5);
+// console.log("Random room code:", roomCode);
+// var pID = randomstring.generate(6);
+// console.log("Random player id (cookie):", pID);
 
 app.use(express.static("client"));
 // serving public file
@@ -47,35 +40,38 @@ app.get("/", (req, res) => {
 
 const users = [];
 var sessionIDs = [];
-// establish server connection with socket
-io.on("connection", (socket) => {
-  console.log("a user connected");
-  console.log("socket id:", socket.id);
-  socket.username = "test"
-
-  socket.on("joinedLobby", (socket) => {
-    console.log("joined")
-    var counter = timeDurations.test;
-    var time = setInterval(function () {
-      io.emit("counter", counter);
-      if (counter <= 0) {
-        clearInterval(time);
-        // next phase
-      } else {
-        counter--;
-      }
-    }, 1000);
-  })
-});
-
 var timeDurations = {
   discussion: 45,
   voting: 25,
   night: 30,
   test: 5,
 };
+var counter = timeDurations.voting;
+// establish server connection with socket
+io.on("connection", async (socket) => {
+  console.log("a user connected, with socket id:", socket.id);
 
+  socket.on("requestID", () => {
+    var playerID = randomstring.generate(6);
+    socket.emit("playerID", playerID);
+  });
 
+  socket.on("joinedLobby", () => {
+    console.log("joined");
+  });
+
+});
+
+var time = setInterval(function () {
+  io.emit("counter", counter);
+  console.log("counter from server:", counter);
+  if (counter <= 0) {
+    clearInterval(time);
+    // next phase
+  } else {
+    counter--;
+  }
+}, 1000);
 
 var createdRooms = {
   "5HJlp": {
@@ -84,8 +80,8 @@ var createdRooms = {
   },
 };
 
-var count = io.engine.clientsCount;
-// may or may not be similar to the count of Socket instances in the main namespace, depending on your usage
-var count2 = io.of("/").sockets.size;
-console.log(count);
-console.log(count2);
+// var count = io.engine.clientsCount;
+// // may or may not be similar to the count of Socket instances in the main namespace, depending on your usage
+// var count2 = io.of("/").sockets.size;
+// console.log(count);
+// console.log(count2);
