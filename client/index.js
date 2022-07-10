@@ -1,4 +1,7 @@
-document.cookie = "eyesopenID=null";
+if (document.cookie.split(";").length <= 1) {
+  document.cookie = "eyesopenID=null";
+}
+console.log(document.cookie.split(";").length)
 
 function displayUsername() {
   document.getElementById("overlay").style.display = "block";

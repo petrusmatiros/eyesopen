@@ -2,11 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "description": "Mafia/Werewolf/ToS inspired web based game",
-  "main": "server.js",
+  "main": "server/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js",
-    "start": "node server.js"
+    "dev": "nodemon server/server.js",
+    "start": "node server/server.js"
   },
   "repository": {
     "type": "git",
