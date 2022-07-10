@@ -30,10 +30,10 @@
       rel="stylesheet"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.min.js"></script>
-    <script defer src="./app.js"></script>
+    <script defer src="./index.js"></script>
   </head>
   <body>
-    <div id="join-room-overlay"></div>
+    <div id="overlay"></div>
     <div class="navbar">
       <div class="navbar-container">
         <a href="#" class="logo-link"
@@ -45,8 +45,54 @@
       </div>
       <div class="navbar-container"></div>
     </div>
+    
+    <div class="card-input" id="username">
+      <div class="close">
+        <img
+          class="close-button"
+          onclick="hideUsername()"
+          src="icons/close40x40.png"
+          alt="close x icon"
+        />
+      </div>
+      <div class="join-info">What's your name adventurer?</div>
+      <p class="join-help" id="username-help"></p>
+      <input
+        type="text"
+        id="inputUsername"
+        name="inputUsername"
+        required
+        minlength="1"
+        maxlength="20"
+        size="20"
+      />
+      <div class="confirm-button" onclick="checkUsername(false)">Confirm</div>
+    </div>
 
-    <div id="join-room">
+    <div class="card-input" id="host">
+      <div class="close">
+        <img
+          class="close-button"
+          onclick="hideHost()"
+          src="icons/close40x40.png"
+          alt="close x icon"
+        />
+      </div>
+      <div class="join-info">What's your name oh great one?</div>
+      <p class="join-help" id="host-help"></p>
+      <input
+        type="text"
+        id="inputHost"
+        name="inputHost"
+        required
+        minlength="1"
+        maxlength="20"
+        size="20"
+      />
+      <div class="confirm-button" onclick="checkUsername(true)">Confirm</div>
+    </div>
+
+    <div class="card-input" id="join-room">
       <div class="close">
         <img
           class="close-button"
@@ -66,19 +112,19 @@
         maxlength="5"
         size="3"
       />
-      <div class="join-button" onclick="checkRoomCode()">Join</div>
+      <div class="confirm-button" onclick="checkRoomCode()">Join</div>
     </div>
+
 
     <h1 class="title">Eyes Open</h1>
     <!--Opens new tab-->
     <div class="title-button-container">
-      <a class="title-button" href="lobby.html">Host new game</a>
-      <div class="title-button" onclick="displayJoin()">Join game</div>
+      <!-- <a class="title-button" href="lobby.html">Host new game</a> -->
+      <a class="title-button" onclick="displayHost()">Host new game</a>
+      <div class="title-button" onclick="displayUsername()">Join game</div>
       <!-- <a class="title-button" onclick="join()" href="">Join game</a> -->
     </div>
-    <div class="clock-container">
-      <p class="clock" id="time">0</p>
-    </div>
+   
 
     <!-- <a href="https://www.google.com/" target="_blank">test_link</a> -->
 

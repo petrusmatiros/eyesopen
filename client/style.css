@@ -23,7 +23,7 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 4rem;
+  font-size: 3.7rem;
   color: #000000;
   margin: 3rem 0 2.5rem 0;
 }
@@ -78,6 +78,7 @@ p {
   align-items: center;
   flex-direction: column;
   font-size: 1rem;
+  margin-top: 0.5rem;
 }
 
 .designed-by {
@@ -109,7 +110,7 @@ p {
   color: #ffffff;
 }
 
-#join-room-overlay {
+#overlay {
   position: fixed;
   display: none;
   background-color: #000000;
@@ -122,7 +123,7 @@ p {
   height: 100%;
 }
 
-#join-room {
+.card-input {
   position: fixed;
   display: none;
   justify-content: center;
@@ -135,7 +136,7 @@ p {
   align-items: center;
   background: #ffffff;
   color: #000000;
-  padding: 0.75em;
+  padding: 0.85em;
   border-radius: 0.6em;
 }
 
@@ -192,7 +193,7 @@ input[type="text"]:focus {
   border: 2px solid #000000;
 }
 
-.join-button {
+.confirm-button {
   display: inline-block;
   justify-content: center;
   align-items: center;
@@ -207,12 +208,12 @@ input[type="text"]:focus {
   text-decoration: none;
 }
 
-.join-button:hover {
+.confirm-button:hover {
   color: var(--menu-button-hover-fg);
   background-color: var(--menu-button-hover-bg);
 }
 
-.join-button:active {
+.confirm-button:active {
   color: var(--menu-button-active-fg);
   background-color: var(--menu-button-active-bg);
   transition: all 0s;
