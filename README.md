@@ -7,14 +7,40 @@
 <!-- - [Eyes Open](#eyes-open)
     - [Mafia/Werewolf/ToS inspired web based game](#mafiawerewolftos-inspired-web-based-game)
   - [Table of contents](#table-of-contents) -->
+  #### Project
+  - [Dependencies](#dependencies)
+  - [Install and build](#install-and-build)
+  #### Game
   - [Link to website](#link-to-website)
   - [Game description & objective](#game-description--objective)
   - [Requirements](#requirements)
   - [Roles](#roles)
+  #### Miscellaneous info
   - [Assets](#assets)
   - [Notes](#notes)
 
 
+---
+
+# Dependencies
+```json
+"dependencies": {
+    "express": "^4.18.1",
+    "express-session": "^1.17.3",
+    "randomstring": "^1.2.2",
+    "socket.io": "^4.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.18"
+  }
+```
+
+# Install and build
+
+```
+npm i
+npm build
+```
 ---
 
 ## Link to website
@@ -44,9 +70,12 @@ Enjoy ^-^
 ![](roleinfo/Neutral%20info.png)
 
 
-
+---
 
 ## Assets
+
+
+**Illustrations** <br> Beatriz Ines Avila Cutiño
 
 **Game design** <br> Petrus Matiros
 
