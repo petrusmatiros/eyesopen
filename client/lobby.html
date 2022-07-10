@@ -16,9 +16,7 @@
       sizes="16x16"
       href="icons/favicon-16x16.png"
     />
-
     <link rel="stylesheet" href="./style.css" />
-
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -26,51 +24,52 @@
       rel="stylesheet"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.min.js"></script>
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
     <script defer src="./app.js"></script>
   </head>
-  <body>
-    <nav class="navbar">
-      <div class="navbar-container"><a href="#" class="logo-link"><img class="logo" src="icons/eyesopen128x128.png"/></a>
-        
+  <body class="light">
+    <nav class="navbar-light">
+      <div class="navbar-container">
+        <a href="#" class="logo-link"
+          ><img class="logo" src="icons/eyesopen128x128.png"
+        /></a>
       </div>
       <div class="navbar-container"></div>
     </nav>
-    
-    
-    <h1 class="title">Eyes Open</h1>
-    <!--Opens new tab-->
-    <div id="clock"></div>
-    <div class="header">Lobby</div>
-    <div class="test">blabla</div>
-    <div class="clock-container">
-      <p class="clock" id="time">0</p>
-    </div>
-    <!-- <a href="https://www.google.com/" target="_blank">test_link</a> -->
 
-    <div class="links">
-      <p class="designed-by">illustration by Beatriz Ines Avila Cutiño</p>
-      <p class="designed-by">designed by Petrus Matiros</p>
-      <a
-        href="https://github.com/petrusmatiros"
-        target="_blank"
-        aria-label="Homepage"
-        class="footer-octicon"
-        title="GitHub"
-      >
-        <svg
-          aria-hidden="true"
-          class="octicon octicon-mark-github"
-          height="24"
-          version="1.1"
-          viewBox="0 0 16 16"
-          width="24"
+    <div class="menu">
+      <h1 class="title-light">Eyes Open</h1>
+      <!--Opens new tab-->
+      <div id="clock"></div>
+      <div class="header">Lobby</div>
+      <div class="test">blabla</div>
+      <div class="clock-container">
+        <p class="clock" id="time">0</p>
+      </div>
+      <!-- <a href="https://www.google.com/" target="_blank">test_link</a> -->
+
+      <div class="links">
+        <p class="designed-by">
+          illustration by
+          <span class="author-light">Beatriz Ines Avila Cutiño</span>
+        </p>
+        <p class="designed-by">
+          designed by <span class="author-light">Petrus Matiros</span>
+        </p>
+        <a
+          class="github"
+          href="https://www.github.com/petrusmatiros"
+          target="_blank"
         >
-          <path
-            fill-rule="evenodd"
-            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-          ></path>
-        </svg>
-      </a>
+          <span
+            class="iconify"
+            id="github-light"
+            data-icon="octicon:mark-github-16"
+            data-width="32"
+            data-height="32"
+          ></span>
+        </a>
+      </div>
     </div>
   </body>
 </html>

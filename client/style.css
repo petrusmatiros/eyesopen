@@ -1,4 +1,5 @@
 :root {
+  /* nighmare bifore krissmas */
   /* Website & Lobby */
   /* Buttons */
   --menu-button-bg: hsl(280, 100%, 90%);
@@ -62,9 +63,17 @@
 body {
   font-size: 1rem;
   font-family: "Inter", sans-serif;
-  color: #000000;
-  background-color: #eeeeee;
   margin: 0;
+}
+
+.dark {
+  color: var(--light-fg);
+  background-color: var(--dark-bg);
+}
+
+.light {
+  color: var(--dark-fg);
+  background-color: var(--main-bg);
 }
 
 p {
@@ -80,13 +89,45 @@ p {
   margin: 1em;
 }
 
-.title {
+.menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 3rem;
+}
+
+.title-dark {
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 3.7rem;
-  color: #000000;
-  margin: 5rem 0 2.5rem 0;
+  color: var(--light-fg);
+  margin: 1rem 0 2.5rem 0;
+}
+.title-light {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3.7rem;
+  color: var(--dark-fg);
+  margin: 1rem 0 2.5rem 0;
+}
+
+.animation-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--dark-bg);
+  height: 100%;
+  width: 100%;
+}
+
+.eyes {
+  margin-top: -7rem;
+  margin-bottom: -7rem;
+  width: 300px;
+  height: 300px;
 }
 
 .title-button-container {
@@ -100,12 +141,12 @@ p {
   display: inline-block;
   justify-content: center;
   align-items: center;
-  font-size: 1.5rem;
+  font-size: 1.7rem;
   font-weight: 600;
   color: var(--menu-button-fg);
   background-color: var(--menu-button-bg);
   margin: 0.5em;
-  padding: 0.6em 0.6em 0.6em 0.6em;
+  padding: 0.6em 1em 0.6em 1em;
   border: none;
   border-radius: 0.6em;
   text-decoration: none;
@@ -122,8 +163,15 @@ p {
   transition: all 0s;
   transform: scale(0.9);
 }
-.navbar {
-  background-color: #ffffff;
+.navbar-dark {
+  background-color: var(--dark-bg);
+  width: auto;
+  height: auto;
+  padding: 0.5em;
+}
+
+.navbar-light {
+  background-color: var(--light-bg);
   width: auto;
   height: auto;
   padding: 0.5em;
@@ -133,13 +181,22 @@ p {
   margin: 0.15em 0.25em 0.15em 0.25em;
 }
 
+.author-dark {
+  font-weight: 600;
+  color: var(--light-fg);
+}
+.author-light {
+  font-weight: 600;
+  color: var(--dark-fg);
+}
+
 .links {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   font-size: 1rem;
-  margin-top: 4rem;
+  margin-top: 3.5rem;
 }
 
 .designed-by {
@@ -149,11 +206,74 @@ p {
 .logo {
   width: 2rem;
   height: 2rem;
+  padding: 0.25em;
   vertical-align: bottom;
 }
 
+#github-dark {
+  color: var(--light-bg);
+}
+
+#github-light {
+  color: #000000;
+}
+
+.mail-dark {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: var(--light-fg);
+}
+
+.mail-light {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: var(--dark-fg);
+}
+
+.mail-dark:focus {
+  outline: none !important;
+}
+.mail-light:focus {
+  outline: none !important;
+}
+
+.github {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.github:focus {
+  outline: none !important;
+}
+
 .logo-link {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   line-height: 1;
+}
+
+.logo-link:focus {
+  outline: none !important;
 }
 
 .clock-container {
@@ -195,15 +315,18 @@ p {
   /* bring your own prefixes */
   transform: translate(-50%, -50%);
   align-items: center;
-  background: #ffffff;
-  color: #000000;
-  padding: 0.85em;
+  background: var(--light-bg);
+  padding: 1.85em;
   border-radius: 0.6em;
+
+  width: 17em;
 }
 
 .close {
   display: flex;
   width: 100%;
+  margin-right: -2rem;
+  margin-top: -1rem;
   justify-content: right;
 }
 

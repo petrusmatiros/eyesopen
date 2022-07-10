@@ -1,12 +1,15 @@
 const socket = io("http://localhost:3000/");
 
+const oneHour = 60 * 60;
+// const five = 5;
+
 socket.on("connect", () => {
   console.log("You connect with id", socket.id);
   socket.emit("requestID", true);
   socket.on("playerID", (playerID) => {
     console.log("playerID from server:", playerID);
     if (getPlayerID() == "null") {
-      document.cookie = `eyesopenID=${playerID}; SameSite=Lax`;
+      document.cookie = `eyesopenID=${playerID}; max-age=${oneHour}; SameSite=Lax`;
       socket.emit("joinedLobby", playerID);
     }
   });
@@ -15,8 +18,7 @@ socket.on("connect", () => {
 function getPlayerID() {
   var cookies = document.cookie.split(";");
   var toRemove = "eyesopenID=";
-  var wantedCookie = cookies[1].substring(toRemove.length + 1);
-
+  var wantedCookie = cookies[0].substring(toRemove.length);
   return wantedCookie;
 }
 

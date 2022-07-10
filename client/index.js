@@ -1,7 +1,34 @@
-if (document.cookie.split(";").length <= 1) {
-  document.cookie = "eyesopenID=null";
+/**
+ * [resetCookie resets the playerID cookie to null]
+ */
+function resetCookie() {
+  if (document.cookie.length < 1) {
+    document.cookie = "eyesopenID=null";
+  }
 }
-console.log(document.cookie.split(";").length)
+
+resetCookie();
+
+/**
+ * [setLocation sets the location of the window to the specified URL]
+ *
+ * @param   {[string]}  URL    [URL is the specified URL string to set the location to]
+ * @param   {[boolean]}  reset  [reset sets the playerID cookie to null if true]
+ *
+ */
+function setLocation(URL, reset) {
+  if (reset) {
+    resetCookie();
+  }
+  window.location = URL;
+}
+
+function closeCard() {
+  document.getElementById("overlay").style.display = "none";
+  hideUsername();
+  hideHost();
+  hideJoin();
+}
 
 function displayUsername() {
   document.getElementById("overlay").style.display = "block";
@@ -35,7 +62,7 @@ function UserInputDone() {
 function UserInputDoneHost() {
   hideHost();
   // to a new room
-  window.location = "/lobby.html";
+  setLocation("/lobby.html", true);
 }
 
 function displayJoin() {
@@ -63,10 +90,10 @@ function checkRoomCode() {
     document.getElementById("join-help").style.display = "none";
     document.getElementById("code").style.border =
       "2px solid hsl(123, 100%, 45%)";
+    setLocation("/lobby.html", true);
   }
   // check if room exists (has been created)
   // to the room that already exists
-  window.location = "/lobby.html";
 }
 
 function checkUsername(isHost) {

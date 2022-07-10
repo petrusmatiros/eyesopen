@@ -10,15 +10,15 @@ const io = require("socket.io")(server);
 server.listen(port, () => {
   console.log("Server listening at port %d", port);
 });
-const oneHour = 60 * 60 * 1000;
-app.use(
-  session({
-    secret: "k4JxZ9GB6OKzSOpcM1OKhEpguEYr8QUb",
-    saveUninitialized: false,
-    cookie: { httpOnly: true, sameSite: "lax" },
-    resave: false,
-  })
-);
+// const oneHour = 60 * 60 * 1000;
+// app.use(
+//   session({
+//     secret: "k4JxZ9GB6OKzSOpcM1OKhEpguEYr8QUb",
+//     saveUninitialized: false,
+//     cookie: {maxAge: oneHour, httpOnly: true, sameSite: "lax" },
+//     resave: false,
+//   })
+// );
 
 var __dirname = "/mnt/c/Users/petru/Documents/Code/eyesopen/client";
 
@@ -59,7 +59,6 @@ io.on("connection", async (socket) => {
   socket.on("joinedLobby", (playerID) => {
     console.log("player", playerID, "has joined");
   });
-
 });
 
 var time = setInterval(function () {
