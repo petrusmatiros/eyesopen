@@ -1,3 +1,5 @@
+document.cookie = "eyesopenID=null";
+
 function displayUsername() {
   document.getElementById("overlay").style.display = "block";
   document.getElementById("username").style.display = "flex";

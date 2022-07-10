@@ -4,20 +4,27 @@ socket.on("connect", () => {
   console.log("You connect with id", socket.id);
   socket.emit("requestID", true);
   socket.on("playerID", (playerID) => {
-    console.log("playerID from server:", playerID)
-    document.cookie = `eyesopenID=${playerID}; SameSite=Lax`;
+    console.log("playerID from server:", playerID);
+    if (getPlayerID() == "null") {
+      document.cookie = `eyesopenID=${playerID}; SameSite=Lax`;
+      socket.emit("joinedLobby", playerID);
+    }
   });
-  socket.emit("joinedLobby", true);
-  // ! FIX THIS
 });
+
+function getPlayerID() {
+  var cookies = document.cookie.split(";");
+  var toRemove = "eyesopenID=";
+  var wantedCookie = cookies[1].substring(toRemove.length + 1);
+
+  return wantedCookie;
+}
 
 socket.on("counter", function (count) {
-    var display = document.querySelector("#time");
-    // console.log(count);
-    display.innerText = count;
+  var display = document.querySelector("#time");
+  // console.log(count);
+  display.innerText = count;
 });
-
-
 
 const roleTypes = {
   Villager: "villager",

@@ -1,10 +1,62 @@
 :root {
-  --menu-button-bg: hsl(280, 100%, 92%);
-  --menu-button-hover-bg: hsl(280, 100%, 82%);
-  --menu-button-active-bg: hsl(280, 100%, 72%);
+  /* Website & Lobby */
+  /* Buttons */
+  --menu-button-bg: hsl(280, 100%, 90%);
+  --menu-button-hover-bg: hsl(280, 100%, 50%);
+  --menu-button-active-bg: hsl(280, 100%, 30%);
   --menu-button-fg: hsl(280, 100%, 35%);
-  --menu-button-hover-fg: hsl(280, 100%, 25%);
-  --menu-button-active-fg: hsl(280, 100%, 15%);
+  --menu-button-hover-fg: hsl(0, 0%, 100%);
+  --menu-button-active-fg: hsl(0, 0%, 80%);
+  --main-bg: hsl(0, 0%, 93%);
+  /* --------------- */
+  /* In game */
+  /* Night */
+  --dark-bg: hsl(0, 0%, 13%);
+  --light-fg: hsl(0, 0%, 100%);
+  /* Day */
+  --light-bg: hsl(0, 0%, 100%);
+  --dark-fg: hsl(0, 0%, 0%);
+  /* Player colors */
+  --evilteam: hsl(360, 100%, 50%);
+  --killed: hsl(0, 0%, 57%);
+  --ability-target-bg: hsl(360, 100%, 60%);
+  --vote-target-bg: hsl(100, 100%, 40%);
+  --double-target-bg: linear-gradient(
+    90deg,
+    rgba(255, 51, 51, 1) 0%,
+    rgba(68, 204, 0, 1) 100%
+  );
+  /* In game buttons */
+  --vote-button-bg--notused: hsl(100, 100%, 40%);
+  --vote-button-bg--used: hsl(100, 100%, 90%);
+  --ability-button-bg--notused: hsl(360, 100%, 60%);
+  --ability-button-bg--used: hsl(360, 98%, 95%);
+}
+
+.test {
+  display: inline;
+  padding: 0.3em;
+  border-radius: 0.6em;
+  text-align: center;
+  font-size: 1rem;
+  color: #000000;
+  background: rgb(255, 51, 51);
+  background: -moz-linear-gradient(
+    90deg,
+    rgba(255, 51, 51, 1) 0%,
+    rgba(68, 204, 0, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    90deg,
+    rgba(255, 51, 51, 1) 0%,
+    rgba(68, 204, 0, 1) 100%
+  );
+  background: linear-gradient(
+    90deg,
+    rgba(255, 51, 51, 1) 0%,
+    rgba(68, 204, 0, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ff3333",endColorstr="#44cc00",GradientType=1);
 }
 
 body {
@@ -19,13 +71,22 @@ p {
   margin: 0;
 }
 
+.header {
+  display: block;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #000000;
+  margin: 1em;
+}
+
 .title {
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 3.7rem;
   color: #000000;
-  margin: 3rem 0 2.5rem 0;
+  margin: 5rem 0 2.5rem 0;
 }
 
 .title-button-container {
@@ -78,7 +139,7 @@ p {
   align-items: center;
   flex-direction: column;
   font-size: 1rem;
-  margin-top: 0.5rem;
+  margin-top: 4rem;
 }
 
 .designed-by {

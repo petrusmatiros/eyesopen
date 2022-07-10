@@ -56,8 +56,8 @@ io.on("connection", async (socket) => {
     socket.emit("playerID", playerID);
   });
 
-  socket.on("joinedLobby", () => {
-    console.log("joined");
+  socket.on("joinedLobby", (playerID) => {
+    console.log("player", playerID, " has joined");
   });
 
 });
