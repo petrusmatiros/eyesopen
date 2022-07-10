@@ -1,3 +1,6 @@
+// const socket = io("http://localhost:3000/");
+const socket = io("http://192.168.1.203:3000/");
+
 /**
  * [resetCookie resets the playerID cookie to null]
  */
@@ -23,6 +26,13 @@ function setLocation(URL, reset) {
   window.location = URL;
 }
 
+function getPlayerID() {
+  var cookies = document.cookie.split(";");
+  var toRemove = "eyesopenID=";
+  var wantedCookie = cookies[0].substring(toRemove.length);
+  return wantedCookie;
+}
+
 function closeCard() {
   document.getElementById("overlay").style.display = "none";
   hideUsername();
@@ -30,9 +40,20 @@ function closeCard() {
   hideJoin();
 }
 
+function checkIfSessionExists() {
+  if (getPlayerID() !== "null") {
+    return true;
+  }
+  return false;
+}
+
 function displayUsername() {
-  document.getElementById("overlay").style.display = "block";
-  document.getElementById("username").style.display = "flex";
+  if (!checkIfSessionExists()) {
+    document.getElementById("overlay").style.display = "block";
+    document.getElementById("username").style.display = "flex";
+  } else {
+    displayJoin();
+  }
 }
 function hideUsername() {
   document.getElementById("overlay").style.display = "none";
@@ -43,8 +64,12 @@ function hideUsername() {
 }
 
 function displayHost() {
-  document.getElementById("overlay").style.display = "block";
-  document.getElementById("host").style.display = "flex";
+  if (!checkIfSessionExists()) {
+    document.getElementById("overlay").style.display = "block";
+    document.getElementById("host").style.display = "flex";
+  } else {
+    setLocation("/lobby.html", false);
+  }
 }
 function hideHost() {
   document.getElementById("overlay").style.display = "none";
@@ -87,6 +112,7 @@ function checkRoomCode() {
     document.getElementById("join-help").innerText =
       "Code needs to be 5 characters long";
   } else {
+    socket.emit("checkRoomCode", inputVal);
     document.getElementById("join-help").style.display = "none";
     document.getElementById("code").style.border =
       "2px solid hsl(123, 100%, 45%)";
@@ -106,6 +132,7 @@ function checkUsername(isHost) {
       document.getElementById("host-help").innerText =
         "Username needs to be atleast 1 character(s) long";
     } else {
+      socket.emit("hostName", inputVal);
       document.getElementById("host-help").style.display = "none";
       document.getElementById("inputHost").style.border =
         "2px solid hsl(123, 100%, 45%)";
@@ -120,6 +147,7 @@ function checkUsername(isHost) {
       document.getElementById("username-help").innerText =
         "Username needs to be atleast 1 character(s) long";
     } else {
+      socket.emit("userName", inputVal);
       document.getElementById("username-help").style.display = "none";
       document.getElementById("inputUsername").style.border =
         "2px solid hsl(123, 100%, 45%)";

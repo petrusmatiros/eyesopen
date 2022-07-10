@@ -59,6 +59,17 @@ io.on("connection", async (socket) => {
   socket.on("joinedLobby", (playerID) => {
     console.log("player", playerID, "has joined");
   });
+
+  socket.on("checkRoomCode", (roomCode) => {
+    console.log("roomcode", roomCode);
+  });
+
+  socket.on("hostName", (hostName) => {
+    console.log("host name", hostName);
+  })
+  socket.on("userName", (userName) => {
+    console.log("user name", userName);
+  })
 });
 
 var time = setInterval(function () {

@@ -64,6 +64,7 @@ body {
   font-size: 1rem;
   font-family: "Inter", sans-serif;
   margin: 0;
+  min-width: 100%;
 }
 
 .dark {
@@ -94,7 +95,7 @@ p {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-top: 3rem;
+  margin-top: 1.5rem;
 }
 
 .title-dark {
@@ -103,7 +104,7 @@ p {
   align-items: center;
   font-size: 3.7rem;
   color: var(--light-fg);
-  margin: 1rem 0 2.5rem 0;
+  margin: 1rem 0 1rem 0;
 }
 .title-light {
   display: flex;
@@ -111,7 +112,7 @@ p {
   align-items: center;
   font-size: 3.7rem;
   color: var(--dark-fg);
-  margin: 1rem 0 2.5rem 0;
+  margin: 1rem 0 1rem 0;
 }
 
 .animation-container {
@@ -141,7 +142,7 @@ p {
   display: inline-block;
   justify-content: center;
   align-items: center;
-  font-size: 1.7rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: var(--menu-button-fg);
   background-color: var(--menu-button-bg);
@@ -185,6 +186,7 @@ p {
   font-weight: 600;
   color: var(--light-fg);
 }
+
 .author-light {
   font-weight: 600;
   color: var(--dark-fg);
@@ -196,7 +198,39 @@ p {
   align-items: center;
   flex-direction: column;
   font-size: 1rem;
-  margin-top: 3.5rem;
+  margin-top: 2rem;
+}
+
+@media screen and (max-width: 600px) {
+  .menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 3rem;
+  }
+  .title-button {
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--menu-button-fg);
+    background-color: var(--menu-button-bg);
+    margin: 0.5em;
+    padding: 0.6em 1em 0.6em 1em;
+    border: none;
+    border-radius: 0.6em;
+    text-decoration: none;
+  }
+  .links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 1rem;
+    margin-top: 6rem;
+  }
 }
 
 .designed-by {
