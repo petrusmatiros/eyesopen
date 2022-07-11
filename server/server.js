@@ -24,7 +24,6 @@ var __dirname = "/mnt/c/Users/petru/Documents/Code/eyesopen/client";
 
 // // random string generator
 var randomstring = require("randomstring");
-// var roomCode = randomstring.generate(5);
 // console.log("Random room code:", roomCode);
 // var pID = randomstring.generate(6);
 // console.log("Random player id (cookie):", pID);
@@ -38,8 +37,9 @@ app.get("/", (req, res) => {
   // res.send("HELLO")
 });
 
-const users = [];
-var sessionIDs = [];
+var { Room } = require("./room");
+var rooms = new Map()
+
 var timeDurations = {
   discussion: 45,
   voting: 25,
@@ -50,26 +50,62 @@ var counter = timeDurations.voting;
 // establish server connection with socket
 io.on("connection", async (socket) => {
   console.log("a user connected, with socket id:", socket.id);
-
+  
   socket.on("requestID", () => {
     var playerID = randomstring.generate(6);
     socket.emit("playerID", playerID);
   });
-
+  
   socket.on("joinedLobby", (playerID) => {
     console.log("player", playerID, "has joined");
+    socket.join(playerID);
   });
-
-  socket.on("checkRoomCode", (roomCode) => {
-    console.log("roomcode", roomCode);
-  });
-
-  socket.on("hostName", (hostName) => {
+  
+  socket.on("hostName", (hostName, playerID) => {
     console.log("host name", hostName);
   })
-  socket.on("userName", (userName) => {
+
+  socket.on("createRoom", (playerID) => {
+    // !! FIX SO THAT YOU ALWAYS RECONNECT TO YOUR CREATED GAME
+    // !! FIX ROOM UI
+    // ! FIX URL QUERY
+    // ! MIN 3 to START
+    // ! ROLE CARD, ADDING THEM TO THE GAME
+    // ! CHECK IF ALL ROLES ARE THE SAME TEAM
+    
+    var values = rooms.values();
+    while (values.next()) {
+      if (values.value.playerIDs.includes(playerID)) {
+        socket.emit("createRoom", false);
+        return;
+      }
+    }
+    console.log("TRYING")
+    var roomCode = randomstring.generate(5);
+    console.log(roomCode)
+    rooms.set(roomCode, new Room(playerID));
+    console.log("room", roomCode, "created")
+    console.log(socket.id, "joined", roomCode)
+    console.log(rooms)
+    socket.join(roomCode);
+  });
+  
+  socket.on("checkRoomCode", (roomCode, playerID) => {
+    console.log(playerID, "trying roomcode", roomCode);
+    if (rooms.has(roomCode)) {
+      console.log("room code", roomCode, "is valid");
+      socket.join(roomCode);
+      socket.emit("roomCodeResponse", true)
+    } else {
+      socket.emit("roomCodeResponse", false);
+    }
+  });
+
+
+  socket.on("userName", (userName, playerID) => {
     console.log("user name", userName);
   })
+
 });
 
 var time = setInterval(function () {
@@ -82,13 +118,6 @@ var time = setInterval(function () {
     counter--;
   }
 }, 1000);
-
-var createdRooms = {
-  "5HJlp": {
-    inProgress: true,
-    ended: false,
-  },
-};
 
 // var count = io.engine.clientsCount;
 // // may or may not be similar to the count of Socket instances in the main namespace, depending on your usage

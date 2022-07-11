@@ -68,6 +68,7 @@ function displayHost() {
     document.getElementById("overlay").style.display = "block";
     document.getElementById("host").style.display = "flex";
   } else {
+    socket.emit("createRoom", getPlayerID());
     setLocation("/lobby.html", false);
   }
 }
@@ -112,11 +113,22 @@ function checkRoomCode() {
     document.getElementById("join-help").innerText =
       "Code needs to be 5 characters long";
   } else {
-    socket.emit("checkRoomCode", inputVal);
+    socket.emit("checkRoomCode", inputVal, getPlayerID());
     document.getElementById("join-help").style.display = "none";
     document.getElementById("code").style.border =
       "2px solid hsl(123, 100%, 45%)";
-    setLocation("/lobby.html", true);
+    socket.on("roomCodeResponse", (isValid) => {
+      if (isValid) {
+        setLocation("/lobby.html", true);
+
+      } else {
+        document.getElementById("join-help").style.display = "flex";
+        document.getElementById("code").style.border =
+          "2px solid hsl(0, 100%, 45%)";
+        document.getElementById("join-help").innerText =
+          "Code is invalid. Room doesn't exist";
+      }
+    })
   }
   // check if room exists (has been created)
   // to the room that already exists
@@ -132,7 +144,8 @@ function checkUsername(isHost) {
       document.getElementById("host-help").innerText =
         "Username needs to be atleast 1 character(s) long";
     } else {
-      socket.emit("hostName", inputVal);
+      socket.emit("hostName", inputVal, getPlayerID());
+      socket.emit("createRoom", getPlayerID());
       document.getElementById("host-help").style.display = "none";
       document.getElementById("inputHost").style.border =
         "2px solid hsl(123, 100%, 45%)";
@@ -147,7 +160,7 @@ function checkUsername(isHost) {
       document.getElementById("username-help").innerText =
         "Username needs to be atleast 1 character(s) long";
     } else {
-      socket.emit("userName", inputVal);
+      socket.emit("userName", inputVal, getPlayerID());
       document.getElementById("username-help").style.display = "none";
       document.getElementById("inputUsername").style.border =
         "2px solid hsl(123, 100%, 45%)";
