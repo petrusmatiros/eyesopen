@@ -3,19 +3,13 @@
 ### Mafia/Werewolf/ToS inspired web based game
 
 ---
+
+
 # Table of contents
+
+  ### Game
 <!-- - [Eyes Open <img src="client/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">](#eyes-open-)
     - [Mafia/Werewolf/ToS inspired web based game](#mafiawerewolftos-inspired-web-based-game) -->
-<!-- - [Eyes Open <img src="client/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">](#eyes-open-)
-    - [Mafia/Werewolf/ToS inspired web based game](#mafiawerewolftos-inspired-web-based-game)
-- [Table of contents](#table-of-contents) -->
-  ### Game
-- [Eyes Open <img src="client/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">](#eyes-open-)
-    - [Mafia/Werewolf/ToS inspired web based game](#mafiawerewolftos-inspired-web-based-game)
-- [Table of contents](#table-of-contents)
-    - [Game](#game)
-    - [Project](#project)
-    - [Miscellaneous info](#miscellaneous-info)
   - [Link to website](#link-to-website)
   - [Game description & objective](#game-description--objective)
   - [Requirements](#requirements)
@@ -32,7 +26,6 @@
 - [Assets](#assets)
 - [Notes](#notes)
 
-
 ---
 
 ## Link to website
@@ -44,9 +37,6 @@ Enjoy ^-^
 ## Game description & objective
  A peaceful and beautiful town with its good inhabitants, is struck by evildoers and "anti-heroes", which are trying to either sabotage, kill or trick the town. There are different roles, each apart of three different teams (Good, Evil or Neutral). Each role has a specific ability and a given goal, to either win with their team, or win by themselves. 
  
- <br>
-
-
 
 ## Requirements
 - Minimum 3 players
@@ -61,7 +51,7 @@ Enjoy ^-^
 |    [Doctor](#doctor)    	|  [Surgeon](#surgeon)  	|  [Executioner](#executioner)  	|
 |     [Mayor](#mayor)    	|   [Witch](#witch)   	|     [Lawyer](#lawyer)    	|
 |    [Trapper](#trapper)   	|   [Framer](#framer)  	|               	| -->
-### Overview
+<!-- ### Overview -->
 ![Good roles](roleinfo/Good%20info.svg)
 
 
