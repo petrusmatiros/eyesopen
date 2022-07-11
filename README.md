@@ -1,5 +1,5 @@
-# Eyes Open
-![Eyes Open logo](client/icons/eyesopen128x128.png/)
+# Eyes Open <img src="client/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">
+
 ### Mafia/Werewolf/ToS inspired web based game
 
 ---
