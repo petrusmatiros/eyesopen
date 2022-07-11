@@ -252,7 +252,7 @@ p {
   color: #000000;
 }
 
-.mail-dark {
+.linkto-dark {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -263,7 +263,7 @@ p {
   color: var(--light-fg);
 }
 
-.mail-light {
+.linkto-light {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -274,10 +274,10 @@ p {
   color: var(--dark-fg);
 }
 
-.mail-dark:focus {
+.linkto-dark:focus {
   outline: none !important;
 }
-.mail-light:focus {
+.linkto-light:focus {
   outline: none !important;
 }
 
