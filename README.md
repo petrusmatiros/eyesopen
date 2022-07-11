@@ -65,6 +65,8 @@ Enjoy ^-^
 
 <img src="roleinfo/Good%20info.svg" alt="Good info" width="256"></img>
 
+<img src="https://github.com/petrusmatiros/eyesopen/blob/main/roleinfo/Good%20info.svg?raw=true" alt="Good info" width="256"></img>
+
 
 
 <br>
