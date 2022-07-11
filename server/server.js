@@ -38,7 +38,7 @@ app.get("/", (req, res) => {
 });
 
 var { Room } = require("./room");
-var rooms = new Map()
+var rooms = new Map();
 
 var timeDurations = {
   discussion: 45,
@@ -50,20 +50,20 @@ var counter = timeDurations.voting;
 // establish server connection with socket
 io.on("connection", async (socket) => {
   console.log("a user connected, with socket id:", socket.id);
-  
+
   socket.on("requestID", () => {
     var playerID = randomstring.generate(6);
     socket.emit("playerID", playerID);
   });
-  
+
   socket.on("joinedLobby", (playerID) => {
     console.log("player", playerID, "has joined");
     socket.join(playerID);
   });
-  
+
   socket.on("hostName", (hostName, playerID) => {
     console.log("host name", hostName);
-  })
+  });
 
   socket.on("createRoom", (playerID) => {
     // !! CREATE USER WHEN Pressing JOIN ROOM
@@ -74,41 +74,55 @@ io.on("connection", async (socket) => {
     // ! ROLE CARD, ADDING THEM TO THE GAME
     // ! CHECK IF ALL ROLES ARE THE SAME TEAM
 
-    // var roomValues = rooms.entries;
-    // console.log(roomValues.length)
-    // while (roomValues.length) {
-    //   console.log(roomValues.value)
-    //   if (roomValues.value.getHost().includes(playerID)) {
-    //     socket.emit("createRoom", false);
-    //     return;
-    //   }
-    // }
-    console.log("TRYING")
-    var roomCode = randomstring.generate(5);
-    console.log(roomCode)
-    rooms.set(roomCode, new Room(playerID));
-    console.log("room", roomCode, "created")
-    console.log(socket.id, "joined", roomCode)
-    console.log(rooms)
-    socket.join(roomCode);
+    console.log("test", rooms.entries())
+
+    var temp = Array.from(rooms.entries());
+    console.log(temp.length)
+    var count = 0;
+    if (temp.length > 0) {
+      while (count > temp.length) {
+        console.log("host", rooms.entries().value.getHost())
+        if (rooms.entries().value.getHost() !== playerID) {
+          var roomCode = randomstring.generate(5);
+          console.log(roomCode);
+          rooms.set(roomCode, new Room(playerID));
+          rooms.get(roomCode).addUser(playerID);
+          console.log("room", roomCode, "created");
+          console.log(socket.id, "joined", roomCode);
+          console.log(rooms);
+          socket.join(playerID);
+          socket.join(roomCode);
+        }
+        count++;
+      }
+    } else {
+      var roomCode = randomstring.generate(5);
+      console.log(roomCode);
+      rooms.set(roomCode, new Room(playerID));
+      rooms.get(roomCode).addUser(playerID);
+      console.log("room", roomCode, "created");
+      console.log(socket.id, "joined", roomCode);
+      console.log(rooms);
+      socket.join(playerID);
+      socket.join(roomCode);
+    }
+    console.log("room in:", socket.rooms);
   });
-  
+
   socket.on("checkRoomCode", (roomCode, playerID) => {
     console.log(playerID, "trying roomcode", roomCode);
     if (rooms.has(roomCode)) {
       console.log("room code", roomCode, "is valid");
       socket.join(roomCode);
-      socket.emit("roomCodeResponse", true)
+      socket.emit("roomCodeResponse", true);
     } else {
       socket.emit("roomCodeResponse", false);
     }
   });
 
-
   socket.on("userName", (userName, playerID) => {
     console.log("user name", userName);
-  })
-
+  });
 });
 
 var time = setInterval(function () {

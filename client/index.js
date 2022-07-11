@@ -110,6 +110,7 @@ function hideJoin() {
 
 function checkRoomCode() {
   var inputVal = document.getElementById("code").value;
+  socket.emit("checkRoomCode", inputVal, getPlayerID());
   if (inputVal.length !== 5) {
     document.getElementById("join-help").style.display = "flex";
     document.getElementById("code").style.border =
@@ -117,7 +118,6 @@ function checkRoomCode() {
     document.getElementById("join-help").innerText =
       "Code needs to be 5 characters long";
   } else {
-    socket.emit("checkRoomCode", inputVal, getPlayerID());
     document.getElementById("join-help").style.display = "none";
     document.getElementById("code").style.border =
       "2px solid hsl(123, 100%, 45%)";
