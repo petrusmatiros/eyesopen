@@ -1,5 +1,6 @@
 // const socket = io("http://localhost:3000/");
-const socket = io("http://192.168.1.203:3000/");
+// const socket = io("http://192.168.1.203:3000/");
+const socket = io("http://192.168.1.66:3000/");
 
 const oneHour = 60 * 60;
 // const five = 5;

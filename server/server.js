@@ -66,6 +66,7 @@ io.on("connection", async (socket) => {
   })
 
   socket.on("createRoom", (playerID) => {
+    // !! CREATE USER WHEN Pressing JOIN ROOM
     // !! FIX SO THAT YOU ALWAYS RECONNECT TO YOUR CREATED GAME
     // !! FIX ROOM UI
     // ! FIX URL QUERY

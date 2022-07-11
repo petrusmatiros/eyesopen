@@ -1,5 +1,5 @@
 # Eyes Open
-![](icons/eyesopen128x128.png/)
+![Eyes Open logo](client/icons/eyesopen128x128.png/)
 ### Mafia/Werewolf/ToS inspired web based game
 
 ---
@@ -59,15 +59,15 @@ Enjoy ^-^
 - Minimum 3 players
 
 ## Roles
-![](roleinfo/Good%20info.png)
+![Good roles](./roleinfo/Good%20info.png)
 
 <br>
 
-![](roleinfo/Evil%20info.png)
+![Evil roles](./roleinfo/Evil%20info.png)
 
 <br>
 
-![](roleinfo/Neutral%20info.png)
+![Neutral roles](./roleinfo/Neutral%20info.png)
 
 
 ---
