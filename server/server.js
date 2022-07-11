@@ -72,14 +72,16 @@ io.on("connection", async (socket) => {
     // ! MIN 3 to START
     // ! ROLE CARD, ADDING THEM TO THE GAME
     // ! CHECK IF ALL ROLES ARE THE SAME TEAM
-    
-    var values = rooms.values();
-    while (values.next()) {
-      if (values.value.playerIDs.includes(playerID)) {
-        socket.emit("createRoom", false);
-        return;
-      }
-    }
+
+    // var roomValues = rooms.entries;
+    // console.log(roomValues.length)
+    // while (roomValues.length) {
+    //   console.log(roomValues.value)
+    //   if (roomValues.value.getHost().includes(playerID)) {
+    //     socket.emit("createRoom", false);
+    //     return;
+    //   }
+    // }
     console.log("TRYING")
     var roomCode = randomstring.generate(5);
     console.log(roomCode)

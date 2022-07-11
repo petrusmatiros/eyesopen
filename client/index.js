@@ -51,6 +51,7 @@ function displayUsername() {
   if (!checkIfSessionExists()) {
     document.getElementById("overlay").style.display = "block";
     document.getElementById("username").style.display = "flex";
+    document.getElementById("inputUsername").focus();
   } else {
     displayJoin();
   }
@@ -67,6 +68,7 @@ function displayHost() {
   if (!checkIfSessionExists()) {
     document.getElementById("overlay").style.display = "block";
     document.getElementById("host").style.display = "flex";
+    document.getElementById("inputHost").focus();
   } else {
     socket.emit("createRoom", getPlayerID());
     setLocation("/lobby.html", false);
@@ -94,6 +96,7 @@ function UserInputDoneHost() {
 function displayJoin() {
   document.getElementById("overlay").style.display = "block";
   document.getElementById("join-room").style.display = "flex";
+  document.getElementById("code").focus();
 }
 
 function hideJoin() {
