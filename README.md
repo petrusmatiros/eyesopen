@@ -63,7 +63,7 @@ Enjoy ^-^
 
 ![Good roles](https://github.com/petrusmatiros/eyesopen/blob/main/roleinfo/Good%20info.svg?raw=true)
 
-![Good roles](roleinfo/Good%20info.svg)
+<img src="roleinfo/Good%20info.svg" alt="Good info" width="256"></img>
 
 
 
