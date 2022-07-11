@@ -61,17 +61,16 @@ Enjoy ^-^
 
 ## Roles
 
-![Good roles](./roleinfo/Good%20info.svg)
+![Good roles](https://github.com/petrusmatiros/eyesopen/blob/main/roleinfo/Good%20info.svg?raw=true)
 
-<img src="roleinfo/Good%20info.svg"></img>
-
-<br>
-
-![Evil roles](./roleinfo/Evil%20info.svg)
 
 <br>
 
-![Neutral roles](./roleinfo/Neutral%20info.svg)
+![Evil roles](https://github.com/petrusmatiros/eyesopen/blob/main/roleinfo/Evil%20info.svg?raw=true)
+
+<br>
+
+![Neutral roles](https://github.com/petrusmatiros/eyesopen/blob/main/roleinfo/Neutral%20info.svg?raw=true)
 
 
 ---
