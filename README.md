@@ -63,6 +63,8 @@ Enjoy ^-^
 
 ![Good roles](./roleinfo/Good%20info.svg)
 
+<img src="roleinfo/Good%20info.svg"></img>
+
 <br>
 
 ![Evil roles](./roleinfo/Evil%20info.svg)
