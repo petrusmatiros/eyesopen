@@ -60,17 +60,16 @@ Enjoy ^-^
 - Minimum 3 players
 
 ## Roles
-test
 
-![Good roles](./roleinfo/Good%20info.png)
-
-<br>
-
-![Evil roles](./roleinfo/Evil%20info.png)
+![Good roles](./roleinfo/Good%20info.svg)
 
 <br>
 
-![Neutral roles](./roleinfo/Neutral%20info.png)
+![Evil roles](./roleinfo/Evil%20info.svg)
+
+<br>
+
+![Neutral roles](./roleinfo/Neutral%20info.svg)
 
 
 ---
