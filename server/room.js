@@ -1,48 +1,47 @@
 class Room {
-    constructor(host) {
-      this.users = [];
-      this.inProgress = false;
-      this.isDone = false;
-      this.host = host;
-    }
-  
-    getProgress() {
-        return this.inProgress;
-    }
+  constructor(host) {
+    this.users = [];
+    this.inProgress = false;
+    this.isDone = false;
+    this.host = host;
+  }
 
-    setProgress(progress) {
-        this.inProgress = progress;
-    }
+  getProgress() {
+    return this.inProgress;
+  }
 
-    getDone() {
-        return this.isDone;
-    }
+  setProgress(progress) {
+    this.inProgress = progress;
+  }
 
-    setDone(done) {
-        this.isDone = done;
-    }
+  getDone() {
+    return this.isDone;
+  }
 
-    addUser(user) {
-        this.users.push(user);
-    }
+  setDone(done) {
+    this.isDone = done;
+  }
 
-    removeUser(user) {
-        this.users.splice(this.users.indexOf(user), 1);
-    }
+  addUser(user) {
+    this.users.push(user);
+  }
 
-    userCount() {
-        this.users.length;
-    }
+  removeUser(user) {
+    this.users.splice(this.users.indexOf(user), 1);
+  }
 
-    getHost() {
-        return this.host;
-    }
+  userCount() {
+    this.users.length;
+  }
 
-    setHost(host) {
-        this.host = host;
-    }
+  getHost() {
+    return this.host;
+  }
 
+  setHost(host) {
+    this.host = host;
+  }
 }
 module.exports = {
-    Room,
+  Room,
 };

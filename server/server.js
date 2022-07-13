@@ -39,6 +39,7 @@ app.get("/", (req, res) => {
 
 var { Room } = require("./room");
 var rooms = new Map();
+var connectedUsers = new Map();
 
 var timeDurations = {
   discussion: 45,
@@ -51,18 +52,19 @@ var counter = timeDurations.voting;
 io.on("connection", async (socket) => {
   console.log("a user connected, with socket id:", socket.id);
 
-  socket.on("requestID", () => {
+  socket.on("requestID", (socketID) => {
+    console.log(socketID, "requesting player ID")
     var playerID = randomstring.generate(6);
     socket.emit("playerID", playerID);
   });
 
   socket.on("joinedLobby", (playerID) => {
+    connectedUsers.set(playerID, socket.id);
     console.log("player", playerID, "has joined");
-    socket.join(playerID);
   });
 
   socket.on("hostName", (hostName, playerID) => {
-    console.log("host name", hostName);
+    console.log("host name", hostName, "with", playerID);
   });
 
   socket.on("createRoom", (playerID) => {
@@ -74,10 +76,7 @@ io.on("connection", async (socket) => {
     // ! ROLE CARD, ADDING THEM TO THE GAME
     // ! CHECK IF ALL ROLES ARE THE SAME TEAM
 
-    console.log("test", rooms.entries())
-
     var temp = Array.from(rooms.entries());
-    console.log(temp.length)
     var count = 0;
     if (temp.length > 0) {
       while (count > temp.length) {
@@ -85,11 +84,15 @@ io.on("connection", async (socket) => {
         if (rooms.entries().value.getHost() !== playerID) {
           var roomCode = randomstring.generate(5);
           console.log(roomCode);
+          // Setting up room
           rooms.set(roomCode, new Room(playerID));
           rooms.get(roomCode).addUser(playerID);
+
           console.log("room", roomCode, "created");
           console.log(socket.id, "joined", roomCode);
+          // Log rooms that socket is in
           console.log(rooms);
+          // Socket joining playerID and room
           socket.join(playerID);
           socket.join(roomCode);
         }
@@ -127,7 +130,8 @@ io.on("connection", async (socket) => {
 
 var time = setInterval(function () {
   io.emit("counter", counter);
-  console.log("counter from server:", counter);
+  // ! DEBUG TIME
+  // console.log("counter from server:", counter);
   if (counter <= 0) {
     clearInterval(time);
     // next phase

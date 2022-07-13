@@ -1,27 +1,27 @@
-// const socket = io("http://localhost:3000/");
+const socket = io("http://localhost:3000/");
 // const socket = io("http://192.168.1.203:3000/");
-const socket = io("http://192.168.1.66:3000/");
+// const socket = io("http://192.168.1.66:3000/");
 
-const oneHour = 60 * 60;
+// const oneHour = 60 * 60;
 // const five = 5;
-
+// import Player from "./player.js";
+// import User from "./user.js";
 socket.on("connect", () => {
-  console.log("You connect with id", socket.id);
-  socket.emit("requestID", true);
-  socket.on("playerID", (playerID) => {
-    console.log("playerID from server:", playerID);
-    if (getPlayerID() == "null") {
-      document.cookie = `eyesopenID=${playerID}; max-age=${oneHour}; SameSite=Lax`;
-      socket.emit("joinedLobby", playerID);
-    }
-  });
+  // console.log("You connect with id", socket.id);
+  // socket.emit("requestID", socket.id);
+  // socket.on("playerID", (playerID) => {
+  //   console.log("playerID from server:", playerID);
+  //   if (getPlayerID() == "null") {
+  //     document.cookie = `eyesopenID=${playerID}; max-age=${oneHour}; SameSite=Lax`;
+  //     socket.emit("joinedLobby", playerID);
+  //   }
+  // });
 });
 
 function getPlayerID() {
-  var cookies = document.cookie.split(";");
-  var toRemove = "eyesopenID=";
-  var wantedCookie = cookies[0].substring(toRemove.length);
-  return wantedCookie;
+  var cookie = document.cookie.valueOf("eyesopenID");
+  var wantedCookie = cookie.split("=");
+  return wantedCookie[1];
 }
 
 socket.on("counter", function (count) {
@@ -47,16 +47,26 @@ const roleTypes = {
   Lawyer: "lawyer",
 };
 
+
+fetch("./roles.json")
+  .then((response) => response.json())
+  .then((data) => {
+     test = data;
+});
+
+console.log(test)
+
+
 fetch("./roles.json")
   .then((response) => {
     return response.json();
   })
   .then((data) => {
+    // console.log(data);
     // Work with JSON data here
     // getJson(data)
     jsonData = data;
     var test = new Role(roleTypes.Doctor);
-
     console.log(test);
     var theVillager = new Player("petos", new Role(roleTypes.Villager));
     var theInvestigator = new Player(
@@ -85,6 +95,45 @@ fetch("./roles.json")
   .catch((err) => {
     // Do something for an error here
   });
+
+function User(playerID, name, player) {
+  this.playerID = playerID;
+  this.name = name;
+  this.player = player;
+  this.inGame = false;
+  this.currentRoom = null;
+}
+
+User.getPlayerID = function () {
+  return this.playerID;
+};
+User.getName = function () {
+  return this.name;
+};
+User.getPlayer = function () {
+  return this.player;
+};
+User.getInGame = function () {
+  return this.inGame;
+};
+User.getCurrentRoom = function () {
+  return this.currentRoom;
+};
+User.setPlayerID = function (playerID) {
+  this.playerID = playerID;
+};
+User.setName = function (name) {
+  this.name = name;
+};
+User.setPlayer = function (player) {
+  this.player = player;
+};
+User.setInGame = function (inGame) {
+  this.inGame = inGame;
+};
+User.setCurrentRoom = function (currentRoom) {
+  this.currentRoom = currentRoom;
+};
 
 function Role(type) {
   this.type = type;
@@ -307,6 +356,9 @@ Player.kill = function (player, target) {
     }
   }
 };
+
+
+// Game related
 
 function disguiseChecker() {
   console.log("it is working");

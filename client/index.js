@@ -1,16 +1,18 @@
-// const socket = io("http://localhost:3000/");
+const socket = io("http://localhost:3000/");
 // const socket = io("http://192.168.1.203:3000/");
-const socket = io("http://192.168.1.66:3000/");
+// const socket = io("http://192.168.1.66:3000/");
 
 /**
  * [resetCookie resets the playerID cookie to null]
  */
 function resetCookie() {
-  if (document.cookie.length < 1) {
+  if(!document.cookie.valueOf("eyesopenID")) {
+    console.log("cookie was set to null")
     document.cookie = "eyesopenID=null";
+  } else {
+    console.log("cookie is already null")
   }
 }
-
 resetCookie();
 
 /**
@@ -24,14 +26,27 @@ function setLocation(URL, reset) {
   if (reset) {
     resetCookie();
   }
-  window.location = URL;
+  // window.location = URL;
+}
+
+const oneHour = 60 * 60;
+
+function requestID() {
+  console.log("You connect with id", socket.id);
+  socket.emit("requestID", socket.id);
+  socket.on("playerID", (playerID) => {
+    console.log("playerID from server:", playerID);
+    if (getPlayerID() == "null") {
+      document.cookie = `eyesopenID=${playerID}; max-age=${oneHour}; SameSite=Lax`;
+      socket.emit("joinedLobby", getPlayerID());
+    }
+  });
 }
 
 function getPlayerID() {
-  var cookies = document.cookie.split(";");
-  var toRemove = "eyesopenID=";
-  var wantedCookie = cookies[0].substring(toRemove.length);
-  return wantedCookie;
+  var cookie = document.cookie.valueOf("eyesopenID");
+  var wantedCookie = cookie.split("=");
+  return wantedCookie[1]
 }
 
 function closeCard() {
@@ -91,7 +106,7 @@ function UserInputDone() {
 function UserInputDoneHost() {
   hideHost();
   // to a new room
-  setLocation("/lobby.html", true);
+  setLocation("/lobby.html", false);
 }
 
 function displayJoin() {
@@ -109,6 +124,7 @@ function hideJoin() {
 }
 
 function checkRoomCode() {
+  requestID();
   var inputVal = document.getElementById("code").value;
   socket.emit("checkRoomCode", inputVal, getPlayerID());
   if (inputVal.length !== 5) {
@@ -123,7 +139,7 @@ function checkRoomCode() {
       "2px solid hsl(123, 100%, 45%)";
     socket.on("roomCodeResponse", (isValid) => {
       if (isValid) {
-        setLocation("/lobby.html", true);
+        setLocation("/lobby.html", false);
 
       } else {
         document.getElementById("join-help").style.display = "flex";
@@ -148,8 +164,12 @@ function checkUsername(isHost) {
       document.getElementById("host-help").innerText =
         "Username needs to be atleast 1 character(s) long";
     } else {
-      socket.emit("hostName", inputVal, getPlayerID());
-      socket.emit("createRoom", getPlayerID());
+      requestID();
+      console.log("playerID is here", getPlayerID());
+      setTimeout(() => {
+        socket.emit("hostName", inputVal, getPlayerID());
+        socket.emit("createRoom", getPlayerID());
+      }, 500);
       document.getElementById("host-help").style.display = "none";
       document.getElementById("inputHost").style.border =
         "2px solid hsl(123, 100%, 45%)";
