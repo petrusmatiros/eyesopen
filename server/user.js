@@ -1,6 +1,6 @@
 class User {
   constructor(
-    playerID,
+    playerID=undefined,
     name = "",
     player = null,
     ready = false,

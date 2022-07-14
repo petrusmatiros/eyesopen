@@ -1,18 +1,23 @@
-const socket = io(`http://localhost:3000/`);
+const socket = io("http://localhost:3000");
 // const socket = io("http://192.168.1.203:3000/");
 
+/**
+ * [resetCookie resets the playerID cookie to null]
+ */
+ function resetCookie(override=false) {
+  if (override) {
+    console.log("cookie was reset to null");
+    document.cookie = "eyesopenID=null";
+  }
+}
 
-// const oneHour = 60 * 60;
-// const five = 5;
-// import Player from "./player.js";
-// import User from "./user.js";
 socket.on("connect", () => {
+  socket.on("clearCookie", () => {
+    var override = true;
+    resetCookie(override)
+  })
   if (getPlayerID() !== "null") {
-    socket.emit("setOwnRoom", getPlayerID());
-    socket.emit("setCreatedRoom", getPlayerID());
-    socket.on("joiningRoom", (roomCode) => {
-      socket.emit("joinedRoom", getPlayerID(), roomCode);
-    } )
+    socket.emit("setRoom", getPlayerID());
   }
   socket.emit("joinedLobby", getPlayerID());
   socket.on("viewRoom", (roomCode) => {

@@ -1,33 +1,19 @@
 // server set up
-
 const express = require("express");
 const app = express();
 const port = 3000;
 const server = require("http").createServer(app);
-// const server = app.listen(port);
 const io = require("socket.io")(server, {
 });
 
 server.listen(port, () => {
   console.log("Server listening at port %d", port);
 });
-// const oneHour = 60 * 60 * 1000;
-// app.use(
-//   session({
-//     secret: "k4JxZ9GB6OKzSOpcM1OKhEpguEYr8QUb",
-//     saveUninitialized: false,
-//     cookie: {maxAge: oneHour, httpOnly: true, sameSite: "lax" },
-//     resave: false,
-//   })
-// );
 
 var __dirname = "/mnt/c/Users/petru/Documents/Code/eyesopen/client/";
 
 // // random string generator
 var randomstring = require("randomstring");
-// console.log("Random room code:", roomCode);
-// var pID = randomstring.generate(6);
-// console.log("Random player id (cookie):", pID);
 
 app.use(express.static("client"));
 
@@ -52,18 +38,20 @@ var timeDurations = {
 };
 var counter = timeDurations.voting;
 
+var clearCookie = false;
+
 // establish server connection with socket
 io.on("connection", async (socket) => {
   console.log("a user connected, with socket id:", socket.id);
-
+  if (clearCookie == false) {
+    socket.emit("clearCookie");
+    clearCookie = true;
+  }
   // reassign sockets to their playerID rooms (if they have a playerID)
-  socket.on("setOwnRoom", (playerID) => {
+  socket.on("setRoom", (playerID) => {
     console.log(`player ${playerID} is joining their own room`);
     socket.join(playerID);
-    console.log(socket.rooms);
-  });
 
-  socket.on("setCreatedRoom", (playerID) => {
     for (var [key, value] of rooms) {
       if (value.getHost() == playerID) {
         console.log(`player ${playerID} is joining their created room`);
@@ -71,21 +59,17 @@ io.on("connection", async (socket) => {
       }
     }
     console.log(socket.rooms);
-  })
+  });
 
-  socket.on("joinedRoom", (playerID, roomCode) => {
-    console.log(`player ${playerID} is joining ${roomCode}`);
-    socket.join(roomCode)
-    console.log(socket.rooms)
-    // for (var [key, value] of rooms) {
-    //   if (value.getHost() !== playerID) {
-    //     console.log(`player ${playerID} is joining ${roomCode}`);
-    //     socket.join(key)
-    //   }
-
-    // }
-
-  })
+  // socket.on("setCreatedRoom", (playerID) => {
+  //   for (var [key, value] of rooms) {
+  //     if (value.getHost() == playerID) {
+  //       console.log(`player ${playerID} is joining their created room`);
+  //       socket.join(key)
+  //     }
+  //   }
+  //   console.log(socket.rooms);
+  // })
 
   // generate playerID for sockets that request one
   socket.on("requestID", (socketID) => {
@@ -99,20 +83,25 @@ io.on("connection", async (socket) => {
     console.log("player", playerID, "has created an ID");
   });
 
-  socket.on("joinedLobby", (playerID) => {
-    for (var [key, value] of rooms) {
-      if (value.getHost() == playerID) {
-        socket.emit("viewRoom", key)
-      }
-    }
-  })
-
   // log if a host has just input their name and is about to generate a room
   socket.on("createUser", (name, playerID) => {
     console.log("name:", name, ", playerID:", playerID);
     connectedUsers.set(playerID, new User(playerID, name));
     console.log("Users:", connectedUsers);
   });
+
+  socket.on("joinedLobby", (playerID) => {
+    // !! HANDLE DISCONNECTION
+    if (connectedUsers.get(playerID) !== undefined) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var room = connectedUsers.get(playerID).getCurrentRoom()
+        socket.join(connectedUsers.get(playerID).getCurrentRoom())
+        socket.emit("viewRoom", room)
+        console.log(socket.rooms)
+      }
+    }
+  })
+
 
   function checkAlreadyHost(rooms, playerID) {
     for (var [key, value] of rooms) {
@@ -123,6 +112,17 @@ io.on("connection", async (socket) => {
     }
     console.log(`${playerID} is not a host yet`);
     return false;
+  }
+
+  function getHostRoom(rooms, playerID) {
+    for (var [key, value] of rooms) {
+      console.log("room:", key, "host", value.getHost());
+      if (value.getHost() == playerID) {
+        return key;
+      }
+    }
+    console.log(`${playerID} did not find the host room`);
+    return null;
   }
   // handle room creation
   socket.on("createRoom", (playerID) => {
@@ -136,6 +136,7 @@ io.on("connection", async (socket) => {
     var temp = Array.from(rooms.entries());
     var count = 0;
     if (temp.length > 0) {
+      
       if (checkAlreadyHost(rooms, playerID) == false) {
         var roomCode = randomstring.generate({
           length: 5,
@@ -143,6 +144,7 @@ io.on("connection", async (socket) => {
           capitalization: "uppercase",
         });
         // Setting up room
+        connectedUsers.get(playerID).setCurrentRoom(roomCode);
         rooms.set(roomCode, new Room(playerID));
         rooms.get(roomCode).addUser(connectedUsers.get(playerID));
 
@@ -154,6 +156,11 @@ io.on("connection", async (socket) => {
         // // Socket joining playerID and room
         // socket.join(playerID);
         // socket.join(roomCode);
+      } else {
+        var hostRoom = getHostRoom(rooms, playerID);
+        if (hostRoom !== null) {
+          connectedUsers.get(playerID).setCurrentRoom(hostRoom);
+        }
       }
     } else {
       var roomCode = randomstring.generate({
@@ -162,6 +169,7 @@ io.on("connection", async (socket) => {
         capitalization: "uppercase",
       });
       // Setting up room
+      connectedUsers.get(playerID).setCurrentRoom(roomCode);
       rooms.set(roomCode, new Room(playerID));
       rooms.get(roomCode).addUser(connectedUsers.get(playerID));
 
@@ -184,7 +192,8 @@ io.on("connection", async (socket) => {
       console.log("room code", roomCode, "is valid");
       console.log(socket.rooms);
       socket.emit("roomCodeResponse", true);
-      socket.emit("joiningRoom", roomCode);
+      connectedUsers.get(playerID).setCurrentRoom(roomCode);
+      rooms.get(roomCode).addUser(connectedUsers.get(playerID));
     } else {
       socket.emit("roomCodeResponse", false);
     }

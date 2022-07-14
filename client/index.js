@@ -1,16 +1,26 @@
-const socket = io(`http://localhost:3000/`);
+const socket = io("http://localhost:3000");
 // const socket = io("http://192.168.1.203:3000/");
 
+
 socket.on("connect", () => {
+  socket.on("clearCookie", () => {
+    var override = true;
+    resetCookie(override)
+  })
   if (getPlayerID() !== "null") {
     socket.emit("setOwnRoom", getPlayerID());
   }
 });
 
+
 /**
  * [resetCookie resets the playerID cookie to null]
  */
-function resetCookie() {
+function resetCookie(override=false) {
+  if (override) {
+    console.log("cookie was reset to null");
+    document.cookie = "eyesopenID=null";
+  }
   if (!document.cookie.valueOf("eyesopenID")) {
     console.log("cookie was set to null");
     document.cookie = "eyesopenID=null";
@@ -33,7 +43,7 @@ function setLocation(URL, reset) {
   }
   setTimeout(() => {
     window.location = URL;
-  }, 500)
+  }, 500);
 }
 
 const oneHour = 60 * 60;
@@ -94,7 +104,7 @@ function displayHost() {
     document.getElementById("inputHost").focus();
   } else {
     socket.emit("createRoom", getPlayerID());
-    setLocation('/lobby.html', false)
+    setLocation("/lobby.html", false);
   }
 }
 function hideHost() {
@@ -113,7 +123,7 @@ function UserInputDone() {
 function UserInputDoneHost() {
   hideHost();
   // to a new room
-  setLocation('/lobby.html', false);
+  setLocation("/lobby.html", false);
 }
 
 function displayJoin() {
@@ -130,29 +140,39 @@ function hideJoin() {
   document.getElementById("code").style.border = "2px solid #b1b1b1";
 }
 
+function roomCodeError() {
+  document.getElementById("join-help").style.display = "flex";
+  document.getElementById("code").style.border = "2px solid hsl(0, 100%, 45%)";
+  document.getElementById("join-help").innerText =
+    "Code needs to be 5 characters long";
+}
+
+function roomCodeCorrect() {
+  document.getElementById("join-help").style.display = "none";
+  document.getElementById("code").style.border =
+    "2px solid hsl(123, 100%, 45%)";
+}
+
+function roomCodeInvalid() {
+  document.getElementById("join-help").style.display = "flex";
+  document.getElementById("code").style.border = "2px solid hsl(0, 100%, 45%)";
+  document.getElementById("join-help").innerText =
+    "Code is invalid. Room doesn't exist";
+}
+
 function checkRoomCode() {
   requestID();
   var inputVal = document.getElementById("code").value;
   socket.emit("checkRoomCode", inputVal, getPlayerID());
   if (inputVal.length !== 5) {
-    document.getElementById("join-help").style.display = "flex";
-    document.getElementById("code").style.border =
-      "2px solid hsl(0, 100%, 45%)";
-    document.getElementById("join-help").innerText =
-      "Code needs to be 5 characters long";
+    roomCodeError();
   } else {
-    document.getElementById("join-help").style.display = "none";
-    document.getElementById("code").style.border =
-      "2px solid hsl(123, 100%, 45%)";
+    roomCodeCorrect();
     socket.on("roomCodeResponse", (isValid) => {
       if (isValid) {
-        setLocation('/lobby.html', false);
+        setLocation("/lobby.html", false);
       } else {
-        document.getElementById("join-help").style.display = "flex";
-        document.getElementById("code").style.border =
-          "2px solid hsl(0, 100%, 45%)";
-        document.getElementById("join-help").innerText =
-          "Code is invalid. Room doesn't exist";
+        roomCodeInvalid();
       }
     });
   }
