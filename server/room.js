@@ -1,6 +1,7 @@
 class Room {
   constructor(host) {
     this.users = [];
+    this.roles = [];
     this.inProgress = false;
     this.isDone = false;
     this.host = host;
@@ -32,6 +33,18 @@ class Room {
 
   userCount() {
     this.users.length;
+  }
+
+  addRole(role) {
+    this.roles.push(role);
+  }
+
+  removeRole(role) {
+    this.roles.splice(this.roles.indexOf(role), 1);
+  }
+
+  roleCount() {
+    this.roles.length;
   }
 
   getHost() {

@@ -1,7 +1,4 @@
 :root {
-  /* nighmare bifore krissmas */
-  /* Website & Lobby */
-  /* Buttons */
   --menu-button-bg: hsl(280, 100%, 90%);
   --menu-button-hover-bg: hsl(280, 100%, 50%);
   --menu-button-active-bg: hsl(280, 100%, 30%);
@@ -9,55 +6,10 @@
   --menu-button-hover-fg: hsl(0, 0%, 100%);
   --menu-button-active-fg: hsl(0, 0%, 80%);
   --main-bg: hsl(0, 0%, 93%);
-  /* --------------- */
-  /* In game */
-  /* Night */
   --dark-bg: hsl(0, 0%, 13%);
   --light-fg: hsl(0, 0%, 100%);
-  /* Day */
   --light-bg: hsl(0, 0%, 100%);
   --dark-fg: hsl(0, 0%, 0%);
-  /* Player colors */
-  --evilteam: hsl(360, 100%, 50%);
-  --killed: hsl(0, 0%, 57%);
-  --ability-target-bg: hsl(360, 100%, 60%);
-  --vote-target-bg: hsl(100, 100%, 40%);
-  --double-target-bg: linear-gradient(
-    90deg,
-    rgba(255, 51, 51, 1) 0%,
-    rgba(68, 204, 0, 1) 100%
-  );
-  /* In game buttons */
-  --vote-button-bg--notused: hsl(100, 100%, 40%);
-  --vote-button-bg--used: hsl(100, 100%, 90%);
-  --ability-button-bg--notused: hsl(360, 100%, 60%);
-  --ability-button-bg--used: hsl(360, 98%, 95%);
-}
-
-.test {
-  display: inline;
-  padding: 0.3em;
-  border-radius: 0.6em;
-  text-align: center;
-  font-size: 1rem;
-  color: #000000;
-  background: rgb(255, 51, 51);
-  background: -moz-linear-gradient(
-    90deg,
-    rgba(255, 51, 51, 1) 0%,
-    rgba(68, 204, 0, 1) 100%
-  );
-  background: -webkit-linear-gradient(
-    90deg,
-    rgba(255, 51, 51, 1) 0%,
-    rgba(68, 204, 0, 1) 100%
-  );
-  background: linear-gradient(
-    90deg,
-    rgba(255, 51, 51, 1) 0%,
-    rgba(68, 204, 0, 1) 100%
-  );
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ff3333",endColorstr="#44cc00",GradientType=1);
 }
 
 body {
@@ -90,12 +42,19 @@ p {
   margin: 1em;
 }
 
+#with-eyes {
+  margin-top: 3rem;
+}
+
+#without-eyes {
+  margin-top: 1rem;
+}
+
 .menu {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-top: 1.5rem;
 }
 
 .title-dark {
@@ -202,12 +161,18 @@ p {
 }
 
 @media screen and (max-width: 600px) {
+  #with-eyes {
+    margin-top: 3rem;
+  }
+
+  #without-eyes {
+    margin-top: 1rem;
+  }
   .menu {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-top: 3rem;
   }
   .title-button {
     display: inline-block;
@@ -229,7 +194,7 @@ p {
     align-items: center;
     flex-direction: column;
     font-size: 1rem;
-    margin-top: 6rem;
+    margin-top: 6.5rem;
   }
 }
 
@@ -245,10 +210,12 @@ p {
 }
 
 #github-dark {
+  margin-top: 0.5rem;
   color: var(--light-bg);
 }
 
 #github-light {
+  margin-top: 0.5rem;
   color: #000000;
 }
 
@@ -346,7 +313,6 @@ p {
   flex-direction: column;
   top: 50%;
   left: 50%;
-  /* bring your own prefixes */
   transform: translate(-50%, -50%);
   align-items: center;
   background: var(--light-bg);

@@ -1,16 +1,21 @@
-const socket = io("http://localhost:3000/");
+const socket = io(`http://localhost:3000/`);
 // const socket = io("http://192.168.1.203:3000/");
-// const socket = io("http://192.168.1.66:3000/");
+
+socket.on("connect", () => {
+  if (getPlayerID() !== "null") {
+    socket.emit("setOwnRoom", getPlayerID());
+  }
+});
 
 /**
  * [resetCookie resets the playerID cookie to null]
  */
 function resetCookie() {
-  if(!document.cookie.valueOf("eyesopenID")) {
-    console.log("cookie was set to null")
+  if (!document.cookie.valueOf("eyesopenID")) {
+    console.log("cookie was set to null");
     document.cookie = "eyesopenID=null";
   } else {
-    console.log("cookie is already null")
+    console.log("cookie is already null");
   }
 }
 resetCookie();
@@ -26,7 +31,9 @@ function setLocation(URL, reset) {
   if (reset) {
     resetCookie();
   }
-  // window.location = URL;
+  setTimeout(() => {
+    window.location = URL;
+  }, 500)
 }
 
 const oneHour = 60 * 60;
@@ -38,7 +45,7 @@ function requestID() {
     console.log("playerID from server:", playerID);
     if (getPlayerID() == "null") {
       document.cookie = `eyesopenID=${playerID}; max-age=${oneHour}; SameSite=Lax`;
-      socket.emit("joinedLobby", getPlayerID());
+      socket.emit("completedID", getPlayerID());
     }
   });
 }
@@ -46,12 +53,12 @@ function requestID() {
 function getPlayerID() {
   var cookie = document.cookie.valueOf("eyesopenID");
   var wantedCookie = cookie.split("=");
-  return wantedCookie[1]
+  return wantedCookie[1];
 }
 
 function closeCard() {
   document.getElementById("overlay").style.display = "none";
-  hideUsername();
+  hideUser();
   hideHost();
   hideJoin();
 }
@@ -63,21 +70,21 @@ function checkIfSessionExists() {
   return false;
 }
 
-function displayUsername() {
+function displayUser() {
   if (!checkIfSessionExists()) {
     document.getElementById("overlay").style.display = "block";
-    document.getElementById("username").style.display = "flex";
-    document.getElementById("inputUsername").focus();
+    document.getElementById("user").style.display = "flex";
+    document.getElementById("inputUser").focus();
   } else {
     displayJoin();
   }
 }
-function hideUsername() {
+function hideUser() {
   document.getElementById("overlay").style.display = "none";
-  document.getElementById("username").style.display = "none";
-  document.getElementById("username-help").style.display = "none";
-  document.getElementById("inputUsername").value = "";
-  document.getElementById("inputUsername").style.border = "2px solid #b1b1b1";
+  document.getElementById("user").style.display = "none";
+  document.getElementById("user-help").style.display = "none";
+  document.getElementById("inputUser").value = "";
+  document.getElementById("inputUser").style.border = "2px solid #b1b1b1";
 }
 
 function displayHost() {
@@ -87,7 +94,7 @@ function displayHost() {
     document.getElementById("inputHost").focus();
   } else {
     socket.emit("createRoom", getPlayerID());
-    setLocation("/lobby.html", false);
+    setLocation('/lobby.html', false)
   }
 }
 function hideHost() {
@@ -99,14 +106,14 @@ function hideHost() {
 }
 
 function UserInputDone() {
-  hideUsername();
+  hideUser();
   displayJoin();
 }
 
 function UserInputDoneHost() {
   hideHost();
   // to a new room
-  setLocation("/lobby.html", false);
+  setLocation('/lobby.html', false);
 }
 
 function displayJoin() {
@@ -139,8 +146,7 @@ function checkRoomCode() {
       "2px solid hsl(123, 100%, 45%)";
     socket.on("roomCodeResponse", (isValid) => {
       if (isValid) {
-        setLocation("/lobby.html", false);
-
+        setLocation('/lobby.html', false);
       } else {
         document.getElementById("join-help").style.display = "flex";
         document.getElementById("code").style.border =
@@ -148,47 +154,63 @@ function checkRoomCode() {
         document.getElementById("join-help").innerText =
           "Code is invalid. Room doesn't exist";
       }
-    })
+    });
   }
   // check if room exists (has been created)
   // to the room that already exists
 }
 
-function checkUsername(isHost) {
+function hostNameShortError() {
+  document.getElementById("host-help").style.display = "flex";
+  document.getElementById("inputHost").style.border =
+    "2px solid hsl(0, 100%, 45%)";
+  document.getElementById("host-help").innerText =
+    "Username needs to be atleast 1 character(s) long";
+}
+function userNameShortError() {
+  document.getElementById("user-help").style.display = "flex";
+  document.getElementById("inputUser").style.border =
+    "2px solid hsl(0, 100%, 45%)";
+  document.getElementById("user-help").innerText =
+    "Username needs to be atleast 1 character(s) long";
+}
+
+function hostNameCorrect() {
+  document.getElementById("host-help").style.display = "none";
+  document.getElementById("inputHost").style.border =
+    "2px solid hsl(123, 100%, 45%)";
+}
+function userNameCorrect() {
+  document.getElementById("user-help").style.display = "none";
+  document.getElementById("inputUser").style.border =
+    "2px solid hsl(123, 100%, 45%)";
+}
+
+function checkName(isHost) {
   if (isHost) {
     var inputVal = document.getElementById("inputHost").value;
     if (inputVal.length < 1) {
-      document.getElementById("host-help").style.display = "flex";
-      document.getElementById("inputHost").style.border =
-        "2px solid hsl(0, 100%, 45%)";
-      document.getElementById("host-help").innerText =
-        "Username needs to be atleast 1 character(s) long";
+      hostNameShortError();
     } else {
       requestID();
-      console.log("playerID is here", getPlayerID());
       setTimeout(() => {
-        socket.emit("hostName", inputVal, getPlayerID());
+        socket.emit("createUser", inputVal, getPlayerID());
         socket.emit("createRoom", getPlayerID());
+        hostNameCorrect();
+        UserInputDoneHost();
       }, 500);
-      document.getElementById("host-help").style.display = "none";
-      document.getElementById("inputHost").style.border =
-        "2px solid hsl(123, 100%, 45%)";
-      UserInputDoneHost();
     }
   } else {
-    var inputVal = document.getElementById("inputUsername").value;
+    var inputVal = document.getElementById("inputUser").value;
     if (inputVal.length < 1) {
-      document.getElementById("username-help").style.display = "flex";
-      document.getElementById("inputUsername").style.border =
-        "2px solid hsl(0, 100%, 45%)";
-      document.getElementById("username-help").innerText =
-        "Username needs to be atleast 1 character(s) long";
+      userNameShortError();
     } else {
-      socket.emit("userName", inputVal, getPlayerID());
-      document.getElementById("username-help").style.display = "none";
-      document.getElementById("inputUsername").style.border =
-        "2px solid hsl(123, 100%, 45%)";
-      UserInputDone();
+      requestID();
+      setTimeout(() => {
+        socket.emit("createUser", inputVal, getPlayerID());
+        userNameCorrect();
+        UserInputDone();
+      }, 500);
     }
   }
   // check if room exists (has been created)

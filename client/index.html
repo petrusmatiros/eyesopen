@@ -16,11 +16,11 @@
     <!-- <link rel="icon" href="img/favicon.ico" type="image/x-icon"> -->
     <link
       rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="icons/favicon-16x16.png"
+      type="image/svg"
+      sizes="32x32"
+      href="icons/favicon.svg"
     />
-    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./index.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -41,18 +41,19 @@
         <a href="#" class="logo-link"
           ><img
             class="logo"
-            src="icons/eyesopen128x128.png"
+            src="icons/eyesopen.svg"
             alt="eyesopen logo"
         /></a>
       </div>
       <div class="navbar-container"></div>
     </div>
-    <div class="menu">
+
+    <div class="menu" id="with-eyes">
       <div class="animation-container">
         <lottie-player
           class="eyes"
           src="https://assets1.lottiefiles.com/packages/lf20_imkc73ps.json"
-          speed="1"
+          speed="0.85"
           loop
           autoplay
         ></lottie-player>
@@ -65,31 +66,31 @@
       <div class="title-button-container">
         <!-- <a class="title-button" href="lobby.html">Host new game</a> -->
         <a class="title-button" onclick="displayHost()">Host new game</a>
-        <div class="title-button" onclick="displayUsername()">Join game</div>
+        <div class="title-button" onclick="displayUser()">Join game</div>
         <!-- <a class="title-button" onclick="join()" href="">Join game</a> -->
       </div>
 
-      <div class="card-input" id="username">
+      <div class="card-input" id="user">
         <div class="close">
           <img
             class="close-button"
-            onclick="hideUsername()"
-            src="icons/close40x40.png"
+            onclick="hideUser()"
+            src="icons/close.svg"
             alt="close x icon"
           />
         </div>
         <div class="join-info">What's your name adventurer?</div>
-        <p class="join-help" id="username-help"></p>
+        <p class="join-help" id="user-help"></p>
         <input
           type="text"
-          id="inputUsername"
-          name="inputUsername"
+          id="inputUser"
+          name="inputUser"
           required
           minlength="1"
           maxlength="20"
           size="20"
         />
-        <div class="confirm-button" onclick="checkUsername(false)">Confirm</div>
+        <div class="confirm-button" onclick="checkName(false)">Confirm</div>
       </div>
 
       <div class="card-input" id="host">
@@ -97,7 +98,7 @@
           <img
             class="close-button"
             onclick="hideHost()"
-            src="icons/close40x40.png"
+            src="icons/close.svg"
             alt="close x icon"
           />
         </div>
@@ -112,7 +113,7 @@
           maxlength="20"
           size="20"
         />
-        <div class="confirm-button" onclick="checkUsername(true)">Confirm</div>
+        <div class="confirm-button" onclick="checkName(true)">Confirm</div>
       </div>
 
       <div class="card-input" id="join-room">
@@ -120,7 +121,7 @@
           <img
             class="close-button"
             onclick="hideJoin()"
-            src="icons/close40x40.png"
+            src="icons/close.svg"
             alt="close x icon"
           />
         </div>

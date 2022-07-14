@@ -1,10 +1,18 @@
-export default class User {
-  constructor(playerID, name, player) {
+class User {
+  constructor(
+    playerID,
+    name = "",
+    player = null,
+    ready = false,
+    inGame = false,
+    currentRoom = null
+  ) {
     this.playerID = playerID;
     this.name = name;
     this.player = player;
-    this.inGame = false;
-    this.currentRoom = null;
+    this.ready = ready;
+    this.inGame = inGame;
+    this.currentRoom = currentRoom;
   }
 
   getPlayerID() {
@@ -15,6 +23,9 @@ export default class User {
   }
   getPlayer() {
     return this.player;
+  }
+  getReady() {
+    return this.ready;
   }
   getInGame() {
     return this.inGame;
@@ -31,6 +42,9 @@ export default class User {
   setPlayer(player) {
     this.player = player;
   }
+  setReady(ready) {
+    this.ready = ready;
+  }
   setInGame(inGame) {
     this.inGame = inGame;
   }
@@ -38,3 +52,7 @@ export default class User {
     this.currentRoom = currentRoom;
   }
 }
+
+module.exports = {
+  User,
+};
