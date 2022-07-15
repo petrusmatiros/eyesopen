@@ -14,7 +14,6 @@
   - [Game description & objective](#game-description--objective)
   - [Requirements](#requirements)
   - [Role info](#role-info)
-    - [Overview](#overview)
   - [Dependencies](#dependencies)
   - [Install and build](#install-and-build)
   - [Assets](#assets)
@@ -101,11 +100,9 @@ Enjoy ^-^
     "express": "^4.18.1",
     "express-session": "^1.17.3",
     "randomstring": "^1.2.2",
-    "socket.io": "^4.5.1"
+    "socket.io": "^4.5.1",
+    "socket.io-client": "^4.5.1"
   },
-  "devDependencies": {
-    "nodemon": "^2.0.18"
-  }
 ```
 
 ## Install and build
