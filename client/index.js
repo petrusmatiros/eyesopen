@@ -3,6 +3,7 @@ const socket = io("http://localhost:3000");
 
 
 socket.on("connect", () => {
+  resetCookie();
   socket.on("clearCookie", () => {
     var override = true;
     resetCookie(override)
@@ -28,7 +29,7 @@ function resetCookie(override=false) {
     console.log("cookie is already null");
   }
 }
-resetCookie();
+
 
 /**
  * [setLocation sets the location of the window to the specified URL]

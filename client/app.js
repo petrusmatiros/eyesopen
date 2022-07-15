@@ -1,3 +1,4 @@
+
 const socket = io("http://localhost:3000");
 // const socket = io("http://192.168.1.203:3000/");
 
@@ -9,9 +10,16 @@ const socket = io("http://localhost:3000");
     console.log("cookie was reset to null");
     document.cookie = "eyesopenID=null";
   }
+  if (!document.cookie.valueOf("eyesopenID")) {
+    console.log("cookie was set to null");
+    document.cookie = "eyesopenID=null";
+  } else {
+    console.log("cookie is already null");
+  }
 }
 
 socket.on("connect", () => {
+  resetCookie();
   socket.on("clearCookie", () => {
     var override = true;
     resetCookie(override)
@@ -24,7 +32,6 @@ socket.on("connect", () => {
     document.getElementById("roomcode-copy").innerText = roomCode;
   });
 });
-
 
 function getPlayerID() {
   var cookie = document.cookie.valueOf("eyesopenID");

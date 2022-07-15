@@ -47,6 +47,8 @@ io.on("connection", async (socket) => {
     socket.emit("clearCookie");
     clearCookie = true;
   }
+
+  
   // reassign sockets to their playerID rooms (if they have a playerID)
   socket.on("setRoom", (playerID) => {
     console.log(`player ${playerID} is joining their own room`);
@@ -61,15 +63,18 @@ io.on("connection", async (socket) => {
     console.log(socket.rooms);
   });
 
-  // socket.on("setCreatedRoom", (playerID) => {
-  //   for (var [key, value] of rooms) {
-  //     if (value.getHost() == playerID) {
-  //       console.log(`player ${playerID} is joining their created room`);
-  //       socket.join(key)
-  //     }
-  //   }
-  //   console.log(socket.rooms);
-  // })
+  socket.on("disconnect", () => {
+    let playerID = socket.data.playerID
+    if (connectedUsers.get(playerID) !== undefined) {
+      var targetRoom = connectedUsers.get(playerID).getCurrentRoom();
+      // remove user from room
+      rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
+      // socket leaves room
+      socket.leave(targetRoom);
+      console.log("leaving room", targetRoom);
+      console.log(socket.rooms)
+    }
+  });
 
   // generate playerID for sockets that request one
   socket.on("requestID", (socketID) => {
@@ -98,8 +103,10 @@ io.on("connection", async (socket) => {
         socket.join(connectedUsers.get(playerID).getCurrentRoom())
         socket.emit("viewRoom", room)
         console.log(socket.rooms)
+        console.log(connectedUsers.get(playerID))
       }
     }
+    socket.data.playerID = playerID;
   })
 
 
