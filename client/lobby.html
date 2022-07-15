@@ -19,9 +19,16 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-    <script defer src="https://unpkg.com/socket.io-client@4.5.0/dist/socket.io.min.js"></script>
-    <script async defer src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
-
+    <script
+      defer
+      src="https://unpkg.com/socket.io-client@4.5.0/dist/socket.io.min.js"
+    ></script>
+    <script
+      async
+      defer
+      src="https://code.iconify.design/2/2.2.1/iconify.min.js"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script defer src="./app.js"></script>
   </head>
   <body class="light">
@@ -33,61 +40,139 @@
       </div>
       <div class="navbar-container"></div>
     </nav>
+    <div class="lobby">
 
-    <div class="menu" id="without-eyes">
-      <div class="lobby-code" id="copy-code">
-        <p id="roomcode-copy"></p>
-        <img
-          id="copy-button"
-          onclick="copyToClipboard()"
-          src="icons/copy.svg"
-          alt="copy icon"
-        />
-        <img
-          id="check-circle-icon"
-          src="icons/check-circle.svg"
-          alt="check circle icon"
-        />
-      </div>
-      <h1 class="title-light">Eyes Open</h1>
-      <!--Opens new tab-->
-      <div id="clock"></div>
-      <div class="header">Lobby</div>
-      <div class="test">blabla</div>
-      <div class="clock-container">
-        <p class="clock" id="time">0</p>
-      </div>
-      <!-- <a href="https://www.google.com/" target="_blank">test_link</a> -->
-
-      <div class="links">
-        <p class="designed-by">
-          illustration by
-          <span class="author-light">Beatriz Ines Avila Cutiño</span>
-        </p>
-        <p class="designed-by">
-          designed by
-          <span class="author-light"
-            ><a
-              class="linkto-light"
-              href="https://www.github.com/petrusmatiros"
-              target="_blank"
-              >Petrus Matiros</a
-            ></span
+      <div class="menu" id="without-eyes">
+        <div class="lobby-code" id="copy-code">
+          <p id="roomcode-copy"></p>
+          <img
+            id="copy-button"
+            onclick="copyToClipboard()"
+            src="icons/copy.svg"
+            alt="copy icon"
+          />
+          <img
+            id="check-circle-icon"
+            src="icons/check-circle.svg"
+            alt="check circle icon"
+          />
+        </div>
+        <div class="lobby-help">1 player(s) not ready</div>
+        <div class="lobby-card">
+          <div class="lobby-card-container">
+            <div class="lobby-card-title">Players</div>
+            <div class="lobby-req">
+              Requirement: 3 minimum
+              <img 
+              id="lobby-req-check"
+              class="lobby-req-icon" 
+              src="icons/check.svg" />
+              <img
+              id="lobby-req-cross"
+                class="lobby-req-icon"
+                src="icons/cross.svg"
+              />
+            </div>
+          </div>
+          <div id="players" class="lobby-player-container">
+            <div id="col1" class="lobby-player-col">
+              <div class="lobby-player-wrapper">
+                <div id="slot1" class="lobby-player"></div>
+                <div class="lobby-ready-status">not ready</div>
+              </div>
+              <div class="lobby-player-wrapper">
+                <div id="slot2" class="lobby-player"></div>
+                <div class="lobby-ready-status">not ready</div>
+              </div>
+              <div class="lobby-player-wrapper">
+                <div id="slot3" class="lobby-player"></div>
+                <div class="lobby-ready-status">not ready</div>
+              </div>
+              <div class="lobby-player-wrapper">
+                <div id="slot4" class="lobby-player"></div>
+                <div class="lobby-ready-status">not ready</div>
+              </div>
+              <div class="lobby-player-wrapper">
+                <div id="slot5" class="lobby-player"></div>
+                <div class="lobby-ready-status">not ready</div>
+              </div>
+              <div class="lobby-player-wrapper">
+                <div id="slot6" class="lobby-player"></div>
+                <div class="lobby-ready-status">not ready</div>
+              </div>
+              <div class="lobby-player-wrapper">
+                <div id="slot7" class="lobby-player"></div>
+                <div class="lobby-ready-status">not ready</div>
+              </div>
+          </div>
+            <div id="col2" class="lobby-player-col">
+              <div class="lobby-player-wrapper">
+                <div id="slot8" class="lobby-player"></div>
+                <div class="lobby-ready-status">not ready</div>
+              </div>
+              <div class="lobby-player-wrapper">
+                <div id="slot9" class="lobby-player"></div>
+                <div class="lobby-ready-status">not ready</div>
+              </div>
+              <div class="lobby-player-wrapper">
+                <div id="slot10" class="lobby-player"></div>
+                <div class="lobby-ready-status">not ready</div>
+              </div>
+              <div id="joined" class="lobby-player-wrapper">
+                <div id="132" class="lobby-player">test</div>
+                <div id="status-notready"class="lobby-ready-status">not ready</div>
+              </div>
+              <div class="lobby-player-wrapper">
+                <div id="slot12" class="lobby-player"></div>
+                <div class="lobby-ready-status">not ready</div>
+              </div>
+              <div class="lobby-player-wrapper">
+                <div id="slot13" class="lobby-player"></div>
+                <div class="lobby-ready-status">not ready</div>
+              </div>
+              <div class="lobby-player-wrapper">
+                <div id="slot14" class="lobby-player"></div>
+                <div class="lobby-ready-status">not ready</div>
+              </div>
+            </div>
+        </div>
+        </div>
+        <!--Opens new tab-->
+        <div class="clock-container">
+          <p class="clock" id="time">0</p>
+        </div>
+        <!-- <a href="https://www.google.com/" target="_blank">test_link</a> -->
+  
+        <div class="links">
+          <p class="designed-by">
+            illustration by
+            <span class="author-light">Beatriz Ines Avila Cutiño</span>
+          </p>
+          <p class="designed-by">
+            designed by
+            <span class="author-light"
+              ><a
+                class="linkto-light"
+                href="https://www.github.com/petrusmatiros"
+                target="_blank"
+                >Petrus Matiros</a
+              ></span
+            >
+          </p>
+          <a
+            class="github"
+            href="https://www.github.com/petrusmatiros/eyesopen"
+            target="_blank"
           >
-        </p>
-        <a
-          class="github"
-          href="https://www.github.com/petrusmatiros/eyesopen"
-          target="_blank"
-        >
-          <span
-            class="iconify"
-            id="github-light"
-            data-icon="octicon:mark-github-16"
-            data-width="32"
-            data-height="32"
-          ></span>
-        </a>
+            <span
+              class="iconify"
+              id="github-light"
+              data-icon="octicon:mark-github-16"
+              data-width="32"
+              data-height="32"
+            ></span>
+          </a>
+        </div>
       </div>
     </div>
   </body>

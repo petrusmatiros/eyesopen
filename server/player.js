@@ -19,28 +19,25 @@ class Player {
   constructor(
     playerName,
     role,
-    isKilled = false,
-    isLynched = false,
-    killedBy = false,
-    isProtected = false,
-    isTargeted = false,
-    isBlocked = false,
-    isDisguised = false
   ) {
     this.playerName = playerName;
     this.role = role;
-    this.isKilled = isKilled;
-    this.isLynched = isLynched;
-    this.killedBy = killedBy;
-    this.isProtected = isProtected;
-    this.isTargeted = isTargeted;
-    this.isBlocked = isBlocked;
-    this.isDisguised = isDisguised;
+    this.isKilled = false;
+    this.isLynched = false;
+    this.killedBy = [];
+    this.isProtected = false;
+    this.isTargeted = false;
+    this.isBlocked = false;
+    this.isDisguised = false;
     this.fakeTeam = "";
     this.abilityTarget = null;
     this.voteTarget = null;
   }
 
+  addKiller(killer) {
+    this.killedBy.push(killer);
+  }
+  
   /**
    * use ability of player
    * @param {Player} player

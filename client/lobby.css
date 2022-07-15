@@ -9,6 +9,10 @@
   /* Day */
   --light-bg: hsl(0, 0%, 100%);
   --dark-fg: hsl(0, 0%, 0%);
+  /* Not ready and ready */
+  --ready: hsl(110, 100%, 70%);
+  --not-ready: hsl(0, 100%, 70%);
+  --not-ready: hsl(0, 100%, 70%);
   /* Player colors */
   --evilteam: hsl(360, 100%, 50%);
   --killed: hsl(0, 0%, 57%);
@@ -36,6 +40,21 @@
   margin-left: 0.5rem;
 }
 
+#ingame {
+  display: none;
+}
+
+#inlobby {
+  display: flex;
+}
+
+.lobby {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .lobby-code {
   display: flex;
   justify-content: center;
@@ -53,24 +72,114 @@
     transition: box-shadow 0.3s ease-out;
 }
 
-.lobby-code:focus {
-}
-
 .lobby-help {
+  color: var(--dark-fg);
+  font-size: 1rem;
+  margin-top: 1rem;
 }
 .lobby-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: var(--light-bg);
+  padding: 1em;
+  border-radius: 0.5em;
+  margin-top: 0.5rem;
+
 }
 
+.lobby-card-container {
+  display: block;
+  width: 100%;
+}
 .lobby-card-title {
+  display: flex;
+  color: var(--dark-fg);
+  font-size: 1.6rem;
+  font-weight: 600;
 }
 
 .lobby-req {
+  color: var(--dark-fg);
+  font-size: 1rem;
+  margin-top: 0.5rem;
 }
 
-.lobby-icon-check {
+.lobby-req-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  vertical-align: middle;
+}
+.lobby-player-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
 }
 
-.lobby-status-ready {
+
+
+.lobby-player-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+#joined {
+  background-color: hsl(0, 0%, 82%);
+}
+
+.lobby-player-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-radius: 0.5em;
+  background-color: hsl(0, 0%, 95%);
+  min-width: 7rem;
+  min-height: 0.35rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.lobby-player {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--dark-fg);
+  padding: 1rem;
+  border-radius: 0.5em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+  min-width: 7rem;
+  max-width: 7rem;
+  min-height: 0.35rem;
+  max-height: 0.35rem;
+}
+
+#status-ready {
+
+}
+
+#status-notready {
+  visibility: visible;
+}
+
+.lobby-ready-status {
+  visibility: hidden;
+  color: var(--dark-fg);
+  text-align: center;
+  background-color: var(--not-ready);
+  padding: 0.25rem 0.5em 0.25rem 0.5em;
+  border-radius: 0.5em;
+  font-size: 0.65rem;
+  margin-left: 0.6rem;
 }
 
 .lobby-role-tag {

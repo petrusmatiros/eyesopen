@@ -31,7 +31,26 @@ socket.on("connect", () => {
   socket.on("viewRoom", (roomCode) => {
     document.getElementById("roomcode-copy").innerText = roomCode;
   });
+  socket.on("joinPlayerSlot", (user) => {
+    socket.emit("requestPlayerSlot", getPlayerID());
+  })
+  socket.on("playerSlots", (slots) => {
+    updatePlayerSlots(slots);
+  })
 });
+
+
+function updatePlayerSlots(slots) {
+  console.log(slots)
+  for  (var [key, value] of Object.entries(slots)) {
+    if (value.taken == true) {
+      var slot = document.getElementById(key);
+      slot.innerText = value.userName;
+      slot.id = value.userID;
+      slot.parentElement.id = "joined"
+    }
+  }
+}
 
 function getPlayerID() {
   var cookie = document.cookie.valueOf("eyesopenID");

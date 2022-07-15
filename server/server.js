@@ -16,12 +16,16 @@ var __dirname = "/mnt/c/Users/petru/Documents/Code/eyesopen/client/";
 var randomstring = require("randomstring");
 
 app.use(express.static("client"));
-
+app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store')
+  next()
+})
+app.set('etag', false)
 // serving public file
 app.get("/", (req, res) => {
   // res.sendFile(__dirname + 'index.html')
 });
-
 
 var { Room } = require("./room");
 var { Player } = require("./player");
@@ -29,6 +33,79 @@ var { User } = require("./user");
 
 var rooms = new Map();
 var connectedUsers = new Map();
+
+var slots = {
+  slot1: {
+    taken: false,
+    userID: undefined,
+    userName: null,
+  },
+  slot2: {
+    taken: false,
+    userID: undefined,
+    userName: null,
+  },
+  slot3: {
+    taken: false,
+    userID: undefined,
+    userName: null,
+  },
+  slot4: {
+    taken: false,
+    userID: undefined,
+    userName: null,
+  },
+  slot5: {
+    taken: false,
+    userID: undefined,
+    userName: null,
+  },
+  slot6: {
+    taken: false,
+    userID: undefined,
+    userName: null,
+  },
+  slot7: {
+    taken: false,
+    userID: undefined,
+    userName: null,
+  },
+  slot8: {
+    taken: false,
+    userID: undefined,
+    userName: null,
+  },
+  slot9: {
+    taken: false,
+    userID: undefined,
+    userName: null,
+  },
+  slot10: {
+    taken: false,
+    userID: undefined,
+    userName: null,
+  },
+  slot11: {
+    taken: false,
+    userID: undefined,
+    userName: null,
+  },
+  slot12: {
+    taken: false,
+    userID: undefined,
+    userName: null,
+  },
+  slot13: {
+    taken: false,
+    userID: undefined,
+    userName: null,
+  },
+  slot14: {
+    taken: false,
+    userID: undefined,
+    userName: null,
+  },
+};
 
 var timeDurations = {
   discussion: 45,
@@ -67,6 +144,7 @@ io.on("connection", async (socket) => {
     let playerID = socket.data.playerID
     if (connectedUsers.get(playerID) !== undefined) {
       var targetRoom = connectedUsers.get(playerID).getCurrentRoom();
+      clearPlayerSlot(playerID);
       // remove user from room
       rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
       // socket leaves room
@@ -96,7 +174,6 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("joinedLobby", (playerID) => {
-    // !! HANDLE DISCONNECTION
     if (connectedUsers.get(playerID) !== undefined) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var room = connectedUsers.get(playerID).getCurrentRoom()
@@ -104,10 +181,43 @@ io.on("connection", async (socket) => {
         socket.emit("viewRoom", room)
         console.log(socket.rooms)
         console.log(connectedUsers.get(playerID))
+        socket.emit("joinPlayerSlot", connectedUsers.get(playerID).getName())
       }
     }
     socket.data.playerID = playerID;
   })
+
+  socket.on("requestPlayerSlot", (playerID) => {
+    var slotAlreadyExist = false;
+    for (var [key, value] of Object.entries(slots)) {
+      if (value.userID == playerID) {
+        slotAlreadyExist = true;
+      }
+    }
+    if (!slotAlreadyExist) {
+      for  (var [key, value] of Object.entries(slots)) {
+        if (value.taken == false) {
+          slots[key]["taken"] = true;
+          slots[key]["userID"] = playerID;
+          slots[key]["userName"] = connectedUsers.get(playerID).getName();
+          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("playerSlots", slots);
+          break;
+        }
+      }
+    }
+  })
+
+  function clearPlayerSlot(playerID) {
+    for  (var [key, value] of Object.entries(slots)) {
+      if (value.userID == playerID) {
+        slots[key]["taken"] = false;
+        slots[key]["userID"] = undefined;
+        slots[key]["userName"] = null;
+        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("playerSlots", slots);
+        break;
+      }
+    }
+  }
 
 
   function checkAlreadyHost(rooms, playerID) {
