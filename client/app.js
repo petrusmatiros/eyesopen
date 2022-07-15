@@ -19,6 +19,7 @@ const socket = io("http://localhost:3000");
 }
 
 socket.on("connect", () => {
+  // !! IMPLEMENT AJAX
   resetCookie();
   socket.on("clearCookie", () => {
     var override = true;

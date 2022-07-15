@@ -16,12 +16,12 @@ var __dirname = "/mnt/c/Users/petru/Documents/Code/eyesopen/client/";
 var randomstring = require("randomstring");
 
 app.use(express.static("client"));
-app.use(express.urlencoded({ extended: true }));
-app.use((req, res, next) => {
-  res.set('Cache-Control', 'no-store')
-  next()
-})
-app.set('etag', false)
+// app.use(express.urlencoded({ extended: true }));
+// app.use((req, res, next) => {
+//   res.set('Cache-Control', 'no-store')
+//   next()
+// })
+// app.set('etag', false)
 // serving public file
 app.get("/", (req, res) => {
   // res.sendFile(__dirname + 'index.html')
@@ -30,6 +30,9 @@ app.get("/", (req, res) => {
 var { Room } = require("./room");
 var { Player } = require("./player");
 var { User } = require("./user");
+
+const minPlayers = 3;
+const maxPlayers = 14;
 
 var rooms = new Map();
 var connectedUsers = new Map();
@@ -306,13 +309,17 @@ io.on("connection", async (socket) => {
   socket.on("checkRoomCode", (roomCode, playerID) => {
     console.log(playerID, "trying roomcode", roomCode);
     if (rooms.has(roomCode)) {
-      console.log("room code", roomCode, "is valid");
-      console.log(socket.rooms);
-      socket.emit("roomCodeResponse", true);
-      connectedUsers.get(playerID).setCurrentRoom(roomCode);
-      rooms.get(roomCode).addUser(connectedUsers.get(playerID));
+      if (rooms.get(roomCode).userCount() == maxPlayers) {
+        socket.emit("roomCodeResponse", "full");
+      } else {
+        console.log("room code", roomCode, "is valid");
+        console.log(socket.rooms);
+        socket.emit("roomCodeResponse", "valid");
+        connectedUsers.get(playerID).setCurrentRoom(roomCode);
+        rooms.get(roomCode).addUser(connectedUsers.get(playerID));
+      }
     } else {
-      socket.emit("roomCodeResponse", false);
+      socket.emit("roomCodeResponse", "invalid");
     }
   });
 });

@@ -186,15 +186,23 @@
 }
 
 .lobby-button-ready {
+  cursor: pointer;
+
 }
 
 .lobby-button-start {
+  cursor: pointer;
+
 }
 
 .game-button-vote {
+  cursor: pointer;
+
 }
 
 .game-button-ability {
+  cursor: pointer;
+
 }
 
 .game-button-both {

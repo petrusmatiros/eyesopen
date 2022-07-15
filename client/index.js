@@ -160,6 +160,12 @@ function roomCodeInvalid() {
   document.getElementById("join-help").innerText =
     "Code is invalid. Room doesn't exist";
 }
+function roomFull() {
+  document.getElementById("join-help").style.display = "flex";
+  document.getElementById("code").style.border = "2px solid hsl(0, 100%, 45%)";
+  document.getElementById("join-help").innerText =
+    "The room is full";
+}
 
 function checkRoomCode() {
   requestID();
@@ -169,11 +175,13 @@ function checkRoomCode() {
     roomCodeError();
   } else {
     roomCodeCorrect();
-    socket.on("roomCodeResponse", (isValid) => {
-      if (isValid) {
+    socket.on("roomCodeResponse", (status) => {
+      if (status == "valid") {
         setLocation("/lobby.html", false);
-      } else {
+      } else if (status == "invalid") {
         roomCodeInvalid();
+      } else if (stats == "full") {
+        roomFull();
       }
     });
   }

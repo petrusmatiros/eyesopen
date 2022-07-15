@@ -98,6 +98,7 @@ p {
 }
 
 .title-button {
+  cursor: pointer;
   display: inline-block;
   justify-content: center;
   align-items: center;
@@ -331,6 +332,7 @@ p {
 }
 
 .close-button {
+  cursor: pointer;
   width: 2rem;
   height: 2rem;
   vertical-align: bottom;
@@ -378,6 +380,7 @@ input[type="text"]:focus {
 }
 
 .confirm-button {
+  cursor: pointer;
   display: inline-block;
   justify-content: center;
   align-items: center;
