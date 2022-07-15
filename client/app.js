@@ -1,11 +1,10 @@
-
 const socket = io("http://localhost:3000");
 // const socket = io("http://192.168.1.203:3000/");
 
 /**
  * [resetCookie resets the playerID cookie to null]
  */
- function resetCookie(override=false) {
+function resetCookie(override = false) {
   if (override) {
     console.log("cookie was reset to null");
     document.cookie = "eyesopenID=null";
@@ -23,8 +22,8 @@ socket.on("connect", () => {
   resetCookie();
   socket.on("clearCookie", () => {
     var override = true;
-    resetCookie(override)
-  })
+    resetCookie(override);
+  });
   if (getPlayerID() !== "null") {
     socket.emit("setRoom", getPlayerID());
   }
@@ -34,21 +33,22 @@ socket.on("connect", () => {
   });
   socket.on("joinPlayerSlot", (user) => {
     socket.emit("requestPlayerSlot", getPlayerID());
-  })
+  });
   socket.on("playerSlots", (slots) => {
     updatePlayerSlots(slots);
-  })
+  });
 });
 
-
 function updatePlayerSlots(slots) {
-  console.log(slots)
-  for  (var [key, value] of Object.entries(slots)) {
+  for (var [key, value] of Object.entries(slots)) {
     if (value.taken == true) {
       var slot = document.getElementById(key);
       slot.innerText = value.userName;
       slot.id = value.userID;
-      slot.parentElement.id = "joined"
+      slot.parentElement.id = "joined";
+      var status = slot.parentElement.children[1];
+      status.id = "status-notready";
+      // status.innerText = "not ready";
     }
   }
 }
@@ -86,9 +86,13 @@ function showClearCheck(reset = false) {
 }
 function copyButtonAnimate(reset = false) {
   if (reset) {
-    document.getElementById("copy-code").style.boxShadow = "0 0 0 0px hsl(100, 100%, 40%)";
+    document.getElementById("copy-code").style.backgroundColor =
+      "var(--light-bg)";
+    document.getElementById("roomcode-copy").style.color = "var(--dark-fg)";
   } else {
-    document.getElementById("copy-code").style.boxShadow =
-      "0 0 0 2px hsl(100, 100%, 40%)";
+    document.getElementById("copy-code").style.backgroundColor =
+      "hsl(100, 100%, 90%)";
+    document.getElementById("roomcode-copy").style.color =
+      "hsl(100, 100%, 35%)";
   }
 }

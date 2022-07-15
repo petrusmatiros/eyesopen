@@ -56,6 +56,7 @@
 }
 
 .lobby-code {
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -69,7 +70,7 @@
 }
 
 #copy-code {
-    transition: box-shadow 0.3s ease-out;
+    transition: background-color 0.3s ease-out;
 }
 
 .lobby-help {
@@ -172,6 +173,8 @@
 }
 
 .lobby-ready-status {
+  user-select:none;
+  cursor:pointer;
   visibility: hidden;
   color: var(--dark-fg);
   text-align: center;

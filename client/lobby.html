@@ -43,11 +43,10 @@
     <div class="lobby">
 
       <div class="menu" id="without-eyes">
-        <div class="lobby-code" id="copy-code">
+        <div class="lobby-code" onclick="copyToClipboard()" id="copy-code">
           <p id="roomcode-copy"></p>
           <img
             id="copy-button"
-            onclick="copyToClipboard()"
             src="icons/copy.svg"
             alt="copy icon"
           />
@@ -118,9 +117,9 @@
                 <div id="slot10" class="lobby-player"></div>
                 <div class="lobby-ready-status">not ready</div>
               </div>
-              <div id="joined" class="lobby-player-wrapper">
-                <div id="132" class="lobby-player">test</div>
-                <div id="status-notready"class="lobby-ready-status">not ready</div>
+              <div class="lobby-player-wrapper">
+                <div id="slot11" class="lobby-player"></div>
+                <div class="lobby-ready-status">not ready</div>
               </div>
               <div class="lobby-player-wrapper">
                 <div id="slot12" class="lobby-player"></div>

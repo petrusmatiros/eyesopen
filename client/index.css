@@ -98,6 +98,7 @@ p {
 }
 
 .title-button {
+  user-select:none;
   cursor: pointer;
   display: inline-block;
   justify-content: center;
@@ -176,6 +177,7 @@ p {
     flex-direction: column;
   }
   .title-button {
+    user-select:none;
     display: inline-block;
     justify-content: center;
     align-items: center;
@@ -286,6 +288,7 @@ p {
 }
 
 .clock {
+  user-select:none;
   text-align: center;
   background-color: #2d2d2d;
   border-radius: 0.6em;
@@ -380,6 +383,7 @@ input[type="text"]:focus {
 }
 
 .confirm-button {
+  user-select:none;
   cursor: pointer;
   display: inline-block;
   justify-content: center;
