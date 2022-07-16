@@ -1,0 +1,124 @@
+:root {
+  /* nighmare bifore krissmas */
+  /* 404 error */
+  /* --------------- */
+  /* Night */
+  --dark-bg: hsl(0, 0%, 13%);
+  --light-fg: hsl(0, 0%, 100%);
+  /* Day */
+  --light-bg: hsl(0, 0%, 100%);
+  --dark-fg: hsl(0, 0%, 0%);
+}
+
+body {
+  font-size: 1rem;
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  min-width: 100%;
+  background-color: var(--light-bg);
+}
+
+.dark {
+  color: var(--light-fg);
+  background-color: var(--dark-bg);
+}
+
+.light {
+  color: var(--dark-fg);
+  background-color: var(--light-bg);
+}
+
+.navbar-light {
+  background-color: var(--light-bg);
+  width: auto;
+  height: auto;
+  padding: 0.5em;
+}
+
+.navbar-container {
+  margin: 0.15em 0.25em 0.15em 0.25em;
+}
+
+.logo {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.25em;
+  vertical-align: bottom;
+}
+
+.logo-link {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  line-height: 1;
+}
+
+.logo-link:focus {
+  outline: none !important;
+}
+
+p {
+  margin: 0;
+}
+
+.title-light {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3.7rem;
+  font-weight: 600;
+  color: var(--dark-fg);
+  margin: 0.3rem 0 1rem 0;
+}
+.header {
+  display: block;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #000000;
+  margin: 0.25rem 2rem 0.25rem 2rem;
+}
+
+#with-eyes {
+  margin-top: 3rem;
+}
+
+#without-eyes {
+  margin-top: 1rem;
+}
+
+.menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: var(--light-bg);
+}
+
+.robot-404 {
+  width: 10rem;
+  height: 10rem;
+}
+
+@media screen and (max-width: 600px) {
+  #with-eyes {
+    margin-top: 3rem;
+  }
+
+  #without-eyes {
+    margin-top: 1rem;
+  }
+
+  .header {
+    display: block;
+    text-align: center;
+    font-size: 1.15rem;
+    font-weight: 400;
+    color: #000000;
+    margin: 0.25rem 2rem 0.25rem 2rem;
+  }
+}

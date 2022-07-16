@@ -15,18 +15,6 @@ var __dirname = "/mnt/c/Users/petru/Documents/Code/eyesopen/public/";
 // // random string generator
 var randomstring = require("randomstring");
 
-// static folder
-app.use(express.static('public'));
-// app.use(express.urlencoded({ extended: true }));
-
-// serving public file
-app.get("/", (req, res) => {
-  // res.sendFile(__dirname + 'index.html')
-});
-app.get('/lobby.html/:id?', function userIdHandler (req, res) {
-    res.sendFile(__dirname + 'lobby.html');
-})
-
 var { Room } = require("./room");
 var { Player } = require("./player");
 var { User } = require("./user");
@@ -37,78 +25,32 @@ const maxPlayers = 14;
 var rooms = new Map();
 var connectedUsers = new Map();
 
-var slots = {
-  slot1: {
-    taken: false,
-    userID: undefined,
-    userName: null,
-  },
-  slot2: {
-    taken: false,
-    userID: undefined,
-    userName: null,
-  },
-  slot3: {
-    taken: false,
-    userID: undefined,
-    userName: null,
-  },
-  slot4: {
-    taken: false,
-    userID: undefined,
-    userName: null,
-  },
-  slot5: {
-    taken: false,
-    userID: undefined,
-    userName: null,
-  },
-  slot6: {
-    taken: false,
-    userID: undefined,
-    userName: null,
-  },
-  slot7: {
-    taken: false,
-    userID: undefined,
-    userName: null,
-  },
-  slot8: {
-    taken: false,
-    userID: undefined,
-    userName: null,
-  },
-  slot9: {
-    taken: false,
-    userID: undefined,
-    userName: null,
-  },
-  slot10: {
-    taken: false,
-    userID: undefined,
-    userName: null,
-  },
-  slot11: {
-    taken: false,
-    userID: undefined,
-    userName: null,
-  },
-  slot12: {
-    taken: false,
-    userID: undefined,
-    userName: null,
-  },
-  slot13: {
-    taken: false,
-    userID: undefined,
-    userName: null,
-  },
-  slot14: {
-    taken: false,
-    userID: undefined,
-    userName: null,
-  },
-};
+// static folder
+app.use(express.static('public'));
+// app.use(express.urlencoded({ extended: true }));
+
+// serving public file
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + 'index.html')
+});
+app.get('/lobby/', (req, res) => {
+  res.sendFile(__dirname + '404.html');
+})
+app.get('/lobby/:id', (req, res) => {
+    if (rooms.has(req.params.id)) {
+      res.sendFile(__dirname + 'lobby.html');
+    } else {
+      res.sendFile(__dirname + '404.html');
+    }
+})
+
+app.get('/lobby/:id/join', (req, res) => {
+    if(rooms.has(req.params.id)) {
+      res.sendFile(__dirname + 'join.html');
+    } else {
+      res.sendFile(__dirname + '404.html');
+    }
+})
 
 var timeDurations = {
   discussion: 45,
@@ -118,16 +60,9 @@ var timeDurations = {
 };
 var counter = timeDurations.voting;
 
-var clearCookie = false;
-
 // establish server connection with socket
 io.on("connection", async (socket) => {
   console.log("a user connected, with socket id:", socket.id);
-  if (clearCookie == false) {
-    socket.emit("clearCookie");
-    clearCookie = true;
-  }
-
   
   // reassign sockets to their playerID rooms (if they have a playerID)
   socket.on("setRoom", (playerID) => {
@@ -140,6 +75,7 @@ io.on("connection", async (socket) => {
         socket.join(key)
       }
     }
+    console.log("setting rooms")
     console.log(socket.rooms);
   });
 
@@ -156,6 +92,14 @@ io.on("connection", async (socket) => {
       console.log(socket.rooms)
     }
   });
+
+  socket.on("checkUser", (playerID) => {
+    if (connectedUsers.has(playerID)) {
+      socket.emit("userExists", true);
+    } else {
+      socket.emit("userExists", false);
+    }
+  })
 
   // generate playerID for sockets that request one
   socket.on("requestID", (socketID) => {
@@ -191,34 +135,48 @@ io.on("connection", async (socket) => {
   })
 
   socket.on("requestPlayerSlot", (playerID) => {
-    var slotAlreadyExist = false;
-    for (var [key, value] of Object.entries(slots)) {
-      if (value.userID == playerID) {
-        slotAlreadyExist = true;
-      }
-    }
-    if (!slotAlreadyExist) {
-      for  (var [key, value] of Object.entries(slots)) {
-        if (value.taken == false) {
-          slots[key]["taken"] = true;
-          slots[key]["userID"] = playerID;
-          slots[key]["userName"] = connectedUsers.get(playerID).getName();
-          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("playerSlots", slots);
-          break;
+    console.log(playerID)
+    if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+      var roomCode = connectedUsers.get(playerID).getCurrentRoom()
+      var room = rooms.get(roomCode);
+      var slotAlreadyExist = false;
+      for (var [key, value] of Object.entries(room.slots)) {
+        if (value.userID == playerID) {
+          slotAlreadyExist = true;
         }
       }
+      if (!slotAlreadyExist) {
+        for  (var [key, value] of Object.entries(room.slots)) {
+          if (value.taken == false) {
+            room.slots[key]["taken"] = true;
+            room.slots[key]["userID"] = playerID;
+            room.slots[key]["userName"] = connectedUsers.get(playerID).getName();
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("playerSlots", room.slots);
+            break;
+          }
+        }
+      }
+      
     }
+
+
+
   })
 
   function clearPlayerSlot(playerID) {
-    for  (var [key, value] of Object.entries(slots)) {
-      if (value.userID == playerID) {
-        slots[key]["taken"] = false;
-        slots[key]["userID"] = undefined;
-        slots[key]["userName"] = null;
-        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("playerSlots", slots);
-        break;
+    if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+      var roomCode = connectedUsers.get(playerID).getCurrentRoom()
+      var room = rooms.get(roomCode);
+      for  (var [key, value] of Object.entries(room.slots)) {
+        if (value.userID == playerID) {
+          room.slots[key]["taken"] = false;
+          room.slots[key]["userID"] = undefined;
+          room.slots[key]["userName"] = null;
+          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("playerSlots", room);
+          break;
+        }
       }
+
     }
   }
 
@@ -244,6 +202,11 @@ io.on("connection", async (socket) => {
     console.log(`${playerID} did not find the host room`);
     return null;
   }
+
+  socket.on("fetchRoomCode", (playerID) => {
+    socket.emit("hostRoom", getHostRoom(rooms, playerID))
+  })
+
   // handle room creation
   socket.on("createRoom", (playerID) => {
     // !! FIX SO THAT YOU ALWAYS RECONNECT TO YOUR CREATED GAME
@@ -273,9 +236,6 @@ io.on("connection", async (socket) => {
 
         // Log rooms that socket is in
         console.log(rooms);
-        // // Socket joining playerID and room
-        // socket.join(playerID);
-        // socket.join(roomCode);
       } else {
         var hostRoom = getHostRoom(rooms, playerID);
         if (hostRoom !== null) {
@@ -298,9 +258,6 @@ io.on("connection", async (socket) => {
 
       // Log rooms that socket is in
       console.log(rooms);
-      // // Socket joining playerID and room
-      // socket.join(playerID);
-      // socket.join(roomCode);
     }
     console.log("room in:", socket.rooms);
   });

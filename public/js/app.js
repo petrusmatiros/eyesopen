@@ -4,38 +4,47 @@ const socket = io("http://localhost:3000");
 /**
  * [resetCookie resets the playerID cookie to null]
  */
-function resetCookie(override = false) {
+ function resetCookie(override = false) {
+  // !! PERHAPS REMOVE?
   if (override) {
     console.log("cookie was reset to null");
     document.cookie = "eyesopenID=null";
-  }
-  if (!document.cookie.valueOf("eyesopenID")) {
-    console.log("cookie was set to null");
-    document.cookie = "eyesopenID=null";
   } else {
-    console.log("cookie is already null");
+    if (getPlayerID() !== 'null' && getPlayerID() !== undefined) {
+      console.log("ID exists before user, setting to null");
+      document.cookie = "eyesopenID=null";
+    } else if (getPlayerID() == undefined) {
+      console.log("ID is undefined, setting to null")
+      document.cookie = "eyesopenID=null";
+    } else if (getPlayerID() == "null") {
+      console.log("ID is already null");
+    }
   }
 }
 
 socket.on("connect", () => {
-  // !! IMPLEMENT AJAX
-  resetCookie();
-  socket.on("clearCookie", () => {
-    var override = true;
-    resetCookie(override);
-  });
-  if (getPlayerID() !== "null") {
-    socket.emit("setRoom", getPlayerID());
-  }
-  socket.emit("joinedLobby", getPlayerID());
-  socket.on("viewRoom", (roomCode) => {
-    document.getElementById("roomcode-copy").innerText = roomCode;
-  });
-  socket.on("joinPlayerSlot", (user) => {
-    socket.emit("requestPlayerSlot", getPlayerID());
-  });
-  socket.on("playerSlots", (slots) => {
-    updatePlayerSlots(slots);
+  socket.emit("checkUser", getPlayerID())
+  socket.on("userExists", (userExists) => {
+    if (!userExists) {
+      resetCookie();
+      if (window.location.href !== 'http://localhost:3000/lobby/') {
+        window.location.href =  window.location.href + '/join'; 
+      }
+    } else {
+      // USER EXISTS
+      // !! IMPLEMENT AJAX
+      socket.emit("setRoom", getPlayerID());
+      socket.emit("joinedLobby", getPlayerID());
+      socket.on("viewRoom", (roomCode) => {
+        document.getElementById("roomcode-copy").innerText = roomCode;
+      });
+      socket.on("joinPlayerSlot", (user) => {
+        socket.emit("requestPlayerSlot", getPlayerID());
+      });
+      socket.on("playerSlots", (slots) => {
+        updatePlayerSlots(slots);
+      });
+    };
   });
 });
 
@@ -54,9 +63,12 @@ function updatePlayerSlots(slots) {
 }
 
 function getPlayerID() {
-  var cookie = document.cookie.valueOf("eyesopenID");
-  var wantedCookie = cookie.split("=");
-  return wantedCookie[1];
+  var cookies = document.cookie.split(";");
+  for (var i = 0; i < cookies.length; i++) {
+    if (cookies[i].includes("eyesopenID")) {
+      return cookies[i].split("=")[1];
+    }
+  }
 }
 
 socket.on("counter", function (count) {

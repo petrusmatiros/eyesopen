@@ -2,6 +2,78 @@ class Room {
   constructor(host) {
     this.users = [];
     this.roles = [];
+    this.slots = {
+      slot1: {
+        taken: false,
+        userID: undefined,
+        userName: null,
+      },
+      slot2: {
+        taken: false,
+        userID: undefined,
+        userName: null,
+      },
+      slot3: {
+        taken: false,
+        userID: undefined,
+        userName: null,
+      },
+      slot4: {
+        taken: false,
+        userID: undefined,
+        userName: null,
+      },
+      slot5: {
+        taken: false,
+        userID: undefined,
+        userName: null,
+      },
+      slot6: {
+        taken: false,
+        userID: undefined,
+        userName: null,
+      },
+      slot7: {
+        taken: false,
+        userID: undefined,
+        userName: null,
+      },
+      slot8: {
+        taken: false,
+        userID: undefined,
+        userName: null,
+      },
+      slot9: {
+        taken: false,
+        userID: undefined,
+        userName: null,
+      },
+      slot10: {
+        taken: false,
+        userID: undefined,
+        userName: null,
+      },
+      slot11: {
+        taken: false,
+        userID: undefined,
+        userName: null,
+      },
+      slot12: {
+        taken: false,
+        userID: undefined,
+        userName: null,
+      },
+      slot13: {
+        taken: false,
+        userID: undefined,
+        userName: null,
+      },
+      slot14: {
+        taken: false,
+        userID: undefined,
+        userName: null,
+      },
+    };
     this.inProgress = false;
     this.isDone = false;
     this.host = host;
