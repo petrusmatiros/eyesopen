@@ -10,22 +10,22 @@ server.listen(port, () => {
   console.log("Server listening at port %d", port);
 });
 
-var __dirname = "/mnt/c/Users/petru/Documents/Code/eyesopen/client/";
+var __dirname = "/mnt/c/Users/petru/Documents/Code/eyesopen/public/";
 
 // // random string generator
 var randomstring = require("randomstring");
 
-app.use(express.static("client"));
+// static folder
+app.use(express.static('public'));
 // app.use(express.urlencoded({ extended: true }));
-// app.use((req, res, next) => {
-//   res.set('Cache-Control', 'no-store')
-//   next()
-// })
-// app.set('etag', false)
+
 // serving public file
 app.get("/", (req, res) => {
   // res.sendFile(__dirname + 'index.html')
 });
+app.get('/lobby.html/:id?', function userIdHandler (req, res) {
+    res.sendFile(__dirname + 'lobby.html');
+})
 
 var { Room } = require("./room");
 var { Player } = require("./player");

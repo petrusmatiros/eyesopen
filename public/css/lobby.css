@@ -1,0 +1,235 @@
+:root {
+  /* nighmare bifore krissmas */
+  /* Lobby & Game */
+  /* --------------- */
+  /* In game */
+  /* Night */
+  --dark-bg: hsl(0, 0%, 13%);
+  --light-fg: hsl(0, 0%, 100%);
+  /* Day */
+  --light-bg: hsl(0, 0%, 100%);
+  --dark-fg: hsl(0, 0%, 0%);
+  /* Not ready and ready */
+  --ready: hsl(110, 100%, 70%);
+  --not-ready: hsl(0, 100%, 70%);
+  --not-ready: hsl(0, 100%, 70%);
+  /* Player colors */
+  --evilteam: hsl(360, 100%, 50%);
+  --killed: hsl(0, 0%, 57%);
+  --ability-target-bg: hsl(360, 100%, 60%);
+  --vote-target-bg: hsl(100, 100%, 40%);
+  --double-target-bg: linear-gradient(
+    90deg,
+    rgba(255, 51, 51, 1) 0%,
+    rgba(68, 204, 0, 1) 100%
+  );
+  /* In game buttons */
+  --vote-button-bg--notused: hsl(100, 100%, 40%);
+  --vote-button-bg--used: hsl(100, 100%, 90%);
+  --ability-button-bg--notused: hsl(360, 100%, 60%);
+  --ability-button-bg--used: hsl(360, 98%, 95%);
+}
+
+#copy-button {
+  display: "inline";
+  margin-left: 0.5rem;
+}
+
+#check-circle-icon {
+  display: none;
+  margin-left: 0.5rem;
+}
+
+#ingame {
+  display: none;
+}
+
+#inlobby {
+  display: flex;
+}
+
+.lobby {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.lobby-code {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  color: var(--dark-fg);
+  background-color: var(--light-bg);
+  padding: 0.5em;
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-radius: 0.5em;
+}
+
+#copy-code {
+    transition: background-color 0.3s ease-out;
+}
+
+.lobby-help {
+  color: var(--dark-fg);
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+.lobby-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: var(--light-bg);
+  padding: 1em;
+  border-radius: 0.5em;
+  margin-top: 0.5rem;
+
+}
+
+.lobby-card-container {
+  display: block;
+  width: 100%;
+}
+.lobby-card-title {
+  display: flex;
+  color: var(--dark-fg);
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.lobby-req {
+  color: var(--dark-fg);
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+.lobby-req-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  vertical-align: middle;
+}
+.lobby-player-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+
+
+.lobby-player-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+#joined {
+  background-color: hsl(0, 0%, 82%);
+}
+
+.lobby-player-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-radius: 0.5em;
+  background-color: hsl(0, 0%, 95%);
+  min-width: 7rem;
+  min-height: 0.35rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.lobby-player {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--dark-fg);
+  padding: 1rem;
+  border-radius: 0.5em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+  min-width: 7rem;
+  max-width: 7rem;
+  min-height: 0.35rem;
+  max-height: 0.35rem;
+}
+
+#status-ready {
+
+}
+
+#status-notready {
+  visibility: visible;
+}
+
+.lobby-ready-status {
+  user-select:none;
+  cursor:pointer;
+  visibility: hidden;
+  color: var(--dark-fg);
+  text-align: center;
+  background-color: var(--not-ready);
+  padding: 0.25rem 0.5em 0.25rem 0.5em;
+  border-radius: 0.5em;
+  font-size: 0.65rem;
+  margin-left: 0.6rem;
+}
+
+.lobby-role-tag {
+}
+
+.lobby-button-ready {
+  cursor: pointer;
+
+}
+
+.lobby-button-start {
+  cursor: pointer;
+
+}
+
+.game-button-vote {
+  cursor: pointer;
+
+}
+
+.game-button-ability {
+  cursor: pointer;
+
+}
+
+.game-button-both {
+  display: inline;
+  padding: 0.3em;
+  border-radius: 0.6em;
+  text-align: center;
+  font-size: 1rem;
+  color: #000000;
+  background: rgb(255, 51, 51);
+  background: -moz-linear-gradient(
+    90deg,
+    rgba(255, 51, 51, 1) 0%,
+    rgba(68, 204, 0, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    90deg,
+    rgba(255, 51, 51, 1) 0%,
+    rgba(68, 204, 0, 1) 100%
+  );
+  background: linear-gradient(
+    90deg,
+    rgba(255, 51, 51, 1) 0%,
+    rgba(68, 204, 0, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ff3333",endColorstr="#44cc00",GradientType=1);
+}

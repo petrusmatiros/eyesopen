@@ -1,4 +1,4 @@
-# Eyes Open <img src="client/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">
+# Eyes Open <img src="/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">
 
 ### Mafia/Werewolf/ToS inspired web based game
 
@@ -8,7 +8,7 @@
 # Table of contents
 
   ### Game
-<!-- - [Eyes Open <img src="client/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">](#eyes-open-)
+<!-- - [Eyes Open <img src=/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">](#eyes-open-)
     - [Mafia/Werewolf/ToS inspired web based game](#mafiawerewolftos-inspired-web-based-game) -->
   - [Link to website](#link-to-website)
   - [Game description & objective](#game-description--objective)
@@ -97,12 +97,13 @@ Enjoy ^-^
 ## Dependencies
 ```json
 "dependencies": {
+    "ejs": "^3.1.8",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
     "randomstring": "^1.2.2",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1"
-  },
+  }
 ```
 
 ## Install and build
