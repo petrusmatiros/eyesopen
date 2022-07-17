@@ -7,7 +7,7 @@ socket.on("connect", () => {
     if (!userExists) {
       resetCookie();
     } else {
-      socket.emit("setOwnRoom", getPlayerID());
+      socket.emit("setRoom", getPlayerID());
     }
   })
 });
@@ -17,17 +17,16 @@ socket.on("connect", () => {
  * [resetCookie resets the playerID cookie to null]
  */
  function resetCookie(override = false) {
-  // !! PERHAPS REMOVE?
   if (override) {
     console.log("cookie was reset to null");
-    document.cookie = "eyesopenID=null";
+    document.cookie = "eyesopenID=null; path=/";
   } else {
     if (getPlayerID() !== 'null' && getPlayerID() !== undefined) {
       console.log("ID exists before user, setting to null");
-      document.cookie = "eyesopenID=null";
+      document.cookie = "eyesopenID=null; path=/";
     } else if (getPlayerID() == undefined) {
       console.log("ID is undefined, setting to null")
-      document.cookie = "eyesopenID=null";
+      document.cookie = "eyesopenID=null; path=/";
     } else if (getPlayerID() == "null") {
       console.log("ID is already null");
     }
@@ -47,7 +46,7 @@ function setLocation(URL, reset=false) {
     resetCookie();
   }
   setTimeout(() => {
-    window.location = URL;
+    window.location.href = URL;
   }, 500);
 }
 
@@ -55,11 +54,11 @@ const oneHour = 60 * 60;
 
 function requestID() {
   console.log("You connect with id", socket.id);
-  socket.emit("requestID", socket.id);
+  socket.emit("requestID", socket.id, getPlayerID());
   socket.on("playerID", (playerID) => {
     console.log("playerID from server:", playerID);
     if (getPlayerID() == "null") {
-      document.cookie = `eyesopenID=${playerID}; max-age=${oneHour}; SameSite=Lax`;
+      document.cookie = `eyesopenID=${playerID}; path=/; max-age=${oneHour}; SameSite=Lax`;
       socket.emit("completedID", getPlayerID());
     }
   });
@@ -112,7 +111,7 @@ function displayHost() {
     document.getElementById("inputHost").focus();
   } else {
     socket.emit("createRoom", getPlayerID());
-    socket.emit("fetchRoomCode", getPlayerID());
+    socket.emit("fetchHostRoom", getPlayerID());
     socket.on("hostRoom", (roomCode) => {
       console.log(roomCode)
       setLocation(`/lobby/${roomCode}`, false);
@@ -237,7 +236,7 @@ function checkName(isHost) {
         socket.emit("createUser", inputVal, getPlayerID());
         socket.emit("createRoom", getPlayerID());
         hostNameCorrect();
-        socket.emit("fetchRoomCode", getPlayerID());
+        socket.emit("fetchHostRoom", getPlayerID());
         socket.on("hostRoom", (roomCode) => {
           console.log(roomCode)
           UserInputDoneHost(roomCode);
@@ -260,19 +259,5 @@ function checkName(isHost) {
       }, 500);
     }
   }
-  // check if room exists (has been created)
-}
-function checkDirectName() {
-    var inputVal = document.getElementById("inputUser").value;
-    if (inputVal.length < 1) {
-      userNameShortError();
-    } else {
-      requestID();
-      setTimeout(() => {
-        socket.emit("createUser", inputVal, getPlayerID());
-        userNameCorrect();
-        UserInputDone();
-      }, 500);
-    }
   // check if room exists (has been created)
 }

@@ -95,6 +95,10 @@ class Room {
     this.isDone = done;
   }
 
+  getUsers() {
+    return this.users;
+  }
+  
   addUser(user) {
     this.users.push(user);
   }

@@ -3,8 +3,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const server = require("http").createServer(app);
-const io = require("socket.io")(server, {
-});
+const io = require("socket.io")(server, {});
 
 server.listen(port, () => {
   console.log("Server listening at port %d", port);
@@ -26,31 +25,31 @@ var rooms = new Map();
 var connectedUsers = new Map();
 
 // static folder
-app.use(express.static('public'));
+app.use(express.static("public"));
 // app.use(express.urlencoded({ extended: true }));
 
 // serving public file
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + 'index.html')
+  res.sendFile(__dirname + "index.html");
 });
-app.get('/lobby/', (req, res) => {
-  res.sendFile(__dirname + '404.html');
-})
-app.get('/lobby/:id', (req, res) => {
-    if (rooms.has(req.params.id)) {
-      res.sendFile(__dirname + 'lobby.html');
-    } else {
-      res.sendFile(__dirname + '404.html');
-    }
-})
+app.get("/lobby/", (req, res) => {
+  res.sendFile(__dirname + "404.html");
+});
+app.get("/lobby/:id", (req, res) => {
+  if (rooms.has(req.params.id)) {
+    res.sendFile(__dirname + "lobby.html");
+  } else {
+    res.sendFile(__dirname + "404.html");
+  }
+});
 
-app.get('/lobby/:id/join', (req, res) => {
-    if(rooms.has(req.params.id)) {
-      res.sendFile(__dirname + 'join.html');
-    } else {
-      res.sendFile(__dirname + '404.html');
-    }
-})
+app.get("/lobby/:id/join", (req, res) => {
+  if (rooms.has(req.params.id)) {
+    res.sendFile(__dirname + "join.html");
+  } else {
+    res.sendFile(__dirname + "404.html");
+  }
+});
 
 var timeDurations = {
   discussion: 45,
@@ -63,7 +62,7 @@ var counter = timeDurations.voting;
 // establish server connection with socket
 io.on("connection", async (socket) => {
   console.log("a user connected, with socket id:", socket.id);
-  
+
   // reassign sockets to their playerID rooms (if they have a playerID)
   socket.on("setRoom", (playerID) => {
     console.log(`player ${playerID} is joining their own room`);
@@ -72,40 +71,45 @@ io.on("connection", async (socket) => {
     for (var [key, value] of rooms) {
       if (value.getHost() == playerID) {
         console.log(`player ${playerID} is joining their created room`);
-        socket.join(key)
+        socket.join(key);
       }
     }
-    console.log("setting rooms")
+    console.log("setting rooms");
     console.log(socket.rooms);
   });
 
   socket.on("disconnect", () => {
-    let playerID = socket.data.playerID
-    if (connectedUsers.get(playerID) !== undefined) {
+    let playerID = socket.data.playerID;
+    if (checkUserExist(playerID)) {
       var targetRoom = connectedUsers.get(playerID).getCurrentRoom();
-      clearPlayerSlot(playerID);
-      // remove user from room
-      rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
-      // socket leaves room
-      socket.leave(targetRoom);
-      console.log("leaving room", targetRoom);
-      console.log(socket.rooms)
+      console.log("targetroom", targetRoom)
+      if (targetRoom !== null) {
+        clearPlayerSlot(playerID);
+        // remove user from room
+        rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
+        // socket leaves room
+        socket.leave(targetRoom);
+        console.log("leaving room", targetRoom);
+        console.log(socket.rooms);
+      }
     }
   });
 
   socket.on("checkUser", (playerID) => {
-    if (connectedUsers.has(playerID)) {
+    if (checkUserExist(playerID)) {
       socket.emit("userExists", true);
     } else {
       socket.emit("userExists", false);
     }
-  })
+  });
 
   // generate playerID for sockets that request one
-  socket.on("requestID", (socketID) => {
-    console.log(socketID, "requesting player ID");
-    var playerID = randomstring.generate(6);
-    socket.emit("playerID", playerID);
+  socket.on("requestID", (socketID, playerID) => {
+    if (!checkUserExist(playerID)) {
+      console.log(socketID, "requesting player ID");
+      var playerID = randomstring.generate(6);
+      socket.emit("playerID", playerID);
+    }
   });
 
   // log if player has created an ID
@@ -113,31 +117,41 @@ io.on("connection", async (socket) => {
     console.log("player", playerID, "has created an ID");
   });
 
+  function checkUserExist(playerID) {
+    if (connectedUsers.has(playerID)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // log if a host has just input their name and is about to generate a room
   socket.on("createUser", (name, playerID) => {
-    console.log("name:", name, ", playerID:", playerID);
-    connectedUsers.set(playerID, new User(playerID, name));
-    console.log("Users:", connectedUsers);
+    if (!checkUserExist(playerID)) {
+      console.log("name:", name, ", playerID:", playerID);
+      connectedUsers.set(playerID, new User(playerID, name));
+      console.log("Users:", connectedUsers);
+    }
   });
 
   socket.on("joinedLobby", (playerID) => {
-    if (connectedUsers.get(playerID) !== undefined) {
+    if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-        var room = connectedUsers.get(playerID).getCurrentRoom()
-        socket.join(connectedUsers.get(playerID).getCurrentRoom())
-        socket.emit("viewRoom", room)
-        console.log(socket.rooms)
-        console.log(connectedUsers.get(playerID))
-        socket.emit("joinPlayerSlot", connectedUsers.get(playerID).getName())
+        var room = connectedUsers.get(playerID).getCurrentRoom();
+        socket.join(connectedUsers.get(playerID).getCurrentRoom());
+        socket.emit("viewRoom", room);
+        console.log(socket.rooms);
+        console.log(connectedUsers.get(playerID));
+        socket.emit("joinPlayerSlot", connectedUsers.get(playerID).getName());
       }
     }
     socket.data.playerID = playerID;
-  })
+  });
 
   socket.on("requestPlayerSlot", (playerID) => {
-    console.log(playerID)
+    console.log(playerID);
     if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-      var roomCode = connectedUsers.get(playerID).getCurrentRoom()
+      var roomCode = connectedUsers.get(playerID).getCurrentRoom();
       var room = rooms.get(roomCode);
       var slotAlreadyExist = false;
       for (var [key, value] of Object.entries(room.slots)) {
@@ -146,40 +160,42 @@ io.on("connection", async (socket) => {
         }
       }
       if (!slotAlreadyExist) {
-        for  (var [key, value] of Object.entries(room.slots)) {
+        for (var [key, value] of Object.entries(room.slots)) {
           if (value.taken == false) {
             room.slots[key]["taken"] = true;
             room.slots[key]["userID"] = playerID;
-            room.slots[key]["userName"] = connectedUsers.get(playerID).getName();
-            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("playerSlots", room.slots);
+            room.slots[key]["userName"] = connectedUsers
+              .get(playerID)
+              .getName();
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+              "playerSlots",
+              room.slots
+            );
             break;
           }
         }
       }
-      
     }
-
-
-
-  })
+  });
 
   function clearPlayerSlot(playerID) {
     if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-      var roomCode = connectedUsers.get(playerID).getCurrentRoom()
+      var roomCode = connectedUsers.get(playerID).getCurrentRoom();
       var room = rooms.get(roomCode);
-      for  (var [key, value] of Object.entries(room.slots)) {
+      for (var [key, value] of Object.entries(room.slots)) {
         if (value.userID == playerID) {
           room.slots[key]["taken"] = false;
           room.slots[key]["userID"] = undefined;
           room.slots[key]["userName"] = null;
-          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("playerSlots", room);
+          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+            "playerSlots",
+            room
+          );
           break;
         }
       }
-
     }
   }
-
 
   function checkAlreadyHost(rooms, playerID) {
     for (var [key, value] of rooms) {
@@ -202,10 +218,25 @@ io.on("connection", async (socket) => {
     console.log(`${playerID} did not find the host room`);
     return null;
   }
+  
+  function getRoom(rooms, playerID) {
+    for (var [key, value] of rooms) {
+      console.log("room:", key, "users", value.getUsers());
+      if (value.getUsers().includes(playerID)) {
+        return key;
+      }
+    }
+    console.log(`${playerID} did not find the room`);
+    return null;
+  }
 
-  socket.on("fetchRoomCode", (playerID) => {
-    socket.emit("hostRoom", getHostRoom(rooms, playerID))
-  })
+  socket.on("fetchHostRoom", (playerID) => {
+    if (checkUserExist(playerID)) {
+      socket.emit("hostRoom", getHostRoom(rooms, playerID));
+    }
+  });
+
+ 
 
   // handle room creation
   socket.on("createRoom", (playerID) => {
@@ -218,9 +249,31 @@ io.on("connection", async (socket) => {
 
     var temp = Array.from(rooms.entries());
     var count = 0;
-    if (temp.length > 0) {
-      
-      if (checkAlreadyHost(rooms, playerID) == false) {
+    if (checkUserExist(playerID)) {
+      if (temp.length > 0) {
+        if (checkAlreadyHost(rooms, playerID) == false) {
+          var roomCode = randomstring.generate({
+            length: 5,
+            charset: "alphanumeric",
+            capitalization: "uppercase",
+          });
+          // Setting up room
+          connectedUsers.get(playerID).setCurrentRoom(roomCode);
+          rooms.set(roomCode, new Room(playerID));
+          rooms.get(roomCode).addUser(connectedUsers.get(playerID));
+
+          console.log("room", roomCode, "created");
+          console.log(socket.id, "joined", roomCode);
+
+          // Log rooms that socket is in
+          console.log(rooms);
+        } else {
+          var hostRoom = getHostRoom(rooms, playerID);
+          if (hostRoom !== null) {
+            connectedUsers.get(playerID).setCurrentRoom(hostRoom);
+          }
+        }
+      } else {
         var roomCode = randomstring.generate({
           length: 5,
           charset: "alphanumeric",
@@ -236,47 +289,36 @@ io.on("connection", async (socket) => {
 
         // Log rooms that socket is in
         console.log(rooms);
-      } else {
-        var hostRoom = getHostRoom(rooms, playerID);
-        if (hostRoom !== null) {
-          connectedUsers.get(playerID).setCurrentRoom(hostRoom);
-        }
       }
-    } else {
-      var roomCode = randomstring.generate({
-        length: 5,
-        charset: "alphanumeric",
-        capitalization: "uppercase",
-      });
-      // Setting up room
-      connectedUsers.get(playerID).setCurrentRoom(roomCode);
-      rooms.set(roomCode, new Room(playerID));
-      rooms.get(roomCode).addUser(connectedUsers.get(playerID));
-
-      console.log("room", roomCode, "created");
-      console.log(socket.id, "joined", roomCode);
-
-      // Log rooms that socket is in
-      console.log(rooms);
+      console.log("room in:", socket.rooms);
     }
-    console.log("room in:", socket.rooms);
   });
 
   // handling room joining
   socket.on("checkRoomCode", (roomCode, playerID) => {
-    console.log(playerID, "trying roomcode", roomCode);
-    if (rooms.has(roomCode)) {
-      if (rooms.get(roomCode).userCount() == maxPlayers) {
-        socket.emit("roomCodeResponse", "full");
+    console.log("this player", playerID);
+    if (checkUserExist(playerID)) {
+      console.log(playerID, "trying roomcode", roomCode);
+      if (rooms.has(roomCode)) {
+        if (rooms.get(roomCode).userCount() == maxPlayers) {
+          socket.emit("roomCodeResponse", "full");
+        } else {
+          console.log("room code", roomCode, "is valid");
+          console.log(socket.rooms);
+          socket.emit("roomCodeResponse", "valid");
+          if (connectedUsers.get(playerID).getCurrentRoom() !== roomCode) {
+            if (rooms.get(roomCode).getUsers().includes(playerID)) {
+              console.log("user already in room");
+            } else {
+              connectedUsers.get(playerID).setCurrentRoom(roomCode);
+              rooms.get(roomCode).addUser(connectedUsers.get(playerID));
+            }
+          }
+        }
       } else {
-        console.log("room code", roomCode, "is valid");
-        console.log(socket.rooms);
-        socket.emit("roomCodeResponse", "valid");
-        connectedUsers.get(playerID).setCurrentRoom(roomCode);
-        rooms.get(roomCode).addUser(connectedUsers.get(playerID));
+        socket.emit("roomCodeResponse", "invalid");
       }
-    } else {
-      socket.emit("roomCodeResponse", "invalid");
+      console.log(rooms.get(roomCode));
     }
   });
 });

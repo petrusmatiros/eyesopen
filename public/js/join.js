@@ -1,14 +1,16 @@
 const socket = io("http://localhost:3000");
 // const socket = io("http://192.168.1.203:3000/");
 
+const domain = "http://localhost:3000/";
+const lobby = "http://localhost:3000/lobby/";
+
 socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
   socket.on("userExists", (userExists) => {
     if (!userExists) {
       resetCookie();
-
     } else {
-        socket.emit("setOwnRoom", getPlayerID());
+      socket.emit("setRoom", getPlayerID());
     }
   });
 });
@@ -17,17 +19,16 @@ socket.on("connect", () => {
  * [resetCookie resets the playerID cookie to null]
  */
 function resetCookie(override = false) {
-  // !! PERHAPS REMOVE?
   if (override) {
     console.log("cookie was reset to null");
-    document.cookie = "eyesopenID=null";
+    document.cookie = "eyesopenID=null; path=/";
   } else {
     if (getPlayerID() !== "null" && getPlayerID() !== undefined) {
       console.log("ID exists before user, setting to null");
-      document.cookie = "eyesopenID=null";
+      document.cookie = "eyesopenID=null; path=/";
     } else if (getPlayerID() == undefined) {
       console.log("ID is undefined, setting to null");
-      document.cookie = "eyesopenID=null";
+      document.cookie = "eyesopenID=null; path=/";
     } else if (getPlayerID() == "null") {
       console.log("ID is already null");
     }
@@ -43,7 +44,7 @@ function resetCookie(override = false) {
  */
 function setLocation(URL) {
   setTimeout(() => {
-    window.location = URL;
+    window.location.href = URL;
   }, 500);
 }
 
@@ -51,11 +52,11 @@ const oneHour = 60 * 60;
 
 function requestID() {
   console.log("You connect with id", socket.id);
-  socket.emit("requestID", socket.id);
+  socket.emit("requestID", socket.id, getPlayerID());
   socket.on("playerID", (playerID) => {
     console.log("playerID from server:", playerID);
     if (getPlayerID() == "null") {
-      document.cookie = `eyesopenID=${playerID}; max-age=${oneHour}; SameSite=Lax`;
+      document.cookie = `eyesopenID=${playerID}; path=/; max-age=${oneHour}; SameSite=Lax`;
       socket.emit("completedID", getPlayerID());
     }
   });
@@ -78,10 +79,14 @@ function closeCard() {
 }
 
 function checkIfSessionExists() {
-  if (getPlayerID() !== "null") {
-    return true;
-  }
-  return false;
+  socket.emit("checkUser", getPlayerID());
+  socket.on("userExists", (userExists) => {
+    if (userExists) {
+      return true;
+    } else {
+      return false;
+    }
+  });
 }
 
 function displayUser() {
@@ -89,8 +94,6 @@ function displayUser() {
     document.getElementById("overlay").style.display = "block";
     document.getElementById("user").style.display = "flex";
     document.getElementById("inputUser").focus();
-  } else {
-    displayJoin();
   }
 }
 function hideUser() {
@@ -101,59 +104,16 @@ function hideUser() {
   document.getElementById("inputUser").style.border = "2px solid #b1b1b1";
 }
 
-function displayHost() {
-  if (!checkIfSessionExists()) {
-    document.getElementById("overlay").style.display = "block";
-    document.getElementById("host").style.display = "flex";
-    document.getElementById("inputHost").focus();
-  } else {
-    socket.emit("createRoom", getPlayerID());
-    socket.emit("fetchRoomCode", getPlayerID());
-    socket.on("hostRoom", (roomCode) => {
-      console.log(roomCode);
-      setLocation(`/lobby/${roomCode}`);
-    });
-  }
-}
-function hideHost() {
-  document.getElementById("overlay").style.display = "none";
-  document.getElementById("host").style.display = "none";
-  document.getElementById("host-help").style.display = "none";
-  document.getElementById("inputHost").value = "";
-  document.getElementById("inputHost").style.border = "2px solid #b1b1b1";
-}
-
 function UserInputDone() {
   hideUser();
-  displayJoin();
-}
-
-function UserInputDoneHost(roomCode) {
-  hideHost();
-  // to a new room
-  setLocation(`/lobby/${roomCode}`);
-}
-
-function displayJoin() {
-  document.getElementById("overlay").style.display = "block";
-  document.getElementById("join-room").style.display = "flex";
-  document.getElementById("code").focus();
-}
-
-function hideJoin() {
-  document.getElementById("overlay").style.display = "none";
-  document.getElementById("join-room").style.display = "none";
-  document.getElementById("join-help").style.display = "none";
-  document.getElementById("code").value = "";
-  document.getElementById("code").style.border = "2px solid #b1b1b1";
 }
 
 function roomFull() {
   document.getElementById("join-help").style.display = "flex";
-  document.getElementById("inputUser").style.border = "2px solid hsl(0, 100%, 45%)";
+  document.getElementById("inputUser").style.border =
+    "2px solid hsl(0, 100%, 45%)";
   document.getElementById("user-help").innerText = "The room is full";
 }
-
 
 function userNameShortError() {
   document.getElementById("user-help").style.display = "flex";
@@ -169,7 +129,6 @@ function userNameCorrect() {
     "2px solid hsl(123, 100%, 45%)";
 }
 
-
 function checkDirectName() {
   var inputVal = document.getElementById("inputUser").value;
   if (inputVal.length < 1) {
@@ -177,18 +136,25 @@ function checkDirectName() {
   } else {
     var full = false;
     requestID();
-    socket.emit("checkRoomCode", inputVal, getPlayerID());
+    var URL = window.location.href.replace("http://", "");
+    var room = URL.split("/")[URL.split("/").length - 2];
+    setTimeout(() => {
+        socket.emit("createUser", inputVal, getPlayerID());
+        socket.emit("checkRoomCode", room, getPlayerID());
+    }, 500);
     socket.on("roomCodeResponse", (status) => {
-        if (status == "full") {
-            roomFull();
-            full = true;
-        }
+      if (status == "full") {
+        roomFull();
+        full = true;
+      }
     });
     if (full == false) {
+        userNameCorrect();
+        UserInputDone();
+        socket.emit("setRoom", getPlayerID());
+        socket.emit("joinedLobby", getPlayerID());
         setTimeout(() => {
-          socket.emit("createUser", inputVal, getPlayerID());
-          userNameCorrect();
-          UserInputDone();
+            setLocation(lobby + room);
         }, 500);
     }
   }
