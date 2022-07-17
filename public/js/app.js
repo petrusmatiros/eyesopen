@@ -23,7 +23,7 @@ const lobby = "http://localhost:3000/lobby/";
     }
   }
 }
-
+var test = false;
 socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID())
   socket.on("userExists", (userExists) => {
