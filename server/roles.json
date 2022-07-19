@@ -4,7 +4,7 @@
             "villager": {
                 "name": "villager",
                 "description": "just a regular player",
-                "mission": "survive with the rest of the good team",
+                "mission": " ",
                 "hasNightAbility" : false,
                 "voteCount" : 1
             },
@@ -67,7 +67,7 @@
             "witch": {
                 "name": "witch",
                 "description": "a infamous spell caster, known to use dark magic to get what you want",
-                "mission": "cast a spell to make another player (expect mafia) unable to use their ability for the night",
+                "mission": "cast a blocking spell to block someone’s (except mafia) ability at night",
                 "hasNightAbility" : true,
                 "voteCount" : 1,
                 "killVoteCount": 1
@@ -84,7 +84,7 @@
         "neutral": {
             "jester": {
                 "name": "jester",
-                "description": " fool, a clown, a full out jokster",
+                "description": "a fool, a clown, a full out jokster",
                 "mission": "make yourself get voted out",
                 "hasNightAbility" : false,
                 "voteCount" : 1
@@ -100,7 +100,7 @@
             "executioner": {
                 "name": "executioner",
                 "description": "you are a feared and precise executioner - waiting for the right moment",
-                "mission": "make your target get voted out. You become the jester if your target is killed",
+                "mission": "Get your target voted out. You become the jester if your target is killed",
                 "hasNightAbility" : false,
                 "voteCount" : 1
             },

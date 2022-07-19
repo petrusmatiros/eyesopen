@@ -28,7 +28,7 @@
 ---
 
 ## Link to website
-To be inserted
+To be inserted (coming soon)
 <br>
 Enjoy ^-^
 
