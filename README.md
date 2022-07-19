@@ -97,7 +97,6 @@ Enjoy ^-^
 ## Dependencies
 ```json
 "dependencies": {
-    "ejs": "^3.1.8",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
     "randomstring": "^1.2.2",
