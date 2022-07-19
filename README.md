@@ -14,10 +14,10 @@
   - [Game description & objective](#game-description--objective)
   - [Requirements](#requirements)
   - [Role info](#role-info)
-  - [Dependencies](#dependencies)
+  <!-- - [Dependencies](#dependencies)
   - [Install and build](#install-and-build)
   - [Assets](#assets)
-  - [Notes](#notes)
+  - [Notes](#notes) -->
 ### Project
 - [Dependencies](#dependencies)
 - [Install and build](#install-and-build)
