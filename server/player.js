@@ -22,14 +22,17 @@ class Player {
   ) {
     this.playerName = playerName;
     this.role = role;
+    // DO NOT RESET
     this.isKilled = false;
     this.isLynched = false;
     this.killedBy = [];
+    // RESET AFTER EVERY NIGHT HAS ENDED
     this.isProtected = false;
     this.isTargeted = false;
     this.isBlocked = false;
     this.isDisguised = false;
     this.fakeTeam = "";
+    // RESET AFTER EVERY TIME PLAYER HAS TO TARGET SOME PLAYER (DAY/NIGHT VOTING AND ABILITY)
     this.abilityTarget = null;
     this.voteTarget = null;
   }

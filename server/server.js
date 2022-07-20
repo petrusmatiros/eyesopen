@@ -134,6 +134,16 @@ io.on("connection", async (socket) => {
     }
   });
 
+  function hostInLobby(roomCode) {
+    var room = rooms.get(roomCode);
+    for (var i = 0; i < room.getUsers().length; i++) {
+      if (room.getUsers()[i].getPlayerID() == room.getHost()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   function amountUnready(roomCode) {
     var room = rooms.get(roomCode);
     var ready = 0;
@@ -166,7 +176,7 @@ io.on("connection", async (socket) => {
         socket.join(connectedUsers.get(playerID).getCurrentRoom());
 
         socket.emit("viewRoom", roomCode);
-        socket.emit("viewPlayerCount", amountUnready(roomCode));
+        socket.emit("viewPlayerCount", amountUnready(roomCode), hostInLobby(roomCode));
         console.log(socket.rooms);
         console.log(connectedUsers.get(playerID));
         socket.emit("joinPlayerSlot");
@@ -193,7 +203,8 @@ io.on("connection", async (socket) => {
         var room = connectedUsers.get(playerID).getCurrentRoom();
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
           "viewPlayerCount",
-          amountUnready(room)
+          amountUnready(roomCode), 
+          hostInLobby(roomCode)
         );
       }
     }
@@ -209,7 +220,8 @@ io.on("connection", async (socket) => {
         socket.emit("viewRoom", roomCode);
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
           "viewPlayerCount",
-          amountUnready(roomCode)
+          amountUnready(roomCode), 
+          hostInLobby(roomCode)
         );
         console.log(socket.rooms);
         console.log(connectedUsers.get(playerID));

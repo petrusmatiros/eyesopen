@@ -55,11 +55,15 @@ socket.on("connect", () => {
         console.log("updated player slots")
       });
       socket.on("getPlayerCount", getPlayerID());
-      socket.on("viewPlayerCount", (amountUnready) => {
-        if (amountUnready == 0) {
-          document.getElementById("player-count").innerText = "Everyone is ready!";
+      socket.on("viewPlayerCount", (amountUnready, hostExists) => {
+        if (!hostExists) {
+          document.getElementById("player-count").innerText = "Host is not in room";
         } else {
-          document.getElementById("player-count").innerText = amountUnready + " player(s) not ready";
+          if (amountUnready == 0) {
+            document.getElementById("player-count").innerText = "Everyone is ready!";
+          } else {
+            document.getElementById("player-count").innerText = amountUnready + " player(s) not ready";
+          }
         }
       })
     };
