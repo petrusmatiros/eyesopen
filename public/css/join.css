@@ -170,10 +170,14 @@
     color: #000000;
     margin: 0.5em 1em 0.5em 1em;
   }
+
+  #code {
+    text-transform: uppercase;
+  }
   
   input[type="text"] {
     background-color: #ffffff;
-    font-family: "Inter", sans-serif;
+    font-family: "League Spartan", sans-serif;
     text-align: center;
     font-size: 1rem;
     margin: 0.5em 1em 0.5em 1em;

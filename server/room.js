@@ -6,72 +6,72 @@ class Room {
       slot1: {
         taken: false,
         userID: undefined,
-        userName: null,
+        userName: "",
       },
       slot2: {
         taken: false,
         userID: undefined,
-        userName: null,
+        userName: "",
       },
       slot3: {
         taken: false,
         userID: undefined,
-        userName: null,
+        userName: "",
       },
       slot4: {
         taken: false,
         userID: undefined,
-        userName: null,
+        userName: "",
       },
       slot5: {
         taken: false,
         userID: undefined,
-        userName: null,
+        userName: "",
       },
       slot6: {
         taken: false,
         userID: undefined,
-        userName: null,
+        userName: "",
       },
       slot7: {
         taken: false,
         userID: undefined,
-        userName: null,
+        userName: "",
       },
       slot8: {
         taken: false,
         userID: undefined,
-        userName: null,
+        userName: "",
       },
       slot9: {
         taken: false,
         userID: undefined,
-        userName: null,
+        userName: "",
       },
       slot10: {
         taken: false,
         userID: undefined,
-        userName: null,
+        userName: "",
       },
       slot11: {
         taken: false,
         userID: undefined,
-        userName: null,
+        userName: "",
       },
       slot12: {
         taken: false,
         userID: undefined,
-        userName: null,
+        userName: "",
       },
       slot13: {
         taken: false,
         userID: undefined,
-        userName: null,
+        userName: "",
       },
       slot14: {
         taken: false,
         userID: undefined,
-        userName: null,
+        userName: "",
       },
     };
     this.inProgress = false;

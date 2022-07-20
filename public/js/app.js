@@ -33,33 +33,61 @@ socket.on("connect", () => {
         window.location.href =  window.location.href + '/join'; 
       }
     } else {
-      // USER EXISTS
-      // !! IMPLEMENT AJAX
-      socket.emit("setRoom", getPlayerID());
-      socket.emit("joinedLobby", getPlayerID());
+      if (window.location.href !== lobby) {
+        var URL = window.location.href.replace("http://", "");
+        var room = URL.split("/")[URL.split("/").length - 1];
+        socket.emit("setRoom", getPlayerID());
+        socket.emit("directJoin", getPlayerID(), room);
+      } else {
+        // USER EXISTS
+        // !! IMPLEMENT AJAX
+        socket.emit("setRoom", getPlayerID());
+        socket.emit("joinedLobby", getPlayerID());
+      }
       socket.on("viewRoom", (roomCode) => {
         document.getElementById("roomcode-copy").innerText = roomCode;
       });
-      socket.on("joinPlayerSlot", (user) => {
+      socket.on("joinPlayerSlot", () => {
         socket.emit("requestPlayerSlot", getPlayerID());
       });
-      socket.on("playerSlots", (slots) => {
-        updatePlayerSlots(slots);
+      socket.on("playerSlots", (host, slots) => {
+        updatePlayerSlots(host, slots);
+        console.log("updated player slots")
       });
+      socket.on("getPlayerCount", getPlayerID());
+      socket.on("viewPlayerCount", (amountUnready) => {
+        if (amountUnready == 0) {
+          document.getElementById("player-count").innerText = "Everyone is ready!";
+        } else {
+          document.getElementById("player-count").innerText = amountUnready + " player(s) not ready";
+        }
+      })
     };
   });
 });
 
-function updatePlayerSlots(slots) {
+
+function updatePlayerSlots(host, slots) {
   for (var [key, value] of Object.entries(slots)) {
     if (value.taken == true) {
       var slot = document.getElementById(key);
       slot.innerText = value.userName;
-      slot.id = value.userID;
-      slot.parentElement.id = "joined";
-      var status = slot.parentElement.children[1];
+      slot.parentElement.id = value.userID;
+      slot.parentElement.parentElement.id = "joined";
+      var status = slot.parentElement.parentElement.children[1];
       status.id = "status-notready";
+      if (value.userID == host) {
+        slot.parentElement.parentElement.style.border = "2px solid var(--dark-fg)";
+      }
       // status.innerText = "not ready";
+    } else if (value.taken == false) {
+      var slot = document.getElementById(key);
+      slot.innerText = value.userName;
+      slot.parentElement.id = value.userID;
+      slot.parentElement.parentElement.id = "";
+      var status = slot.parentElement.parentElement.children[1];
+      status.id = "";
+      slot.parentElement.parentElement.style.border = "0px solid var(--dark-fg)";
     }
   }
 }

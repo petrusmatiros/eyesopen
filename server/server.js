@@ -62,7 +62,9 @@ var counter = timeDurations.voting;
 // establish server connection with socket
 io.on("connection", async (socket) => {
   console.log("a user connected, with socket id:", socket.id);
-
+  rooms.forEach((value, key) => {
+    console.log("ALL THE USERS", value.getUsers());
+  })
   // reassign sockets to their playerID rooms (if they have a playerID)
   socket.on("setRoom", (playerID) => {
     console.log(`player ${playerID} is joining their own room`);
@@ -87,6 +89,7 @@ io.on("connection", async (socket) => {
         clearPlayerSlot(playerID);
         // remove user from room
         rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
+        updatePlayerCount(playerID);
         // socket leaves room
         socket.leave(targetRoom);
         console.log("leaving room", targetRoom);
@@ -134,19 +137,80 @@ io.on("connection", async (socket) => {
     }
   });
 
+  function amountUnready(roomCode) {
+    var room = rooms.get(roomCode)
+    var ready = 0;
+    for (var i = 0; i < room.userCount(); i++) {
+      if (room.getUsers()[i].getReady() == true) {
+        ready++;
+      }
+    }
+    return room.userCount() - ready;
+  }
+
+  function checkForAlreadyExistingUser(roomCode, playerID) {
+    if (rooms.get(roomCode).getUsers().length == 0) {
+      rooms.get(roomCode).addUser(connectedUsers.get(playerID));
+    } else {
+      for (var i = 0; i < rooms.get(roomCode).getUsers().length; i++) {
+        if (rooms.get(roomCode).getUsers()[i] !== playerID) {
+        }
+      }
+    }
+  }
+
   socket.on("joinedLobby", (playerID) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-        var room = connectedUsers.get(playerID).getCurrentRoom();
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         socket.join(connectedUsers.get(playerID).getCurrentRoom());
-        socket.emit("viewRoom", room);
+        
+        socket.emit("viewRoom", roomCode);
+        socket.emit("viewPlayerCount", amountUnready(roomCode));
         console.log(socket.rooms);
+        console.log("player count")
         console.log(connectedUsers.get(playerID));
-        socket.emit("joinPlayerSlot", connectedUsers.get(playerID).getName());
+        socket.emit("joinPlayerSlot");
       }
     }
     socket.data.playerID = playerID;
   });
+
+  function updatePlayerCount(playerID) {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var room = connectedUsers.get(playerID).getCurrentRoom();
+        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("viewPlayerCount", amountUnready(room));
+      }
+    }
+  }
+
+  socket.on("getPlayerCount", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var room = connectedUsers.get(playerID).getCurrentRoom();
+        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("viewPlayerCount", amountUnready(room));
+      }
+    }
+  })
+
+  socket.on("directJoin", (playerID, directRoom) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        connectedUsers.get(playerID).setCurrentRoom(directRoom)
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        socket.join(connectedUsers.get(playerID).getCurrentRoom());
+        checkForAlreadyExistingUser(roomCode, playerID);
+        socket.emit("viewRoom", roomCode);
+        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("viewPlayerCount", amountUnready(roomCode));
+        console.log(socket.rooms);
+        console.log(connectedUsers.get(playerID));
+        socket.emit("joinPlayerSlot");
+      }
+    }
+    socket.data.playerID = playerID;
+  });
+
 
   socket.on("requestPlayerSlot", (playerID) => {
     console.log(playerID);
@@ -169,6 +233,7 @@ io.on("connection", async (socket) => {
               .getName();
             io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
               "playerSlots",
+              room.getHost(),
               room.slots
             );
             break;
@@ -186,11 +251,14 @@ io.on("connection", async (socket) => {
         if (value.userID == playerID) {
           room.slots[key]["taken"] = false;
           room.slots[key]["userID"] = undefined;
-          room.slots[key]["userName"] = null;
+          room.slots[key]["userName"] = "";
+          console.log(room.slots)
           io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
             "playerSlots",
-            room
+            room.getHost(),
+            room.slots
           );
+          console.log("CLEARED PLAYER", playerID)
           break;
         }
       }
@@ -260,7 +328,7 @@ io.on("connection", async (socket) => {
           // Setting up room
           connectedUsers.get(playerID).setCurrentRoom(roomCode);
           rooms.set(roomCode, new Room(playerID));
-          rooms.get(roomCode).addUser(connectedUsers.get(playerID));
+          checkForAlreadyExistingUser(roomCode, playerID);
 
           console.log("room", roomCode, "created");
           console.log(socket.id, "joined", roomCode);
@@ -282,7 +350,7 @@ io.on("connection", async (socket) => {
         // Setting up room
         connectedUsers.get(playerID).setCurrentRoom(roomCode);
         rooms.set(roomCode, new Room(playerID));
-        rooms.get(roomCode).addUser(connectedUsers.get(playerID));
+        checkForAlreadyExistingUser(roomCode, playerID);
 
         console.log("room", roomCode, "created");
         console.log(socket.id, "joined", roomCode);
@@ -311,7 +379,7 @@ io.on("connection", async (socket) => {
               console.log("user already in room");
             } else {
               connectedUsers.get(playerID).setCurrentRoom(roomCode);
-              rooms.get(roomCode).addUser(connectedUsers.get(playerID));
+              checkForAlreadyExistingUser(roomCode, playerID);
             }
           }
         }

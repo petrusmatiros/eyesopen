@@ -30,7 +30,9 @@
   --ability-button-bg--used: hsl(360, 98%, 95%);
 }
 
-
+.menu {
+  width: 100%;
+}
 
 #copy-button {
   display: "inline";
@@ -55,7 +57,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin: 0rem 3rem 0rem 3rem;
+  margin: 0rem 1rem 0rem 1rem;
 }
 
 .lobby-code {
@@ -90,7 +92,23 @@
   padding: 1em;
   border-radius: 0.5em;
   margin: 0.5rem 3rem 0rem 3rem;
+  min-width: 19rem;
+  max-width: 19rem;
+}
 
+@media screen and (max-width: 600px) {
+  .lobby-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: var(--light-bg);
+    padding: 1em;
+    border-radius: 0.5em;
+    margin: 0.5rem 3rem 0rem 3rem;
+    min-width: 19rem;
+    max-width: 19rem;
+  }
 
 }
 
@@ -130,8 +148,8 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  margin-left: 0.15rem;
+  margin-right: 0.15rem;
 }
 #joined {
   background-color: hsl(0, 0%, 82%);
@@ -142,13 +160,14 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
   border-radius: 0.5em;
   background-color: hsl(0, 0%, 95%);
-  min-width: 4rem;
-  min-height: 0.35rem;
-  margin-top: 0.25rem;
+  min-width: 9rem;
+  max-width: 9rem;
+  min-height: 2rem;
+  max-height: 2.35rem;
   margin-bottom: 0.25rem;
 }
 
@@ -158,12 +177,12 @@
   justify-content: center;
   align-items: center;
   color: var(--dark-fg);
-  padding: 1rem;
   border-radius: 0.5em;
   font-size: 0.75rem;
   font-weight: 500;
   text-align: center;
-  min-width: 4rem;
+  padding: 0.15rem;
+  min-width: 5.3rem;
   max-width: 7rem;
   min-height: 0.35rem;
   max-height: 0.35rem;
@@ -184,10 +203,10 @@
   color: var(--dark-fg);
   text-align: center;
   background-color: var(--not-ready);
-  padding: 0.25rem 0.5em 0.25rem 0.5em;
-  border-radius: 0.5em;
-  font-size: 0.65rem;
-  margin-left: 0.6rem;
+  padding: 0.15rem 0.25em 0.15rem 0.25em;
+  border-radius: 0.45em;
+  font-size: 0.55rem;
+  margin-left: 0.75rem;
 }
 
 .lobby-role-tag {

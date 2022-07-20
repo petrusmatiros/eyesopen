@@ -2,17 +2,13 @@ class User {
   constructor(
     playerID=undefined,
     name = "",
-    player = null,
-    ready = false,
-    inGame = false,
-    currentRoom = null
   ) {
     this.playerID = playerID;
     this.name = name;
-    this.player = player;
-    this.ready = ready;
-    this.inGame = inGame;
-    this.currentRoom = currentRoom;
+    this.player = null;
+    this.ready = false;
+    this.inGame = false;
+    this.currentRoom = null;
   }
 
   getPlayerID() {
