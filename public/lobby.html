@@ -59,7 +59,7 @@
           />
         </div>
         <div id="player-count" class="lobby-help"></div>
-        <div class="lobby-card">
+        <div id="player-card" class="lobby-card">
           <div class="lobby-card-container">
             <div class="lobby-card-title">Players</div>
             <div class="lobby-req">
@@ -164,6 +164,26 @@
                 </div>
                 <div class="lobby-ready-status">not ready</div>
               </div>
+            </div>
+          </div>
+        </div>
+        <div id="role-tip" class="lobby-help">Tip: If you choose roles that are only evil or only good,
+          the game will immediately end</div>
+        <div id="role-card" class="lobby-card">
+          <div class="lobby-card-container">
+            <div class="lobby-card-title">Roles</div>
+            <div class="lobby-req">
+              Requirement: nr of players == nr of roles
+              <img
+                id="lobby-req-check"
+                class="lobby-req-icon"
+                src="/icons/check.svg"
+              />
+              <img
+                id="lobby-req-cross"
+                class="lobby-req-icon"
+                src="/icons/cross.svg"
+              />
             </div>
           </div>
         </div>

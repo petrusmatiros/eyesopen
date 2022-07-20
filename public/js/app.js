@@ -61,8 +61,20 @@ socket.on("connect", () => {
         } else {
           if (amountUnready == 0) {
             document.getElementById("player-count").innerText = "Everyone is ready!";
+            
           } else {
+            if (amountUnready >= 3) {
+              // ?THIS NEEDS TO BE EMITTED FROM THE SERVER
+              document.getElementById("lobby-req-check").style.display = "inline";
+              document.getElementById("lobby-req-cross").style.display = "none";
+            } else {
+              // ?THIS NEEDS TO BE EMITTED FROM THE SERVER
+
+              document.getElementById("lobby-req-check").style.display = "none";
+              document.getElementById("lobby-req-cross").style.display = "inline";
+            }
             document.getElementById("player-count").innerText = amountUnready + " player(s) not ready";
+            
           }
         }
       })

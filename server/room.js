@@ -1,3 +1,5 @@
+var { Game } = require("./game");
+
 class Room {
   constructor(host) {
     this.users = [];
@@ -74,25 +76,8 @@ class Room {
         userName: "",
       },
     };
-    this.inProgress = false;
-    this.isDone = false;
+    this.game = new Game();
     this.host = host;
-  }
-
-  getProgress() {
-    return this.inProgress;
-  }
-
-  setProgress(progress) {
-    this.inProgress = progress;
-  }
-
-  getDone() {
-    return this.isDone;
-  }
-
-  setDone(done) {
-    this.isDone = done;
   }
 
   getUsers() {

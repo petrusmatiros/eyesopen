@@ -15,6 +15,7 @@ var __dirname = "/mnt/c/Users/petru/Documents/Code/eyesopen/public/";
 var randomstring = require("randomstring");
 
 var { Room } = require("./room");
+var { Game } = require("./game");
 var { Player } = require("./player");
 var { User } = require("./user");
 
