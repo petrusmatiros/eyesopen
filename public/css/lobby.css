@@ -130,14 +130,17 @@
   transition: background-color 0.3s ease-out;
 }
 
+#role-tip {
+  margin-top: 0.3rem;
+}
 
 .lobby-help {
   text-align: center;
   color: var(--dark-fg);
   font-size: 1rem;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   max-width: 19rem;
-  min-height: 0.9rem;
+  min-height: 1.3rem;
 }
 .lobby-card {
   display: flex;
@@ -145,9 +148,9 @@
   align-items: center;
   flex-direction: column;
   background-color: var(--light-bg);
-  padding: 0.9em;
+  padding: 0.9em 1em 0.9em 1em;
   border-radius: 0.5em;
-  margin: 0.5rem 3rem 0.5rem 3rem;
+  margin: 0.5rem 1rem 0.5rem 1rem;
   min-width: 19rem;
   max-width: 19rem;
 }
@@ -165,9 +168,9 @@
     align-items: center;
     flex-direction: column;
     background-color: var(--light-bg);
-    padding: 0.9em;
+    padding: 0.9em 1em 0.9em 1em;
     border-radius: 0.5em;
-    margin: 0.5rem 3rem 0.5rem 3rem;
+    margin: 0.5rem 1rem 0.5rem 1rem;
     min-width: 19rem;
     max-width: 19rem;
   }
@@ -206,8 +209,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* margin-top: 0.5rem; */
-  min-height: 14rem;
+  margin-top: 0.25rem;
+  min-height: 11.9rem;
 }
 
 .lobby-player-col {
@@ -220,6 +223,8 @@
 }
 #joined {
   background-color: var(--slot-joined);
+  border: 2px solid var(--slot-joined);
+
 }
 
 .lobby-player-wrapper {
@@ -231,11 +236,11 @@
   padding-right: 0.25rem;
   border-radius: 0.5em;
   background-color: var(--slot-empty);
-  min-width: 9rem;
-  max-width: 9rem;
-  min-height: 1.5rem;
-  max-height: 1.5rem;
-  margin-bottom: 0.25rem;
+  min-width: 8.5rem;
+  max-width: 8.5rem;
+  min-height: 1.25rem;
+  max-height: 1.25rem;
+  margin-bottom: 0.2rem;
   border: 2px solid var(--slot-empty);
 }
 
@@ -250,8 +255,8 @@
   font-weight: 500;
   text-align: center;
   padding: 0.15rem;
-  min-width: 5.6rem;
-  max-width: 7rem;
+  min-width: 5rem;
+  max-width: 5rem;
   min-height: 0.35rem;
   max-height: 0.35rem;
 }
@@ -259,6 +264,7 @@
 #status-ready {
   visibility: visible;
   background-color: var(--ready-bg);
+  min-width: 2.16rem;
 }
 #status-notready {
   visibility: visible;
@@ -267,11 +273,9 @@
 
 .lobby-ready-status {
   user-select: none;
-  cursor: pointer;
   visibility: hidden;
   color: var(--dark-fg);
   text-align: center;
-  background-color: var(--not-ready-bg);
   padding: 0.15rem 0.25em 0.15rem 0.25em;
   border-radius: 0.45em;
   font-size: 0.55rem;

@@ -29,9 +29,9 @@ var connectedUsers = new Map();
 app.use(express.static("public"));
 
 app.use((req, res, next) => {
-  res.set('Cache-Control', 'no-store')
-  next()
-})
+  res.set("Cache-Control", "no-store");
+  next();
+});
 // app.use(express.urlencoded({ extended: true }));
 
 // serving public file
@@ -89,6 +89,11 @@ io.on("connection", async (socket) => {
       var targetRoom = connectedUsers.get(playerID).getCurrentRoom();
       console.log("targetroom", targetRoom);
       if (targetRoom !== null) {
+        connectedUsers.get(playerID).setReady(false);
+        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+          "ready-status",
+          rooms.get(targetRoom).getUsers()
+        );
         clearPlayerSlot(playerID);
         // remove user from room
         rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
@@ -171,26 +176,67 @@ io.on("connection", async (socket) => {
     }
   }
 
+  socket.on("refreshReady", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var notReady = false;
+        connectedUsers.get(playerID).setReady(notReady);
+        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+          "ready-status",
+          rooms.get(roomCode).getUsers()
+        );
+      }
+    }
+  });
+
   socket.on("player-unready", (playerID) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         var notReady = false;
         connectedUsers.get(playerID).setReady(notReady);
-        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("ready-status", playerID, notReady)
+        updatePlayerCount(playerID);
+        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+          "ready-status",
+          rooms.get(roomCode).getUsers()
+        );
       }
     }
-  })
+  });
+
+  function checkAllReady(roomCode, playerID) {
+    var count = 0;
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        for (var i = 0; i < rooms.get(roomCode).getUsers().length; i++) {
+          if (rooms.get(roomCode).getUsers()[i].getReady()) {
+            count++;
+          }
+        }
+        if (count == rooms.get(roomCode).getUsers().length) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  }
+
   socket.on("player-ready", (playerID) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         var ready = true;
         connectedUsers.get(playerID).setReady(ready);
-        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("ready-status", playerID, ready)
+        updatePlayerCount(playerID);
+        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+          "ready-status",
+          rooms.get(roomCode).getUsers()
+        );
       }
-      }
-  })
+    }
+  });
 
   socket.on("joinedLobby", (playerID) => {
     if (checkUserExist(playerID)) {
@@ -199,7 +245,13 @@ io.on("connection", async (socket) => {
         socket.join(connectedUsers.get(playerID).getCurrentRoom());
 
         socket.emit("viewRoom", roomCode);
-        socket.emit("viewPlayerCount", amountUnready(roomCode), hostInLobby(roomCode), rooms.get(roomCode).getHost());
+        socket.emit(
+          "viewPlayerCount",
+          amountUnready(roomCode),
+          hostInLobby(roomCode),
+          connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
+          checkAllReady(roomCode, playerID)
+        );
         console.log(socket.rooms);
         console.log(connectedUsers.get(playerID));
         socket.emit("joinPlayerSlot");
@@ -216,25 +268,12 @@ io.on("connection", async (socket) => {
           "viewPlayerCount",
           amountUnready(roomCode),
           hostInLobby(roomCode),
-          rooms.get(roomCode).getHost()
+          connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
+          checkAllReady(roomCode, playerID)
         );
       }
     }
   }
-
-  socket.on("getPlayerCount", (playerID) => {
-    if (checkUserExist(playerID)) {
-      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-        var room = connectedUsers.get(playerID).getCurrentRoom();
-        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-          "viewPlayerCount",
-          amountUnready(roomCode), 
-          hostInLobby(roomCode),
-          rooms.get(roomCode).getHost()
-        );
-      }
-    }
-  });
 
   socket.on("directJoin", (playerID, directRoom) => {
     if (checkUserExist(playerID)) {
@@ -246,9 +285,10 @@ io.on("connection", async (socket) => {
         socket.emit("viewRoom", roomCode);
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
           "viewPlayerCount",
-          amountUnready(roomCode), 
+          amountUnready(roomCode),
           hostInLobby(roomCode),
-          rooms.get(roomCode).getHost()
+          connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
+          checkAllReady(roomCode, playerID)
         );
         console.log(socket.rooms);
         console.log(connectedUsers.get(playerID));

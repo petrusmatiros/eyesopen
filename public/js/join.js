@@ -11,6 +11,9 @@ socket.on("connect", () => {
       resetCookie();
     } else {
       socket.emit("setRoom", getPlayerID());
+      var URL = window.location.href.replace("http://", "");
+      var room = URL.split("/")[URL.split("/").length - 2];
+      window.location.href = lobby + room;
     }
   });
 });

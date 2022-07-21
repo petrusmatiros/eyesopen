@@ -54,7 +54,10 @@ socket.on("connect", () => {
         updatePlayerSlots(host, slots);
         console.log("updated player slots");
       });
-      socket.on("getPlayerCount", getPlayerID());
+      setTimeout(() => {
+        socket.emit("refreshReady", getPlayerID());
+      }, 300)
+      
       socket.on("viewPlayerCount", (amountUnready, hostExists, host) => {
         if (!hostExists) {
           document.getElementById("player-count").innerText =
@@ -62,9 +65,9 @@ socket.on("connect", () => {
         } else {
           if (amountUnready == 0) {
             document.getElementById("player-count").innerText =
-              "Everyone is ready! Start the game, " + host;
+                        "Everyone is ready, " + host;
             document.getElementById("player-count").style.color =
-              "hsl(100, 100%, 35%)";
+                        "hsl(100, 100%, 35%)";
           } else {
             document.getElementById("player-count").style.color =
               "var(--dark-fg)";
@@ -83,24 +86,29 @@ socket.on("connect", () => {
             document.getElementById("player-count").innerText =
               amountUnready + " player(s) not ready";
           }
-        }
+          }
+        
       });
     }
+    
   });
 });
 
-socket.on("ready-status", (playerID, ready) => {
-  if (ready) {
-    var wrapper = document.getElementById(playerID).parentElement;
-    var status = document.getElementById(playerID).parentElement.children[1];
-    status.innerText = "ready";
-    status.id = "status-ready";
 
-  } else {
-    var wrapper = document.getElementById(playerID).parentElement;
-    var status = document.getElementById(playerID).parentElement.children[1];
-    status.innerText = "not ready";
-    status.id = "status-notready";
+socket.on("ready-status", (users) => {
+  console.log(users)
+  for (var i = 0; i < users.length; i++) {
+    if (users[i].ready) {
+      var status = document.getElementById(users[i].playerID).parentElement.children[1];
+      status.innerText = "ready";
+      status.id = "status-ready";
+    } else if (!users[i].ready) {
+      console.log(i)
+      console.log("ID:" + users[i].playerID)
+      var status = document.getElementById(users[i].playerID).parentElement.children[1];
+      status.innerText = "not ready";
+      status.id = "status-notready";
+    }
   }
 })
 
@@ -136,7 +144,6 @@ function updatePlayerSlots(host, slots) {
       }
       slot.parentElement.parentElement.id = "joined";
       var status = slot.parentElement.parentElement.children[1];
-      status.id = "status-notready";
       if (value.userID == host) {
         slot.parentElement.parentElement.style.border =
           "2px solid var(--dark-fg)";
