@@ -3,7 +3,7 @@ const socket = io("http://localhost:3000");
 
 const domain = "http://localhost:3000/";
 const lobby = "http://localhost:3000/lobby/";
-
+const minPlayers = 3;
 /**
  * [resetCookie resets the playerID cookie to null]
  */
@@ -78,13 +78,13 @@ socket.on("connect", () => {
           }
         }
       })
-      socket.on("viewPlayerCount", (amountUnready, hostExists, host) => {
+      socket.on("viewPlayerCount", (amountUnready, hostExists, host, allReady, totalUsers) => {
         document.getElementById("player-card").style.border = "2px solid hsl(360, 100%, 55%)";
         if (!hostExists) {
           document.getElementById("player-count").innerText =
             "Host is not in room";
         } else {
-          if (amountUnready == 0) {
+          if (allReady) {
             document.getElementById("player-card").style.border = "2px solid hsl(108, 100%, 45%)";
             document.getElementById("player-count").innerText =
                         "Everyone is ready, " + host;
@@ -93,13 +93,11 @@ socket.on("connect", () => {
           } else {
             document.getElementById("player-count").style.color =
               "var(--dark-fg)";
-            if (amountUnready >= 3) {
-              // ?THIS NEEDS TO BE EMITTED FROM THE SERVER
+            if (totalUsers >= minPlayers) {
               document.getElementById("lobby-req-check").style.display =
                 "inline";
               document.getElementById("lobby-req-cross").style.display = "none";
-            } else {
-              // ?THIS NEEDS TO BE EMITTED FROM THE SERVER
+            } else if (totalUsers < minPlayers) {
 
               document.getElementById("lobby-req-check").style.display = "none";
               document.getElementById("lobby-req-cross").style.display =

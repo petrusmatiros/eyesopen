@@ -250,7 +250,8 @@ io.on("connection", async (socket) => {
           amountUnready(roomCode),
           hostInLobby(roomCode),
           connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
-          checkAllReady(roomCode, playerID)
+          checkAllReady(roomCode, playerID),
+          rooms.get(roomCode).getUsers().length,
         );
         console.log(socket.rooms);
         console.log(connectedUsers.get(playerID));
@@ -269,7 +270,8 @@ io.on("connection", async (socket) => {
           amountUnready(roomCode),
           hostInLobby(roomCode),
           connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
-          checkAllReady(roomCode, playerID)
+          checkAllReady(roomCode, playerID),
+          rooms.get(roomCode).getUsers().length,
         );
       }
     }
@@ -288,7 +290,8 @@ io.on("connection", async (socket) => {
           amountUnready(roomCode),
           hostInLobby(roomCode),
           connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
-          checkAllReady(roomCode, playerID)
+          checkAllReady(roomCode, playerID),
+          rooms.get(roomCode).getUsers().length,
         );
         console.log(socket.rooms);
         console.log(connectedUsers.get(playerID));
