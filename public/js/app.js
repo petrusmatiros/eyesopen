@@ -164,6 +164,9 @@ function updatePlayerSlots(host, slots) {
       if (value.userID == host) {
         slot.parentElement.parentElement.style.border =
           "2px solid var(--dark-fg)";
+      } else if (value.userID == getPlayerID()) {
+        slot.parentElement.parentElement.style.border =
+          "2px dashed var(--dark-fg)";
       }
       // status.innerText = "not ready";
     } else if (value.taken == false) {
