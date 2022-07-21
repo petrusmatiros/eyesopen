@@ -136,6 +136,7 @@
 }
 
 .lobby-help {
+  user-select: none;
   text-align: center;
   color: var(--dark-fg);
   font-size: 1rem;
@@ -170,6 +171,7 @@
   width: 100%;
 }
 .lobby-card-title {
+  user-select: none;
   display: flex;
   color: var(--dark-fg);
   font-size: 1.4rem;
@@ -194,6 +196,7 @@
 
 
 .lobby-card-title {
+  user-select: none;
   display: flex;
   color: var(--dark-fg);
   font-size: 1.4rem;
@@ -201,6 +204,7 @@
 }
 
 .lobby-req {
+  user-select: none;
   color: var(--dark-fg);
   font-size: 1rem;
   margin-top: 0.5rem;
@@ -318,6 +322,7 @@
 }
 
 .lobby-role-title {
+  user-select: none;
   font-size: 1rem;
   font-weight: 600;
   color: var(--dark-fg);

@@ -79,11 +79,13 @@ socket.on("connect", () => {
         }
       })
       socket.on("viewPlayerCount", (amountUnready, hostExists, host) => {
+        document.getElementById("player-card").style.border = "2px solid hsl(360, 100%, 55%)";
         if (!hostExists) {
           document.getElementById("player-count").innerText =
             "Host is not in room";
         } else {
           if (amountUnready == 0) {
+            document.getElementById("player-card").style.border = "2px solid hsl(108, 100%, 45%)";
             document.getElementById("player-count").innerText =
                         "Everyone is ready, " + host;
             document.getElementById("player-count").style.color =
