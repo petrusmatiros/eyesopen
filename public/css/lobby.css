@@ -104,6 +104,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
+
 }
 
 #roomcode-copy {
@@ -142,6 +143,15 @@
   max-width: 19rem;
   min-height: 1.3rem;
 }
+.lobby-card-container {
+  opacity: 35%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+
 .lobby-card {
   display: flex;
   justify-content: center;
@@ -150,9 +160,14 @@
   background-color: var(--light-bg);
   padding: 0.9em 1em 0.9em 1em;
   border-radius: 0.5em;
-  margin: 0.5rem 1rem 0.5rem 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   min-width: 19rem;
   max-width: 19rem;
+}
+.lobby-card-title-container {
+  display: block;
+  width: 100%;
 }
 .lobby-card-title {
   display: flex;
@@ -169,17 +184,15 @@
     flex-direction: column;
     background-color: var(--light-bg);
     padding: 0.9em 1em 0.9em 1em;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
     border-radius: 0.5em;
-    margin: 0.5rem 1rem 0.5rem 1rem;
     min-width: 19rem;
     max-width: 19rem;
   }
 }
 
-.lobby-card-container {
-  display: block;
-  width: 100%;
-}
+
 .lobby-card-title {
   display: flex;
   color: var(--dark-fg);
@@ -282,15 +295,23 @@
   margin-left: 0.35rem;
 }
 
+.lobby-role-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .lobby-role-container {
   display: block;
   margin-top: 1rem;
   width: 100%;
 }
 
-.unselectable {
-  opacity: 35%;
+.selectable {
+  opacity: 100%;
 }
+
 
 .lobby-role-row {
   display: flex;
@@ -334,7 +355,6 @@
 
 .lobby-role-tag {
   user-select: none;
-  cursor: pointer;
   padding: 0.25rem;
   border-radius: 0.45em;
   font-size: 0.85rem;

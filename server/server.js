@@ -348,6 +348,23 @@ io.on("connection", async (socket) => {
     }
   }
 
+  socket.on("checkIfHost", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        console.log("HOST", rooms.get(roomCode).getHost())
+        console.log("playerID", playerID)
+        if (rooms.get(roomCode).getHost() == playerID) {
+          console.log(playerID, " are host")
+          socket.emit("isHost", true);
+        } else {
+          console.log(playerID, " are NOT host")
+          socket.emit("isHost", false);
+        }
+      }
+    }
+  })
+
   function checkAlreadyHost(rooms, playerID) {
     for (var [key, value] of rooms) {
       console.log("room:", key, "host", value.getHost());

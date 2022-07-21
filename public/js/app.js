@@ -58,6 +58,26 @@ socket.on("connect", () => {
         socket.emit("refreshReady", getPlayerID());
       }, 300)
       
+      socket.emit("checkIfHost", getPlayerID());
+      socket.on("isHost", (isHost) => {
+        if (isHost) {
+          console.log("SETTING HOST VISIBILITY")
+          document.getElementById("role-container").classList.add("selectable")
+          var array = document.getElementsByClassName("lobby-role-tag")
+          for (var i = 0; i < array.length; i++) {
+            array[i].setAttribute("onclick", "selectRole(this)");
+            array[i].style.cursor = "pointer";
+          }
+        } else {
+          console.log("REMOVING HOST VISIBILITY")
+          document.getElementById("role-container").classList.remove("selectable")
+          var array = document.getElementsByClassName("lobby-role-tag")
+          for (var i = 0; i < array.length; i++) {
+            array[i].setAttribute("onclick", "");
+            array[i].style.cursor = "not-allowed";
+          }
+        }
+      })
       socket.on("viewPlayerCount", (amountUnready, hostExists, host) => {
         if (!hostExists) {
           document.getElementById("player-count").innerText =
@@ -96,15 +116,12 @@ socket.on("connect", () => {
 
 
 socket.on("ready-status", (users) => {
-  console.log(users)
   for (var i = 0; i < users.length; i++) {
     if (users[i].ready) {
       var status = document.getElementById(users[i].playerID).parentElement.children[1];
       status.innerText = "ready";
       status.id = "status-ready";
     } else if (!users[i].ready) {
-      console.log(i)
-      console.log("ID:" + users[i].playerID)
       var status = document.getElementById(users[i].playerID).parentElement.children[1];
       status.innerText = "not ready";
       status.id = "status-notready";
