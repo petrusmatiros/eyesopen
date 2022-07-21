@@ -27,6 +27,11 @@ var connectedUsers = new Map();
 
 // static folder
 app.use(express.static("public"));
+
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store')
+  next()
+})
 // app.use(express.urlencoded({ extended: true }));
 
 // serving public file
@@ -137,12 +142,11 @@ io.on("connection", async (socket) => {
 
   function hostInLobby(roomCode) {
     var room = rooms.get(roomCode);
-    for (var i = 0; i < room.getUsers().length; i++) {
-      if (room.getUsers()[i].getPlayerID() == room.getHost()) {
-        return true;
-      }
+    if (room.getUsers().includes(connectedUsers.get(room.getHost()))) {
+      return true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   function amountUnready(roomCode) {
@@ -158,17 +162,35 @@ io.on("connection", async (socket) => {
 
   function checkForAlreadyExistingUser(roomCode, playerID) {
     var room = rooms.get(roomCode);
-    if (room.getUsers().length > 0) {
-      for (var i = 0; i < room.getUsers().length; i++) {
-        if (room.getUsers()[i].getPlayerID() !== playerID) {
-          rooms.get(roomCode).addUser(connectedUsers.get(playerID));
-          break;
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        if (!room.getUsers().includes(connectedUsers.get(playerID))) {
+          room.addUser(connectedUsers.get(playerID));
         }
       }
-    } else if (room.getUsers().length == 0) {
-      rooms.get(roomCode).addUser(connectedUsers.get(playerID));
     }
   }
+
+  socket.on("player-unready", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var notReady = false;
+        connectedUsers.get(playerID).setReady(notReady);
+        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("ready-status", playerID, notReady)
+      }
+    }
+  })
+  socket.on("player-ready", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var ready = true;
+        connectedUsers.get(playerID).setReady(ready);
+        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("ready-status", playerID, ready)
+      }
+      }
+  })
 
   socket.on("joinedLobby", (playerID) => {
     if (checkUserExist(playerID)) {
@@ -177,7 +199,7 @@ io.on("connection", async (socket) => {
         socket.join(connectedUsers.get(playerID).getCurrentRoom());
 
         socket.emit("viewRoom", roomCode);
-        socket.emit("viewPlayerCount", amountUnready(roomCode), hostInLobby(roomCode));
+        socket.emit("viewPlayerCount", amountUnready(roomCode), hostInLobby(roomCode), rooms.get(roomCode).getHost());
         console.log(socket.rooms);
         console.log(connectedUsers.get(playerID));
         socket.emit("joinPlayerSlot");
@@ -189,10 +211,12 @@ io.on("connection", async (socket) => {
   function updatePlayerCount(playerID) {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-        var room = connectedUsers.get(playerID).getCurrentRoom();
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
           "viewPlayerCount",
-          amountUnready(room)
+          amountUnready(roomCode),
+          hostInLobby(roomCode),
+          rooms.get(roomCode).getHost()
         );
       }
     }
@@ -205,7 +229,8 @@ io.on("connection", async (socket) => {
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
           "viewPlayerCount",
           amountUnready(roomCode), 
-          hostInLobby(roomCode)
+          hostInLobby(roomCode),
+          rooms.get(roomCode).getHost()
         );
       }
     }
@@ -222,7 +247,8 @@ io.on("connection", async (socket) => {
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
           "viewPlayerCount",
           amountUnready(roomCode), 
-          hostInLobby(roomCode)
+          hostInLobby(roomCode),
+          rooms.get(roomCode).getHost()
         );
         console.log(socket.rooms);
         console.log(connectedUsers.get(playerID));

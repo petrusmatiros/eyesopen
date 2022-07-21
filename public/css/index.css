@@ -47,7 +47,7 @@ p {
 }
 
 #without-eyes {
-  margin-top: 1rem;
+  margin-top: 0;
 }
 
 .menu {
@@ -98,7 +98,7 @@ p {
 }
 
 .title-button {
-  user-select:none;
+  user-select: none;
   cursor: pointer;
   display: inline-block;
   justify-content: center;
@@ -129,18 +129,22 @@ p {
   background-color: var(--dark-bg);
   width: auto;
   height: auto;
-  padding: 0.5em;
 }
 
 .navbar-light {
   background-color: var(--light-bg);
   width: auto;
   height: auto;
-  padding: 0.5em;
 }
 
 .navbar-container {
-  margin: 0.15em 0.25em 0.15em 0.25em;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  width: auto;
+  height: auto;
+  padding: 0.4rem 0.4rem 0.4rem 0.4rem;
 }
 
 .author-dark {
@@ -163,16 +167,38 @@ p {
 }
 
 @media screen and (max-width: 600px) {
+  .navbar-dark {
+    background-color: var(--dark-bg);
+    width: auto;
+    height: auto;
+  }
+
+  .navbar-light {
+    background-color: var(--light-bg);
+    width: auto;
+    height: auto;
+  }
+
+  .navbar-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    width: auto;
+    height: auto;
+    padding: 0.4rem 0.4rem 0.4rem 0.4rem;
+  }
+
   #with-eyes {
     margin-top: 3rem;
   }
 
   #without-eyes {
-    margin-top: 1rem;
+    margin-top: 0;
   }
 
   .title-button {
-    user-select:none;
+    user-select: none;
     display: inline-block;
     justify-content: center;
     align-items: center;
@@ -204,7 +230,6 @@ p {
   width: 2rem;
   height: 2rem;
   padding: 0.25em;
-  vertical-align: bottom;
 }
 
 #github-dark {
@@ -261,6 +286,8 @@ p {
 }
 
 .logo-link {
+  display: flex;
+  justify-content: flex-start !important;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -268,7 +295,6 @@ p {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  line-height: 1;
 }
 
 .logo-link:focus {
@@ -276,14 +302,14 @@ p {
 }
 
 .clock-container {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   padding: 0.5em;
 }
 
 .clock {
-  user-select:none;
+  user-select: none;
   text-align: center;
   background-color: #2d2d2d;
   border-radius: 0.6em;
@@ -382,7 +408,7 @@ input[type="text"]:focus {
 }
 
 .confirm-button {
-  user-select:none;
+  user-select: none;
   cursor: pointer;
   display: inline-block;
   justify-content: center;

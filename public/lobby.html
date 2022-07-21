@@ -41,39 +41,46 @@
   <body class="light">
     <nav class="navbar-light">
       <div class="navbar-container">
-        <a href="/" class="logo-link"
-          ><img class="logo" src="/icons/eyesopen.svg"
-        /></a>
+        <div class ="logo-link-container">
+          <a href="/" class="logo-link"
+            ><img class="logo" src="/icons/eyesopen.svg"
+          /></a>
+        </div>
+        <div class="lobby-code-container">
+          <div class="lobby-code" onclick="copyToClipboard()" id="copy-code">
+            <p id="roomcode-copy"></p>
+            <img id="copy-button" src="/icons/copy.svg" alt="copy icon" />
+            <img
+              id="check-circle-icon"
+              src="/icons/check-circle.svg"
+              alt="check circle icon"
+            />
+          </div>
+        </div>
+        <div class="dummy"></div>
       </div>
-      <div class="navbar-container"></div>
     </nav>
     <div class="lobby">
       <div class="menu" id="without-eyes">
-        <div class="lobby-code" onclick="copyToClipboard()" id="copy-code">
-          <p id="roomcode-copy"></p>
-          <img id="copy-button" src="/icons/copy.svg" alt="copy icon" />
-          <img
-            id="check-circle-icon"
-            src="/icons/check-circle.svg"
-            alt="check circle icon"
-          />
-        </div>
+        
         <div id="player-count" class="lobby-help"></div>
         <div id="player-card" class="lobby-card">
           <div class="lobby-card-container">
             <div class="lobby-card-title">Players</div>
             <div class="lobby-req">
               Requirement: 3 minimum
-              <img
-                id="lobby-req-check"
-                class="lobby-req-icon"
-                src="/icons/check.svg"
-              />
-              <img
-                id="lobby-req-cross"
-                class="lobby-req-icon"
-                src="/icons/cross.svg"
-              />
+              <div class="lobby-icon-container">
+                <img
+                  id="lobby-req-check"
+                  class="lobby-req-icon"
+                  src="/icons/check.svg"
+                />
+                <img
+                  id="lobby-req-cross"
+                  class="lobby-req-icon"
+                  src="/icons/cross.svg"
+                />
+              </div>
             </div>
           </div>
           <div id="players" class="lobby-player-container">
@@ -167,61 +174,73 @@
             </div>
           </div>
         </div>
+
         <div id="role-tip" class="lobby-help">Tip: If you choose roles that are only evil or only good,
-          the game will immediately end</div>
+          the game will immediately end
+        </div>
+
         <div id="role-card" class="lobby-card">
           <div class="lobby-card-container">
             <div class="lobby-card-title">Roles</div>
             <div class="lobby-req">
               Requirement: nr of players == nr of roles
-              <img
-                id="lobby-req-check"
-                class="lobby-req-icon"
-                src="/icons/check.svg"
-              />
-              <img
-                id="lobby-req-cross"
-                class="lobby-req-icon"
-                src="/icons/cross.svg"
-              />
+              <div class="lobby-icon-container">
+                <img
+                  id="lobby-req-check"
+                  class="lobby-req-icon"
+                  src="/icons/check.svg"
+                />
+                <img
+                  id="lobby-req-cross"
+                  class="lobby-req-icon"
+                  src="/icons/cross.svg"
+                />
+              </div>
             </div>
           </div>
+          <div id="roles" class="lobby-card-container">
+            <div id="good" class="lobby-role-container">
+              <div class="lobby-role-title">Good</div>
+              <div class="lobby-role-row">
+                <div id="villager" onclick="selectRole(this)" class="lobby-role-tag good">Villager</div>
+                <div id="investigator" onclick="selectRole(this)" class="lobby-role-tag good">Investigator</div>
+                <div id="doctor" onclick="selectRole(this)" class="lobby-role-tag good">Doctor</div>
+                <div id="mayor" onclick="selectRole(this)" class="lobby-role-tag good">Mayor</div>
+                <div id="trapper" onclick="selectRole(this)" class="lobby-role-tag good">Trapper</div>
+              </div>
+              
+            </div>
+            <div id="evil" class="lobby-role-container">
+              <div class="lobby-role-title">Evil</div>
+              <div class="lobby-role-row">
+                <div id="godfather" onclick="selectRole(this)" class="lobby-role-tag evil">Godfather</div>
+              <div id="mafioso" onclick="selectRole(this)" class="lobby-role-tag evil">Mafioso</div>
+              <div id="surgeon" onclick="selectRole(this)" class="lobby-role-tag evil">Surgeon</div>
+              <div id="witch" onclick="selectRole(this)" class="lobby-role-tag evil">Witch</div>
+              <div id="framer" onclick="selectRole(this)" class="lobby-role-tag evil">Framer</div>
+              </div>
+              
+            </div>
+            <div id="neutral" class="lobby-role-container">
+              <div class="lobby-role-title">Neutral</div>
+
+              <div class="lobby-role-row">
+                <div id="jester" onclick="selectRole(this)" class="lobby-role-tag neutral">Jester</div>
+              <div id="serial killer" onclick="selectRole(this)" class="lobby-role-tag neutral">Serial Killer</div>
+              <div id="executioner" onclick="selectRole(this)" class="lobby-role-tag neutral">Executioner</div>
+              <div id="lawyer" onclick="selectRole(this)" class="lobby-role-tag neutral">Lawyer</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lobby-button-container">
+          <div class="lobby-button ready" onclick="toggleLobbyButton(this)">Ready</div>
+          <div class="lobby-button start">Start</div>
         </div>
         <!--Opens new tab-->
         <div class="clock-container">
           <p class="clock" id="time">0</p>
-        </div>
-        <!-- <a href="https://www.google.com/" target="_blank">test_link</a> -->
-
-        <div class="links">
-          <p class="designed-by">
-            illustration by
-            <span class="author-light">Beatriz Ines Avila Cutiño</span>
-          </p>
-          <p class="designed-by">
-            designed by
-            <span class="author-light"
-              ><a
-                class="linkto-light"
-                href="https://www.github.com/petrusmatiros"
-                target="_blank"
-                >Petrus Matiros</a
-              ></span
-            >
-          </p>
-          <a
-            class="github"
-            href="https://www.github.com/petrusmatiros/eyesopen"
-            target="_blank"
-          >
-            <span
-              class="iconify"
-              id="github-light"
-              data-icon="octicon:mark-github-16"
-              data-width="32"
-              data-height="32"
-            ></span>
-          </a>
         </div>
       </div>
     </div>
