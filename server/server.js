@@ -66,33 +66,33 @@ var timeDurations = {
 var counter = timeDurations.voting;
 var jsonData = require('./roles.json');
 
-
+test();
 function test() {
 // var test = new Role(roleTypes.Doctor);
-    // console.log(test);
-    // var theVillager = new Player("petos", new Role(roleTypes.Villager));
-    // var theInvestigator = new Player(
-    //   "petos2",
-    //   new Role(roleTypes.Investigator)
-    // );
-    // var theDoctor = new Player("petos3", new Role(roleTypes.Doctor));
-    // var theTrapper = new Player("petos4", new Role(roleTypes.Trapper));
-    // var theFramer = new Player("petos5", new Role(roleTypes.Framer));
-    // players = [];
-    // players.push(theVillager);
-    // players.push(theInvestigator);
-    // players.push(theDoctor);
-    // players.push(theTrapper);
-    // players.push(theFramer);
-    // // console.log(p1)
-    // // console.log(p2)
-    // // console.log(p2.role.type)
-    // Player.useAbility(theInvestigator, theVillager);
-    // Player.useAbility(theFramer, theDoctor);
-    // Player.useAbility(theInvestigator, theFramer);
-    // Player.useAbility(theInvestigator, theDoctor);
-    // Player.useAbility(theTrapper, theFramer);
-    // Player.useAbility(theFramer, Villager);
+//     console.log(test);
+//     var theVillager = new Player("petos", new Role(roleTypes.Villager));
+//     var theInvestigator = new Player(
+//       "petos2",
+//       new Role(roleTypes.Investigator)
+//     );
+//     var theDoctor = new Player("petos3", new Role(roleTypes.Doctor));
+//     var theTrapper = new Player("petos4", new Role(roleTypes.Trapper));
+//     var theFramer = new Player("petos5", new Role(roleTypes.Framer));
+//     players = [];
+//     players.push(theVillager);
+//     players.push(theInvestigator);
+//     players.push(theDoctor);
+//     players.push(theTrapper);
+//     players.push(theFramer);
+//     // console.log(p1)
+//     // console.log(p2)
+//     // console.log(p2.role.type)
+//     Player.useAbility(theInvestigator, theVillager);
+//     Player.useAbility(theFramer, theDoctor);
+//     Player.useAbility(theInvestigator, theFramer);
+//     Player.useAbility(theInvestigator, theDoctor);
+//     Player.useAbility(theTrapper, theFramer);
+//     Player.useAbility(theFramer, Villager);
 }
 
 // establish server connection with socket
@@ -576,34 +576,14 @@ io.on("connection", async (socket) => {
         neutralRoles++;
       }
     }
-    if (goodRoles !== totalRoles) {
+
+    if (goodRoles !== totalRoles && evilRoles !== totalRoles && (evilRoles !== totalRoles - 1 || !lawyerPicked)) {
+      console.log("wrong condition handling")
       io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
         emitTo,
         true
-      );
-    } else {
-      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-        emitTo,
-        false
-      );
-    }
-    if (evilRoles !== totalRoles) {
-      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-        emitTo,
-        true
-      );
-    } else {
-      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-        emitTo,
-        false
-      );
-    }
-    if (evilRoles !== totalRoles - 1 && !lawyerPicked) {
-      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-        emitTo,
-        true
-      );
-    } else {
+        );
+      } else {
       io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
         emitTo,
         false

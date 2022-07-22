@@ -144,6 +144,7 @@ socket.on("connect", () => {
 
       // TODO: GET check ROLE PICK to update on disconnect and connect
       // !! if amount of players change, hte requirement must change
+      // ! EMITS different values on role pick, needs to be fixed
       socket.emit("checkRolePick", getPlayerID(), "connect");
       socket.on("rolePickConditionConnect", (valid) => {
         console.log(valid)
