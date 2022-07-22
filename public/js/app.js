@@ -56,86 +56,186 @@ socket.on("connect", () => {
       });
       setTimeout(() => {
         socket.emit("refreshReady", getPlayerID());
-      }, 300)
-      
+      }, 300);
+
       socket.emit("checkIfHost", getPlayerID());
       socket.on("isHost", (isHost) => {
         if (isHost) {
-          console.log("SETTING HOST VISIBILITY")
-          document.getElementById("role-container").classList.add("selectable")
-          var array = document.getElementsByClassName("lobby-role-tag")
+          console.log("SETTING HOST VISIBILITY");
+          document.getElementById("role-container").classList.add("selectable");
+          var array = document.getElementsByClassName("lobby-role-tag");
           for (var i = 0; i < array.length; i++) {
             array[i].setAttribute("onclick", "selectRole(this)");
             array[i].style.cursor = "pointer";
           }
         } else {
-          console.log("REMOVING HOST VISIBILITY")
-          document.getElementById("role-container").classList.remove("selectable")
-          var array = document.getElementsByClassName("lobby-role-tag")
+          console.log("REMOVING HOST VISIBILITY");
+          document
+            .getElementById("role-container")
+            .classList.remove("selectable");
+          var array = document.getElementsByClassName("lobby-role-tag");
           for (var i = 0; i < array.length; i++) {
             array[i].setAttribute("onclick", "");
             array[i].style.cursor = "not-allowed";
           }
         }
-      })
-      socket.on("viewPlayerCount", (amountUnready, hostExists, host, allReady, totalUsers) => {
-        document.getElementById("player-card").style.border = "2px solid hsl(360, 100%, 55%)";
-        if (!hostExists) {
-          document.getElementById("player-count").innerText =
-            "Host is not in room";
-        } else {
-          if (allReady) {
-            document.getElementById("player-card").style.border = "2px solid hsl(108, 100%, 45%)";
-            document.getElementById("player-count").innerText =
-                        "Everyone is ready, " + host;
-            document.getElementById("player-count").style.color =
-                        "hsl(100, 100%, 35%)";
-          } else {
+      });
+      socket.on(
+        "viewPlayerCount",
+        (amountUnready, hostExists, host, allReady, totalUsers) => {
+          document.getElementById("player-card").style.border =
+            "2px solid hsl(360, 100%, 55%)";
+          if (totalUsers >= minPlayers) {
+            document.getElementById("lobby-req-check").style.display = "inline";
+            document.getElementById("lobby-req-cross").style.display = "none";
+          } else if (totalUsers < minPlayers) {
+            document.getElementById("lobby-req-check").style.display = "none";
+            document.getElementById("lobby-req-cross").style.display = "inline";
+          }
+          if (!hostExists) {
             document.getElementById("player-count").style.color =
               "var(--dark-fg)";
-            if (totalUsers >= minPlayers) {
-              document.getElementById("lobby-req-check").style.display =
-                "inline";
-              document.getElementById("lobby-req-cross").style.display = "none";
-            } else if (totalUsers < minPlayers) {
-
-              document.getElementById("lobby-req-check").style.display = "none";
-              document.getElementById("lobby-req-cross").style.display =
-                "inline";
-            }
             document.getElementById("player-count").innerText =
-              amountUnready + " player(s) not ready";
+              "Host is not in room";
+          } else {
+            if (allReady) {
+              document.getElementById("player-card").style.border =
+                "2px solid hsl(108, 100%, 45%)";
+              document.getElementById("player-count").innerText =
+                "Everyone is ready, " + host;
+              document.getElementById("player-count").style.color =
+                "hsl(100, 100%, 35%)";
+            } else {
+              document.getElementById("player-count").style.color =
+                "var(--dark-fg)";
+              document.getElementById("player-count").innerText =
+                amountUnready + " player(s) not ready";
+            }
           }
-          }
-        
-      });
+        }
+      );
     }
-    
   });
 });
-
 
 socket.on("ready-status", (users) => {
   for (var i = 0; i < users.length; i++) {
     if (users[i].ready) {
-      var status = document.getElementById(users[i].playerID).parentElement.children[1];
+      var status = document.getElementById(users[i].playerID).parentElement
+        .children[1];
       status.innerText = "ready";
       status.id = "status-ready";
     } else if (!users[i].ready) {
-      var status = document.getElementById(users[i].playerID).parentElement.children[1];
+      var status = document.getElementById(users[i].playerID).parentElement
+        .children[1];
       status.innerText = "not ready";
       status.id = "status-notready";
     }
   }
-})
+});
 
 function selectRole(element) {
+  socket.emit("checkRoleCount", getPlayerID());
+  roleCounter(element);
+}
+
+function roleCounter(element) {
+  socket.on("roleCount", (roleAmount, amountOfUsers) => {
+    roleCount = roleAmount;
+    userCount = amountOfUsers;
+  });
+  setTimeout(roleHandler, 100, element);
+}
+
+function roleHandler(element) {
   if (element.classList.contains("good")) {
-    element.classList.toggle("good-selected");
+    if (!element.classList.contains("good-selected")) {
+      if (roleCount < userCount) {
+        element.classList.add("good-selected");
+        element.classList.remove("unpicked");
+        pickRole(element, "add");
+        roleCap(false);
+      } else {
+        roleCap(true);
+      }
+    } else {
+      element.classList.remove("good-selected");
+      element.classList.add("unpicked");
+
+      pickRole(element, "remove");
+    }
   } else if (element.classList.contains("evil")) {
-    element.classList.toggle("evil-selected");
+    if (!element.classList.contains("evil-selected")) {
+      element.classList.add("evil-selected");
+      element.classList.remove("unpicked");
+      pickRole(element, "add");
+    } else {
+      element.classList.remove("evil-selected");
+      pickRole(element, "remove");
+      element.classList.add("unpicked");
+    }
   } else if (element.classList.contains("neutral")) {
-    element.classList.toggle("neutral-selected");
+    if (!element.classList.contains("neutral-selected")) {
+      element.classList.add("neutral-selected");
+      element.classList.remove("unpicked");
+      pickRole(element, "add");
+    } else {
+      element.classList.remove("neutral-selected");
+      pickRole(element, "remove");
+      element.classList.add("unpicked");
+    }
+  }
+
+  socket.on("updateRoles", (roles) => {
+    updateRoles(roles);
+  });
+}
+
+function updateRoles(roles) {
+  var array = document.getElementsByClassName("lobby-role-tag");
+  for (var i = 0; i < array.length; i++) {
+    var element = array[i];
+    if (roles.includes(element.id)) {
+      if (element.className.includes("good")) {
+        element.classList.add("good-selected");
+      } else if (element.className.includes("evil")) {
+        element.classList.add("evil-selected");
+      } else if (element.className.includes("neutral")) {
+        element.classList.add("neutral-selected");
+      }
+      element.classList.remove("unpicked");
+    } else {
+      if (element.className.includes("good")) {
+        element.classList.remove("good-selected");
+      } else if (element.className.includes("evil")) {
+        element.classList.remove("evil-selected");
+      } else if (element.className.includes("neutral")) {
+        element.classList.remove("neutral-selected");
+      }
+      element.classList.add("unpicked");
+    }
+  }
+}
+
+function pickRole(element, op) {
+  var role = element.id;
+  socket.emit("pickRole", getPlayerID(), role, op);
+}
+
+function roleCap(matching) {
+  var array = document.getElementsByClassName("unpicked");
+  if (matching) {
+    for (var i = 0; i < array.length; i++) {
+      array[i].setAttribute("onclick", "");
+      array[i].style.cursor = "not-allowed";
+      array[i].style.opacity = "35%";
+    }
+  } else {
+    for (var i = 0; i < array.length; i++) {
+      array[i].setAttribute("onclick", "selectRole(this)");
+      array[i].style.cursor = "pointer";
+      array[i].style.opacity = "100%";
+    }
   }
 }
 
@@ -167,6 +267,9 @@ function updatePlayerSlots(host, slots) {
       } else if (value.userID == getPlayerID()) {
         slot.parentElement.parentElement.style.border =
           "2px dashed var(--dark-fg)";
+      } else {
+        slot.parentElement.parentElement.style.border =
+          "2px dashed var(--slot-joined)";
       }
       // status.innerText = "not ready";
     } else if (value.taken == false) {
@@ -221,8 +324,7 @@ function copyButtonAnimate(reset = false) {
     document.getElementById("copy-code").style.backgroundColor =
       "var(--light-bg)";
     document.getElementById("roomcode-copy").style.color = "var(--dark-fg)";
-    document.getElementById("copy-code").style.border =
-      "2px solid #b1b1b1";
+    document.getElementById("copy-code").style.border = "2px solid #b1b1b1";
   } else {
     document.getElementById("copy-code").style.backgroundColor =
       "hsl(100, 100%, 90%)";

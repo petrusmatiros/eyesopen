@@ -485,7 +485,47 @@ io.on("connection", async (socket) => {
       console.log(rooms.get(roomCode));
     }
   });
+
+
+
+  socket.on("checkRoleCount", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        if (rooms.get(roomCode).getHost() == playerID) {
+          socket.emit("roleCount", rooms.get(roomCode).getRoles().length, rooms.get(roomCode).getUsers().length);
+        }
+      }
+    }
+  })
+
+  // PLAYERS == ROLES - UPDATE REQUIREMENT WHEN
+  // NOT OF SAME TEAM (EVIL AND GOOD) - RED BORDER
+  // GREYED OUT BUTTONS WHEN have PICKED max
+  socket.on("pickRole", (playerID, role, op) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        if (rooms.get(roomCode).getHost() == playerID) {
+            if (op.includes("add")) {
+              if (!rooms.get(roomCode).getRoles().includes(role)) {
+                rooms.get(roomCode).addRole(role);
+              }
+            } else if (op.includes("remove")) {
+              if (rooms.get(roomCode).getRoles().includes(role)) {
+                rooms.get(roomCode).removeRole(role);
+              }
+            }
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("updatedRoles", rooms.get(roomCode).getRoles());
+          console.log(rooms.get(roomCode).getRoles())
+        }
+      }
+    }
+  })
+
 });
+
+
 
 var time = setInterval(function () {
   io.emit("counter", counter);

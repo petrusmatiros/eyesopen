@@ -96,6 +96,10 @@ class Room {
     this.users.length;
   }
 
+  getRoles() {
+    return this.roles;
+  }
+
   addRole(role) {
     this.roles.push(role);
   }
