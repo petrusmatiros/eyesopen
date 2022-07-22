@@ -68,6 +68,8 @@ socket.on("connect", () => {
             array[i].setAttribute("onclick", "selectRole(this)");
             array[i].style.cursor = "pointer";
           }
+          var startButton = document.getElementsByClassName("lobby-button start");
+          startButton[0].style.display = "flex";
         } else {
           console.log("REMOVING HOST VISIBILITY");
           document
@@ -78,6 +80,8 @@ socket.on("connect", () => {
             array[i].setAttribute("onclick", "");
             array[i].style.cursor = "not-allowed";
           }
+          var startButton = document.getElementsByClassName("lobby-button start");
+          startButton[0].style.display = "none";
         }
       });
       socket.on(
