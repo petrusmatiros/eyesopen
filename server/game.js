@@ -13,6 +13,20 @@ class Game {
     this.isDone = false;
   }
 
+  reset() {
+    // DAY & NIGHT count
+    this.cycle = 0;
+    // Keeping track of evil players
+    this.evil = [];
+    // Keeping track of total players for voting
+    this.alive = [];
+    // Array for cemetery
+    this.dead = [];
+    // Booleans for inProgress and finished
+    this.inProgress = false;
+    this.isDone = false;
+  }
+
   getCycle() {
     return this.cycle;
   }

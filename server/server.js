@@ -64,6 +64,36 @@ var timeDurations = {
   test: 5,
 };
 var counter = timeDurations.voting;
+var jsonData = require('./roles.json');
+
+
+function test() {
+// var test = new Role(roleTypes.Doctor);
+    // console.log(test);
+    // var theVillager = new Player("petos", new Role(roleTypes.Villager));
+    // var theInvestigator = new Player(
+    //   "petos2",
+    //   new Role(roleTypes.Investigator)
+    // );
+    // var theDoctor = new Player("petos3", new Role(roleTypes.Doctor));
+    // var theTrapper = new Player("petos4", new Role(roleTypes.Trapper));
+    // var theFramer = new Player("petos5", new Role(roleTypes.Framer));
+    // players = [];
+    // players.push(theVillager);
+    // players.push(theInvestigator);
+    // players.push(theDoctor);
+    // players.push(theTrapper);
+    // players.push(theFramer);
+    // // console.log(p1)
+    // // console.log(p2)
+    // // console.log(p2.role.type)
+    // Player.useAbility(theInvestigator, theVillager);
+    // Player.useAbility(theFramer, theDoctor);
+    // Player.useAbility(theInvestigator, theFramer);
+    // Player.useAbility(theInvestigator, theDoctor);
+    // Player.useAbility(theTrapper, theFramer);
+    // Player.useAbility(theFramer, Villager);
+}
 
 // establish server connection with socket
 io.on("connection", async (socket) => {
@@ -98,10 +128,36 @@ io.on("connection", async (socket) => {
         // remove user from room
         rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
         updatePlayerCount(playerID);
+        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+          "rolePickConditionDisconnect",
+          false
+        );
+        // TODO: check for requirement instead???
+        updateRoles();
         // socket leaves room
         socket.leave(targetRoom);
         console.log("leaving room", targetRoom);
         console.log(socket.rooms);
+      }
+    }
+  });
+
+  socket.on("fetchRoles", (playerID, state) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var emitTo = "";
+        if (state.includes("connect")) {
+          emitTo = "fetchedRolesConnect";
+        } else if (state.includes("after")) {
+          emitTo = "fetchedRolesAfter";
+        } else if (state.includes("disconnect")) {
+          emitTo = "fetchedRolesDisconnect";
+        }
+        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+          emitTo,
+          rooms.get(roomCode).getRoles()
+        );
       }
     }
   });
@@ -252,6 +308,7 @@ io.on("connection", async (socket) => {
           connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
           checkAllReady(roomCode, playerID),
           rooms.get(roomCode).getUsers().length,
+          rooms.get(roomCode).getRoles().length
         );
         console.log(socket.rooms);
         console.log(connectedUsers.get(playerID));
@@ -272,6 +329,7 @@ io.on("connection", async (socket) => {
           connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
           checkAllReady(roomCode, playerID),
           rooms.get(roomCode).getUsers().length,
+          rooms.get(roomCode).getRoles().length
         );
       }
     }
@@ -292,6 +350,7 @@ io.on("connection", async (socket) => {
           connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
           checkAllReady(roomCode, playerID),
           rooms.get(roomCode).getUsers().length,
+          rooms.get(roomCode).getRoles().length
         );
         console.log(socket.rooms);
         console.log(connectedUsers.get(playerID));
@@ -351,18 +410,34 @@ io.on("connection", async (socket) => {
     }
   }
 
-  socket.on("checkIfHost", (playerID) => {
+  socket.on("checkIfHost", (playerID, emission) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         if (rooms.get(roomCode).getHost() == playerID) {
-          socket.emit("isHost", true);
+          var emitTo = "";
+          if (emission.includes("visibility")) {
+            emitTo = "isHost";
+          } else if (emission.includes("roles")) {
+            emitTo = "isHostRoles";
+          } else if (emission.includes("start")) {
+            emitTo = "isHostStart";
+          }
+          socket.emit(emitTo, true);
         } else {
-          socket.emit("isHost", false);
+          var emitTo = "";
+          if (emission.includes("visibility")) {
+            emitTo = "isHost";
+          } else if (emission.includes("roles")) {
+            emitTo = "isHostRoles";
+          } else if (emission.includes("start")) {
+            emitTo = "isHostStart";
+          }
+          socket.emit(emitTo, false);
         }
       }
     }
-  })
+  });
 
   function checkAlreadyHost(rooms, playerID) {
     for (var [key, value] of rooms) {
@@ -405,13 +480,6 @@ io.on("connection", async (socket) => {
 
   // handle room creation
   socket.on("createRoom", (playerID) => {
-    // !! FIX SO THAT YOU ALWAYS RECONNECT TO YOUR CREATED GAME
-    // !! FIX ROOM UI
-    // ! FIX URL QUERY
-    // ! MIN 3 to START
-    // ! ROLE CARD, ADDING THEM TO THE GAME
-    // ! CHECK IF ALL ROLES ARE THE SAME TEAM
-
     var temp = Array.from(rooms.entries());
     var count = 0;
     if (checkUserExist(playerID)) {
@@ -486,18 +554,127 @@ io.on("connection", async (socket) => {
     }
   });
 
+  function checkRolePick(roomCode, playerID, totalRoles, emitTo) {
+    // ONLY GOOD IS NOT ALLOWED
+    // ONLY EVIL IS NOT ALLOWED
+    // ONLY EVIL + LAWYER is NOT ALLOWED
+    var goodRoles = 0;
+    var evilRoles = 0;
+    var neutralRoles = 0;
+    var lawyerPicked = false;
+    for (var i = 0; i < totalRoles; i++) {
+      var current = jsonData["roles"][rooms.get(roomCode).getRoles()[i]].team;
+      var roleName = jsonData["roles"][rooms.get(roomCode).getRoles()[i]].name;
+      if (roleName == "lawyer") {
+        lawyerPicked = true;
+      }
+      if (current == "good") {
+        goodRoles++;
+      } else if (current == "evil") {
+        evilRoles++;
+      } else if (current == "neutral") {
+        neutralRoles++;
+      }
+    }
+    if (goodRoles !== totalRoles) {
+      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+        emitTo,
+        true
+      );
+    } else {
+      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+        emitTo,
+        false
+      );
+    }
+    if (evilRoles !== totalRoles) {
+      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+        emitTo,
+        true
+      );
+    } else {
+      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+        emitTo,
+        false
+      );
+    }
+    if (evilRoles !== totalRoles - 1 && !lawyerPicked) {
+      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+        emitTo,
+        true
+      );
+    } else {
+      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+        emitTo,
+        false
+      );
+    }
+  }
 
-
-  socket.on("checkRoleCount", (playerID) => {
+  socket.on("checkRolePick", (playerID, state) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         if (rooms.get(roomCode).getHost() == playerID) {
-          socket.emit("roleCount", rooms.get(roomCode).getRoles().length, rooms.get(roomCode).getUsers().length);
+          var emitTo = "";
+          if (state.includes("pick")) {
+            emitTo = "rolePickCondition";
+          } else if (state.includes("connect")) {
+            emitTo = "rolePickConditionConnect";
+          } else if (state.includes("disconnect")) {
+            emitTo = "rolePickConditionDisconnect";
+          }
+          var totalRoles = rooms.get(roomCode).getRoles().length;
+          var totalUsers = rooms.get(roomCode).getUsers().length;
+          if (totalRoles < minPlayers || totalUsers < minPlayers) {
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+              emitTo,
+              false
+            );
+          } else {
+            checkRolePick(roomCode, playerID, totalRoles, emitTo);
+          }
+          
+         
         }
       }
     }
   })
+
+  socket.on("checkRoleCount", (playerID, state) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        if (rooms.get(roomCode).getHost() == playerID) {
+          var emitTo = "";
+          if (state.includes("before")) {
+            emitTo = "roleCountBefore";
+          } else if (state.includes("after")) {
+            emitTo = "roleCountAfter";
+
+          }
+          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+            emitTo,
+            rooms.get(roomCode).getRoles().length,
+            rooms.get(roomCode).getUsers().length
+          );
+        }
+      }
+    }
+  });
+
+  function updateRoles(roomCode, playerID) {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+          "fetchedRolesDisconnect",
+          rooms.get(roomCode).getRoles()
+        );
+        console.log(rooms.get(roomCode).getRoles());
+      }
+    }
+  }
 
   // PLAYERS == ROLES - UPDATE REQUIREMENT WHEN
   // NOT OF SAME TEAM (EVIL AND GOOD) - RED BORDER
@@ -507,25 +684,22 @@ io.on("connection", async (socket) => {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         if (rooms.get(roomCode).getHost() == playerID) {
-            if (op.includes("add")) {
-              if (!rooms.get(roomCode).getRoles().includes(role)) {
-                rooms.get(roomCode).addRole(role);
-              }
-            } else if (op.includes("remove")) {
-              if (rooms.get(roomCode).getRoles().includes(role)) {
-                rooms.get(roomCode).removeRole(role);
-              }
+          if (op.includes("add")) {
+            if (!rooms.get(roomCode).getRoles().includes(role)) {
+              rooms.get(roomCode).addRole(role);
             }
-            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("updatedRoles", rooms.get(roomCode).getRoles());
-          console.log(rooms.get(roomCode).getRoles())
+          } else if (op.includes("remove")) {
+            if (rooms.get(roomCode).getRoles().includes(role)) {
+              rooms.get(roomCode).removeRole(role);
+            }
+          }
+          // io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("updatedRoles", rooms.get(roomCode).getRoles());
+          console.log(rooms.get(roomCode).getRoles());
         }
       }
     }
-  })
-
+  });
 });
-
-
 
 var time = setInterval(function () {
   io.emit("counter", counter);
@@ -578,49 +752,12 @@ const roleTypes = {
   Witch: "witch",
   Framer: "framer",
   Jester: "jester",
-  Serial_Killer: "serial_killer",
+  SerialKiller: "serial killer",
   Executioner: "executioner",
   Lawyer: "lawyer",
 };
 
-fetch("./roles.json")
-  .then((response) => {
-    return response.json();
-  })
-  .then((data) => {
-    // console.log(data);
-    // Work with JSON data here
-    // getJson(data)
-    jsonData = data;
-    var test = new Role(roleTypes.Doctor);
-    console.log(test);
-    var theVillager = new Player("petos", new Role(roleTypes.Villager));
-    var theInvestigator = new Player(
-      "petos2",
-      new Role(roleTypes.Investigator)
-    );
-    var theDoctor = new Player("petos3", new Role(roleTypes.Doctor));
-    var theTrapper = new Player("petos4", new Role(roleTypes.Trapper));
-    var theFramer = new Player("petos5", new Role(roleTypes.Framer));
-    players = [];
-    players.push(theVillager);
-    players.push(theInvestigator);
-    players.push(theDoctor);
-    players.push(theTrapper);
-    players.push(theFramer);
-    // console.log(p1)
-    // console.log(p2)
-    // console.log(p2.role.type)
-    Player.useAbility(theInvestigator, theVillager);
-    Player.useAbility(theFramer, theDoctor);
-    Player.useAbility(theInvestigator, theFramer);
-    Player.useAbility(theInvestigator, theDoctor);
-    Player.useAbility(theTrapper, theFramer);
-    Player.useAbility(theFramer, Villager);
-  })
-  .catch((err) => {
-    // Do something for an error here
-  });
+
 
 function Role(type) {
   this.type = type;
@@ -720,17 +857,17 @@ function Role(type) {
     this.hasNightAbility =
       jsonData["roles"]["neutral"]["jester"]["hasNightAbility"];
     this.voteCount = jsonData["roles"]["neutral"]["jester"]["voteCount"];
-  } else if (type == roleTypes.Serial_Killer) {
-    this.name = jsonData["roles"]["neutral"]["serial_killer"]["name"];
+  } else if (type == roleTypes.SerialKiller) {
+    this.name = jsonData["roles"]["neutral"]["serial killer"]["name"];
     this.description =
-      jsonData["roles"]["neutral"]["serial_killer"]["description"];
-    this.mission = jsonData["roles"]["neutral"]["serial_killer"]["mission"];
+      jsonData["roles"]["neutral"]["serial killer"]["description"];
+    this.mission = jsonData["roles"]["neutral"]["serial killer"]["mission"];
     this.team = "neutral";
     this.hasNightAbility =
-      jsonData["roles"]["neutral"]["serial_killer"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["neutral"]["serial_killer"]["voteCount"];
+      jsonData["roles"]["neutral"]["serial killer"]["hasNightAbility"];
+    this.voteCount = jsonData["roles"]["neutral"]["serial killer"]["voteCount"];
     this.killVoteCount =
-      jsonData["roles"]["neutral"]["serial_killer"]["killVoteCount"];
+      jsonData["roles"]["neutral"]["serial killer"]["killVoteCount"];
   } else if (type == roleTypes.Executioner) {
     this.name = jsonData["roles"]["neutral"]["executioner"]["name"];
     this.description =

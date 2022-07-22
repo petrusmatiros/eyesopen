@@ -40,7 +40,6 @@ socket.on("connect", () => {
         socket.emit("directJoin", getPlayerID(), room);
       } else {
         // USER EXISTS
-        // !! IMPLEMENT AJAX
         socket.emit("setRoom", getPlayerID());
         socket.emit("joinedLobby", getPlayerID());
       }
@@ -58,7 +57,7 @@ socket.on("connect", () => {
         socket.emit("refreshReady", getPlayerID());
       }, 300);
 
-      socket.emit("checkIfHost", getPlayerID());
+      socket.emit("checkIfHost", getPlayerID(), "visibility");
       socket.on("isHost", (isHost) => {
         if (isHost) {
           console.log("SETTING HOST VISIBILITY");
@@ -68,7 +67,8 @@ socket.on("connect", () => {
             array[i].setAttribute("onclick", "selectRole(this)");
             array[i].style.cursor = "pointer";
           }
-          var startButton = document.getElementsByClassName("lobby-button start");
+          var startButton =
+            document.getElementsByClassName("lobby-button start");
           startButton[0].style.display = "flex";
         } else {
           console.log("REMOVING HOST VISIBILITY");
@@ -80,21 +80,24 @@ socket.on("connect", () => {
             array[i].setAttribute("onclick", "");
             array[i].style.cursor = "not-allowed";
           }
-          var startButton = document.getElementsByClassName("lobby-button start");
+          var startButton =
+            document.getElementsByClassName("lobby-button start");
           startButton[0].style.display = "none";
         }
       });
       socket.on(
         "viewPlayerCount",
-        (amountUnready, hostExists, host, allReady, totalUsers) => {
+        (amountUnready, hostExists, host, allReady, totalUsers, totalRoles) => {
           document.getElementById("player-card").style.border =
             "2px solid hsl(360, 100%, 55%)";
+          roleReqHandler(totalRoles, totalUsers);
+
           if (totalUsers >= minPlayers) {
-            document.getElementById("lobby-req-check").style.display = "inline";
-            document.getElementById("lobby-req-cross").style.display = "none";
+            document.getElementById("lobby-req-check-players").style.display = "inline";
+            document.getElementById("lobby-req-cross-players").style.display = "none";
           } else if (totalUsers < minPlayers) {
-            document.getElementById("lobby-req-check").style.display = "none";
-            document.getElementById("lobby-req-cross").style.display = "inline";
+            document.getElementById("lobby-req-check-players").style.display = "none";
+            document.getElementById("lobby-req-cross-players").style.display = "inline";
           }
           if (!hostExists) {
             document.getElementById("player-count").style.color =
@@ -118,9 +121,42 @@ socket.on("connect", () => {
           }
         }
       );
+
+      socket.emit("fetchRoles", getPlayerID(), "connect");
+      socket.on("fetchedRolesConnect", (roles) => {
+        updateRoles(roles);
+      })
+
+      
+
+      socket.on("fetchedRolesAfter", (roles) => {
+        updateRoles(roles);
+
+      });
+
+      socket.on("roleCountAfter", (userAmount, roleAmount) => {
+        roleReqHandler(roleAmount, userAmount);
+      })
+
+      socket.on("rolePickCondition", (valid) => {
+        console.log(valid)
+      })
+
+      // TODO: GET check ROLE PICK to update on disconnect and connect
+      // !! if amount of players change, hte requirement must change
+      socket.emit("checkRolePick", getPlayerID(), "connect");
+      socket.on("rolePickConditionConnect", (valid) => {
+        console.log(valid)
+      })
+
     }
   });
 });
+
+// TODO: is this needed?
+socket.on("fetchedRolesDisconnect", (roles) => {
+  updateRoles(roles);
+})
 
 socket.on("ready-status", (users) => {
   for (var i = 0; i < users.length; i++) {
@@ -139,60 +175,103 @@ socket.on("ready-status", (users) => {
 });
 
 function selectRole(element) {
-  socket.emit("checkRoleCount", getPlayerID());
+  
+  socket.emit("checkIfHost", getPlayerID(), "roles");
+  socket.on("isHostRoles", (isHost) => {
+    canPickRole = isHost;
+  });
+  socket.emit("checkRoleCount", getPlayerID(), "before");
   roleCounter(element);
+  
+}
+
+function startGame() {
+  socket.emit("checkIfHost", getPlayerID(), "start");
+  socket.on("isHostStart", (isHost) => {
+    if (isHost) {
+      // check also if all other requirements are met (checkCanStart)
+      // startAllowed, true or false
+    }
+  });
 }
 
 function roleCounter(element) {
-  socket.on("roleCount", (roleAmount, amountOfUsers) => {
+  socket.on("roleCountBefore", (roleAmount, amountOfUsers) => {
     roleCount = roleAmount;
     userCount = amountOfUsers;
   });
   setTimeout(roleHandler, 100, element);
 }
 
-function roleHandler(element) {
-  if (element.classList.contains("good")) {
-    if (!element.classList.contains("good-selected")) {
-      if (roleCount < userCount) {
-        element.classList.add("good-selected");
-        element.classList.remove("unpicked");
-        pickRole(element, "add");
-        roleCap(false);
-      } else {
-        roleCap(true);
-      }
-    } else {
-      element.classList.remove("good-selected");
-      element.classList.add("unpicked");
-
-      pickRole(element, "remove");
-    }
-  } else if (element.classList.contains("evil")) {
-    if (!element.classList.contains("evil-selected")) {
-      element.classList.add("evil-selected");
-      element.classList.remove("unpicked");
-      pickRole(element, "add");
-    } else {
-      element.classList.remove("evil-selected");
-      pickRole(element, "remove");
-      element.classList.add("unpicked");
-    }
-  } else if (element.classList.contains("neutral")) {
-    if (!element.classList.contains("neutral-selected")) {
-      element.classList.add("neutral-selected");
-      element.classList.remove("unpicked");
-      pickRole(element, "add");
-    } else {
-      element.classList.remove("neutral-selected");
-      pickRole(element, "remove");
-      element.classList.add("unpicked");
-    }
+function roleReqHandler(roles, users) {
+  if (roles == users) {
+    document.getElementById("lobby-req-check-roles").style.display = "inline";
+    document.getElementById("lobby-req-cross-roles").style.display = "none";
+  } else {
+    document.getElementById("lobby-req-check-roles").style.display = "none";
+    document.getElementById("lobby-req-cross-roles").style.display = "inline";
   }
+}
 
-  socket.on("updateRoles", (roles) => {
-    updateRoles(roles);
-  });
+function roleHandler(element) {
+  
+  
+  if (canPickRole) {
+    // CHECK IF HOST OTHER WISE CANNOT CHANGE
+    if (element.classList.contains("good")) {
+      if (roleCount < userCount) {
+        if (element.classList.toggle("good-selected")) {
+          element.classList.remove("unpicked");
+          pickRole(element, "add");
+        } else {
+          element.classList.add("unpicked");
+          pickRole(element, "remove");
+        }
+      } else {
+        if (!element.classList.contains("unpicked")) {
+          element.classList.toggle("good-selected", false);
+          element.classList.add("unpicked");
+          pickRole(element, "remove");
+        }
+      }
+    } else if (element.classList.contains("evil")) {
+      if (roleCount < userCount) {
+        if (element.classList.toggle("evil-selected")) {
+          element.classList.remove("unpicked");
+          pickRole(element, "add");
+        } else {
+          element.classList.add("unpicked");
+          pickRole(element, "remove");
+        }
+      } else {
+        if (!element.classList.contains("unpicked")) {
+          element.classList.toggle("evil-selected", false);
+          element.classList.add("unpicked");
+          pickRole(element, "remove");
+        }
+      }
+    } else if (element.classList.contains("neutral")) {
+      if (roleCount < userCount) {
+        if (element.classList.toggle("neutral-selected")) {
+          element.classList.remove("unpicked");
+          pickRole(element, "add");
+        } else {
+          element.classList.add("unpicked");
+          pickRole(element, "remove");
+        }
+      } else {
+        if (!element.classList.contains("unpicked")) {
+          element.classList.toggle("neutral-selected", false);
+          element.classList.add("unpicked");
+          pickRole(element, "remove");
+        }
+      }
+    }
+    
+    socket.emit("fetchRoles", getPlayerID(), "after");
+    socket.emit("checkRoleCount", getPlayerID(), "after");
+    socket.emit("checkRolePick", getPlayerID(), "pick");
+  }
 }
 
 function updateRoles(roles) {
@@ -224,23 +303,6 @@ function updateRoles(roles) {
 function pickRole(element, op) {
   var role = element.id;
   socket.emit("pickRole", getPlayerID(), role, op);
-}
-
-function roleCap(matching) {
-  var array = document.getElementsByClassName("unpicked");
-  if (matching) {
-    for (var i = 0; i < array.length; i++) {
-      array[i].setAttribute("onclick", "");
-      array[i].style.cursor = "not-allowed";
-      array[i].style.opacity = "35%";
-    }
-  } else {
-    for (var i = 0; i < array.length; i++) {
-      array[i].setAttribute("onclick", "selectRole(this)");
-      array[i].style.cursor = "pointer";
-      array[i].style.opacity = "100%";
-    }
-  }
 }
 
 function toggleLobbyButton(element) {

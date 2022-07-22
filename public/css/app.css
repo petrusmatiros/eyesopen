@@ -1,0 +1,161 @@
+:root {
+    /* nighmare bifore krissmas */
+    /* Lobby & Game */
+    /* --------------- */
+    /* In game */
+    /* Night */
+    --dark-bg: hsl(0, 0%, 13%);
+    --light-fg: hsl(0, 0%, 100%);
+    /* Day */
+    --light-bg: hsl(0, 0%, 100%);
+    --dark-fg: hsl(0, 0%, 0%);
+    /* Lobby player slots */
+    --slot-empty: hsl(0, 0%, 95%);
+    --slot-joined: hsl(0, 0%, 82%);
+    --slot-ready: hsl(100, 30%, 82%);
+    /* Not ready and ready */
+    --ready-fg: hsl(100, 100%, 100%);
+    --ready-bg: hsl(108, 100%, 25%);
+    --not-ready-fg: hsl(0, 0%, 0%);
+    --not-ready-bg: hsl(0, 100%, 70%);
+    /* Role tags */
+    /* Good */
+    --good-fg: var(--dark-fg);
+    --good-bg: hsl(108, 100%, 85%);
+    --good-fg-selected: var(--light-fg);
+    --good-bg-selected: hsl(108, 100%, 25%);
+    
+    /* Evil */
+    --evil-fg: var(--dark-fg);
+    --evil-bg: hsl(360, 100%, 85%);
+    --evil-fg-selected: var(--light-fg);
+    --evil-bg-selected: hsl(360, 100%, 50%);
+    
+    /* Neutral */
+    --neutral-fg: var(--dark-fg);
+    --neutral-bg: hsl(0, 0%, 83%);
+    --neutral-fg-selected: var(--light-fg);
+    --neutral-bg-selected: hsl(0, 0%, 15%);
+  
+    /* Player colors */
+    --evilteam: hsl(360, 100%, 50%);
+    --killed: hsl(0, 0%, 57%);
+    --ability-target-bg: hsl(360, 100%, 60%);
+    --vote-target-bg: hsl(100, 100%, 40%);
+    --double-target-bg: linear-gradient(
+      90deg,
+      rgba(255, 51, 51, 1) 0%,
+      rgba(68, 204, 0, 1) 100%
+    );
+    /* In game buttons */
+    --vote-button-bg--notused: hsl(100, 100%, 40%);
+    --vote-button-bg--used: hsl(100, 100%, 90%);
+    --ability-button-bg--notused: hsl(360, 100%, 60%);
+    --ability-button-bg--used: hsl(360, 98%, 95%);
+  }
+  .selectable {
+    opacity: 100%;
+  }
+  
+  
+  .unpicked {
+  
+  }
+  
+  .good {
+    color: var(--good-fg);
+    background-color: var(--good-bg);
+  }
+  .good-selected {
+    color: var(--good-fg-selected);
+    background-color: var(--good-bg-selected);
+  }
+  
+  .evil {
+    color: var(--evil-fg);
+    background-color: var(--evil-bg);
+  }
+  .evil-selected {
+    color: var(--evil-fg-selected);
+    background-color: var(--evil-bg-selected);
+  }
+  
+  .neutral {
+    color: var(--neutral-fg);
+    background-color: var(--neutral-bg);
+  }
+  .neutral-selected {
+    color: var(--neutral-fg-selected);
+    background-color: var(--neutral-bg-selected);
+  }
+  
+  
+  .lobby-button-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: row;
+    width: 75%;
+    max-width: 19rem;
+  }
+  
+  .lobby-button {
+    user-select: none;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 500;
+    border-radius: 0.6em;
+    padding: 0.45rem 1.5rem 0.45rem 1.5rem;
+  }
+  
+  .ready {
+    color: var(--ready-fg);
+    background-color: var(--ready-bg);
+  }
+  
+  .not-ready {
+    color: var(--not-ready-fg);
+    background-color: var(--not-ready-bg);
+  }
+  
+  
+  .game-button-vote {
+    user-select: none;
+    cursor: pointer;
+  }
+  
+  .game-button-ability {
+    user-select: none;
+    cursor: pointer;
+  }
+  
+  @media screen and (max-width: 600px) {
+
+  }
+  .game-button-selection-both {
+    display: inline;
+    padding: 0.3em;
+    border-radius: 0.6em;
+    text-align: center;
+    font-size: 1rem;
+    color: #000000;
+    background: rgb(255, 51, 51);
+    background: -moz-linear-gradient(
+      90deg,
+      rgba(255, 51, 51, 1) 0%,
+      rgba(68, 204, 0, 1) 100%
+    );
+    background: -webkit-linear-gradient(
+      90deg,
+      rgba(255, 51, 51, 1) 0%,
+      rgba(68, 204, 0, 1) 100%
+    );
+    background: linear-gradient(
+      90deg,
+      rgba(255, 51, 51, 1) 0%,
+      rgba(68, 204, 0, 1) 100%
+    );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ff3333",endColorstr="#44cc00",GradientType=1);
+  }
+  

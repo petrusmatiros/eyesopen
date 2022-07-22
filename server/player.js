@@ -10,7 +10,7 @@ const roleTypes = {
   Witch: "witch",
   Framer: "framer",
   Jester: "jester",
-  Serial_Killer: "serial_killer",
+  SerialKiller: "serial killer",
   Executioner: "executioner",
   Lawyer: "lawyer",
 };
@@ -100,7 +100,7 @@ class Player {
   kill(player, target) {
     if (player.isBlocked == false) {
       if (target.isProtected == false) {
-        if (player.role.type == roleTypes.Serial_Killer) {
+        if (player.role.type == roleTypes.SerialKiller) {
           console.log("You kill", target.playerName);
           target.isKilled = true;
           console.log(target.isKilled);
@@ -199,7 +199,7 @@ module.exports = {
 // Player.kill = function (player, target) {
 //   if (player.isBlocked == false) {
 //     if (target.isProtected == false) {
-//       if (player.role.type == roleTypes.Serial_Killer) {
+//       if (player.role.type == roleTypes.SerialKiller) {
 //         console.log("You kill", target.playerName);
 //         target.isKilled = true;
 //         console.log(target.isKilled);

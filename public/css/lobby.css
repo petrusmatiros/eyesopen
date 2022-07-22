@@ -36,22 +36,6 @@
   --neutral-bg: hsl(0, 0%, 83%);
   --neutral-fg-selected: var(--light-fg);
   --neutral-bg-selected: hsl(0, 0%, 15%);
-
-  /* Player colors */
-  --evilteam: hsl(360, 100%, 50%);
-  --killed: hsl(0, 0%, 57%);
-  --ability-target-bg: hsl(360, 100%, 60%);
-  --vote-target-bg: hsl(100, 100%, 40%);
-  --double-target-bg: linear-gradient(
-    90deg,
-    rgba(255, 51, 51, 1) 0%,
-    rgba(68, 204, 0, 1) 100%
-  );
-  /* In game buttons */
-  --vote-button-bg--notused: hsl(100, 100%, 40%);
-  --vote-button-bg--used: hsl(100, 100%, 90%);
-  --ability-button-bg--notused: hsl(360, 100%, 60%);
-  --ability-button-bg--used: hsl(360, 98%, 95%);
 }
 
 .menu {
@@ -384,23 +368,10 @@
 }
 
 .start {
+  cursor: not-allowed;
+  opacity: 35%;
   color: var(--ready-fg);
   background-color: var(--ready-bg);
-}
-
-.lobby-button-start {
-  user-select: none;
-  cursor: pointer;
-}
-
-.game-button-vote {
-  user-select: none;
-  cursor: pointer;
-}
-
-.game-button-ability {
-  user-select: none;
-  cursor: pointer;
 }
 
 @media screen and (max-width: 600px) {
