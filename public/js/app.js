@@ -43,6 +43,11 @@ socket.on("connect", () => {
         socket.emit("setRoom", getPlayerID());
         socket.emit("joinedLobby", getPlayerID());
       }
+      // socket.emit("checkInGame", getPlayerID());
+      // socket.on("isInGame", (inGame) => {
+
+      // })
+
       socket.on("viewRoom", (roomCode) => {
         document.getElementById("roomcode-copy").innerText = roomCode;
       });
@@ -55,7 +60,7 @@ socket.on("connect", () => {
       });
       setTimeout(() => {
         socket.emit("refreshReady", getPlayerID());
-      }, 300);
+      }, 150);
 
       socket.emit("checkIfHost", getPlayerID(), "visibility");
       socket.on("isHost", (isHost) => {
@@ -93,11 +98,15 @@ socket.on("connect", () => {
           roleReqHandler(totalRoles, totalUsers);
 
           if (totalUsers >= minPlayers) {
-            document.getElementById("lobby-req-check-players").style.display = "inline";
-            document.getElementById("lobby-req-cross-players").style.display = "none";
+            document.getElementById("lobby-req-check-players").style.display =
+              "inline";
+            document.getElementById("lobby-req-cross-players").style.display =
+              "none";
           } else if (totalUsers < minPlayers) {
-            document.getElementById("lobby-req-check-players").style.display = "none";
-            document.getElementById("lobby-req-cross-players").style.display = "inline";
+            document.getElementById("lobby-req-check-players").style.display =
+              "none";
+            document.getElementById("lobby-req-cross-players").style.display =
+              "inline";
           }
           if (!hostExists) {
             document.getElementById("player-count").style.color =
@@ -125,39 +134,33 @@ socket.on("connect", () => {
       socket.emit("fetchRoles", getPlayerID(), "connect");
       socket.on("fetchedRolesConnect", (roles) => {
         updateRoles(roles);
-      })
-
-      
+      });
 
       socket.on("fetchedRolesAfter", (roles) => {
         updateRoles(roles);
-
       });
 
       socket.on("roleCountAfter", (userAmount, roleAmount) => {
         roleReqHandler(roleAmount, userAmount);
-      })
+      });
 
       socket.on("rolePickCondition", (valid) => {
-        console.log(valid)
-      })
+        rolePickConditionHandler(valid);
+      });
 
-      // TODO: GET check ROLE PICK to update on disconnect and connect
-      // !! if amount of players change, hte requirement must change
-      // ! EMITS different values on role pick, needs to be fixed
       socket.emit("checkRolePick", getPlayerID(), "connect");
       socket.on("rolePickConditionConnect", (valid) => {
-        console.log(valid)
-      })
-
+        rolePickConditionHandler(valid);
+      });
+      socket.on("rolePickConditionDisconnect", (valid) => {
+        rolePickConditionHandler(valid);
+      });
+      socket.on("fetchedRolesDisconnect", (roles) => {
+        updateRoles(roles);
+      });
     }
   });
 });
-
-// TODO: is this needed?
-socket.on("fetchedRolesDisconnect", (roles) => {
-  updateRoles(roles);
-})
 
 socket.on("ready-status", (users) => {
   for (var i = 0; i < users.length; i++) {
@@ -176,14 +179,12 @@ socket.on("ready-status", (users) => {
 });
 
 function selectRole(element) {
-  
   socket.emit("checkIfHost", getPlayerID(), "roles");
   socket.on("isHostRoles", (isHost) => {
     canPickRole = isHost;
   });
   socket.emit("checkRoleCount", getPlayerID(), "before");
   roleCounter(element);
-  
 }
 
 function startGame() {
@@ -192,8 +193,20 @@ function startGame() {
     if (isHost) {
       // check also if all other requirements are met (checkCanStart)
       // startAllowed, true or false
+      // users, inGame
+      // game object, inProgress
     }
   });
+}
+
+function rolePickConditionHandler(isValid) {
+  if (isValid) {
+    document.getElementById("role-card").style.border =
+      "2px solid hsl(108, 100%, 45%)";
+  } else {
+    document.getElementById("role-card").style.border =
+      "2px solid hsl(360, 100%, 55%)";
+  }
 }
 
 function roleCounter(element) {
@@ -215,8 +228,6 @@ function roleReqHandler(roles, users) {
 }
 
 function roleHandler(element) {
-  
-  
   if (canPickRole) {
     // CHECK IF HOST OTHER WISE CANNOT CHANGE
     if (element.classList.contains("good")) {
@@ -268,7 +279,7 @@ function roleHandler(element) {
         }
       }
     }
-    
+
     socket.emit("fetchRoles", getPlayerID(), "after");
     socket.emit("checkRoleCount", getPlayerID(), "after");
     socket.emit("checkRolePick", getPlayerID(), "pick");

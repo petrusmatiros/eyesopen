@@ -36,6 +36,9 @@ class Game {
   }
 
   nextCycle() {
+    // CLEAR ALL PLAYER VALUES, except the important ones
+    // reset player values if player is NOT lynched or NOT killed
+  // exception for executioner where they will be alive, but their target can be dead (they turn into jester)
     this.cycle++;
   }
 

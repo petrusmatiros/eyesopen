@@ -64,35 +64,35 @@ var timeDurations = {
   test: 5,
 };
 var counter = timeDurations.voting;
-var jsonData = require('./roles.json');
+var jsonData = require("./roles.json");
 
 test();
 function test() {
-// var test = new Role(roleTypes.Doctor);
-//     console.log(test);
-//     var theVillager = new Player("petos", new Role(roleTypes.Villager));
-//     var theInvestigator = new Player(
-//       "petos2",
-//       new Role(roleTypes.Investigator)
-//     );
-//     var theDoctor = new Player("petos3", new Role(roleTypes.Doctor));
-//     var theTrapper = new Player("petos4", new Role(roleTypes.Trapper));
-//     var theFramer = new Player("petos5", new Role(roleTypes.Framer));
-//     players = [];
-//     players.push(theVillager);
-//     players.push(theInvestigator);
-//     players.push(theDoctor);
-//     players.push(theTrapper);
-//     players.push(theFramer);
-//     // console.log(p1)
-//     // console.log(p2)
-//     // console.log(p2.role.type)
-//     Player.useAbility(theInvestigator, theVillager);
-//     Player.useAbility(theFramer, theDoctor);
-//     Player.useAbility(theInvestigator, theFramer);
-//     Player.useAbility(theInvestigator, theDoctor);
-//     Player.useAbility(theTrapper, theFramer);
-//     Player.useAbility(theFramer, Villager);
+  // var test = new Role(roleTypes.Doctor);
+  //     console.log(test);
+  //     var theVillager = new Player("petos", new Role(roleTypes.Villager));
+  //     var theInvestigator = new Player(
+  //       "petos2",
+  //       new Role(roleTypes.Investigator)
+  //     );
+  //     var theDoctor = new Player("petos3", new Role(roleTypes.Doctor));
+  //     var theTrapper = new Player("petos4", new Role(roleTypes.Trapper));
+  //     var theFramer = new Player("petos5", new Role(roleTypes.Framer));
+  //     players = [];
+  //     players.push(theVillager);
+  //     players.push(theInvestigator);
+  //     players.push(theDoctor);
+  //     players.push(theTrapper);
+  //     players.push(theFramer);
+  //     // console.log(p1)
+  //     // console.log(p2)
+  //     // console.log(p2.role.type)
+  //     Player.useAbility(theInvestigator, theVillager);
+  //     Player.useAbility(theFramer, theDoctor);
+  //     Player.useAbility(theInvestigator, theFramer);
+  //     Player.useAbility(theInvestigator, theDoctor);
+  //     Player.useAbility(theTrapper, theFramer);
+  //     Player.useAbility(theFramer, Villager);
 }
 
 // establish server connection with socket
@@ -124,14 +124,14 @@ io.on("connection", async (socket) => {
           "ready-status",
           rooms.get(targetRoom).getUsers()
         );
-        clearPlayerSlot(playerID);
-        // remove user from room
-        rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
-        updatePlayerCount(playerID);
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
           "rolePickConditionDisconnect",
           false
         );
+        clearPlayerSlot(playerID);
+        // remove user from room
+        rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
+        updatePlayerCount(playerID);
         // TODO: check for requirement instead???
         updateRoles();
         // socket leaves room
@@ -141,6 +141,20 @@ io.on("connection", async (socket) => {
       }
     }
   });
+
+
+  socket.on("checkInGame", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        if(connectedUsers.get(playerID).getInGame()) {
+          socket.emit("isInGame", true);
+        } else {
+          socket.emit("isInGame", false);
+        }
+      }
+    }
+  })
 
   socket.on("fetchRoles", (playerID, state) => {
     if (checkUserExist(playerID)) {
@@ -577,17 +591,16 @@ io.on("connection", async (socket) => {
       }
     }
 
-    if (goodRoles !== totalRoles && evilRoles !== totalRoles && (evilRoles !== totalRoles - 1 || !lawyerPicked)) {
-      console.log("wrong condition handling")
-      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-        emitTo,
-        true
-        );
-      } else {
-      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-        emitTo,
-        false
-      );
+    if (
+      goodRoles !== totalRoles &&
+      evilRoles !== totalRoles &&
+      (evilRoles !== totalRoles - 1 || !lawyerPicked) &&
+      (goodRoles !== totalRoles - 1 || !lawyerPicked)
+    ) {
+      console.log("wrong condition handling");
+      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(emitTo, true);
+    } else {
+      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(emitTo, false);
     }
   }
 
@@ -595,31 +608,28 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (rooms.get(roomCode).getHost() == playerID) {
-          var emitTo = "";
-          if (state.includes("pick")) {
-            emitTo = "rolePickCondition";
-          } else if (state.includes("connect")) {
-            emitTo = "rolePickConditionConnect";
-          } else if (state.includes("disconnect")) {
-            emitTo = "rolePickConditionDisconnect";
-          }
-          var totalRoles = rooms.get(roomCode).getRoles().length;
-          var totalUsers = rooms.get(roomCode).getUsers().length;
-          if (totalRoles < minPlayers || totalUsers < minPlayers) {
-            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-              emitTo,
-              false
-            );
-          } else {
-            checkRolePick(roomCode, playerID, totalRoles, emitTo);
-          }
-          
-         
+
+        var emitTo = "";
+        if (state.includes("pick")) {
+          emitTo = "rolePickCondition";
+        } else if (state.includes("connect")) {
+          emitTo = "rolePickConditionConnect";
+        } else if (state.includes("disconnect")) {
+          emitTo = "rolePickConditionDisconnect";
+        }
+        var totalRoles = rooms.get(roomCode).getRoles().length;
+        var totalUsers = rooms.get(roomCode).getUsers().length;
+        if (totalRoles < minPlayers || totalUsers < minPlayers) {
+          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+            emitTo,
+            false
+          );
+        } else {
+          checkRolePick(roomCode, playerID, totalRoles, emitTo);
         }
       }
     }
-  })
+  });
 
   socket.on("checkRoleCount", (playerID, state) => {
     if (checkUserExist(playerID)) {
@@ -631,7 +641,6 @@ io.on("connection", async (socket) => {
             emitTo = "roleCountBefore";
           } else if (state.includes("after")) {
             emitTo = "roleCountAfter";
-
           }
           io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
             emitTo,
@@ -693,15 +702,12 @@ var time = setInterval(function () {
   }
 }, 1000);
 
-// var count = io.engine.clientsCount;
-// // may or may not be similar to the count of Socket instances in the main namespace, depending on your usage
-// var count2 = io.of("/").sockets.size;
-// console.log(count);
-// console.log(count2);
 
 // Game related
+// #############
 
 function disguiseChecker() {
+  // REMAKE THIS
   console.log("it is working");
   // !! DO NOT USE FOR EACH HERE, THINK ABOUT IT FIRST
   players.forEach((player) => {
@@ -715,10 +721,6 @@ function disguiseChecker() {
   });
 }
 
-function newCycle() {
-  // reset player values if player is NOT lynched or NOT killed
-  // exception for executioner where they will be alive, but their target can be dead (they turn into jester)
-}
 
 const roleTypes = {
   Villager: "villager",
@@ -738,132 +740,136 @@ const roleTypes = {
 };
 
 
-
-function Role(type) {
-  this.type = type;
-  if (type == roleTypes.Villager) {
-    this.name = jsonData["roles"]["good"]["villager"]["name"];
-    this.description = jsonData["roles"]["good"]["villager"]["description"];
-    this.mission = jsonData["roles"]["good"]["villager"]["mission"];
-    this.team = "good";
-    this.hasNightAbility =
-      jsonData["roles"]["good"]["villager"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["good"]["villager"]["voteCount"];
-  } else if (type == roleTypes.Investigator) {
-    this.name = jsonData["roles"]["good"]["investigator"]["name"];
-    this.description = jsonData["roles"]["good"]["investigator"]["description"];
-    this.mission = jsonData["roles"]["good"]["investigator"]["mission"];
-    this.team = "good";
-    this.hasNightAbility =
-      jsonData["roles"]["good"]["investigator"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["good"]["investigator"]["voteCount"];
-  } else if (type == roleTypes.Doctor) {
-    this.name = jsonData["roles"]["good"]["doctor"]["name"];
-    this.description = jsonData["roles"]["good"]["doctor"]["description"];
-    this.mission = jsonData["roles"]["good"]["doctor"]["mission"];
-    this.team = "good";
-    this.hasNightAbility =
-      jsonData["roles"]["good"]["doctor"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["good"]["doctor"]["voteCount"];
-    this.selfUsage = jsonData["roles"]["good"]["doctor"]["selfUsage"];
-  } else if (type == roleTypes.Mayor) {
-    this.name = jsonData["roles"]["good"]["mayor"]["name"];
-    this.description = jsonData["roles"]["good"]["mayor"]["description"];
-    this.mission = jsonData["roles"]["good"]["mayor"]["mission"];
-    this.team = "good";
-    this.hasNightAbility =
-      jsonData["roles"]["good"]["mayor"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["good"]["mayor"]["voteCount"];
-  } else if (type == roleTypes.Trapper) {
-    this.name = jsonData["roles"]["good"]["trapper"]["name"];
-    this.description = jsonData["roles"]["good"]["trapper"]["description"];
-    this.mission = jsonData["roles"]["good"]["trapper"]["mission"];
-    this.team = "good";
-    this.hasNightAbility =
-      jsonData["roles"]["good"]["trapper"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["good"]["trapper"]["voteCount"];
-  } else if (type == roleTypes.Godfather) {
-    this.name = jsonData["roles"]["evil"]["godfather"]["name"];
-    this.description = jsonData["roles"]["evil"]["godfather"]["description"];
-    this.mission = jsonData["roles"]["evil"]["godfather"]["mission"];
-    this.team = "evil";
-    this.hasNightAbility =
-      jsonData["roles"]["evil"]["godfather"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["evil"]["godfather"]["voteCount"];
-    this.killVoteCount =
-      jsonData["roles"]["evil"]["godfather"]["killVoteCount"];
-  } else if (type == roleTypes.Mafioso) {
-    this.name = jsonData["roles"]["evil"]["mafioso"]["name"];
-    this.description = jsonData["roles"]["evil"]["mafioso"]["description"];
-    this.mission = jsonData["roles"]["evil"]["mafioso"]["mission"];
-    this.team = "evil";
-    this.hasNightAbility =
-      jsonData["roles"]["evil"]["mafioso"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["evil"]["mafioso"]["voteCount"];
-    this.killVoteCount = jsonData["roles"]["evil"]["mafioso"]["killVoteCount"];
-  } else if (type == roleTypes.Surgeon) {
-    this.name = jsonData["roles"]["evil"]["surgeon"]["name"];
-    this.description = jsonData["roles"]["evil"]["surgeon"]["description"];
-    this.mission = jsonData["roles"]["evil"]["surgeon"]["mission"];
-    this.team = "evil";
-    this.hasNightAbility =
-      jsonData["roles"]["evil"]["surgeon"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["evil"]["surgeon"]["voteCount"];
-    this.killVoteCount = jsonData["roles"]["evil"]["surgeon"]["killVoteCount"];
-    this.selfUsage = jsonData["roles"]["evil"]["surgeon"]["selfUsage"];
-  } else if (type == roleTypes.Witch) {
-    this.name = jsonData["roles"]["evil"]["witch"]["name"];
-    this.description = jsonData["roles"]["evil"]["witch"]["description"];
-    this.mission = jsonData["roles"]["evil"]["witch"]["mission"];
-    this.team = "evil";
-    this.hasNightAbility =
-      jsonData["roles"]["evil"]["witch"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["evil"]["witch"]["voteCount"];
-    this.killVoteCount = jsonData["roles"]["evil"]["witch"]["killVoteCount"];
-  } else if (type == roleTypes.Framer) {
-    this.name = jsonData["roles"]["evil"]["framer"]["name"];
-    this.description = jsonData["roles"]["evil"]["framer"]["description"];
-    this.mission = jsonData["roles"]["evil"]["framer"]["mission"];
-    this.team = "evil";
-    this.hasNightAbility =
-      jsonData["roles"]["evil"]["framer"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["evil"]["framer"]["voteCount"];
-    this.killVoteCount = jsonData["roles"]["evil"]["framer"]["killVoteCount"];
-  } else if (type == roleTypes.Jester) {
-    this.name = jsonData["roles"]["neutral"]["jester"]["name"];
-    this.description = jsonData["roles"]["neutral"]["jester"]["description"];
-    this.mission = jsonData["roles"]["neutral"]["jester"]["mission"];
-    this.team = "neutral";
-    this.hasNightAbility =
-      jsonData["roles"]["neutral"]["jester"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["neutral"]["jester"]["voteCount"];
-  } else if (type == roleTypes.SerialKiller) {
-    this.name = jsonData["roles"]["neutral"]["serial killer"]["name"];
-    this.description =
-      jsonData["roles"]["neutral"]["serial killer"]["description"];
-    this.mission = jsonData["roles"]["neutral"]["serial killer"]["mission"];
-    this.team = "neutral";
-    this.hasNightAbility =
-      jsonData["roles"]["neutral"]["serial killer"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["neutral"]["serial killer"]["voteCount"];
-    this.killVoteCount =
-      jsonData["roles"]["neutral"]["serial killer"]["killVoteCount"];
-  } else if (type == roleTypes.Executioner) {
-    this.name = jsonData["roles"]["neutral"]["executioner"]["name"];
-    this.description =
-      jsonData["roles"]["neutral"]["executioner"]["description"];
-    this.mission = jsonData["roles"]["neutral"]["executioner"]["mission"];
-    this.team = "neutral";
-    this.hasNightAbility =
-      jsonData["roles"]["neutral"]["executioner"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["neutral"]["executioner"]["voteCount"];
-  } else if (type == roleTypes.Lawyer) {
-    this.name = jsonData["roles"]["neutral"]["lawyer"]["name"];
-    this.description = jsonData["roles"]["neutral"]["lawyer"]["description"];
-    this.mission = jsonData["roles"]["neutral"]["lawyer"]["mission"];
-    this.team = "neutral";
-    this.hasNightAbility =
-      jsonData["roles"]["neutral"]["lawyer"]["hasNightAbility"];
-    this.voteCount = jsonData["roles"]["neutral"]["lawyer"]["voteCount"];
+  function Role(type) {
+    this.type = type;
+    if (type == roleTypes.Villager) {
+      this.name = jsonData["roles"]["villager"]["name"];
+      this.description = jsonData["roles"]["villager"]["description"];
+      this.mission = jsonData["roles"]["villager"]["mission"];
+      this.team = jsonData["roles"]["villager"]["team"];
+      this.hasNightAbility =
+        jsonData["roles"]["villager"]["hasNightAbility"];
+      this.voteCount = jsonData["roles"]["villager"]["voteCount"];
+    } else if (type == roleTypes.Investigator) {
+      this.name = jsonData["roles"]["investigator"]["name"];
+      this.description =
+        jsonData["roles"]["investigator"]["description"];
+      this.mission = jsonData["roles"]["investigator"]["mission"];
+      this.team = jsonData["roles"]["investigator"]["team"];
+      this.hasNightAbility =
+        jsonData["roles"]["investigator"]["hasNightAbility"];
+      this.voteCount = jsonData["roles"]["investigator"]["voteCount"];
+    } else if (type == roleTypes.Doctor) {
+      this.name = jsonData["roles"]["doctor"]["name"];
+      this.description = jsonData["roles"]["doctor"]["description"];
+      this.mission = jsonData["roles"]["doctor"]["mission"];
+      this.team = jsonData["roles"]["doctor"]["team"];
+      this.hasNightAbility =
+        jsonData["roles"]["doctor"]["hasNightAbility"];
+      this.voteCount = jsonData["roles"]["doctor"]["voteCount"];
+      this.selfUsage = jsonData["roles"]["doctor"]["selfUsage"];
+    } else if (type == roleTypes.Mayor) {
+      this.name = jsonData["roles"]["mayor"]["name"];
+      this.description = jsonData["roles"]["mayor"]["description"];
+      this.mission = jsonData["roles"]["mayor"]["mission"];
+      this.team = jsonData["roles"]["mayor"]["team"];
+      this.hasNightAbility =
+        jsonData["roles"]["mayor"]["hasNightAbility"];
+      this.voteCount = jsonData["roles"]["mayor"]["voteCount"];
+    } else if (type == roleTypes.Trapper) {
+      this.name = jsonData["roles"]["trapper"]["name"];
+      this.description = jsonData["roles"]["trapper"]["description"];
+      this.mission = jsonData["roles"]["trapper"]["mission"];
+      this.team = jsonData["roles"]["trapper"]["team"];
+      this.hasNightAbility =
+        jsonData["roles"]["trapper"]["hasNightAbility"];
+      this.voteCount = jsonData["roles"]["trapper"]["voteCount"];
+    } else if (type == roleTypes.Godfather) {
+      this.name = jsonData["roles"]["godfather"]["name"];
+      this.description = jsonData["roles"]["godfather"]["description"];
+      this.mission = jsonData["roles"]["godfather"]["mission"];
+      this.team = jsonData["roles"]["godfather"]["team"];
+      this.hasNightAbility =
+        jsonData["roles"]["godfather"]["hasNightAbility"];
+      this.voteCount = jsonData["roles"]["godfather"]["voteCount"];
+      this.killVoteCount =
+        jsonData["roles"]["godfather"]["killVoteCount"];
+    } else if (type == roleTypes.Mafioso) {
+      this.name = jsonData["roles"]["mafioso"]["name"];
+      this.description = jsonData["roles"]["mafioso"]["description"];
+      this.mission = jsonData["roles"]["mafioso"]["mission"];
+      this.team = jsonData["roles"]["mafioso"]["team"];
+      this.hasNightAbility =
+        jsonData["roles"]["mafioso"]["hasNightAbility"];
+      this.voteCount = jsonData["roles"]["mafioso"]["voteCount"];
+      this.killVoteCount =
+        jsonData["roles"]["mafioso"]["killVoteCount"];
+    } else if (type == roleTypes.Surgeon) {
+      this.name = jsonData["roles"]["surgeon"]["name"];
+      this.description = jsonData["roles"]["surgeon"]["description"];
+      this.mission = jsonData["roles"]["surgeon"]["mission"];
+      this.team = jsonData["roles"]["surgeon"]["team"];
+      this.hasNightAbility =
+        jsonData["roles"]["surgeon"]["hasNightAbility"];
+      this.voteCount = jsonData["roles"]["surgeon"]["voteCount"];
+      this.killVoteCount =
+        jsonData["roles"]["surgeon"]["killVoteCount"];
+      this.selfUsage = jsonData["roles"]["surgeon"]["selfUsage"];
+    } else if (type == roleTypes.Witch) {
+      this.name = jsonData["roles"]["witch"]["name"];
+      this.description = jsonData["roles"]["witch"]["description"];
+      this.mission = jsonData["roles"]["witch"]["mission"];
+      this.team = jsonData["roles"]["witch"]["team"];
+      this.hasNightAbility =
+        jsonData["roles"]["witch"]["hasNightAbility"];
+      this.voteCount = jsonData["roles"]["witch"]["voteCount"];
+      this.killVoteCount = jsonData["roles"]["witch"]["killVoteCount"];
+    } else if (type == roleTypes.Framer) {
+      this.name = jsonData["roles"]["framer"]["name"];
+      this.description = jsonData["roles"]["framer"]["description"];
+      this.mission = jsonData["roles"]["framer"]["mission"];
+      this.team = jsonData["roles"]["framer"]["team"];
+      this.hasNightAbility =
+        jsonData["roles"]["framer"]["hasNightAbility"];
+      this.voteCount = jsonData["roles"]["framer"]["voteCount"];
+      this.killVoteCount = jsonData["roles"]["framer"]["killVoteCount"];
+    } else if (type == roleTypes.Jester) {
+      this.name = jsonData["roles"]["jester"]["name"];
+      this.description = jsonData["roles"]["jester"]["description"];
+      this.mission = jsonData["roles"]["jester"]["mission"];
+      this.team = jsonData["roles"]["jester"]["team"];
+      this.hasNightAbility =
+        jsonData["roles"]["jester"]["hasNightAbility"];
+      this.voteCount = jsonData["roles"]["jester"]["voteCount"];
+    } else if (type == roleTypes.SerialKiller) {
+      this.name = jsonData["roles"]["serial killer"]["name"];
+      this.description =
+        jsonData["roles"]["serial killer"]["description"];
+      this.mission = jsonData["roles"]["serial killer"]["mission"];
+      this.team = jsonData["roles"]["serial killer"]["team"];
+      this.hasNightAbility =
+        jsonData["roles"]["serial killer"]["hasNightAbility"];
+      this.voteCount =
+        jsonData["roles"]["serial killer"]["voteCount"];
+      this.killVoteCount =
+        jsonData["roles"]["serial killer"]["killVoteCount"];
+    } else if (type == roleTypes.Executioner) {
+      this.name = jsonData["roles"]["executioner"]["name"];
+      this.description =
+        jsonData["roles"]["executioner"]["description"];
+      this.mission = jsonData["roles"]["executioner"]["mission"];
+      this.team = jsonData["roles"]["executioner"]["team"];
+      this.hasNightAbility =
+        jsonData["roles"]["executioner"]["hasNightAbility"];
+      this.voteCount = jsonData["roles"]["executioner"]["voteCount"];
+    } else if (type == roleTypes.Lawyer) {
+      this.name = jsonData["roles"]["lawyer"]["name"];
+      this.description = jsonData["roles"]["lawyer"]["description"];
+      this.mission = jsonData["roles"]["lawyer"]["mission"];
+      this.team = jsonData["roles"]["lawyer"]["team"];
+      this.hasNightAbility =
+        jsonData["roles"]["lawyer"]["hasNightAbility"];
+      this.voteCount = jsonData["roles"]["lawyer"]["voteCount"];
+    }
   }
-}
+
