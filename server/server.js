@@ -130,12 +130,12 @@ io.on("connection", async (socket) => {
         );
         clearPlayerSlot(playerID);
         // reqHandler(playerID);
-        checkReq(playerID);
         // remove user from room
         rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
         updatePlayerCount(playerID);
         // TODO: check for requirement instead???
         updateRoles();
+        reqHandler(playerID);
         // socket leaves room
         socket.leave(targetRoom);
         console.log("leaving room", targetRoom);
@@ -193,7 +193,7 @@ io.on("connection", async (socket) => {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         if(!connectedUsers.get(playerID).getInGame()) {
           var room = rooms.get(roomCode);
-          if (rooms.get(roomCode).getUsers().length >= rooms.get(roomCode).getRoles().length) {
+          if (rooms.get(roomCode).getUsers().length >= minPlayers) {
             rooms.get(roomCode).requirements.minThree = true;
           } else {
             rooms.get(roomCode).requirements.minThree = false;
@@ -232,6 +232,7 @@ io.on("connection", async (socket) => {
             emitTo,
             rooms.get(roomCode).getRoles()
           );
+          reqHandler(playerID);
         }
       }
     }
@@ -711,7 +712,7 @@ io.on("connection", async (socket) => {
       io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(emitTo, false);
       rooms.get(roomCode).requirements.validPick = false;
     }
-    checkReq(playerID);
+    reqHandler(playerID);
   }
 
   socket.on("checkRolePick", (playerID, state) => {
@@ -737,6 +738,7 @@ io.on("connection", async (socket) => {
           } else {
             checkRolePick(roomCode, playerID, totalRoles, emitTo);
           }
+          reqHandler(playerID);
         }
       }
     }
@@ -798,6 +800,7 @@ io.on("connection", async (socket) => {
               }
             }
             console.log(rooms.get(roomCode).getRoles());
+            reqHandler(playerID);
           }
         }
       }

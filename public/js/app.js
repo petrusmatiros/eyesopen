@@ -135,9 +135,16 @@ socket.on("connect", () => {
 
           socket.on("reqSatisfied", (valid) => {
             if (valid) {
+              var start = document.getElementById("start-button");
+
+              start.style.opacity = "100%";
+              start.style.cursor = "pointer";
               console.log("can start");
             } else {
-              console.log("CAN NOT START")
+              var start = document.getElementById("start-button");
+              
+              start.style.opacity = "35%";
+              start.style.cursor = "not-allowed";
             }
           })
     

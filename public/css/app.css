@@ -114,6 +114,11 @@
     background-color: var(--ready-bg);
   }
   
+  .start {
+    opacity: 35%;
+    cursor: not-allowed;
+  }
+
   .not-ready {
     color: var(--not-ready-fg);
     background-color: var(--not-ready-bg);
