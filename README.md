@@ -4,7 +4,6 @@
 
 ---
 
-
 # Table of contents
 
   ### Game
