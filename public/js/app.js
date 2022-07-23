@@ -58,9 +58,10 @@ socket.on("connect", () => {
         updatePlayerSlots(host, slots);
         console.log("updated player slots");
       });
+      // !! this is only for LOBBY, is this needed for game?
       setTimeout(() => {
         socket.emit("refreshReady", getPlayerID());
-      }, 150);
+      }, 300);
 
       socket.emit("checkIfHost", getPlayerID(), "visibility");
       socket.on("isHost", (isHost) => {
@@ -98,6 +99,7 @@ socket.on("connect", () => {
           roleReqHandler(totalRoles, totalUsers);
 
           if (totalUsers >= minPlayers) {
+            //? 3 minimum check
             document.getElementById("lobby-req-check-players").style.display =
               "inline";
             document.getElementById("lobby-req-cross-players").style.display =
@@ -114,7 +116,9 @@ socket.on("connect", () => {
             document.getElementById("player-count").innerText =
               "Host is not in room";
           } else {
+            //? host is in room
             if (allReady) {
+              //? all ready check
               document.getElementById("player-card").style.border =
                 "2px solid hsl(108, 100%, 45%)";
               document.getElementById("player-count").innerText =
@@ -128,9 +132,19 @@ socket.on("connect", () => {
                 amountUnready + " player(s) not ready";
             }
           }
+
+          socket.on("reqSatisfied", (valid) => {
+            if (valid) {
+              console.log("can start");
+            } else {
+              console.log("CAN NOT START")
+            }
+          })
+    
         }
       );
 
+     
       socket.emit("fetchRoles", getPlayerID(), "connect");
       socket.on("fetchedRolesConnect", (roles) => {
         updateRoles(roles);
@@ -161,6 +175,24 @@ socket.on("connect", () => {
     }
   });
 });
+
+
+
+function startGame() {
+  // if user = inGame true, menu display none
+  // if user ingame false, menu display flex
+  // navbar, remove lobby code, display none
+  // navbar change theme depending on cycle
+  socket.emit("checkIfHost", getPlayerID(), "start");
+  socket.on("isHostStart", (isHost) => {
+    if (isHost) {
+      // check also if all other requirements are met (checkCanStart)
+      // startAllowed, true or false
+      // users, inGame
+      // game object, inProgress
+    }
+  });
+}
 
 socket.on("ready-status-lobby", (users) => {
   for (var i = 0; i < users.length; i++) {
@@ -202,24 +234,9 @@ function selectRole(element) {
   roleCounter(element);
 }
 
-function startGame() {
-  // if user = inGame true, menu display none
-  // if user ingame false, menu display flex
-  // navbar, remove lobby code, display none
-  // navbar change theme depending on cycle
-  socket.emit("checkIfHost", getPlayerID(), "start");
-  socket.on("isHostStart", (isHost) => {
-    if (isHost) {
-      // check also if all other requirements are met (checkCanStart)
-      // startAllowed, true or false
-      // users, inGame
-      // game object, inProgress
-    }
-  });
-}
-
 function rolePickConditionHandler(isValid) {
   if (isValid) {
+    //? valid pick condition
     document.getElementById("role-card").style.border =
       "2px solid hsl(108, 100%, 45%)";
   } else {
@@ -238,6 +255,8 @@ function roleCounter(element) {
 
 function roleReqHandler(roles, users) {
   if (roles == users) {
+    //? same amount of roles as players
+    socket.emit("reqHandler", getPlayerID(), "rolesEqualUsers", true);
     document.getElementById("lobby-req-check-roles").style.display = "inline";
     document.getElementById("lobby-req-cross-roles").style.display = "none";
   } else {
@@ -340,6 +359,7 @@ function toggleCardButton(element) {
   if (element.classList.contains("ready")) {
     if (element.classList.toggle("not-ready")) {
       element.innerText = "Unready";
+      
       socket.emit("player-ready", getPlayerID(), "game");
     } else {
       element.innerText = "Ready";

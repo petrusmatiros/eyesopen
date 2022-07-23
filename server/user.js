@@ -5,10 +5,16 @@ class User {
   ) {
     this.playerID = playerID;
     this.name = name;
+    // clear after every game
+    this.messages = [];
+    // reset every game
     this.player = null;
+    // reset depending on state
     this.readyLobby = false;
     this.readyGame = false;
+    // reset every time
     this.inGame = false;
+    // depends on room
     this.currentRoom = null;
   }
 
@@ -17,6 +23,15 @@ class User {
   }
   getName() {
     return this.name;
+  }
+  getMessages() {
+    this.messages;
+  }
+  addMessage(message) {
+    this.messages.push(message)
+  }
+  removeMessage(message) {
+    this.messages.splice(this.messages.indexOf(message), 1);
   }
   getPlayer() {
     return this.player;

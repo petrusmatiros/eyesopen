@@ -119,7 +119,7 @@ io.on("connection", async (socket) => {
       var targetRoom = connectedUsers.get(playerID).getCurrentRoom();
       console.log("targetroom", targetRoom);
       if (targetRoom !== null) {
-        connectedUsers.get(playerID).setReady(false);
+        connectedUsers.get(playerID).setReadyLobby(false);
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
           "ready-status",
           rooms.get(targetRoom).getUsers()
@@ -129,6 +129,8 @@ io.on("connection", async (socket) => {
           false
         );
         clearPlayerSlot(playerID);
+        // reqHandler(playerID);
+        checkReq(playerID);
         // remove user from room
         rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
         updatePlayerCount(playerID);
@@ -142,19 +144,76 @@ io.on("connection", async (socket) => {
     }
   });
 
+  function checkReq(playerID) {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        if(!connectedUsers.get(playerID).getInGame()) {
+          var room = rooms.get(roomCode);
+          var totalReq = Object.keys(room.requirements).length;
+          console.log("totalReq", totalReq);
+          var count = 0;
+          for (var value of Object.values(room.requirements)) {
+            if (value == true) {
+              count++;
+            }
+          }
+          console.log("count", count)
+          console.log("requirements", room.requirements)
+          if (count == totalReq) {
+            console.log("everything satisfied")
+            //!! should this emit to everybody?
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("reqSatisfied", true);
+          } else {
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("reqSatisfied", false);
+          }
+        }
+      }
+    }
+  }
 
-  // socket.on("checkInGame", (playerID) => {
-  //   if (checkUserExist(playerID)) {
-  //     if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-  //       var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-  //       if(connectedUsers.get(playerID).getInGame()) {
-  //         socket.emit("isInGame", true);
-  //       } else {
-  //         socket.emit("isInGame", false);
-  //       }
-  //     }
-  //   }
-  // })
+  socket.on("reqHandler", (playerID, req, isValid=false) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        if(!connectedUsers.get(playerID).getInGame()) {
+          var room = rooms.get(roomCode);
+          if (req.includes("rolesEqualUsers")) {
+            rooms.get(roomCode).requirements.rolesEqualUsers = isValid;
+          }
+          checkReq(playerID);
+        }
+      }
+    }
+  });
+
+  function reqHandler(playerID) {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        if(!connectedUsers.get(playerID).getInGame()) {
+          var room = rooms.get(roomCode);
+          if (rooms.get(roomCode).getUsers().length >= rooms.get(roomCode).getRoles().length) {
+            rooms.get(roomCode).requirements.minThree = true;
+          } else {
+            rooms.get(roomCode).requirements.minThree = false;
+          }
+          if (checkAllReady(roomCode, playerID)) {
+            rooms.get(roomCode).requirements.allReady = true;
+          } else {
+            rooms.get(roomCode).requirements.allReady = false;
+          }
+          if (hostInLobby(roomCode)) {
+            rooms.get(roomCode).requirements.hostExist = true;
+          } else {
+            rooms.get(roomCode).requirements.hostExist = false;
+          }
+          checkReq(playerID);
+        }
+      }
+    }
+  }
+
 
   socket.on("fetchRoles", (playerID, state) => {
     if (checkUserExist(playerID)) {
@@ -240,11 +299,12 @@ io.on("connection", async (socket) => {
   function checkUserInGame(roomCode, playerID) {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if(connectedUsers.get(playerID).getInGame()) {
-          return true;
-        } else {
-          return false;
+        if (rooms.get(roomCode).getUsers().includes(playerID)) {
+          if(connectedUsers.get(playerID).getInGame()) {
+            return true;
+          } else {
+            return false;
+          }
         }
       }
     }
@@ -267,9 +327,9 @@ io.on("connection", async (socket) => {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         if(!checkUserInGame(roomCode, playerID)) {
           var notReady = false;
-          connectedUsers.get(playerID).setReady(notReady);
+          connectedUsers.get(playerID).setReadyLobby(notReady);
           io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-            "ready-status",
+            "ready-status-lobby",
             rooms.get(roomCode).getUsers()
           );
         }
@@ -282,13 +342,14 @@ io.on("connection", async (socket) => {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         var emitTo = "";
-        if (state.contains("lobby")) {
+        var notReady = false;
+        if (state.includes("lobby")) {
           emitTo = "ready-status-lobby";
-        } else if (state.contains("game")) {
+          connectedUsers.get(playerID).setReadyLobby(notReady);
+        } else if (state.includes("game")) {
           emitTo = "ready-status-game";
+          connectedUsers.get(playerID).setReadyGame(notReady);
         }
-          var notReady = false;
-          connectedUsers.get(playerID).setReady(notReady);
           updatePlayerCount(playerID);
           io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
             emitTo,
@@ -322,13 +383,14 @@ io.on("connection", async (socket) => {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         var emitTo = "";
-        if (state.contains("lobby")) {
-          emitTo = "ready-status-lobby";
-        } else if (state.contains("game")) {
-          emitTo = "ready-status-game";
-        }
         var ready = true;
-        connectedUsers.get(playerID).setReady(ready);
+        if (state.includes("lobby")) {
+          emitTo = "ready-status-lobby";
+          connectedUsers.get(playerID).setReadyLobby(ready);
+        } else if (state.includes("game")) {
+          emitTo = "ready-status-game";
+          connectedUsers.get(playerID).setReadyGame(ready);
+        }
         updatePlayerCount(playerID);
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
           emitTo,
@@ -356,6 +418,7 @@ io.on("connection", async (socket) => {
             rooms.get(roomCode).getUsers().length,
             rooms.get(roomCode).getRoles().length
           );
+          reqHandler(playerID);
           console.log(socket.rooms);
           console.log(connectedUsers.get(playerID));
           socket.emit("joinPlayerSlot");
@@ -378,6 +441,7 @@ io.on("connection", async (socket) => {
           rooms.get(roomCode).getUsers().length,
           rooms.get(roomCode).getRoles().length
         );
+        reqHandler(playerID);
       }
     }
   }
@@ -400,6 +464,7 @@ io.on("connection", async (socket) => {
             rooms.get(roomCode).getUsers().length,
             rooms.get(roomCode).getRoles().length
           );
+          reqHandler(playerID);
           console.log(socket.rooms);
           console.log(connectedUsers.get(playerID));
           socket.emit("joinPlayerSlot");
@@ -640,11 +705,13 @@ io.on("connection", async (socket) => {
       (evilRoles !== totalRoles - 1 || !lawyerPicked) &&
       (goodRoles !== totalRoles - 1 || !lawyerPicked)
     ) {
-      console.log("wrong condition handling");
       io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(emitTo, true);
+      rooms.get(roomCode).requirements.validPick = true;
     } else {
       io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(emitTo, false);
+      rooms.get(roomCode).requirements.validPick = false;
     }
+    checkReq(playerID);
   }
 
   socket.on("checkRolePick", (playerID, state) => {

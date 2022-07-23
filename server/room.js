@@ -4,6 +4,13 @@ class Room {
   constructor(host) {
     this.users = [];
     this.roles = [];
+    this.requirements = {
+      hostExist: false,
+      minThree: false,
+      rolesEqualUsers: false,
+      validPick: false,
+      allReady: false,
+    }
     this.slots = {
       slot1: {
         taken: false,
