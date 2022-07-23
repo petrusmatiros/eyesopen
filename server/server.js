@@ -143,35 +143,37 @@ io.on("connection", async (socket) => {
   });
 
 
-  socket.on("checkInGame", (playerID) => {
-    if (checkUserExist(playerID)) {
-      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if(connectedUsers.get(playerID).getInGame()) {
-          socket.emit("isInGame", true);
-        } else {
-          socket.emit("isInGame", false);
-        }
-      }
-    }
-  })
+  // socket.on("checkInGame", (playerID) => {
+  //   if (checkUserExist(playerID)) {
+  //     if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+  //       var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+  //       if(connectedUsers.get(playerID).getInGame()) {
+  //         socket.emit("isInGame", true);
+  //       } else {
+  //         socket.emit("isInGame", false);
+  //       }
+  //     }
+  //   }
+  // })
 
   socket.on("fetchRoles", (playerID, state) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        var emitTo = "";
-        if (state.includes("connect")) {
-          emitTo = "fetchedRolesConnect";
-        } else if (state.includes("after")) {
-          emitTo = "fetchedRolesAfter";
-        } else if (state.includes("disconnect")) {
-          emitTo = "fetchedRolesDisconnect";
+        if(!checkUserInGame(roomCode, playerID)) {
+          var emitTo = "";
+          if (state.includes("connect")) {
+            emitTo = "fetchedRolesConnect";
+          } else if (state.includes("after")) {
+            emitTo = "fetchedRolesAfter";
+          } else if (state.includes("disconnect")) {
+            emitTo = "fetchedRolesDisconnect";
+          }
+          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+            emitTo,
+            rooms.get(roomCode).getRoles()
+          );
         }
-        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-          emitTo,
-          rooms.get(roomCode).getRoles()
-        );
       }
     }
   });
@@ -228,11 +230,24 @@ io.on("connection", async (socket) => {
     var room = rooms.get(roomCode);
     var ready = 0;
     for (var i = 0; i < room.getUsers().length; i++) {
-      if (room.getUsers()[i].getReady() == true) {
+      if (room.getUsers()[i].getReadyLobby() == true) {
         ready++;
       }
     }
     return room.getUsers().length - ready;
+  }
+
+  function checkUserInGame(roomCode, playerID) {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        if(connectedUsers.get(playerID).getInGame()) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
   }
 
   function checkForAlreadyExistingUser(roomCode, playerID) {
@@ -250,27 +265,36 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        var notReady = false;
-        connectedUsers.get(playerID).setReady(notReady);
-        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-          "ready-status",
-          rooms.get(roomCode).getUsers()
-        );
+        if(!checkUserInGame(roomCode, playerID)) {
+          var notReady = false;
+          connectedUsers.get(playerID).setReady(notReady);
+          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+            "ready-status",
+            rooms.get(roomCode).getUsers()
+          );
+        }
       }
     }
   });
 
-  socket.on("player-unready", (playerID) => {
+  socket.on("player-unready", (playerID, state) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        var notReady = false;
-        connectedUsers.get(playerID).setReady(notReady);
-        updatePlayerCount(playerID);
-        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-          "ready-status",
-          rooms.get(roomCode).getUsers()
-        );
+        var emitTo = "";
+        if (state.contains("lobby")) {
+          emitTo = "ready-status-lobby";
+        } else if (state.contains("game")) {
+          emitTo = "ready-status-game";
+        }
+          var notReady = false;
+          connectedUsers.get(playerID).setReady(notReady);
+          updatePlayerCount(playerID);
+          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+            emitTo,
+            rooms.get(roomCode).getUsers()
+          );
+        
       }
     }
   });
@@ -280,7 +304,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         for (var i = 0; i < rooms.get(roomCode).getUsers().length; i++) {
-          if (rooms.get(roomCode).getUsers()[i].getReady()) {
+          if (rooms.get(roomCode).getUsers()[i].getReadyLobby()) {
             count++;
           }
         }
@@ -293,17 +317,24 @@ io.on("connection", async (socket) => {
     }
   }
 
-  socket.on("player-ready", (playerID) => {
+  socket.on("player-ready", (playerID, state) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var emitTo = "";
+        if (state.contains("lobby")) {
+          emitTo = "ready-status-lobby";
+        } else if (state.contains("game")) {
+          emitTo = "ready-status-game";
+        }
         var ready = true;
         connectedUsers.get(playerID).setReady(ready);
         updatePlayerCount(playerID);
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-          "ready-status",
+          emitTo,
           rooms.get(roomCode).getUsers()
         );
+        
       }
     }
   });
@@ -312,21 +343,23 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        socket.join(connectedUsers.get(playerID).getCurrentRoom());
-
-        socket.emit("viewRoom", roomCode);
-        socket.emit(
-          "viewPlayerCount",
-          amountUnready(roomCode),
-          hostInLobby(roomCode),
-          connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
-          checkAllReady(roomCode, playerID),
-          rooms.get(roomCode).getUsers().length,
-          rooms.get(roomCode).getRoles().length
-        );
-        console.log(socket.rooms);
-        console.log(connectedUsers.get(playerID));
-        socket.emit("joinPlayerSlot");
+        if (!checkUserInGame(roomCode, playerID)) {
+          socket.join(connectedUsers.get(playerID).getCurrentRoom());
+  
+          socket.emit("viewRoom", roomCode);
+          socket.emit(
+            "viewPlayerCount",
+            amountUnready(roomCode),
+            hostInLobby(roomCode),
+            connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
+            checkAllReady(roomCode, playerID),
+            rooms.get(roomCode).getUsers().length,
+            rooms.get(roomCode).getRoles().length
+          );
+          console.log(socket.rooms);
+          console.log(connectedUsers.get(playerID));
+          socket.emit("joinPlayerSlot");
+        }
       }
     }
     socket.data.playerID = playerID;
@@ -354,44 +387,72 @@ io.on("connection", async (socket) => {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         connectedUsers.get(playerID).setCurrentRoom(directRoom);
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        socket.join(connectedUsers.get(playerID).getCurrentRoom());
-        checkForAlreadyExistingUser(roomCode, playerID);
-        socket.emit("viewRoom", roomCode);
-        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-          "viewPlayerCount",
-          amountUnready(roomCode),
-          hostInLobby(roomCode),
-          connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
-          checkAllReady(roomCode, playerID),
-          rooms.get(roomCode).getUsers().length,
-          rooms.get(roomCode).getRoles().length
-        );
-        console.log(socket.rooms);
-        console.log(connectedUsers.get(playerID));
-        socket.emit("joinPlayerSlot");
+        if (!checkUserInGame(roomCode, playerID)) {
+          socket.join(connectedUsers.get(playerID).getCurrentRoom());
+          checkForAlreadyExistingUser(roomCode, playerID);
+          socket.emit("viewRoom", roomCode);
+          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+            "viewPlayerCount",
+            amountUnready(roomCode),
+            hostInLobby(roomCode),
+            connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
+            checkAllReady(roomCode, playerID),
+            rooms.get(roomCode).getUsers().length,
+            rooms.get(roomCode).getRoles().length
+          );
+          console.log(socket.rooms);
+          console.log(connectedUsers.get(playerID));
+          socket.emit("joinPlayerSlot");
+        }
       }
     }
     socket.data.playerID = playerID;
   });
 
   socket.on("requestPlayerSlot", (playerID) => {
-    if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-      var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-      var room = rooms.get(roomCode);
-      var slotAlreadyExist = false;
-      for (var [key, value] of Object.entries(room.slots)) {
-        if (value.userID == playerID) {
-          slotAlreadyExist = true;
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        if(!checkUserInGame(roomCode, playerID)) {
+          var room = rooms.get(roomCode);
+          var slotAlreadyExist = false;
+          for (var [key, value] of Object.entries(room.slots)) {
+            if (value.userID == playerID) {
+              slotAlreadyExist = true;
+            }
+          }
+          if (!slotAlreadyExist) {
+            for (var [key, value] of Object.entries(room.slots)) {
+              if (value.taken == false) {
+                room.slots[key]["taken"] = true;
+                room.slots[key]["userID"] = playerID;
+                room.slots[key]["userName"] = connectedUsers
+                  .get(playerID)
+                  .getName();
+                io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+                  "playerSlots",
+                  room.getHost(),
+                  room.slots
+                );
+                break;
+              }
+            }
+          }
         }
       }
-      if (!slotAlreadyExist) {
+    }
+  });
+
+  function clearPlayerSlot(playerID) {
+    if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+      var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+      if(!checkUserInGame(roomCode, playerID)) {
+        var room = rooms.get(roomCode);
         for (var [key, value] of Object.entries(room.slots)) {
-          if (value.taken == false) {
-            room.slots[key]["taken"] = true;
-            room.slots[key]["userID"] = playerID;
-            room.slots[key]["userName"] = connectedUsers
-              .get(playerID)
-              .getName();
+          if (value.userID == playerID) {
+            room.slots[key]["taken"] = false;
+            room.slots[key]["userID"] = undefined;
+            room.slots[key]["userName"] = "";
             io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
               "playerSlots",
               room.getHost(),
@@ -402,52 +463,34 @@ io.on("connection", async (socket) => {
         }
       }
     }
-  });
-
-  function clearPlayerSlot(playerID) {
-    if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-      var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-      var room = rooms.get(roomCode);
-      for (var [key, value] of Object.entries(room.slots)) {
-        if (value.userID == playerID) {
-          room.slots[key]["taken"] = false;
-          room.slots[key]["userID"] = undefined;
-          room.slots[key]["userName"] = "";
-          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-            "playerSlots",
-            room.getHost(),
-            room.slots
-          );
-          break;
-        }
-      }
-    }
   }
 
   socket.on("checkIfHost", (playerID, emission) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (rooms.get(roomCode).getHost() == playerID) {
-          var emitTo = "";
-          if (emission.includes("visibility")) {
-            emitTo = "isHost";
-          } else if (emission.includes("roles")) {
-            emitTo = "isHostRoles";
-          } else if (emission.includes("start")) {
-            emitTo = "isHostStart";
+        if(!checkUserInGame(roomCode, playerID)) {
+          if (rooms.get(roomCode).getHost() == playerID) {
+            var emitTo = "";
+            if (emission.includes("visibility")) {
+              emitTo = "isHost";
+            } else if (emission.includes("roles")) {
+              emitTo = "isHostRoles";
+            } else if (emission.includes("start")) {
+              emitTo = "isHostStart";
+            }
+            socket.emit(emitTo, true);
+          } else {
+            var emitTo = "";
+            if (emission.includes("visibility")) {
+              emitTo = "isHost";
+            } else if (emission.includes("roles")) {
+              emitTo = "isHostRoles";
+            } else if (emission.includes("start")) {
+              emitTo = "isHostStart";
+            }
+            socket.emit(emitTo, false);
           }
-          socket.emit(emitTo, true);
-        } else {
-          var emitTo = "";
-          if (emission.includes("visibility")) {
-            emitTo = "isHost";
-          } else if (emission.includes("roles")) {
-            emitTo = "isHostRoles";
-          } else if (emission.includes("start")) {
-            emitTo = "isHostStart";
-          }
-          socket.emit(emitTo, false);
         }
       }
     }
@@ -608,24 +651,25 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-
-        var emitTo = "";
-        if (state.includes("pick")) {
-          emitTo = "rolePickCondition";
-        } else if (state.includes("connect")) {
-          emitTo = "rolePickConditionConnect";
-        } else if (state.includes("disconnect")) {
-          emitTo = "rolePickConditionDisconnect";
-        }
-        var totalRoles = rooms.get(roomCode).getRoles().length;
-        var totalUsers = rooms.get(roomCode).getUsers().length;
-        if (totalRoles < minPlayers || totalUsers < minPlayers) {
-          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-            emitTo,
-            false
-          );
-        } else {
-          checkRolePick(roomCode, playerID, totalRoles, emitTo);
+        if(!checkUserInGame(roomCode, playerID)) {
+          var emitTo = "";
+          if (state.includes("pick")) {
+            emitTo = "rolePickCondition";
+          } else if (state.includes("connect")) {
+            emitTo = "rolePickConditionConnect";
+          } else if (state.includes("disconnect")) {
+            emitTo = "rolePickConditionDisconnect";
+          }
+          var totalRoles = rooms.get(roomCode).getRoles().length;
+          var totalUsers = rooms.get(roomCode).getUsers().length;
+          if (totalRoles < minPlayers || totalUsers < minPlayers) {
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+              emitTo,
+              false
+            );
+          } else {
+            checkRolePick(roomCode, playerID, totalRoles, emitTo);
+          }
         }
       }
     }
@@ -635,18 +679,21 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (rooms.get(roomCode).getHost() == playerID) {
-          var emitTo = "";
-          if (state.includes("before")) {
-            emitTo = "roleCountBefore";
-          } else if (state.includes("after")) {
-            emitTo = "roleCountAfter";
+        if(!checkUserInGame(roomCode, playerID)) {
+          if (rooms.get(roomCode).getHost() == playerID) {
+            var emitTo = "";
+            if (state.includes("before")) {
+              emitTo = "roleCountBefore";
+            } else if (state.includes("after")) {
+              emitTo = "roleCountAfter";
+            }
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+              emitTo,
+              rooms.get(roomCode).getRoles().length,
+              rooms.get(roomCode).getUsers().length
+            );
           }
-          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-            emitTo,
-            rooms.get(roomCode).getRoles().length,
-            rooms.get(roomCode).getUsers().length
-          );
+
         }
       }
     }
@@ -672,18 +719,19 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (rooms.get(roomCode).getHost() == playerID) {
-          if (op.includes("add")) {
-            if (!rooms.get(roomCode).getRoles().includes(role)) {
-              rooms.get(roomCode).addRole(role);
+        if(!checkUserInGame(roomCode, playerID)) {
+          if (rooms.get(roomCode).getHost() == playerID) {
+            if (op.includes("add")) {
+              if (!rooms.get(roomCode).getRoles().includes(role)) {
+                rooms.get(roomCode).addRole(role);
+              }
+            } else if (op.includes("remove")) {
+              if (rooms.get(roomCode).getRoles().includes(role)) {
+                rooms.get(roomCode).removeRole(role);
+              }
             }
-          } else if (op.includes("remove")) {
-            if (rooms.get(roomCode).getRoles().includes(role)) {
-              rooms.get(roomCode).removeRole(role);
-            }
+            console.log(rooms.get(roomCode).getRoles());
           }
-          // io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("updatedRoles", rooms.get(roomCode).getRoles());
-          console.log(rooms.get(roomCode).getRoles());
         }
       }
     }

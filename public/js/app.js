@@ -162,16 +162,31 @@ socket.on("connect", () => {
   });
 });
 
-socket.on("ready-status", (users) => {
+socket.on("ready-status-lobby", (users) => {
   for (var i = 0; i < users.length; i++) {
-    if (users[i].ready) {
+    if (users[i].readyLobby) {
       var status = document.getElementById(users[i].playerID).parentElement
         .children[1];
       status.innerText = "ready";
       status.id = "status-ready";
-    } else if (!users[i].ready) {
+    } else if (!users[i].readyLobby) {
       var status = document.getElementById(users[i].playerID).parentElement
         .children[1];
+      status.innerText = "not ready";
+      status.id = "status-notready";
+    }
+  }
+});
+
+// !! FIX THIS
+socket.on("ready-status-game", (users) => {
+  for (var i = 0; i < users.length; i++) {
+    if (users[i].readyGame) {
+      var status = document.getElementById("game-button-ready");
+      status.innerText = "ready";
+      status.id = "status-ready";
+    } else if (!users[i].readyGame) {
+      var status = document.getElementById("game-button-ready");
       status.innerText = "not ready";
       status.id = "status-notready";
     }
@@ -188,6 +203,10 @@ function selectRole(element) {
 }
 
 function startGame() {
+  // if user = inGame true, menu display none
+  // if user ingame false, menu display flex
+  // navbar, remove lobby code, display none
+  // navbar change theme depending on cycle
   socket.emit("checkIfHost", getPlayerID(), "start");
   socket.on("isHostStart", (isHost) => {
     if (isHost) {
@@ -317,14 +336,26 @@ function pickRole(element, op) {
   socket.emit("pickRole", getPlayerID(), role, op);
 }
 
+function toggleCardButton(element) {
+  if (element.classList.contains("ready")) {
+    if (element.classList.toggle("not-ready")) {
+      element.innerText = "Unready";
+      socket.emit("player-ready", getPlayerID(), "game");
+    } else {
+      element.innerText = "Ready";
+      socket.emit("player-unready", getPlayerID(), "game");
+    }
+  }
+}
+
 function toggleLobbyButton(element) {
   if (element.classList.contains("ready")) {
     if (element.classList.toggle("not-ready")) {
       element.innerText = "Unready";
-      socket.emit("player-ready", getPlayerID());
+      socket.emit("player-ready", getPlayerID(), "lobby");
     } else {
       element.innerText = "Ready";
-      socket.emit("player-unready", getPlayerID());
+      socket.emit("player-unready", getPlayerID(), "lobby");
     }
   }
 }

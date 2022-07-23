@@ -6,7 +6,8 @@ class User {
     this.playerID = playerID;
     this.name = name;
     this.player = null;
-    this.ready = false;
+    this.readyLobby = false;
+    this.readyGame = false;
     this.inGame = false;
     this.currentRoom = null;
   }
@@ -20,8 +21,11 @@ class User {
   getPlayer() {
     return this.player;
   }
-  getReady() {
-    return this.ready;
+  getReadyLobby() {
+    return this.readyLobby;
+  }
+  getReadyGame() {
+    return this.readyGame;
   }
   getInGame() {
     return this.inGame;
@@ -38,8 +42,11 @@ class User {
   setPlayer(player) {
     this.player = player;
   }
-  setReady(ready) {
-    this.ready = ready;
+  setReadyLobby(readyLobby) {
+    this.readyLobby = readyLobby;
+  }
+  setReadyGame(readyGame) {
+    this.readyGame = readyGame;
   }
   setInGame(inGame) {
     this.inGame = inGame;
