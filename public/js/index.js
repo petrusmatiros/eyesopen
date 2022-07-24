@@ -2,37 +2,35 @@ const socket = io("http://localhost:3000");
 // const socket = io("http://192.168.1.203:3000/");
 
 socket.on("connect", () => {
-  socket.emit("checkUser", getPlayerID())
+  socket.emit("checkUser", getPlayerID());
   socket.on("userExists", (userExists) => {
     if (!userExists) {
       resetCookie();
     } else {
       socket.emit("setRoom", getPlayerID());
     }
-  })
+  });
 });
-
 
 /**
  * [resetCookie resets the playerID cookie to null]
  */
- function resetCookie(override = false) {
+function resetCookie(override = false) {
   if (override) {
     console.log("cookie was reset to null");
     document.cookie = "eyesopenID=null; path=/";
   } else {
-    if (getPlayerID() !== 'null' && getPlayerID() !== undefined) {
+    if (getPlayerID() !== "null" && getPlayerID() !== undefined) {
       console.log("ID exists before user, setting to null");
       document.cookie = "eyesopenID=null; path=/";
     } else if (getPlayerID() == undefined) {
-      console.log("ID is undefined, setting to null")
+      console.log("ID is undefined, setting to null");
       document.cookie = "eyesopenID=null; path=/";
     } else if (getPlayerID() == "null") {
       console.log("ID is already null");
     }
   }
 }
-
 
 /**
  * [setLocation sets the location of the window to the specified URL]
@@ -41,7 +39,7 @@ socket.on("connect", () => {
  * @param   {[boolean]}  reset  [reset sets the playerID cookie to null if true]
  *
  */
-function setLocation(URL, reset=false) {
+function setLocation(URL, reset = false) {
   if (reset) {
     resetCookie();
   }
@@ -113,9 +111,9 @@ function displayHost() {
     socket.emit("createRoom", getPlayerID());
     socket.emit("fetchHostRoom", getPlayerID());
     socket.on("hostRoom", (roomCode) => {
-      console.log(roomCode)
+      console.log(roomCode);
       setLocation(`/lobby/${roomCode}`, false);
-    }) 
+    });
   }
 }
 function hideHost() {
@@ -173,8 +171,17 @@ function roomCodeInvalid() {
 function roomFull() {
   document.getElementById("join-help").style.display = "flex";
   document.getElementById("code").style.border = "2px solid hsl(0, 100%, 45%)";
+  document.getElementById("join-help").innerText = "The room is full";
+}
+function roomInProgress() {
+  document.getElementById("join-help").style.display = "flex";
+  document.getElementById("code").style.border = "2px solid hsl(0, 100%, 45%)";
   document.getElementById("join-help").innerText =
-    "The room is full";
+    "The room is currently in progress";
+}
+
+function join(inputVal) {
+  setLocation(`/lobby/${inputVal}`, false);
 }
 
 function checkRoomCode() {
@@ -184,14 +191,25 @@ function checkRoomCode() {
   if (inputVal.length !== 5) {
     roomCodeError();
   } else {
-    roomCodeCorrect();
+    
     socket.on("roomCodeResponse", (status) => {
       if (status == "valid") {
-        setLocation(`/lobby/${inputVal}`, false);
+        roomCodeCorrect();
+        join(inputVal);
       } else if (status == "invalid") {
         roomCodeInvalid();
       } else if (status == "full") {
         roomFull();
+      } else if (status == "inProgress") {
+        socket.emit("checkUserApartOfGame", getPlayerID(), "index");
+        setTimeout((inputVal) => {
+          socket.on("apartOfGameIndex", (apartOfGame) => {
+            if (apartOfGame) {
+              join(inputVal);
+            }
+          });
+          roomInProgress();
+        },300)
       }
     });
   }
@@ -238,9 +256,9 @@ function checkName(isHost) {
         hostNameCorrect();
         socket.emit("fetchHostRoom", getPlayerID());
         socket.on("hostRoom", (roomCode) => {
-          console.log(roomCode)
+          console.log(roomCode);
           UserInputDoneHost(roomCode);
-        })
+        });
         // socket.on("hostRoom", (hostRoom) => {
         //   UserInputDoneHost(hostRoom);
         // })

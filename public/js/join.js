@@ -117,6 +117,12 @@ function roomFull() {
     "2px solid hsl(0, 100%, 45%)";
   document.getElementById("user-help").innerText = "The room is full";
 }
+function roomInProgress() {
+  document.getElementById("join-help").style.display = "flex";
+  document.getElementById("inputUser").style.border =
+    "2px solid hsl(0, 100%, 45%)";
+  document.getElementById("user-help").innerText = "The room is currently in progress";
+}
 
 function userNameShortError() {
   document.getElementById("user-help").style.display = "flex";
@@ -132,12 +138,23 @@ function userNameCorrect() {
     "2px solid hsl(123, 100%, 45%)";
 }
 
+function join(room) {
+  userNameCorrect();
+  UserInputDone();
+  socket.emit("setRoom", getPlayerID());
+  socket.emit("joinedLobby", getPlayerID());
+  setTimeout(() => {
+      setLocation(lobby + room);
+  }, 500);
+}
+
 function checkDirectName() {
   var inputVal = document.getElementById("inputUser").value;
   if (inputVal.length < 1) {
     userNameShortError();
   } else {
     var full = false;
+    var inProgress = false;
     requestID();
     var URL = window.location.href.replace("http://", "");
     var room = URL.split("/")[URL.split("/").length - 2];
@@ -145,21 +162,27 @@ function checkDirectName() {
         socket.emit("createUser", inputVal, getPlayerID());
         socket.emit("checkRoomCode", room, getPlayerID());
     }, 500);
-    socket.on("roomCodeResponse", (status) => {
-      if (status == "full") {
-        roomFull();
-        full = true;
+    
+      socket.on("roomCodeResponse", (status) => {
+        if (status == "full") {
+          roomFull();
+          full = true;
+        } else if (status == "inProgress") {
+          socket.emit("checkUserApartOfGame", getPlayerID(), "join");
+          socket.on("apartOfGameJoin", (apartOfGame) => {
+            if (apartOfGame) {
+              join(room);
+            }
+          })
+          roomInProgress();
+          inProgress = true;
+        }
+      });
+      console.log("WHAT IS INPROGRESS ", inProgress)
+      if (full == false && inProgress == false) {
+        join(room);
       }
-    });
-    if (full == false) {
-        userNameCorrect();
-        UserInputDone();
-        socket.emit("setRoom", getPlayerID());
-        socket.emit("joinedLobby", getPlayerID());
-        setTimeout(() => {
-            setLocation(lobby + room);
-        }, 500);
-    }
+    
   }
   // check if room exists (has been created)
 }
