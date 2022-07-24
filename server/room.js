@@ -87,6 +87,10 @@ class Room {
     this.host = host;
   }
 
+  getGame() {
+    return this.game;
+  }
+
   getUsers() {
     return this.users;
   }

@@ -42,7 +42,7 @@ class Game {
     this.cycle++;
   }
 
-  getPlayer() {
+  getEvil() {
     return this.evil;
   }
 

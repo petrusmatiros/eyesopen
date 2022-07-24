@@ -16,6 +16,7 @@ var randomstring = require("randomstring");
 
 var { Room } = require("./room");
 var { Game } = require("./game");
+var { Role } = require("./role");
 var { Player } = require("./player");
 var { User } = require("./user");
 
@@ -144,11 +145,124 @@ io.on("connection", async (socket) => {
     }
   });
 
+  function random(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function setUp(roomCode) {
+    var room = rooms.get(roomCode);
+    var roles = room.getRoles();
+    var users = room.getUsers();
+    // reset game
+    room.getGame().reset();
+    // set all users ready
+    for (var i = 0; i < users.length; i++) {
+      users[i].setInGame(true);
+    }
+    if (roles.length >= 3) {
+      let seen = [];
+      var i = 0;
+      // keeping track of lawyer, jester, executioner
+      var theLawyer = null;
+      var theJester = null;
+      var theExecutioner = null;
+      while (seen.length < roles.length) {
+        var rand = random(0, roles.length - 1);
+        if (!seen.includes(rand)) {
+          // create new player for user, with one of the roles
+          users[i].setPlayer(
+            new Player(users[i].getName(), new Role(roles[rand]))
+          );
+          // have used up this role
+          seen.push(rand);
+          
+          // add user to all alive players
+          room.getGame().addAlive(users[i]);
+          // if user has an evil role, add them to evil
+          // !! FIX THIS
+          console.log(users[i])
+          console.log(users[i].getPlayer())
+          console.log(users[i].getPlayer().role)
+          if (users[i].getPlayer().role.team == "evil") {
+            room.getGame().addEvil(users[i]);
+          }
+
+          // assign which user is which neutral role
+          if (roles[rand] == "lawyer") {
+            theLawyer = users[i];
+          } else if (roles[rand] == "jester") {
+            theJester = users[i];
+          } else if (roles[rand] == "executioner") {
+            theExecutioner = users[i];
+          }
+          // counter for array of users
+          i++;
+        }
+      }
+      // assign lawyer client if lawyer is one of the roles
+      // client must be evil or neutral
+      if (roles.includes("lawyer")) {
+        let seen = [];
+        while (seen.length < users.length) {
+          var rand = random(0, users.length - 1);
+          if (!seen.includes(rand)) {
+            if (
+              users[rand].getPlayer().role.team == "evil" ||
+              users[rand].getPlayer().role.team == "neutral"
+            ) {
+              theLawyer.getPlayer().role.client = users[rand];
+            }
+          }
+        }
+      }
+      // assign executioner target if executioner is one of the roles
+      // target cannot be jester and cannot be lawyer, if the lawyer client is the executioner
+      if (roles.includes("executioner")) {
+        let seen = [];
+        while (seen.length < users.length) {
+          var rand = random(0, users.length - 1);
+          if (!seen.includes(rand)) {
+            if (
+              users[rand] !== theJester &&
+              (users[rand] !== theLawyer ||
+                theLawyer.getPlayer().role.client !== theExecutioner)
+            ) {
+              theExecutioner.getPlayer().role.target = users[rand];
+            }
+          }
+        }
+      }
+    }
+    console.log("after game set up", users)
+  }
+
+  // set all users to inGame
+  // set game to inProgress
+  // make sure done is false
+  // assign roles at random (each users gets a new Player, which has new Role)
+  // if lawyer exists, give them evil or neutral client
+  // if exe exists, give the many target but not jester, and if lawyer client == exe, then no laywer as target
+  // add all Users to game alive, evil to evil array
+  // ?check for user readyGame
+  socket.on("startGame", (playerID) => {
+    console.log("starting game");
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        setUp(roomCode);
+        // set game in progress
+        var room = rooms.get(roomCode);
+        room.getGame().setProgress(true);
+        io.to(roomCode).emit("rolesAssigned");
+      }
+    }
+  });
+
   function checkReq(playerID) {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if(!connectedUsers.get(playerID).getInGame()) {
+        if (!connectedUsers.get(playerID).getInGame()) {
           var room = rooms.get(roomCode);
           var totalReq = Object.keys(room.requirements).length;
           console.log("totalReq", totalReq);
@@ -158,25 +272,31 @@ io.on("connection", async (socket) => {
               count++;
             }
           }
-          console.log("count", count)
-          console.log("requirements", room.requirements)
+          console.log("count", count);
+          console.log("requirements", room.requirements);
           if (count == totalReq) {
-            console.log("everything satisfied")
+            console.log("everything satisfied");
             //!! should this emit to everybody?
-            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("reqSatisfied", true);
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+              "reqSatisfied",
+              true
+            );
           } else {
-            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("reqSatisfied", false);
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+              "reqSatisfied",
+              false
+            );
           }
         }
       }
     }
   }
 
-  socket.on("reqHandler", (playerID, req, isValid=false) => {
+  socket.on("reqHandler", (playerID, req, isValid = false) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if(!connectedUsers.get(playerID).getInGame()) {
+        if (!connectedUsers.get(playerID).getInGame()) {
           var room = rooms.get(roomCode);
           if (req.includes("rolesEqualUsers")) {
             rooms.get(roomCode).requirements.rolesEqualUsers = isValid;
@@ -191,7 +311,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if(!connectedUsers.get(playerID).getInGame()) {
+        if (!connectedUsers.get(playerID).getInGame()) {
           var room = rooms.get(roomCode);
           if (rooms.get(roomCode).getUsers().length >= minPlayers) {
             rooms.get(roomCode).requirements.minThree = true;
@@ -214,12 +334,11 @@ io.on("connection", async (socket) => {
     }
   }
 
-
   socket.on("fetchRoles", (playerID, state) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if(!checkUserInGame(roomCode, playerID)) {
+        if (!checkUserInGame(roomCode, playerID)) {
           var emitTo = "";
           if (state.includes("connect")) {
             emitTo = "fetchedRolesConnect";
@@ -301,7 +420,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         if (rooms.get(roomCode).getUsers().includes(playerID)) {
-          if(connectedUsers.get(playerID).getInGame()) {
+          if (connectedUsers.get(playerID).getInGame()) {
             return true;
           } else {
             return false;
@@ -326,7 +445,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if(!checkUserInGame(roomCode, playerID)) {
+        if (!checkUserInGame(roomCode, playerID)) {
           var notReady = false;
           connectedUsers.get(playerID).setReadyLobby(notReady);
           io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
@@ -351,12 +470,11 @@ io.on("connection", async (socket) => {
           emitTo = "ready-status-game";
           connectedUsers.get(playerID).setReadyGame(notReady);
         }
-          updatePlayerCount(playerID);
-          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-            emitTo,
-            rooms.get(roomCode).getUsers()
-          );
-        
+        updatePlayerCount(playerID);
+        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+          emitTo,
+          rooms.get(roomCode).getUsers()
+        );
       }
     }
   });
@@ -397,7 +515,6 @@ io.on("connection", async (socket) => {
           emitTo,
           rooms.get(roomCode).getUsers()
         );
-        
       }
     }
   });
@@ -408,7 +525,7 @@ io.on("connection", async (socket) => {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         if (!checkUserInGame(roomCode, playerID)) {
           socket.join(connectedUsers.get(playerID).getCurrentRoom());
-  
+
           socket.emit("viewRoom", roomCode);
           socket.emit(
             "viewPlayerCount",
@@ -479,7 +596,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if(!checkUserInGame(roomCode, playerID)) {
+        if (!checkUserInGame(roomCode, playerID)) {
           var room = rooms.get(roomCode);
           var slotAlreadyExist = false;
           for (var [key, value] of Object.entries(room.slots)) {
@@ -512,7 +629,7 @@ io.on("connection", async (socket) => {
   function clearPlayerSlot(playerID) {
     if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
       var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-      if(!checkUserInGame(roomCode, playerID)) {
+      if (!checkUserInGame(roomCode, playerID)) {
         var room = rooms.get(roomCode);
         for (var [key, value] of Object.entries(room.slots)) {
           if (value.userID == playerID) {
@@ -535,7 +652,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if(!checkUserInGame(roomCode, playerID)) {
+        if (!checkUserInGame(roomCode, playerID)) {
           if (rooms.get(roomCode).getHost() == playerID) {
             var emitTo = "";
             if (emission.includes("visibility")) {
@@ -706,20 +823,21 @@ io.on("connection", async (socket) => {
       (evilRoles !== totalRoles - 1 || !lawyerPicked) &&
       (goodRoles !== totalRoles - 1 || !lawyerPicked)
     ) {
-      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(emitTo, true);
       rooms.get(roomCode).requirements.validPick = true;
+      reqHandler(playerID);
+      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(emitTo, true);
     } else {
-      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(emitTo, false);
       rooms.get(roomCode).requirements.validPick = false;
+      reqHandler(playerID);
+      io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(emitTo, false);
     }
-    reqHandler(playerID);
   }
 
   socket.on("checkRolePick", (playerID, state) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if(!checkUserInGame(roomCode, playerID)) {
+        if (!checkUserInGame(roomCode, playerID)) {
           var emitTo = "";
           if (state.includes("pick")) {
             emitTo = "rolePickCondition";
@@ -748,7 +866,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if(!checkUserInGame(roomCode, playerID)) {
+        if (!checkUserInGame(roomCode, playerID)) {
           if (rooms.get(roomCode).getHost() == playerID) {
             var emitTo = "";
             if (state.includes("before")) {
@@ -762,7 +880,6 @@ io.on("connection", async (socket) => {
               rooms.get(roomCode).getUsers().length
             );
           }
-
         }
       }
     }
@@ -788,7 +905,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if(!checkUserInGame(roomCode, playerID)) {
+        if (!checkUserInGame(roomCode, playerID)) {
           if (rooms.get(roomCode).getHost() == playerID) {
             if (op.includes("add")) {
               if (!rooms.get(roomCode).getRoles().includes(role)) {
@@ -820,7 +937,6 @@ var time = setInterval(function () {
   }
 }, 1000);
 
-
 // Game related
 // #############
 
@@ -839,7 +955,6 @@ function disguiseChecker() {
   });
 }
 
-
 const roleTypes = {
   Villager: "villager",
   Investigator: "investigator",
@@ -857,137 +972,4 @@ const roleTypes = {
   Lawyer: "lawyer",
 };
 
-
-  function Role(type) {
-    this.type = type;
-    if (type == roleTypes.Villager) {
-      this.name = jsonData["roles"]["villager"]["name"];
-      this.description = jsonData["roles"]["villager"]["description"];
-      this.mission = jsonData["roles"]["villager"]["mission"];
-      this.team = jsonData["roles"]["villager"]["team"];
-      this.hasNightAbility =
-        jsonData["roles"]["villager"]["hasNightAbility"];
-      this.voteCount = jsonData["roles"]["villager"]["voteCount"];
-    } else if (type == roleTypes.Investigator) {
-      this.name = jsonData["roles"]["investigator"]["name"];
-      this.description =
-        jsonData["roles"]["investigator"]["description"];
-      this.mission = jsonData["roles"]["investigator"]["mission"];
-      this.team = jsonData["roles"]["investigator"]["team"];
-      this.hasNightAbility =
-        jsonData["roles"]["investigator"]["hasNightAbility"];
-      this.voteCount = jsonData["roles"]["investigator"]["voteCount"];
-    } else if (type == roleTypes.Doctor) {
-      this.name = jsonData["roles"]["doctor"]["name"];
-      this.description = jsonData["roles"]["doctor"]["description"];
-      this.mission = jsonData["roles"]["doctor"]["mission"];
-      this.team = jsonData["roles"]["doctor"]["team"];
-      this.hasNightAbility =
-        jsonData["roles"]["doctor"]["hasNightAbility"];
-      this.voteCount = jsonData["roles"]["doctor"]["voteCount"];
-      this.selfUsage = jsonData["roles"]["doctor"]["selfUsage"];
-    } else if (type == roleTypes.Mayor) {
-      this.name = jsonData["roles"]["mayor"]["name"];
-      this.description = jsonData["roles"]["mayor"]["description"];
-      this.mission = jsonData["roles"]["mayor"]["mission"];
-      this.team = jsonData["roles"]["mayor"]["team"];
-      this.hasNightAbility =
-        jsonData["roles"]["mayor"]["hasNightAbility"];
-      this.voteCount = jsonData["roles"]["mayor"]["voteCount"];
-    } else if (type == roleTypes.Trapper) {
-      this.name = jsonData["roles"]["trapper"]["name"];
-      this.description = jsonData["roles"]["trapper"]["description"];
-      this.mission = jsonData["roles"]["trapper"]["mission"];
-      this.team = jsonData["roles"]["trapper"]["team"];
-      this.hasNightAbility =
-        jsonData["roles"]["trapper"]["hasNightAbility"];
-      this.voteCount = jsonData["roles"]["trapper"]["voteCount"];
-    } else if (type == roleTypes.Godfather) {
-      this.name = jsonData["roles"]["godfather"]["name"];
-      this.description = jsonData["roles"]["godfather"]["description"];
-      this.mission = jsonData["roles"]["godfather"]["mission"];
-      this.team = jsonData["roles"]["godfather"]["team"];
-      this.hasNightAbility =
-        jsonData["roles"]["godfather"]["hasNightAbility"];
-      this.voteCount = jsonData["roles"]["godfather"]["voteCount"];
-      this.killVoteCount =
-        jsonData["roles"]["godfather"]["killVoteCount"];
-    } else if (type == roleTypes.Mafioso) {
-      this.name = jsonData["roles"]["mafioso"]["name"];
-      this.description = jsonData["roles"]["mafioso"]["description"];
-      this.mission = jsonData["roles"]["mafioso"]["mission"];
-      this.team = jsonData["roles"]["mafioso"]["team"];
-      this.hasNightAbility =
-        jsonData["roles"]["mafioso"]["hasNightAbility"];
-      this.voteCount = jsonData["roles"]["mafioso"]["voteCount"];
-      this.killVoteCount =
-        jsonData["roles"]["mafioso"]["killVoteCount"];
-    } else if (type == roleTypes.Surgeon) {
-      this.name = jsonData["roles"]["surgeon"]["name"];
-      this.description = jsonData["roles"]["surgeon"]["description"];
-      this.mission = jsonData["roles"]["surgeon"]["mission"];
-      this.team = jsonData["roles"]["surgeon"]["team"];
-      this.hasNightAbility =
-        jsonData["roles"]["surgeon"]["hasNightAbility"];
-      this.voteCount = jsonData["roles"]["surgeon"]["voteCount"];
-      this.killVoteCount =
-        jsonData["roles"]["surgeon"]["killVoteCount"];
-      this.selfUsage = jsonData["roles"]["surgeon"]["selfUsage"];
-    } else if (type == roleTypes.Witch) {
-      this.name = jsonData["roles"]["witch"]["name"];
-      this.description = jsonData["roles"]["witch"]["description"];
-      this.mission = jsonData["roles"]["witch"]["mission"];
-      this.team = jsonData["roles"]["witch"]["team"];
-      this.hasNightAbility =
-        jsonData["roles"]["witch"]["hasNightAbility"];
-      this.voteCount = jsonData["roles"]["witch"]["voteCount"];
-      this.killVoteCount = jsonData["roles"]["witch"]["killVoteCount"];
-    } else if (type == roleTypes.Framer) {
-      this.name = jsonData["roles"]["framer"]["name"];
-      this.description = jsonData["roles"]["framer"]["description"];
-      this.mission = jsonData["roles"]["framer"]["mission"];
-      this.team = jsonData["roles"]["framer"]["team"];
-      this.hasNightAbility =
-        jsonData["roles"]["framer"]["hasNightAbility"];
-      this.voteCount = jsonData["roles"]["framer"]["voteCount"];
-      this.killVoteCount = jsonData["roles"]["framer"]["killVoteCount"];
-    } else if (type == roleTypes.Jester) {
-      this.name = jsonData["roles"]["jester"]["name"];
-      this.description = jsonData["roles"]["jester"]["description"];
-      this.mission = jsonData["roles"]["jester"]["mission"];
-      this.team = jsonData["roles"]["jester"]["team"];
-      this.hasNightAbility =
-        jsonData["roles"]["jester"]["hasNightAbility"];
-      this.voteCount = jsonData["roles"]["jester"]["voteCount"];
-    } else if (type == roleTypes.SerialKiller) {
-      this.name = jsonData["roles"]["serial killer"]["name"];
-      this.description =
-        jsonData["roles"]["serial killer"]["description"];
-      this.mission = jsonData["roles"]["serial killer"]["mission"];
-      this.team = jsonData["roles"]["serial killer"]["team"];
-      this.hasNightAbility =
-        jsonData["roles"]["serial killer"]["hasNightAbility"];
-      this.voteCount =
-        jsonData["roles"]["serial killer"]["voteCount"];
-      this.killVoteCount =
-        jsonData["roles"]["serial killer"]["killVoteCount"];
-    } else if (type == roleTypes.Executioner) {
-      this.name = jsonData["roles"]["executioner"]["name"];
-      this.description =
-        jsonData["roles"]["executioner"]["description"];
-      this.mission = jsonData["roles"]["executioner"]["mission"];
-      this.team = jsonData["roles"]["executioner"]["team"];
-      this.hasNightAbility =
-        jsonData["roles"]["executioner"]["hasNightAbility"];
-      this.voteCount = jsonData["roles"]["executioner"]["voteCount"];
-    } else if (type == roleTypes.Lawyer) {
-      this.name = jsonData["roles"]["lawyer"]["name"];
-      this.description = jsonData["roles"]["lawyer"]["description"];
-      this.mission = jsonData["roles"]["lawyer"]["mission"];
-      this.team = jsonData["roles"]["lawyer"]["team"];
-      this.hasNightAbility =
-        jsonData["roles"]["lawyer"]["hasNightAbility"];
-      this.voteCount = jsonData["roles"]["lawyer"]["voteCount"];
-    }
-  }
 

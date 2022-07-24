@@ -1,3 +1,5 @@
+var { Player } = require("./player");
+
 class User {
   constructor(
     playerID=undefined,

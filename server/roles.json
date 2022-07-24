@@ -110,7 +110,8 @@
             "team": "neutral",
             "mission": "Get your target voted out. You become the jester if your target is killed",
             "hasNightAbility": false,
-            "voteCount": 1
+            "voteCount": 1,
+            "target": null
         },
         "lawyer": {
             "name": "lawyer",
@@ -118,7 +119,8 @@
             "team": "neutral",
             "mission": "make your client (evil or neutral) win",
             "hasNightAbility": false,
-            "voteCount": 1
+            "voteCount": 1,
+            "client": null
         }
     }
 }

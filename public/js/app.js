@@ -75,7 +75,7 @@ socket.on("connect", () => {
           }
           var startButton =
             document.getElementsByClassName("lobby-button start");
-          startButton[0].style.display = "flex";
+          startButton[0].style.display = "inline";
         } else {
           console.log("REMOVING HOST VISIBILITY");
           document
@@ -139,12 +139,13 @@ socket.on("connect", () => {
 
               start.style.opacity = "100%";
               start.style.cursor = "pointer";
-              console.log("can start");
+              start.setAttribute("onclick", "startGame()");
             } else {
               var start = document.getElementById("start-button");
               
               start.style.opacity = "35%";
               start.style.cursor = "not-allowed";
+              start.setAttribute("onclick", "");
             }
           })
     
@@ -193,6 +194,9 @@ function startGame() {
   socket.emit("checkIfHost", getPlayerID(), "start");
   socket.on("isHostStart", (isHost) => {
     if (isHost) {
+      socket.emit("startGame", getPlayerID());
+      socket.on("rolesAssinged", () => {});
+      socket.on("gameStarted", () => {});
       // check also if all other requirements are met (checkCanStart)
       // startAllowed, true or false
       // users, inGame
@@ -267,6 +271,7 @@ function roleReqHandler(roles, users) {
     document.getElementById("lobby-req-check-roles").style.display = "inline";
     document.getElementById("lobby-req-cross-roles").style.display = "none";
   } else {
+    socket.emit("reqHandler", getPlayerID(), "rolesEqualUsers", false);
     document.getElementById("lobby-req-check-roles").style.display = "none";
     document.getElementById("lobby-req-cross-roles").style.display = "inline";
   }
