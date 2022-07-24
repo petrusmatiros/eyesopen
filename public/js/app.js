@@ -34,10 +34,15 @@ socket.on("connect", () => {
       }
     } else {
       socket.emit("checkUserApartOfGame", getPlayerID(), "app");
-
+      
       socket.on("apartOfGameApp", (apartOfGame, inProgress) => {
         if ((!apartOfGame && inProgress == false) || (apartOfGame && inProgress == true)) {
+          
+          if (apartOfGame && inProgress == true) {
+            socket.emit("checkForRoleCard", getPlayerID());
 
+            
+          }
 
           if (window.location.href !== lobby) {
             var URL = window.location.href.replace("http://", "");
@@ -186,6 +191,7 @@ socket.on("connect", () => {
           socket.on("fetchedRolesDisconnect", (roles) => {
             updateRoles(roles);
           });
+          
         }
       })
 
@@ -193,6 +199,55 @@ socket.on("connect", () => {
   });
 });
 
+
+function endGame() {
+  document.getElementById("inGame").id = "inLobby";
+  document.getElementsByClassName("lobby-code-container")[0].style.display = "flex";
+}
+
+function hideLobby(toHide) {
+  if (toHide) {
+    document.getElementById("inLobby").id = "inGame";
+    document.getElementsByClassName("lobby-code-container")[0].style.display = "none";
+  }
+}
+
+function showRoleCard(toShow, role) {
+  if (toShow) {
+    document.getElementsByClassName("role-card")[0].id = role;
+    document.getElementsByClassName("role-card")[0].innerText = role;
+  }
+}
+
+socket.on("displayRoleCard", (doDisplay, role) => {
+  if (doDisplay) {
+    hideLobby(true);
+    showRoleCard(true, role);
+  } else {
+    hideLobby(false);
+    showRoleCard(false, role);
+  }
+})
+
+// check also if all other requirements are met (checkCanStart)
+// startAllowed, true or false
+// users, inGame
+// game object, inProgress
+socket.on("rolesAssigned", () => {
+// ID set to inGame, needs to be reset when game ends
+document.getElementById("inLobby").id = "inGame";
+document.getElementsByClassName("lobby-code-container")[0].style.display = "none";
+document.getElementsByClassName("role-card")[0].style.display = "flex";
+socket.emit("requestRoleCard", getPlayerID());
+// socket.on("gameStarted", () => {});
+});
+
+socket.on("fetchedRoleCard", (role) => {
+  // this role card needs to be maintained until all players have set ready-game to true and the game starts.
+  document.getElementsByClassName("role-card")[0].id = role;
+  document.getElementsByClassName("role-card")[0].innerText = role;
+
+})
 
 
 function startGame() {
@@ -204,12 +259,7 @@ function startGame() {
   socket.on("isHostStart", (isHost) => {
     if (isHost) {
       socket.emit("startGame", getPlayerID());
-      socket.on("rolesAssinged", () => {});
-      socket.on("gameStarted", () => {});
-      // check also if all other requirements are met (checkCanStart)
-      // startAllowed, true or false
-      // users, inGame
-      // game object, inProgress
+      
     }
   });
 }

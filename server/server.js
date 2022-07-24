@@ -67,34 +67,6 @@ var timeDurations = {
 var counter = timeDurations.voting;
 var jsonData = require("./roles.json");
 
-test();
-function test() {
-  // var test = new Role(roleTypes.Doctor);
-  //     console.log(test);
-  //     var theVillager = new Player("petos", new Role(roleTypes.Villager));
-  //     var theInvestigator = new Player(
-  //       "petos2",
-  //       new Role(roleTypes.Investigator)
-  //     );
-  //     var theDoctor = new Player("petos3", new Role(roleTypes.Doctor));
-  //     var theTrapper = new Player("petos4", new Role(roleTypes.Trapper));
-  //     var theFramer = new Player("petos5", new Role(roleTypes.Framer));
-  //     players = [];
-  //     players.push(theVillager);
-  //     players.push(theInvestigator);
-  //     players.push(theDoctor);
-  //     players.push(theTrapper);
-  //     players.push(theFramer);
-  //     // console.log(p1)
-  //     // console.log(p2)
-  //     // console.log(p2.role.type)
-  //     Player.useAbility(theInvestigator, theVillager);
-  //     Player.useAbility(theFramer, theDoctor);
-  //     Player.useAbility(theInvestigator, theFramer);
-  //     Player.useAbility(theInvestigator, theDoctor);
-  //     Player.useAbility(theTrapper, theFramer);
-  //     Player.useAbility(theFramer, Villager);
-}
 
 // establish server connection with socket
 io.on("connection", async (socket) => {
@@ -291,6 +263,33 @@ io.on("connection", async (socket) => {
     }
   }
 
+  socket.on("checkForRoleCard", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        if (room.getGame().getProgress()) {
+          var display = false;
+          if (checkAllReadyGame(roomCode, playerID)) {
+            display = true;
+          }
+          socket.emit("displayRoleCard", display, connectedUsers.get(playerID).getPlayer().getRole().type);
+        }
+      }
+    }
+  })
+
+  socket.on("requestRoleCard", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        if (room.getGame().getProgress()) {
+          socket.emit("fetchedRoleCard", connectedUsers.get(playerID).getPlayer().getRole().type);
+        }
+      }
+    }
+  })
   // set all users to inGame
   // set game to inProgress
   // make sure done is false
@@ -377,7 +376,7 @@ io.on("connection", async (socket) => {
             } else {
               rooms.get(roomCode).requirements.minThree = false;
             }
-            if (checkAllReady(roomCode, playerID)) {
+            if (checkAllReadyLobby(roomCode, playerID)) {
               rooms.get(roomCode).requirements.allReady = true;
             } else {
               rooms.get(roomCode).requirements.allReady = false;
@@ -543,7 +542,24 @@ io.on("connection", async (socket) => {
     }
   });
 
-  function checkAllReady(roomCode, playerID) {
+  function checkAllReadyGame(roomCode, playerID) {
+    var count = 0;
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        for (var i = 0; i < rooms.get(roomCode).getUsers().length; i++) {
+          if (rooms.get(roomCode).getUsers()[i].getReadyGame()) {
+            count++;
+          }
+        }
+        if (count == rooms.get(roomCode).getUsers().length) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  }
+  function checkAllReadyLobby(roomCode, playerID) {
     var count = 0;
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
@@ -613,7 +629,7 @@ io.on("connection", async (socket) => {
               amountUnready(roomCode),
               hostInLobby(roomCode),
               connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
-              checkAllReady(roomCode, playerID),
+              checkAllReadyLobby(roomCode, playerID),
               rooms.get(roomCode).getUsers().length,
               rooms.get(roomCode).getRoles().length
             );
@@ -637,7 +653,7 @@ io.on("connection", async (socket) => {
           amountUnready(roomCode),
           hostInLobby(roomCode),
           connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
-          checkAllReady(roomCode, playerID),
+          checkAllReadyLobby(roomCode, playerID),
           rooms.get(roomCode).getUsers().length,
           rooms.get(roomCode).getRoles().length
         );
@@ -669,7 +685,7 @@ io.on("connection", async (socket) => {
               amountUnready(roomCode),
               hostInLobby(roomCode),
               connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
-              checkAllReady(roomCode, playerID),
+              checkAllReadyLobby(roomCode, playerID),
               rooms.get(roomCode).getUsers().length,
               rooms.get(roomCode).getRoles().length
             );

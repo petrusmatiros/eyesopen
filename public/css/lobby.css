@@ -52,11 +52,21 @@
   margin-left: 0.5rem;
 }
 
-#ingame {
+.role-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 1rem;
+  padding: 1em;
+  background-color: var(--light-bg);
+}
+
+#inGame {
   display: none;
 }
 
-#inlobby {
+#inLobby {
   display: flex;
 }
 
