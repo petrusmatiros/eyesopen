@@ -179,10 +179,6 @@ io.on("connection", async (socket) => {
           // add user to all alive players
           room.getGame().addAlive(users[i]);
           // if user has an evil role, add them to evil
-          // !! FIX THIS
-          console.log(users[i])
-          console.log(users[i].getPlayer())
-          console.log(users[i].getPlayer().role)
           if (users[i].getPlayer().role.team == "evil") {
             room.getGame().addEvil(users[i]);
           }
@@ -203,37 +199,54 @@ io.on("connection", async (socket) => {
       // client must be evil or neutral
       if (roles.includes("lawyer")) {
         let seen = [];
-        while (seen.length < users.length) {
+        while (seen.length < 1) {
           var rand = random(0, users.length - 1);
           if (!seen.includes(rand)) {
-            if (
-              users[rand].getPlayer().role.team == "evil" ||
-              users[rand].getPlayer().role.team == "neutral"
-            ) {
-              theLawyer.getPlayer().role.client = users[rand];
+            if (roles.length == 3 && roles.includes("lawyer") && roles.includes("executioner") && roles.includes("jester")) {
+              if (
+                users[rand] == theJester
+              ) {
+                seen.push(rand);
+                theLawyer.getPlayer().role.client = users[rand];
+                console.log("client", users[rand].getPlayer().role);
+              }
+            } else {
+              if (
+                users[rand] !== theLawyer &&
+                (users[rand].getPlayer().role.team == "evil" ||
+                users[rand].getPlayer().role.team == "neutral")
+              ) {
+                seen.push(rand);
+                theLawyer.getPlayer().role.client = users[rand];
+                console.log("client", users[rand].getPlayer().role);
+              }
             }
           }
         }
       }
+
       // assign executioner target if executioner is one of the roles
       // target cannot be jester and cannot be lawyer, if the lawyer client is the executioner
       if (roles.includes("executioner")) {
         let seen = [];
-        while (seen.length < users.length) {
+        while (seen.length < 1) {
           var rand = random(0, users.length - 1);
           if (!seen.includes(rand)) {
             if (
-              users[rand] !== theJester &&
-              (users[rand] !== theLawyer ||
-                theLawyer.getPlayer().role.client !== theExecutioner)
+              (users[rand] !== theExecutioner && users[rand] !== theJester) &&
+              (users[rand] !== theLawyer || theLawyer.getPlayer().role.client !== theExecutioner)
             ) {
+              seen.push(rand);
               theExecutioner.getPlayer().role.target = users[rand];
+              console.log("target", users[rand].getPlayer().role);
             }
           }
         }
       }
+      console.log("theLawyer", theLawyer);
+      console.log("theExcutioner", theExecutioner)
+      console.log("after game set up", users)
     }
-    console.log("after game set up", users)
   }
 
   // set all users to inGame
