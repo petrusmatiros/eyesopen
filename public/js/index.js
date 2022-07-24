@@ -191,7 +191,13 @@ function checkRoomCode() {
   if (inputVal.length !== 5) {
     roomCodeError();
   } else {
-    
+    socket.emit("checkUserApartOfGame", getPlayerID(), "index");
+    socket.on("apartOfGameIndex", (apartOfGame, inProgress) => {
+      if (apartOfGame) {
+        roomCodeCorrect();
+        join(inputVal);
+      }
+    });
     socket.on("roomCodeResponse", (status) => {
       if (status == "valid") {
         roomCodeCorrect();
@@ -201,15 +207,7 @@ function checkRoomCode() {
       } else if (status == "full") {
         roomFull();
       } else if (status == "inProgress") {
-        socket.emit("checkUserApartOfGame", getPlayerID(), "index");
-        setTimeout((inputVal) => {
-          socket.on("apartOfGameIndex", (apartOfGame) => {
-            if (apartOfGame) {
-              join(inputVal);
-            }
-          });
-          roomInProgress();
-        },300)
+        roomInProgress();
       }
     });
   }

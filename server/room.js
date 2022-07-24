@@ -104,7 +104,7 @@ class Room {
   }
 
   userCount() {
-    this.users.length;
+    return this.users.length;
   }
 
   getRoles() {

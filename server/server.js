@@ -133,13 +133,12 @@ io.on("connection", async (socket) => {
         // reqHandler(playerID);
         // remove user from room
         rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
-        console.log("removing user, equal null:" + rooms.get(targetRoom).getHost() == null);
-        console.log("removing user, equal current playerID:" +rooms.get(targetRoom).getHost() == playerID);
         updatePlayerCount(playerID);
         // TODO: check for requirement instead???
         updateRoles();
         reqHandler(playerID);
         // socket leaves room
+        // connectedUsers.get(playerID).setCurrentRoom(null);
         socket.leave(targetRoom);
         console.log("leaving room", targetRoom);
         console.log(socket.rooms);
@@ -151,28 +150,34 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (!connectedUsers.get(playerID).getInGame()) {
+        // if (!connectedUsers.get(playerID).getInGame()) {
           var room = rooms.get(roomCode);
           if (
             room.getGame().getAlive().includes(connectedUsers.get(playerID))
           ) {
             if (state.includes("index")) {
               console.log(playerID, "(index) is apart of room", roomCode)
-              socket.emit("apartOfGameIndex", true);
+              socket.emit("apartOfGameIndex", true, room.getGame().getProgress());
             } else if (state.includes("join")) {
               console.log(playerID, "(join) is apart of room", roomCode)
-              socket.emit("apartOfGameJoin", true);
+              socket.emit("apartOfGameJoin", true, room.getGame().getProgress());
+            } else if (state.includes("app")) {
+              console.log(playerID, "(app) is apart of room", roomCode)
+              socket.emit("apartOfGameApp", true, room.getGame().getProgress());
             }
           } else {
             if (state.includes("index")) {
               console.log(playerID, "(index) is NOT APART of room", roomCode)
-              socket.emit("apartOfGameIndex", false);
+              socket.emit("apartOfGameIndex", false, room.getGame().getProgress());
             } else if (state.includes("join")) {
               console.log(playerID, "(join) is NOT APART of room", roomCode)
-              socket.emit("apartOfGameJoin", false);
+              socket.emit("apartOfGameJoin", false, room.getGame().getProgress());
+            } else if (state.includes("app")) {
+              console.log(playerID, "(app) is NOT APART of room", roomCode)
+              socket.emit("apartOfGameApp", false, room.getGame().getProgress());
             }
           }
-        }
+        // }
       }
     }
   });
@@ -366,7 +371,7 @@ io.on("connection", async (socket) => {
         if (!connectedUsers.get(playerID).getInGame()) {
           
           var room = rooms.get(roomCode);
-          if (room.getHost() == playerID) {
+          
             if (rooms.get(roomCode).getUsers().length >= minPlayers) {
               rooms.get(roomCode).requirements.minThree = true;
             } else {
@@ -383,7 +388,7 @@ io.on("connection", async (socket) => {
               rooms.get(roomCode).requirements.hostExist = false;
             }
             checkReq(playerID);
-          }
+          
         }
       }
     }
@@ -590,7 +595,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (!checkUserInGame(roomCode, playerID)) {
+        
           if (
             rooms.get(roomCode).getGame().getProgress() == false ||
             (rooms.get(roomCode).getGame().getProgress() == true &&
@@ -617,7 +622,7 @@ io.on("connection", async (socket) => {
             console.log(connectedUsers.get(playerID));
             socket.emit("joinPlayerSlot");
           }
-        }
+        
       }
     }
     socket.data.playerID = playerID;
@@ -646,7 +651,7 @@ io.on("connection", async (socket) => {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         connectedUsers.get(playerID).setCurrentRoom(directRoom);
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (!checkUserInGame(roomCode, playerID)) {
+        
           if (
             rooms.get(roomCode).getGame().getProgress() == false ||
             (rooms.get(roomCode).getGame().getProgress() == true &&
@@ -673,7 +678,7 @@ io.on("connection", async (socket) => {
             console.log(connectedUsers.get(playerID));
             socket.emit("joinPlayerSlot");
           }
-        }
+        
       }
     }
     socket.data.playerID = playerID;

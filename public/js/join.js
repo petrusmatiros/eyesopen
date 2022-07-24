@@ -141,11 +141,7 @@ function userNameCorrect() {
 function join(room) {
   userNameCorrect();
   UserInputDone();
-  socket.emit("setRoom", getPlayerID());
-  socket.emit("joinedLobby", getPlayerID());
-  setTimeout(() => {
-      setLocation(lobby + room);
-  }, 500);
+  setLocation(lobby + room);
 }
 
 function checkDirectName() {
@@ -168,12 +164,12 @@ function checkDirectName() {
           roomFull();
           full = true;
         } else if (status == "inProgress") {
-          socket.emit("checkUserApartOfGame", getPlayerID(), "join");
-          socket.on("apartOfGameJoin", (apartOfGame) => {
-            if (apartOfGame) {
-              join(room);
-            }
-          })
+          // socket.emit("checkUserApartOfGame", getPlayerID(), "join");
+          // socket.on("apartOfGameJoin", (apartOfGame) => {
+          //   if (apartOfGame) {
+          //     join(room);
+          //   }
+          // })
           roomInProgress();
           inProgress = true;
         }

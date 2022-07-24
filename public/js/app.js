@@ -33,153 +33,162 @@ socket.on("connect", () => {
         window.location.href = window.location.href + "/join";
       }
     } else {
-      if (window.location.href !== lobby) {
-        var URL = window.location.href.replace("http://", "");
-        var room = URL.split("/")[URL.split("/").length - 1];
-        socket.emit("setRoom", getPlayerID());
-        socket.emit("directJoin", getPlayerID(), room);
-      } else {
-        // USER EXISTS
-        socket.emit("setRoom", getPlayerID());
-        socket.emit("joinedLobby", getPlayerID());
-      }
-      // socket.emit("checkInGame", getPlayerID());
-      // socket.on("isInGame", (inGame) => {
+      socket.emit("checkUserApartOfGame", getPlayerID(), "app");
 
-      // })
+      socket.on("apartOfGameApp", (apartOfGame, inProgress) => {
+        if ((!apartOfGame && inProgress == false) || (apartOfGame && inProgress == true)) {
 
-      socket.on("viewRoom", (roomCode) => {
-        document.getElementById("roomcode-copy").innerText = roomCode;
-      });
-      socket.on("joinPlayerSlot", () => {
-        socket.emit("requestPlayerSlot", getPlayerID());
-      });
-      socket.on("playerSlots", (host, slots) => {
-        updatePlayerSlots(host, slots);
-        console.log("updated player slots");
-      });
-      // !! this is only for LOBBY, is this needed for game?
-      setTimeout(() => {
-        socket.emit("refreshReady", getPlayerID());
-      }, 300);
 
-      socket.emit("checkIfHost", getPlayerID(), "visibility");
-      socket.on("isHost", (isHost) => {
-        if (isHost) {
-          console.log("SETTING HOST VISIBILITY");
-          document.getElementById("role-container").classList.add("selectable");
-          var array = document.getElementsByClassName("lobby-role-tag");
-          for (var i = 0; i < array.length; i++) {
-            array[i].setAttribute("onclick", "selectRole(this)");
-            array[i].style.cursor = "pointer";
-          }
-          var startButton =
-            document.getElementsByClassName("lobby-button start");
-          startButton[0].style.display = "inline";
-        } else {
-          console.log("REMOVING HOST VISIBILITY");
-          document
-            .getElementById("role-container")
-            .classList.remove("selectable");
-          var array = document.getElementsByClassName("lobby-role-tag");
-          for (var i = 0; i < array.length; i++) {
-            array[i].setAttribute("onclick", "");
-            array[i].style.cursor = "not-allowed";
-          }
-          var startButton =
-            document.getElementsByClassName("lobby-button start");
-          startButton[0].style.display = "none";
-        }
-      });
-      socket.on(
-        "viewPlayerCount",
-        (amountUnready, hostExists, host, allReady, totalUsers, totalRoles) => {
-          document.getElementById("player-card").style.border =
-            "2px solid hsl(360, 100%, 55%)";
-          roleReqHandler(totalRoles, totalUsers);
-
-          if (totalUsers >= minPlayers) {
-            //? 3 minimum check
-            document.getElementById("lobby-req-check-players").style.display =
-              "inline";
-            document.getElementById("lobby-req-cross-players").style.display =
-              "none";
-          } else if (totalUsers < minPlayers) {
-            document.getElementById("lobby-req-check-players").style.display =
-              "none";
-            document.getElementById("lobby-req-cross-players").style.display =
-              "inline";
-          }
-          if (!hostExists) {
-            document.getElementById("player-count").style.color =
-              "var(--dark-fg)";
-            document.getElementById("player-count").innerText =
-              "Host is not in room";
+          if (window.location.href !== lobby) {
+            var URL = window.location.href.replace("http://", "");
+            var room = URL.split("/")[URL.split("/").length - 1];
+            socket.emit("setRoom", getPlayerID());
+            socket.emit("directJoin", getPlayerID(), room);
           } else {
-            //? host is in room
-            if (allReady) {
-              //? all ready check
-              document.getElementById("player-card").style.border =
-                "2px solid hsl(108, 100%, 45%)";
-              document.getElementById("player-count").innerText =
-                "Everyone is ready, " + host;
-              document.getElementById("player-count").style.color =
-                "hsl(100, 100%, 35%)";
-            } else {
-              document.getElementById("player-count").style.color =
-                "var(--dark-fg)";
-              document.getElementById("player-count").innerText =
-                amountUnready + " player(s) not ready";
-            }
+            // USER EXISTS
+            socket.emit("setRoom", getPlayerID());
+            socket.emit("joinedLobby", getPlayerID());
           }
-
-          socket.on("reqSatisfied", (valid) => {
-            if (valid) {
-              var start = document.getElementById("start-button");
-
-              start.style.opacity = "100%";
-              start.style.cursor = "pointer";
-              start.setAttribute("onclick", "startGame()");
-            } else {
-              var start = document.getElementById("start-button");
-              
-              start.style.opacity = "35%";
-              start.style.cursor = "not-allowed";
-              start.setAttribute("onclick", "");
-            }
-          })
+          // socket.emit("checkInGame", getPlayerID());
+          // socket.on("isInGame", (inGame) => {
     
+          // })
+    
+          socket.on("viewRoom", (roomCode) => {
+            document.getElementById("roomcode-copy").innerText = roomCode;
+          });
+          socket.on("joinPlayerSlot", () => {
+            socket.emit("requestPlayerSlot", getPlayerID());
+          });
+          socket.on("playerSlots", (host, slots) => {
+            updatePlayerSlots(host, slots);
+            console.log("updated player slots");
+          });
+          // !! this is only for LOBBY, is this needed for game?
+          setTimeout(() => {
+            socket.emit("refreshReady", getPlayerID());
+          }, 300);
+    
+          socket.emit("checkIfHost", getPlayerID(), "visibility");
+          socket.on("isHost", (isHost) => {
+            if (isHost) {
+              console.log("SETTING HOST VISIBILITY");
+              document.getElementById("role-container").classList.add("selectable");
+              var array = document.getElementsByClassName("lobby-role-tag");
+              for (var i = 0; i < array.length; i++) {
+                array[i].setAttribute("onclick", "selectRole(this)");
+                array[i].style.cursor = "pointer";
+              }
+              var startButton =
+                document.getElementsByClassName("lobby-button start");
+              startButton[0].style.display = "inline";
+            } else {
+              console.log("REMOVING HOST VISIBILITY");
+              document
+                .getElementById("role-container")
+                .classList.remove("selectable");
+              var array = document.getElementsByClassName("lobby-role-tag");
+              for (var i = 0; i < array.length; i++) {
+                array[i].setAttribute("onclick", "");
+                array[i].style.cursor = "not-allowed";
+              }
+              var startButton =
+                document.getElementsByClassName("lobby-button start");
+              startButton[0].style.display = "none";
+            }
+          });
+          socket.on(
+            "viewPlayerCount",
+            (amountUnready, hostExists, host, allReady, totalUsers, totalRoles) => {
+              document.getElementById("player-card").style.border =
+                "2px solid hsl(360, 100%, 55%)";
+              roleReqHandler(totalRoles, totalUsers);
+    
+              if (totalUsers >= minPlayers) {
+                //? 3 minimum check
+                document.getElementById("lobby-req-check-players").style.display =
+                  "inline";
+                document.getElementById("lobby-req-cross-players").style.display =
+                  "none";
+              } else if (totalUsers < minPlayers) {
+                document.getElementById("lobby-req-check-players").style.display =
+                  "none";
+                document.getElementById("lobby-req-cross-players").style.display =
+                  "inline";
+              }
+              if (!hostExists) {
+                document.getElementById("player-count").style.color =
+                  "var(--dark-fg)";
+                document.getElementById("player-count").innerText =
+                  "Host is not in room";
+              } else {
+                //? host is in room
+                if (allReady) {
+                  //? all ready check
+                  document.getElementById("player-card").style.border =
+                    "2px solid hsl(108, 100%, 45%)";
+                  document.getElementById("player-count").innerText =
+                    "Everyone is ready, " + host;
+                  document.getElementById("player-count").style.color =
+                    "hsl(100, 100%, 35%)";
+                } else {
+                  document.getElementById("player-count").style.color =
+                    "var(--dark-fg)";
+                  document.getElementById("player-count").innerText =
+                    amountUnready + " player(s) not ready";
+                }
+              }
+    
+              socket.on("reqSatisfied", (valid) => {
+                if (valid) {
+                  var start = document.getElementById("start-button");
+    
+                  start.style.opacity = "100%";
+                  start.style.cursor = "pointer";
+                  start.setAttribute("onclick", "startGame()");
+                } else {
+                  var start = document.getElementById("start-button");
+                  
+                  start.style.opacity = "35%";
+                  start.style.cursor = "not-allowed";
+                  start.setAttribute("onclick", "");
+                }
+              })
+        
+            }
+          );
+    
+         
+          socket.emit("fetchRoles", getPlayerID(), "connect");
+          socket.on("fetchedRolesConnect", (roles) => {
+            updateRoles(roles);
+          });
+    
+          socket.on("fetchedRolesAfter", (roles) => {
+            updateRoles(roles);
+          });
+    
+          socket.on("roleCountAfter", (userAmount, roleAmount) => {
+            roleReqHandler(roleAmount, userAmount);
+          });
+    
+          socket.on("rolePickCondition", (valid) => {
+            rolePickConditionHandler(valid);
+          });
+    
+          socket.emit("checkRolePick", getPlayerID(), "connect");
+          socket.on("rolePickConditionConnect", (valid) => {
+            rolePickConditionHandler(valid);
+          });
+          socket.on("rolePickConditionDisconnect", (valid) => {
+            rolePickConditionHandler(valid);
+          });
+          socket.on("fetchedRolesDisconnect", (roles) => {
+            updateRoles(roles);
+          });
         }
-      );
+      })
 
-     
-      socket.emit("fetchRoles", getPlayerID(), "connect");
-      socket.on("fetchedRolesConnect", (roles) => {
-        updateRoles(roles);
-      });
-
-      socket.on("fetchedRolesAfter", (roles) => {
-        updateRoles(roles);
-      });
-
-      socket.on("roleCountAfter", (userAmount, roleAmount) => {
-        roleReqHandler(roleAmount, userAmount);
-      });
-
-      socket.on("rolePickCondition", (valid) => {
-        rolePickConditionHandler(valid);
-      });
-
-      socket.emit("checkRolePick", getPlayerID(), "connect");
-      socket.on("rolePickConditionConnect", (valid) => {
-        rolePickConditionHandler(valid);
-      });
-      socket.on("rolePickConditionDisconnect", (valid) => {
-        rolePickConditionHandler(valid);
-      });
-      socket.on("fetchedRolesDisconnect", (roles) => {
-        updateRoles(roles);
-      });
     }
   });
 });

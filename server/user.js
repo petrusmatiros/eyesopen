@@ -27,7 +27,7 @@ class User {
     return this.name;
   }
   getMessages() {
-    this.messages;
+    return this.messages;
   }
   addMessage(message) {
     this.messages.push(message)

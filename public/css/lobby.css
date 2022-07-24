@@ -355,6 +355,7 @@
   font-weight: 500;
   border-radius: 0.6em;
   padding: 0.45rem 1.5rem 0.45rem 1.5rem;
+  min-width: 4.5rem;
 }
 
 .ready {
