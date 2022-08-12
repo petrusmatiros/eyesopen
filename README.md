@@ -62,6 +62,7 @@ Enjoy ^-^
 ![Neutral roles](roleinfo/Neutral%20info.svg)
 
 ## Role cards
+<p>
 <img src="rolecards/Villager_card.svg" width=150>
 <img src="rolecards/Investigator_card.svg" width=150>
 <img src="rolecards/Doctor_card.svg" width=150>
@@ -76,6 +77,7 @@ Enjoy ^-^
 <img src="rolecards/Serial%20Killer_card.svg" width=150>
 <img src="rolecards/Executioner_card.svg" width=150>
 <img src="rolecards/Lawyer_card.svg" width=150>
+</p>
 
 
 <!-- ### Roles
