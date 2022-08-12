@@ -60,35 +60,25 @@ Enjoy ^-^
 <br>
 
 ![Neutral roles](roleinfo/Neutral%20info.svg)
+
+## Role cards
+<img src="rolecards/Villager_card.svg" width=150>
+<img src="rolecards/Investigator_card.svg" width=150>
+<img src="rolecards/Doctor_card.svg" width=150>
+<img src="rolecards/Mayor_card.svg" width=150>
+<img src="rolecards/Trapper_card.svg" width=150>
+<img src="rolecards/Godfather_card.svg" width=150>
+<img src="rolecards/Mafioso_card.svg" width=150>
+<img src="rolecards/Surgeon_card.svg" width=150>
+<img src="rolecards/Witch_card.svg" width=150>
+<img src="rolecards/Framer_card.svg" width=150>
+<img src="rolecards/Jester_card.svg" width=150>
+<img src="rolecards/Serial%20Killer_card.svg" width=150>
+<img src="rolecards/Executioner_card.svg" width=150>
+<img src="rolecards/Lawyer_card.svg" width=150>
+
+
 <!-- ### Roles
-
-### <span style="color:#BDFFB3">Good</span>
-
-<div style="background-color:#E9FFE5;border-radius:1em;padding:1em;">
-
-#### Villager
-##### Description
-##### Mission
-#### Investigator
-#### Doctor
-#### Mayor
-#### Trapper
-
-</div>
-
-### <span style="color:#660000">Evil</span>
-#### <span style="color:#FFB3B3">Godfather</span>
-#### Mafioso
-#### Surgeon
-#### Witch
-#### Framer
-
-### <span style="color:#D9D9D9">Neutral</span>
-#### Jester
-#### Serial Killer
-#### Executioner
-#### Lawyer -->
-
 
 
 ---
