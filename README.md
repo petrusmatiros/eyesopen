@@ -63,20 +63,20 @@ Enjoy ^-^
 
 ## Role cards
 <p>
-<img src="rolecards/Villager_card.svg" width=150>
-<img src="rolecards/Investigator_card.svg" width=150>
-<img src="rolecards/Doctor_card.svg" width=150>
-<img src="rolecards/Mayor_card.svg" width=150>
-<img src="rolecards/Trapper_card.svg" width=150>
-<img src="rolecards/Godfather_card.svg" width=150>
-<img src="rolecards/Mafioso_card.svg" width=150>
-<img src="rolecards/Surgeon_card.svg" width=150>
-<img src="rolecards/Witch_card.svg" width=150>
-<img src="rolecards/Framer_card.svg" width=150>
-<img src="rolecards/Jester_card.svg" width=150>
-<img src="rolecards/Serial%20Killer_card.svg" width=150>
-<img src="rolecards/Executioner_card.svg" width=150>
-<img src="rolecards/Lawyer_card.svg" width=150>
+<img src="rolecards/Villager_card.svg" alt="role-card" width=150>
+<img src="rolecards/Investigator_card.svg" alt="role-card" width=150>
+<img src="rolecards/Doctor_card.svg" alt="role-card" width=150>
+<img src="rolecards/Mayor_card.svg" alt="role-card" width=150>
+<img src="rolecards/Trapper_card.svg" alt="role-card" width=150>
+<img src="rolecards/Godfather_card.svg" alt="role-card" width=150>
+<img src="rolecards/Mafioso_card.svg" alt="role-card" width=150>
+<img src="rolecards/Surgeon_card.svg" alt="role-card" width=150>
+<img src="rolecards/Witch_card.svg" alt="role-card" width=150>
+<img src="rolecards/Framer_card.svg" alt="role-card" width=150>
+<img src="rolecards/Jester_card.svg" alt="role-card" width=150>
+<img src="rolecards/Serial%20Killer_card.svg" alt="role-card" width=150>
+<img src="rolecards/Executioner_card.svg" alt="role-card" width=150>
+<img src="rolecards/Lawyer_card.svg" alt="role-card" width=150>
 </p>
 
 
