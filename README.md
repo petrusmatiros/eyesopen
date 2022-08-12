@@ -60,7 +60,6 @@ Enjoy ^-^
 <br>
 
 ![Neutral roles](roleinfo/Neutral%20info.svg)
-
 <!-- ### Roles
 
 ### <span style="color:#BDFFB3">Good</span>
