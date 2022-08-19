@@ -49,6 +49,13 @@ app.get("/lobby/:id", (req, res) => {
     res.sendFile(__dirname + "404.html");
   }
 });
+app.get("/lobby/:id/game", (req, res) => {
+  if (rooms.has(req.params.id)) {
+    res.sendFile(__dirname + "app.html");
+  } else {
+    res.sendFile(__dirname + "404.html");
+  }
+});
 
 app.get("/lobby/:id/join", (req, res) => {
   if (rooms.has(req.params.id)) {
@@ -662,6 +669,7 @@ io.on("connection", async (socket) => {
     }
   }
 
+  // !!This needs to be taken care of 
   socket.on("directJoin", (playerID, directRoom) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {

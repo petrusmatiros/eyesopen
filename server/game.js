@@ -6,8 +6,10 @@ class Game {
     this.evil = [];
     // Keeping track of total players for voting
     this.alive = [];
-    // Array for cemetery
+    // Array for current dead players
     this.dead = [];
+    // Array for cemetery
+    this.cemetery = [];
     // Booleans for inProgress and finished
     this.inProgress = false;
     this.isDone = false;
@@ -20,8 +22,10 @@ class Game {
     this.evil = [];
     // Keeping track of total players for voting
     this.alive = [];
-    // Array for cemetery
+    // Array for current dead players
     this.dead = [];
+    // Array for cemetery
+    this.cemetery = [];
     // Booleans for inProgress and finished
     this.inProgress = false;
     this.isDone = false;
@@ -40,6 +44,7 @@ class Game {
     // reset player values if player is NOT lynched or NOT killed
   // exception for executioner where they will be alive, but their target can be dead (they turn into jester)
     this.cycle++;
+    // ! SHOULD clear DEAD array after they have been announced
   }
 
   getEvil() {
@@ -76,6 +81,17 @@ class Game {
 
   removeDead(player) {
     this.dead.splice(this.dead.indexOf(player), 1);
+  }
+  getCemetery() {
+    return this.cemetery;
+  }
+
+  addCemetery(player) {
+    this.cemetery.push(player);
+  }
+
+  removeCemetery(player) {
+    this.cemetery.splice(this.cemetery.indexOf(player), 1);
   }
 
   getProgress() {

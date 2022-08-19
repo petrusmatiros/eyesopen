@@ -1,4 +1,4 @@
-# Eyes Open <img src="public/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">
+# Eyes Open <img src="public/assets/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">
 
 ### Mafia/Werewolf/ToS inspired web based game
 
@@ -7,7 +7,7 @@
 # Table of contents
 
   ### Game
-<!-- - [Eyes Open <img src=public/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">](#eyes-open-)
+<!-- - [Eyes Open <img src=public/assets/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">](#eyes-open-)
     - [Mafia/Werewolf/ToS inspired web based game](#mafiawerewolftos-inspired-web-based-game) -->
   - [Link to website](#link-to-website)
   - [Game description & objective](#game-description--objective)
