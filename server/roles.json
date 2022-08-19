@@ -2,9 +2,9 @@
     "roles": {
         "villager": {
             "name": "villager",
-            "description": "just a regular player",
+            "description": "just going about their day",
             "team": "good",
-            "mission": " ",
+            "mission": "win with the good team",
             "hasNightAbility": false,
             "voteCount": 1
         },
@@ -12,7 +12,7 @@
             "name": "investigator",
             "description": "a distinguished and intelligent investigator",
             "team": "good",
-            "mission": "investigate another player (every night) and get a clue about their role",
+            "mission": "investigate players and deduct what team they belong to",
             "hasNightAbility": true,
             "voteCount": 1
         },
@@ -20,7 +20,7 @@
             "name": "doctor",
             "description": "a trained and helpful doctor",
             "team": "good",
-            "mission": "protect yourself or another player (every night)",
+            "mission": "protect players or yourself (once)",
             "hasNightAbility": true,
             "voteCount": 1,
             "selfUsage": 1
@@ -29,7 +29,7 @@
             "name": "mayor",
             "description": "influential, sarcastic and a bit political",
             "team": "good",
-            "mission": "your vote counts as 2",
+            "mission": "your vote (day) counts as 2",
             "hasNightAbility": false,
             "voteCount": 2
         },
@@ -37,15 +37,15 @@
             "name": "trapper",
             "description": "a sneaky and experienced trapmaker",
             "team": "good",
-            "mission": "trap another player (every night), which blocks their ability that night",
+            "mission": "trap another player, blocking their ability",
             "hasNightAbility": true,
             "voteCount": 1
         },
         "godfather": {
             "name": "godfather",
-            "description": "the boss, big G, the head of the mafia. Say hello to their little friend >:)",
+            "description": "say hello to their little friend >:)",
             "team": "evil",
-            "mission": "votes (during night phase) counts as 2",
+            "mission": "your vote (night) counts as 2",
             "hasNightAbility": false,
             "voteCount": 1,
             "killVoteCount": 2
@@ -63,7 +63,7 @@
             "name": "surgeon",
             "description": "you are a master of disguise, but just not with clothes",
             "team": "evil",
-            "mission": "restructure someones face (or yours) to make evil players look good",
+            "mission": " restructure someones face (or yours once) to make evil players look good",
             "hasNightAbility": true,
             "voteCount": 1,
             "selfUsage": 1,
@@ -73,7 +73,7 @@
             "name": "witch",
             "description": "a infamous spell caster, known to use dark magic to get what you want",
             "team": "evil",
-            "mission": "cast a blocking spell to block someone’s (except mafia) ability at night",
+            "mission": "block someone's (except mafia) ability at night",
             "hasNightAbility": true,
             "voteCount": 1,
             "killVoteCount": 1
@@ -82,14 +82,14 @@
             "name": "framer",
             "description": "you always tell the truth, just some parts of it ;)",
             "team": "evil",
-            "mission": "frame another player, making them look like a evil player",
+            "mission": "frame another player, making them look like an evil player",
             "hasNightAbility": true,
             "voteCount": 1,
             "killVoteCount": 1
         },
         "jester": {
             "name": "jester",
-            "description": "a fool, a clown, a full out jokster",
+            "description": "the joke's on YOU!",
             "team": "neutral",
             "mission": "make yourself get voted out",
             "hasNightAbility": false,
@@ -97,7 +97,7 @@
         },
         "serial killer": {
             "name": "serial killer",
-            "description": "you are hungry for blood, hungry for killing, hungry for death",
+            "description": "DIE, DIE, DIE!",
             "team": "neutral",
             "mission": "kill everyone",
             "hasNightAbility": true,
@@ -106,16 +106,16 @@
         },
         "executioner": {
             "name": "executioner",
-            "description": "you are a feared and precise executioner - waiting for the right moment",
+            "description": "hiding in the shadows - waiting to strike",
             "team": "neutral",
-            "mission": "Get your target voted out. You become the jester if your target is killed",
+            "mission": "Get your target voted out. You become the jester if you succeed",
             "hasNightAbility": false,
             "voteCount": 1,
             "target": null
         },
         "lawyer": {
             "name": "lawyer",
-            "description": "sharp, determined, focused - you will protect your client at any cost",
+            "description": "sharp and determined - your client comes first",
             "team": "neutral",
             "mission": "make your client (evil or neutral) win",
             "hasNightAbility": false,
