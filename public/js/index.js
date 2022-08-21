@@ -48,7 +48,7 @@ function setLocation(URL, reset = false) {
   }, 500);
 }
 
-const oneHour = 60 * 60;
+const fiveHours = 60 * 60 * 5;
 
 function requestID() {
   console.log("You connect with id", socket.id);
@@ -56,7 +56,7 @@ function requestID() {
   socket.on("playerID", (playerID) => {
     console.log("playerID from server:", playerID);
     if (getPlayerID() == "null") {
-      document.cookie = `eyesopenID=${playerID}; path=/; max-age=${oneHour}; SameSite=Lax`;
+      document.cookie = `eyesopenID=${playerID}; path=/; max-age=${fiveHours}; SameSite=Lax`;
       socket.emit("completedID", getPlayerID());
     }
   });
