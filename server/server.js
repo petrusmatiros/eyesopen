@@ -26,6 +26,23 @@ const maxPlayers = 14;
 var rooms = new Map();
 var connectedUsers = new Map();
 
+// Clear data every day at 05:00:00
+function checkClearData() {
+  var current = new Date(Date.now());
+  var whenToReset = new Date("2022-08-22T05:00:00");
+  var currentTime = current.toLocaleTimeString();
+  var whenToResetTime = whenToReset.toLocaleTimeString();
+  if (currentTime == whenToResetTime) {
+    console.log("clearing data");
+    // Clear rooms
+    rooms.clear();
+    // Clear connected users
+    connectedUsers.clear();
+  }
+}
+setInterval(checkClearData, 1000);
+
+
 // static folder
 app.use(express.static("public"));
 
@@ -75,14 +92,16 @@ var counter = timeDurations.voting;
 var jsonData = require("./roles.json");
 
 
+
 // establish server connection with socket
 io.on("connection", async (socket) => {
+  
   console.log("a user connected, with socket id:", socket.id);
   // reassign sockets to their playerID rooms (if they have a playerID)
   socket.on("setRoom", (playerID) => {
     console.log(`player ${playerID} is joining their own room`);
     socket.join(playerID);
-
+    
     for (var [key, value] of rooms) {
       if (value.getHost() == playerID) {
         console.log(`player ${playerID} is joining their created room`);
@@ -92,8 +111,9 @@ io.on("connection", async (socket) => {
     console.log("setting rooms");
     console.log(socket.rooms);
   });
-
+  
   socket.on("disconnect", () => {
+
     let playerID = socket.data.playerID;
     if (checkUserExist(playerID)) {
       var targetRoom = connectedUsers.get(playerID).getCurrentRoom();

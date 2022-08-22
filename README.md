@@ -40,15 +40,6 @@ Enjoy ^-^
 
 ## Role info
 
-<!-- ### Role table
-|  [**Good**](#good) 	|  [**Evil**](#evil) 	|  [**Neutral**](#neutral)  	|
-|:------------:	|:---------:	|:-------------:	|
-|   [Villager](#villager)  	| [Godfather](#godfather) 	|     [Jester](#jester)    	|
-| [Investigator](#investigator) 	|  [Mafioso](#mafioso)  	| [Serial Killer](#serial-killer) 	|
-|    [Doctor](#doctor)    	|  [Surgeon](#surgeon)  	|  [Executioner](#executioner)  	|
-|     [Mayor](#mayor)    	|   [Witch](#witch)   	|     [Lawyer](#lawyer)    	|
-|    [Trapper](#trapper)   	|   [Framer](#framer)  	|               	| -->
-<!-- ### Overview -->
 ![Good roles](roleinfo/Good%20info.svg)
 
 <br>
