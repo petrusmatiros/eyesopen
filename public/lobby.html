@@ -13,7 +13,12 @@
     <link rel="author" href="petrus.matiros@gmail.com" />
     <!-- Favicon -->
     <!-- <link rel="icon" href="img/favicon.ico" type="image/x-icon"> -->
-    <link rel="icon" type="image/svg" sizes="32x32" href="/assets/icons/favicon.svg" />
+    <link
+      rel="icon"
+      type="image/svg"
+      sizes="32x32"
+      href="/assets/icons/favicon.svg"
+    />
     <!-- <link rel="stylesheet" href="/css/app.css" /> -->
     <link rel="stylesheet" href="/css/lobby.css" />
     <link rel="stylesheet" href="/css/index.css" />
@@ -42,7 +47,7 @@
   <body class="light">
     <nav class="navbar-light">
       <div class="navbar-container">
-        <div class ="logo-link-container">
+        <div class="logo-link-container">
           <a href="/" class="logo-link"
             ><img class="logo" src="/assets/icons/eyesopen.svg"
           /></a>
@@ -50,7 +55,11 @@
         <div class="lobby-code-container" id="">
           <div class="lobby-code" onclick="copyToClipboard()" id="copy-code">
             <p id="roomcode-copy"></p>
-            <img id="copy-button" src="/assets/icons/copy.svg" alt="copy icon" />
+            <img
+              id="copy-button"
+              src="/assets/icons/copy.svg"
+              alt="copy icon"
+            />
             <img
               id="check-circle-icon"
               src="/assets/icons/check-circle.svg"
@@ -61,14 +70,11 @@
         <div class="dummy"></div>
       </div>
     </nav>
-    <div class="game">
-
-    </div>
-    <div class="role-card"></div>
-    <div class="lobby" id="inLobby">
+    
+    <div class="lobby">
       <div class="menu" id="without-eyes">
+        
         <div id="player-container" class="lobby-card-container selectable">
-
           <div id="player-count" class="lobby-help"></div>
           <div id="player-card" class="lobby-card">
             <div class="lobby-card-title-container">
@@ -182,14 +188,94 @@
           </div>
         </div>
 
-        <div id="role-container" class="lobby-card-container">
-
-          <div id="role-tip" class="lobby-help">Tip: a red border on the "Roles" card means that the picked roles are not allowed
+        
+        <div id="overlay" onclick="hideInfo()"></div>
+        <div class="lobby-rolecard-container no-select" id="lobby-rolecard-container">
+          <div class="close" id="adjusted-close">
+            <img
+              class="close-button"
+              onclick="hideInfo()"
+              src="/assets/icons/close.svg"
+              alt="close x icon"
+            />
           </div>
-  
+          <div class="lobby-rolecard-container-title">Rolecards</div>
+          <div class="lobby-rolecard-scroller" id="lobby-rolecard-scroller">
+            <div class="lobby-rolecard-wrapper">
+              <div class="lobby-rolecard-divider no-select good-selected">
+                <div class="seperated-letters">
+                  <p class="sep-letter">G</p>
+                  <p class="sep-letter">O</p>
+                  <p class="sep-letter">O</p>
+                  <p class="sep-letter">D</p>
+                </div>
+                
+              </div>
+              <img class="lobby-rolecard-info" src="/assets/rolecards/Villager_card.svg"/>
+              <img class="lobby-rolecard-info" src="/assets/rolecards/Investigator_card.svg"/>
+              <img class="lobby-rolecard-info" src="/assets/rolecards/Doctor_card.svg"/>
+              <img class="lobby-rolecard-info" src="/assets/rolecards/Mayor_card.svg"/>
+              <img class="lobby-rolecard-info" src="/assets/rolecards/Trapper_card.svg"/> 
+            </div>
+            
+            
+            <div class="lobby-rolecard-wrapper">
+              <div class="lobby-rolecard-divider no-select evil-selected">
+                <div class="seperated-letters">
+                  <p class="sep-letter">E</p>
+                  <p class="sep-letter">V</p>
+                  <p class="sep-letter">I</p>
+                  <p class="sep-letter">L</p>
+                </div>
+                
+              </div>
+              <img class="lobby-rolecard-info" src="/assets/rolecards/Godfather_card.svg"/>
+              <img class="lobby-rolecard-info" src="/assets/rolecards/Mafioso_card.svg"/>
+              <img class="lobby-rolecard-info" src="/assets/rolecards/Surgeon_card.svg"/>
+              <img class="lobby-rolecard-info" src="/assets/rolecards/Witch_card.svg"/>
+              <img class="lobby-rolecard-info" src="/assets/rolecards/Framer_card.svg"/> 
+            </div>
+            
+
+            <div class="lobby-rolecard-wrapper" id="no-margin">
+              <div class="lobby-rolecard-divider no-select neutral-selected">
+                <div class="seperated-letters">
+                  <p class="sep-letter">N</p>
+                  <p class="sep-letter">E</p>
+                  <p class="sep-letter">U</p>
+                  <p class="sep-letter">T</p>
+                  <p class="sep-letter">R</p>
+                  <p class="sep-letter">A</p>
+                  <p class="sep-letter">L</p>
+                </div>
+                
+              </div>
+              <img class="lobby-rolecard-info" src="/assets/rolecards/Jester_card.svg"/>
+              <img class="lobby-rolecard-info" src="/assets/rolecards/Serial Killer_card.svg"/>
+              <img class="lobby-rolecard-info" src="/assets/rolecards/Executioner_card.svg"/>
+              <img class="lobby-rolecard-info" id="no-margin" src="/assets/rolecards/Lawyer_card.svg"/>
+            </div>
+            
+          </div class="lobby-rolecard-scroller no-select">
+            
+        </div class="lobby-rolecard-container no-select">
+        
+
+
+        <div id="role-container" class="lobby-card-container">
+          
+
           <div id="role-card" class="lobby-card">
             <div class="lobby-card-title-container">
-              <div class="lobby-card-title">Roles</div>
+              <div class="lobby-card-title">
+                Roles
+                <img
+                  class="info-button"
+                  onclick="showInfo()"
+                  src="/assets/icons/info.svg"
+                  alt="info icon"
+                />
+              </div>
               <div class="lobby-req">
                 Requirement: nr of players == nr of roles
                 <div class="lobby-icon-container">
@@ -210,33 +296,62 @@
               <div id="good" class="lobby-role-container">
                 <div class="lobby-role-title">Good</div>
                 <div class="lobby-role-row">
-                  <div id="villager"  class="lobby-role-tag good unpicked">Villager</div>
-                  <div id="investigator" class="lobby-role-tag good unpicked">Investigator</div>
-                  <div id="doctor" class="lobby-role-tag good unpicked">Doctor</div>
-                  <div id="mayor" class="lobby-role-tag good unpicked">Mayor</div>
-                  <div id="trapper" class="lobby-role-tag good unpicked">Trapper</div>
+                  <div id="villager" class="lobby-role-tag good unpicked">
+                    Villager
+                  </div>
+                  <div id="investigator" class="lobby-role-tag good unpicked">
+                    Investigator
+                  </div>
+                  <div id="doctor" class="lobby-role-tag good unpicked">
+                    Doctor
+                  </div>
+                  <div id="mayor" class="lobby-role-tag good unpicked">
+                    Mayor
+                  </div>
+                  <div id="trapper" class="lobby-role-tag good unpicked">
+                    Trapper
+                  </div>
                 </div>
-                
               </div>
               <div id="evil" class="lobby-role-container">
                 <div class="lobby-role-title">Evil</div>
                 <div class="lobby-role-row">
-                  <div id="godfather" class="lobby-role-tag evil unpicked">Godfather</div>
-                <div id="mafioso" class="lobby-role-tag evil unpicked">Mafioso</div>
-                <div id="surgeon" class="lobby-role-tag evil unpicked">Surgeon</div>
-                <div id="witch" class="lobby-role-tag evil unpicked">Witch</div>
-                <div id="framer" class="lobby-role-tag evil unpicked">Framer</div>
+                  <div id="godfather" class="lobby-role-tag evil unpicked">
+                    Godfather
+                  </div>
+                  <div id="mafioso" class="lobby-role-tag evil unpicked">
+                    Mafioso
+                  </div>
+                  <div id="surgeon" class="lobby-role-tag evil unpicked">
+                    Surgeon
+                  </div>
+                  <div id="witch" class="lobby-role-tag evil unpicked">
+                    Witch
+                  </div>
+                  <div id="framer" class="lobby-role-tag evil unpicked">
+                    Framer
+                  </div>
                 </div>
-                
               </div>
               <div id="neutral" class="lobby-role-container">
                 <div class="lobby-role-title">Neutral</div>
-  
+
                 <div class="lobby-role-row">
-                  <div id="jester" class="lobby-role-tag neutral unpicked">Jester</div>
-                <div id="serial killer" class="lobby-role-tag neutral unpicked">Serial Killer</div>
-                <div id="executioner" class="lobby-role-tag neutral unpicked">Executioner</div>
-                <div id="lawyer" class="lobby-role-tag neutral unpicked">Lawyer</div>
+                  <div id="jester" class="lobby-role-tag neutral unpicked">
+                    Jester
+                  </div>
+                  <div
+                    id="serial killer"
+                    class="lobby-role-tag neutral unpicked"
+                  >
+                    Serial Killer
+                  </div>
+                  <div id="executioner" class="lobby-role-tag neutral unpicked">
+                    Executioner
+                  </div>
+                  <div id="lawyer" class="lobby-role-tag neutral unpicked">
+                    Lawyer
+                  </div>
                 </div>
               </div>
             </div>
@@ -244,8 +359,12 @@
         </div>
 
         <div class="lobby-button-container">
-          <div class="lobby-button ready" onclick="toggleLobbyButton(this)">Ready</div>
-          <div id="start-button" class="lobby-button start" onclick="">Start</div>
+          <div class="lobby-button ready" onclick="toggleLobbyButton(this)">
+            Ready
+          </div>
+          <div id="start-button" class="lobby-button start" onclick="">
+            Start
+          </div>
         </div>
         <!--Opens new tab-->
         <div class="clock-container">

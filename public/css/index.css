@@ -334,7 +334,6 @@ p {
   position: fixed;
   display: none;
   justify-content: center;
-  align-items: center;
   flex-direction: column;
   top: 50%;
   left: 50%;

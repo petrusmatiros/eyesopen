@@ -4,6 +4,7 @@ const socket = io("http://localhost:3000");
 const domain = "http://localhost:3000/";
 const lobby = "http://localhost:3000/lobby/";
 const minPlayers = 3;
+
 /**
  * [resetCookie resets the playerID cookie to null]
  */
@@ -34,18 +35,21 @@ socket.on("connect", () => {
       }
     } else {
       socket.emit("checkUserApartOfGame", getPlayerID(), "app");
-      
-      socket.on("apartOfGameApp", (apartOfGame, inProgress) => {
-        if ((!apartOfGame && inProgress == false) || (apartOfGame && inProgress == true)) {
-          
-          if (apartOfGame && inProgress == true) {
-            window.location.href += "/game";
-            socket.emit("checkForRoleCard", getPlayerID());
 
+      socket.on("apartOfGameApp", (apartOfGame, inProgress) => {
+        if (
+          (!apartOfGame && inProgress == false) ||
+          (apartOfGame && inProgress == true)
+        ) {
+          if (apartOfGame && inProgress == true) {
+            if (window.location.href.includes("/game") == false) {
+              window.location.href += "/game";
+            }
             
           } else if (apartOfGame == false && inProgress == true) {
             var URL = window.location.href.replace("/game", "");
             window.location.href = URL;
+            
           }
 
           if (window.location.href !== lobby) {
@@ -60,9 +64,9 @@ socket.on("connect", () => {
           }
           // socket.emit("checkInGame", getPlayerID());
           // socket.on("isInGame", (inGame) => {
-    
+
           // })
-    
+
           socket.on("viewRoom", (roomCode) => {
             document.getElementById("roomcode-copy").innerText = roomCode;
           });
@@ -77,12 +81,14 @@ socket.on("connect", () => {
           setTimeout(() => {
             socket.emit("refreshReady", getPlayerID());
           }, 300);
-    
+
           socket.emit("checkIfHost", getPlayerID(), "visibility");
           socket.on("isHost", (isHost) => {
             if (isHost) {
               console.log("SETTING HOST VISIBILITY");
-              document.getElementById("role-container").classList.add("selectable");
+              document
+                .getElementById("role-container")
+                .classList.add("selectable");
               var array = document.getElementsByClassName("lobby-role-tag");
               for (var i = 0; i < array.length; i++) {
                 array[i].setAttribute("onclick", "selectRole(this)");
@@ -108,22 +114,33 @@ socket.on("connect", () => {
           });
           socket.on(
             "viewPlayerCount",
-            (amountUnready, hostExists, host, allReady, totalUsers, totalRoles) => {
+            (
+              amountUnready,
+              hostExists,
+              host,
+              allReady,
+              totalUsers,
+              totalRoles
+            ) => {
               document.getElementById("player-card").style.border =
                 "2px solid hsl(360, 100%, 55%)";
               roleReqHandler(totalRoles, totalUsers);
-    
+
               if (totalUsers >= minPlayers) {
                 //? 3 minimum check
-                document.getElementById("lobby-req-check-players").style.display =
-                  "inline";
-                document.getElementById("lobby-req-cross-players").style.display =
-                  "none";
+                document.getElementById(
+                  "lobby-req-check-players"
+                ).style.display = "inline";
+                document.getElementById(
+                  "lobby-req-cross-players"
+                ).style.display = "none";
               } else if (totalUsers < minPlayers) {
-                document.getElementById("lobby-req-check-players").style.display =
-                  "none";
-                document.getElementById("lobby-req-cross-players").style.display =
-                  "inline";
+                document.getElementById(
+                  "lobby-req-check-players"
+                ).style.display = "none";
+                document.getElementById(
+                  "lobby-req-cross-players"
+                ).style.display = "inline";
               }
               if (!hostExists) {
                 document.getElementById("player-count").style.color =
@@ -147,44 +164,42 @@ socket.on("connect", () => {
                     amountUnready + " player(s) not ready";
                 }
               }
-    
+
               socket.on("reqSatisfied", (valid) => {
                 if (valid) {
                   var start = document.getElementById("start-button");
-    
+
                   start.style.opacity = "100%";
                   start.style.cursor = "pointer";
                   start.setAttribute("onclick", "startGame()");
                 } else {
                   var start = document.getElementById("start-button");
-                  
+
                   start.style.opacity = "35%";
                   start.style.cursor = "not-allowed";
                   start.setAttribute("onclick", "");
                 }
-              })
-        
+              });
             }
           );
-    
-         
+
           socket.emit("fetchRoles", getPlayerID(), "connect");
           socket.on("fetchedRolesConnect", (roles) => {
             updateRoles(roles);
           });
-    
+
           socket.on("fetchedRolesAfter", (roles) => {
             updateRoles(roles);
           });
-    
+
           socket.on("roleCountAfter", (userAmount, roleAmount) => {
             roleReqHandler(roleAmount, userAmount);
           });
-    
+
           socket.on("rolePickCondition", (valid) => {
             rolePickConditionHandler(valid);
           });
-    
+
           socket.emit("checkRolePick", getPlayerID(), "connect");
           socket.on("rolePickConditionConnect", (valid) => {
             rolePickConditionHandler(valid);
@@ -195,65 +210,27 @@ socket.on("connect", () => {
           socket.on("fetchedRolesDisconnect", (roles) => {
             updateRoles(roles);
           });
-          
         }
-      })
-
+      });
     }
   });
 });
 
-
-function endGame() {
-  document.getElementById("inGame").id = "inLobby";
-  document.getElementsByClassName("lobby-code-container")[0].style.display = "flex";
+function hideInfo() {
+  document.getElementById("overlay").style.display = "none";
+  document.getElementById("lobby-rolecard-container").style.display = "none";
+}
+function showInfo() {
+  // show overlay
+  document.getElementById("overlay").style.display = "block";
+  document.getElementById("lobby-rolecard-container").style.display = "block";
+  // overlay should close everything
+  // show caroseul with scroll snap of all role cards
 }
 
-function hideLobby(toHide) {
-  if (toHide) {
-    document.getElementById("inLobby").id = "inGame";
-    document.getElementsByClassName("lobby-code-container")[0].style.display = "none";
-  }
-}
-
-function showRoleCard(toShow, role) {
-  if (toShow) {
-    document.getElementsByClassName("role-card")[0].id = role;
-    document.getElementsByClassName("role-card")[0].innerText = role;
-  }
-}
-
-socket.on("displayRoleCard", (doDisplay, role) => {
-  if (doDisplay) {
-    hideLobby(true);
-    showRoleCard(true, role);
-  } else {
-    hideLobby(false);
-    showRoleCard(false, role);
-  }
-})
-
-// check also if all other requirements are met (checkCanStart)
-// startAllowed, true or false
-// users, inGame
-// game object, inProgress
-socket.on("rolesAssigned", () => {
+socket.on("enterGame", () => {
   window.location.href += "/game";
-// ID set to inGame, needs to be reset when game ends
-document.getElementById("inLobby").id = "inGame";
-document.getElementsByClassName("lobby-code-container")[0].style.display = "none";
-document.getElementsByClassName("role-card")[0].style.display = "flex";
-socket.emit("requestRoleCard", getPlayerID());
-// socket.on("gameStarted", () => {});
 });
-
-socket.on("fetchedRoleCard", (role) => {
-  // this role card needs to be maintained until all players have set ready-game to true and the game starts.
-  document.getElementsByClassName("role-card")[0].id = role;
-  document.getElementsByClassName("role-card")[0].innerText = role;
-
-})
-
 
 function startGame() {
   // if user = inGame true, menu display none
@@ -264,7 +241,6 @@ function startGame() {
   socket.on("isHostStart", (isHost) => {
     if (isHost) {
       socket.emit("startGame", getPlayerID());
-      
     }
   });
 }
@@ -279,21 +255,6 @@ socket.on("ready-status-lobby", (users) => {
     } else if (!users[i].readyLobby) {
       var status = document.getElementById(users[i].playerID).parentElement
         .children[1];
-      status.innerText = "not ready";
-      status.id = "status-notready";
-    }
-  }
-});
-
-// !! FIX THIS
-socket.on("ready-status-game", (users) => {
-  for (var i = 0; i < users.length; i++) {
-    if (users[i].readyGame) {
-      var status = document.getElementById("game-button-ready");
-      status.innerText = "ready";
-      status.id = "status-ready";
-    } else if (!users[i].readyGame) {
-      var status = document.getElementById("game-button-ready");
       status.innerText = "not ready";
       status.id = "status-notready";
     }
@@ -431,19 +392,6 @@ function pickRole(element, op) {
   socket.emit("pickRole", getPlayerID(), role, op);
 }
 
-function toggleCardButton(element) {
-  if (element.classList.contains("ready")) {
-    if (element.classList.toggle("not-ready")) {
-      element.innerText = "Unready";
-      
-      socket.emit("player-ready", getPlayerID(), "game");
-    } else {
-      element.innerText = "Ready";
-      socket.emit("player-unready", getPlayerID(), "game");
-    }
-  }
-}
-
 function toggleLobbyButton(element) {
   if (element.classList.contains("ready")) {
     if (element.classList.toggle("not-ready")) {
@@ -498,12 +446,6 @@ function getPlayerID() {
     }
   }
 }
-
-socket.on("counter", function (count) {
-  var display = document.querySelector("#time");
-  // console.log(count);
-  display.innerText = count;
-});
 
 function copyToClipboard() {
   var copyText = document.getElementById("roomcode-copy");
