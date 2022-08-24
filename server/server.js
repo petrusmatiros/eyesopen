@@ -9,6 +9,7 @@ server.listen(port, () => {
   console.log("Server listening at port %d", port);
 });
 
+// ? Change this
 var __dirname = "/mnt/c/Users/petru/Documents/Code/eyesopen/public/";
 
 // // random string generator
@@ -116,7 +117,7 @@ io.on("connection", async (socket) => {
       if (targetRoom !== null) {
         connectedUsers.get(playerID).setReadyLobby(false);
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-          "ready-status",
+          "ready-status-lobby",
           rooms.get(targetRoom).getUsers()
         );
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
@@ -295,39 +296,29 @@ io.on("connection", async (socket) => {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         var room = rooms.get(roomCode);
         if (room.getGame().getProgress()) {
-          var display = true;
+          var allReady = false;
+          playerIsReady = false;
+          if (connectedUsers.get(playerID).getReadyGame()) {
+            playerIsReady = true;
+          }
           if (checkAllReadyGame(roomCode, playerID)) {
             console.log("ALL PLAYERS READY in GAME")
-            display = false;
+            var allReady = true;
           }
           socket.emit(
             "displayRoleCard",
-            display,
+            playerIsReady,
             connectedUsers.get(playerID).getPlayer().getRole().type,
             connectedUsers.get(playerID).getPlayer().getRole().name,
             connectedUsers.get(playerID).getPlayer().getRole().team,
             connectedUsers.get(playerID).getPlayer().getRole().description,
             connectedUsers.get(playerID).getPlayer().getRole().mission,
           );
+          io.to(roomCode).emit("showGame", allReady);
         }
       }
     }
   });
-
-  // socket.on("requestRoleCard", (playerID) => {
-  //   if (checkUserExist(playerID)) {
-  //     if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-  //       var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-  //       var room = rooms.get(roomCode);
-  //       if (room.getGame().getProgress()) {
-  //         socket.emit(
-  //           "fetchedRoleCard",
-  //           connectedUsers.get(playerID).getPlayer().getRole().type
-  //         );
-  //       }
-  //     }
-  //   }
-  // });
 
   // set all users to inGame
   // set game to inProgress
@@ -574,10 +565,11 @@ io.on("connection", async (socket) => {
           }
         } else if (state.includes("game")) {
           if (rooms.get(roomCode).getGame().getProgress() == true) {
-            emitTo = "ready-status-game";
+            // emitTo = "ready-status-game";
             connectedUsers.get(playerID).setReadyGame(notReady);
-            updatePlayerCount(playerID);
-            socket.to(connectedUsers.get(playerID)).emit(emitTo);
+            
+            // var playerIsReady = connectedUsers.get(playerID).getReadyGame();
+            // socket.to(connectedUsers.get(playerID), playerIsReady, checkAllReadyGame(roomCode, playerID)).emit(emitTo);
           }
         }
       }
@@ -610,6 +602,7 @@ io.on("connection", async (socket) => {
             count++;
           }
         }
+        // ! this could be an issue
         if (count == rooms.get(roomCode).getUsers().length) {
           return true;
         } else {
@@ -637,10 +630,10 @@ io.on("connection", async (socket) => {
           }
         } else if (state.includes("game")) {
           if (rooms.get(roomCode).getGame().getProgress() == true) {
-            emitTo = "ready-status-game";
+            // emitTo = "ready-status-game";
             connectedUsers.get(playerID).setReadyGame(ready);
-            updatePlayerCount(playerID);
-            socket.to(connectedUsers.get(playerID)).emit(emitTo);
+            // var playerIsReady = connectedUsers.get(playerID).getReadyGame();
+            // socket.to(connectedUsers.get(playerID), playerIsReady, checkAllReadyGame(roomCode, playerID)).emit(emitTo);
           }
         }
       }
@@ -1079,6 +1072,22 @@ io.on("connection", async (socket) => {
   });
 });
 
+function nextCycle() {
+    // CLEAR ALL PLAYER VALUES, except the important ones
+    // reset player values if player is NOT lynched or NOT killed
+  // exception for executioner where they will be alive, but their target can be dead (they turn into jester)
+    this.cycle++;
+    // ! SHOULD clear DEAD array after they have been announced
+  }
+
+var timeDurations = {
+  discussion: 45,
+  voting: 30,
+  night: 40,
+  test: 5,
+};
+var counter = timeDurations.voting;
+// room.game.timer.getCounter
 var time = setInterval(function () {
   io.emit("counter", counter);
   // ! DEBUG TIME

@@ -1,7 +1,12 @@
+var { Timer } = require("./timer");
 class Game {
   constructor() {
     // DAY & NIGHT count
     this.cycle = 0;
+    // Phase
+    this.phase = "";
+    // Timer
+    this.timer = new Timer()
     // Keeping track of evil players
     this.evil = [];
     // Keeping track of total players for voting
@@ -18,6 +23,10 @@ class Game {
   reset() {
     // DAY & NIGHT count
     this.cycle = 0;
+    // Phase
+    this.phase = "";
+    // Timer
+    this.timer = new Timer()
     // Keeping track of evil players
     this.evil = [];
     // Keeping track of total players for voting
@@ -38,13 +47,12 @@ class Game {
   setCycle(cycle) {
     this.cycle = cycle;
   }
+  getPhase() {
+    return this.phase;
+  }
 
-  nextCycle() {
-    // CLEAR ALL PLAYER VALUES, except the important ones
-    // reset player values if player is NOT lynched or NOT killed
-  // exception for executioner where they will be alive, but their target can be dead (they turn into jester)
-    this.cycle++;
-    // ! SHOULD clear DEAD array after they have been announced
+  setPhase(phase) {
+    this.phase = phase;
   }
 
   getEvil() {

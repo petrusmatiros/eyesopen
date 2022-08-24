@@ -56,35 +56,38 @@
       </div>
     </nav>
 
-    <div class="game"></div>
+    
 
-    <div class="game">
-      <div class="menu" id="without-eyes">
-        <div class="game-rolecard-container">
-          <div class="game-rolecard">
-            <div class="game-rolecard-wrapper">
-              <div class="game-rolecard-title"></div>
-              <div class="game-rolecard-description"></div>
-            </div>
-            <div class="game-rolecard-border">
-              <div class="game-rolecard-icon-wrapper">
-                <img class="game-rolecard-icon" alt="role" src="">
-              </div>
-            </div>
-            <div class="game-rolecard-mission"></div>
-            <div class="game-button-container">
-              <div class="game-button" onclick="toggleCardButton(this)">
-                Ready
-              </div>
+    <div class="menu" id="without-eyes">
+      <div class="game-rolecard-container">
+        <div class="game-title">Your role:</div>
+        <div class="game-rolecard">
+          <div class="game-rolecard-wrapper">
+            <div class="game-rolecard-title"></div>
+            <div class="game-rolecard-description"></div>
+          </div>
+        <img class="game-rolecard-icon" alt="role" src=""></img>
+          <div class="game-rolecard-mission"></div>
+          <div class="game-button-container">
+            <div class="game-button" onclick="readyCardButton()">
+              Ready
             </div>
           </div>
         </div>
+      </div>
+      
+      <div class="game-waiting-container">
+        <div class="game-title" id="waiting">Waiting for players...</div>
+      </div>
 
-        <!--Opens new tab-->
-        <div class="clock-container">
-          <p class="clock" id="time">0</p>
-        </div>
+      <!--Opens new tab-->
+      <div class="clock-container">
+        <p class="clock" id="time">0</p>
       </div>
     </div>
+
+    <div class="game">
+    </div>
+
   </body>
 </html>

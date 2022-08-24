@@ -54,6 +54,12 @@
   --ability-button-bg--notused: hsl(360, 100%, 60%);
   --ability-button-bg--used: hsl(360, 98%, 95%);
 }
+
+#game-background {
+  background: url(/assets/images/game_background.jpg);
+  
+}
+
 .selectable {
   opacity: 100%;
 }
@@ -89,14 +95,48 @@
 }
 
 .game {
-  display: flex;
+  /* display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  margin: 0rem 1rem 0rem 1rem;
+  flex-direction: column; */
+  width: 100%;
+  height: 100%;
+  
+}
+
+
+
+.game-waiting-container {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5rem;
+  background-color: var(--light-bg);
+  padding: 2em;
+  border-radius: 1rem;
+  margin-top: 8rem;
 }
 
 .game-rolecard-container {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 2rem;
+  
+}
+.game-title {
+  user-select: none;
+  text-align: center;
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+#waiting {
+  font-size: 2.5rem;
+  margin-bottom: 0;
+
 }
 
 .game-rolecard-good-fg {
@@ -119,14 +159,16 @@
 }
 
 .game-rolecard {
-  display: none;
+  display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   background-color: var(--light-bg);
-  padding: 1em;
+  padding: 1.5em;
   border-radius: 1rem;
-
+  margin: 0.15rem;
+  min-width: 17rem;
+  max-width: 17rem;
 }
 
 .game-rolecard-wrapper {
@@ -134,7 +176,6 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-bottom: 1rem;
 }
 .game-rolecard-title {
   user-select: none;
@@ -150,20 +191,15 @@
   font-weight: 400;
   color: var(--dark-fg);
 }
-.game-rolecard-icon-wrapper {
-  /* padding: 1rem; */
-  border: 4px solid var(--dark-bg);
-  border-radius: 1rem;
-  margin-bottom: 1rem;
-}
 
 .game-rolecard-icon {
+  display: flex;
   width: 12.5rem;
   height: 12.5rem;
+  padding: 0.15em;
+  margin: 1rem;
 }
 
-.game-rolecard-border {
-}
 .game-rolecard-mission {
   user-select: none;
   text-align: center;
