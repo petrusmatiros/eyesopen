@@ -3,22 +3,18 @@
   /* Lobby & Game */
   /* --------------- */
   /* In game */
+
   /* Night */
   --dark-bg: hsl(0, 0%, 13%);
   --light-fg: hsl(0, 0%, 100%);
   /* Day */
   --light-bg: hsl(0, 0%, 100%);
   --dark-fg: hsl(0, 0%, 0%);
-  --light-grey: hsl(0, 0%, 97%);
-  /* Lobby player slots */
-  --slot-empty: hsl(0, 0%, 95%);
-  --slot-joined: hsl(0, 0%, 82%);
-  --slot-ready: hsl(100, 30%, 82%);
-  /* Not ready and ready */
-  --ready-fg: hsl(100, 100%, 100%);
-  --ready-bg: hsl(108, 100%, 25%);
-  --not-ready-fg: hsl(0, 0%, 0%);
-  --not-ready-bg: hsl(0, 100%, 70%);
+  --mission-grey: hsl(0, 0%, 95%);
+  --secondary-day: hsl(0, 0%, 97%);
+  --secondary-night: hsl(0, 0%, 25%);
+  --cemetery: hsl(0, 0%, 20%);
+
   /* Role tags */
   /* Good */
   --good-fg: var(--dark-fg);
@@ -55,38 +51,493 @@
   --ability-button-bg--used: hsl(360, 98%, 95%);
 }
 
+/* Game backgrounds */
 .game-background {
   background: url(/assets/images/game_background.jpg);
   background-attachment: fixed;
 }
 
-.game-night {
+.game-background-night {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url(/assets/images/game_background.jpg);
-    background-attachment: fixed;
+  background-attachment: fixed;
 }
-.game-day {
-  background: linear-gradient(0deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+.game-background-day {
+  background: linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.5)
+    ),
     url(/assets/images/game_background.jpg);
-    background-attachment: fixed;
+  background-attachment: fixed;
 }
-.game-dead {
+.game-background-dead {
   background: radial-gradient(
       50% 50% at 50% 50%,
       rgba(255, 2, 2, 0) 0%,
       rgba(255, 13, 13, 0.2) 100%
     ),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url(/assets/images/game_background.jpg);
 
   background-attachment: fixed;
 }
 
+/* Day and Night */
+.game-day-bg {
+  background-color: var(--light-bg);
+}
+.game-day-fg {
+  color: var(--dark-fg);
+}
+.game-night-bg {
+  background-color: var(--dark-bg);
+}
+.game-night-fg {
+  color: var(--light-fg);
+}
+.game-night-secondary {
+  background-color: var(--secondary-night);
+  color: var(--light-fg);
+}
+.game-day-secondary {
+  background-color: var(--secondary-day);
+  color: var(--dark-fg);
+}
+.game-night-border {
+  background-color: var(--secondary-night);
+}
+.game-day-border {
+  background-color: var(--secondary-day);
+}
+
+/* Row and column */
+.game-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+.game-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* Game UI */
+/* Player card */
+.game-player-card-questionmark {
+  user-select: none;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-top: 0.75rem;
+  font-size: 6rem;
+  font-weight: 700;
+}
+
+.game-player-card {
+  user-select: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* padding: 0.6em; */
+  border-radius: 1rem;
+  margin: 1rem 0.5rem 1rem 0.5rem;
+  max-width: 21.5rem;
+  min-width: 21.5rem;
+  max-height: 6.65rem;
+  min-height: 7.75rem;
+}
+.game-player-card-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  max-width: 6.25rem;
+  min-width: 6.25rem;
+}
+.game-player-card-wrapper {
+  margin: 1rem;
+}
+.game-player-card-divider {
+  height: 5.25rem;
+  border-radius: 50rem;
+  width: 0.5rem;
+}
+.game-player-card-role {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-left: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+.game-player-card-mission {
+  font-weight: 400;
+  font-size: 0.75rem;
+  margin-left: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.game-player-card-button {
+  display: inline;
+  text-align: center;
+  font-weight: 500;
+  font-size: 0.75rem;
+  border-radius: 6.25rem;
+  padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+}
+
+/* Message box*/
+.game-messagebox {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75em;
+  border-radius: 1rem;
+  min-height: 9.375rem;
+  max-height: 9.375rem;
+  max-width: 20rem;
+  min-width: 20rem;
+  margin: 0 0.5rem 1rem 0.5rem;
+}
+.game-message-scroller {
+  display: inline-block;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+/* Two versions */
+.game-message {
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  min-width: 17.5rem;
+  max-width: 17.5rem;
+  padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+  margin-bottom: 0.15rem;
+  border-radius: 0.35rem;
+}
+
+.game-message-alert {
+  background-color: hsl(360, 100%, 50%);
+}
+.game-message-info {
+  background-color: hsl(43, 100%, 50%);
+}
+.game-message-confirm {
+  background-color: hsl(97, 100%, 40%);
+}
+
+.game-panel-day {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+.game-panel-night {
+  background-color: rgba(38, 38, 38, 0.35);
+}
+
+/* Panel */
+.game-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-width: 19.5rem;
+  max-width: 19.5rem;
+  padding: 1.5em 1em 1.5em 1em;
+  border-radius: 1rem;
+  margin: 0 0.5rem 1rem 0.5rem;
+}
+
+
+.game-clock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  background-color: var(--light-bg);
+  padding: 0.5em 0.75em 0.5em 0.75em;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  margin: 0 0.5rem 1.5rem 0.5rem;
+}
+
+.game-cycle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.game-cycle-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  vertical-align: text-top;
+  width: 1.75rem;
+}
+
+.game-cycle-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  margin-left: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.game-cycle-text {
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-cycle-count {
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 0.25rem;
+}
+
+.game-clock-divider {
+  height: 1.375rem;
+  border-radius: 50rem;
+  width: 0.25rem;
+  margin: 0 0.5rem 0 0.5rem;
+}
+
+
+
+.game-time {
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.75rem;
+}
+
+.game-players-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  margin: 0 0.5rem 1rem 0.5rem;
+}
+
+.game-players-col1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 0 0.5rem 0 0.5rem;
+}
+.game-players-col2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 0 0.5rem 0 0.5rem;
+}
+
+.game-player {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  user-select: none;
+  cursor: pointer;
+  background-color: var(--light-bg);
+  color: var(--dark-fg);
+  padding: 0.6em;
+  border-radius: 0.75rem;
+  margin-bottom: 0.5rem;
+  max-width: 7.5rem;
+  min-width: 7.5rem;
+  max-height: 1.25rem;
+  min-height: 1.25rem;
+}
+
+#game-show-mark {
+  display: flex;
+  opacity: 100%;
+}
+
+/* Target, briefcase, think */
+.game-player-mark {
+  display: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  opacity: 0%;
+  vertical-align: text-top;
+}
+
+.game-player-name {
+  user-select: none;
+  color: var(--dark-fg);
+  margin-left: 0.25rem;
+}
+
+.game-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin: 0 0.5rem 0 0.5rem;
+}
+
+/* Game buttons */
+
+.game-button-ability {
+  user-select: none;
+  cursor: pointer;
+  color: var(--dark-fg);
+  background-color: var(--ability-button-bg--notused);
+  
+  padding: 0.5em 1em 0.5em 1em;
+  border-radius: 0.65rem;
+}
+.game-button-vote {
+  user-select: none;
+  cursor: pointer;
+  color: var(--dark-fg);
+  background-color: var(--vote-button-bg--notused);
+  padding: 0.5em 1em 0.5em 1em;
+  border-radius: 0.65rem;
+  margin-left: 1rem;
+}
+
+/* Cemetery */
+.game-cemetery {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 20.313rem;
+  height: 23.75rem;
+  background: url(/assets/icons/cemetery.svg);
+  margin: 0 0.5rem 1rem 0.5rem;
+}
+
+.game-cemetery-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 1.5rem;
+}
+
+.game-cemetery-title {
+  user-select: none;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--light-fg);
+  margin: 0 0.5rem 1rem 0.5rem;
+}
+
+.game-deceased {
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  flex-direction: column;
+  max-height: 18.25rem;
+  min-height: 18.25rem;
+}
+
+/* Name + (role) */
+.game-deadplayer {
+  user-select: none;
+  font-size: 0.85rem;
+  color: var(--light-fg);
+  margin: 0 0.5rem 0.5rem 0.5rem;
+}
+
+/* Leave button */
+.game-leavebutton {
+  user-select: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--light-fg);
+  background-color: var(--evil-bg-selected);
+  font-size: 2rem;
+  font-weight: 500;
+  padding: 1rem;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 19.5rem;
+  max-width: 19.5rem;
+  margin: 0 0.5rem 1rem 0.5rem;
+}
+
+/* Popup */
+.game-popup {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.game-popup-text {
+  user-select: none;
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--dark-fg);
+}
+.game-popup-text-bold {
+  user-select: none;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--dark-fg);
+}
+.game-popup-icon {
+
+}
+
+.game-popup-close {
+
+}
+
+/* Leave popup */
+.game-popup-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+
+.game-popup-leavebutton {
+  user-select: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--dark-fg);
+}
+
+.game-popup-cancelbutton {
+  user-select: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--dark-fg);
+}
+
+/* ============================= */
+
+/* Conditionals */
 .selectable {
   opacity: 100%;
 }
 
-.unpicked {
-}
+/* Role colors */
 
 .good {
   color: var(--good-fg);
@@ -115,11 +566,13 @@
   background-color: var(--neutral-bg-selected);
 }
 
+/* Pre-game related */
+
 .game {
-  /* display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
-  flex-direction: column; */
+  flex-direction: column;
   width: 100%;
   height: 100%;
 }
@@ -135,6 +588,7 @@
   margin-top: 8rem;
 }
 
+/* Rolecard */
 .game-rolecard-container {
   display: none;
   justify-content: center;
@@ -155,6 +609,7 @@
   margin-bottom: 0;
 }
 
+/* Game rolecard colors */
 .game-rolecard-good-fg {
   color: var(--good-bg-selected);
 }
@@ -175,6 +630,7 @@
 }
 
 .game-rolecard {
+  user-select: none;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -221,7 +677,7 @@
   text-align: center;
   font-size: 1rem;
   font-weight: 600;
-  background-color: var(--light-grey);
+  background-color: var(--mission-grey);
   padding: 0.75rem 1rem 0.75rem 1rem;
   border-radius: 1rem;
   margin-bottom: 1rem;
@@ -247,34 +703,17 @@
   padding: 0.45rem 1.5rem 0.45rem 1.5rem;
 }
 
-.ready {
-  color: var(--ready-fg);
-  background-color: var(--ready-bg);
-}
-
-.start {
-  cursor: not-allowed;
-  opacity: 35%;
-  color: var(--ready-fg);
-  background-color: var(--ready-bg);
-}
-
-.not-ready {
-  color: var(--not-ready-fg);
-  background-color: var(--not-ready-bg);
-}
-
-.game-button-vote {
-  user-select: none;
-  cursor: pointer;
-}
-
-.game-button-ability {
-  user-select: none;
-  cursor: pointer;
-}
-
 @media screen and (max-width: 600px) {
+  .game-message {
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    min-width: 18rem;
+    max-width: 18rem;
+    padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+    margin-bottom: 0.15rem;
+    border-radius: 0.35rem;
+  }
 }
 .game-button-selection-both {
   display: inline;
@@ -282,7 +721,7 @@
   border-radius: 0.6em;
   text-align: center;
   font-size: 1rem;
-  color: #000000;
+  color: var(--dark-fg);
   background: rgb(255, 51, 51);
   background: -moz-linear-gradient(
     90deg,

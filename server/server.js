@@ -308,6 +308,7 @@ io.on("connection", async (socket) => {
           socket.emit(
             "displayRoleCard",
             playerIsReady,
+            allReady,
             connectedUsers.get(playerID).getPlayer().getRole().type,
             connectedUsers.get(playerID).getPlayer().getRole().name,
             connectedUsers.get(playerID).getPlayer().getRole().team,

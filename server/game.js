@@ -2,7 +2,9 @@ var { Timer } = require("./timer");
 class Game {
   constructor() {
     // DAY & NIGHT count
-    this.cycle = 0;
+    this.cycleCount = 0;
+    // Name of current cycle
+    this.cycle = "";
     // Phase
     this.phase = "";
     // Timer
@@ -22,7 +24,9 @@ class Game {
 
   reset() {
     // DAY & NIGHT count
-    this.cycle = 0;
+    this.cycleCount = 0;
+    // Name of current cycle
+    this.cycle = "";
     // Phase
     this.phase = "";
     // Timer
@@ -40,6 +44,14 @@ class Game {
     this.isDone = false;
   }
 
+  getCycleCount() {
+    return this.cycleCount;
+  }
+
+  setCycleCount(cycleCount) {
+    this.cycleCount = cycleCount;
+  }
+  
   getCycle() {
     return this.cycle;
   }
@@ -47,6 +59,7 @@ class Game {
   setCycle(cycle) {
     this.cycle = cycle;
   }
+
   getPhase() {
     return this.phase;
   }

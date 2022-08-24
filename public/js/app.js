@@ -96,6 +96,19 @@ function endGame() {
   // document.getElementsByClassName("lobby-code-container")[0].style.display = "flex";
 }
 
+function togglePlayerCard(element) {
+  var toHide = element.children[1];
+  var questionMark = element.children[0];
+  if (toHide.style.display == "none") {
+    toHide.style.display = "flex";
+    questionMark.style.display = "none";
+    
+  } else {
+    toHide.style.display = "none";
+    questionMark.style.display = "flex";
+  }
+}
+
 function showGameUI(toShow) {
   if (toShow) {
     var body = document.getElementsByClassName("body-light")[0];
@@ -197,12 +210,12 @@ socket.on("showGame", (allReady) => {
 // socket.emit("checkForRoleCard", getPlayerID());
 socket.on(
   "displayRoleCard",
-  (playerIsReady, role, name, team, description, mission) => {
+  (playerIsReady, allReady, role, name, team, description, mission) => {
     if (!playerIsReady) {
       showGameUI(false);
       showRoleCard(true, role, name, team, description, mission);
       showWaiting(false);
-    } else if (playerIsReady) {
+    } else if (playerIsReady && !allReady) {
       showGameUI(false);
       showRoleCard(false);
       showWaiting(true);

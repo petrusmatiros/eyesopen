@@ -45,7 +45,7 @@
     ></script>
     <script defer src="/js/app.js"></script>
   </head>
-  <body class="body-light">
+  <body class="body-light game-background-day">
     <nav class="navbar-light">
       <div class="navbar-container">
         <div class="logo-link-container">
@@ -80,13 +80,169 @@
         <div class="game-title" id="waiting">Waiting for players...</div>
       </div>
 
-      <!--Opens new tab-->
-      <div class="clock-container">
-        <p class="clock" id="time">0</p>
-      </div>
     </div>
 
     <div class="game">
+
+      <!-- Player card -->
+      <div class="game-player-card game-day-bg game-day-fg" onclick="togglePlayerCard(this)">
+        <div class="game-player-card-questionmark game-day-bg game-day-fg">?</div>
+        <div class="game-row">
+          <img class="game-player-card-icon" alt="icon" src="/assets/rolecards/Villager.svg"></img>
+          <div class="game-player-card-divider game-day-border"></div>
+          <div class="game-player-card-wrapper">
+            <div class="game-player-card-role">Role</div>
+            <div class="game-player-card-mission">a infamous spell caster, known to use dark magic to get what you want</div>
+            <div class="game-player-card-button game-day-secondary">Tap to hide</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message box -->
+      <div class="game-messagebox game-night-bg game-night-fg">
+        <div class="game-message-scroller">
+          <div class="game-message game-message-confirm">
+            You successfully protected (target)
+          </div>
+          <div class="game-message">
+            (Player) has voted
+          </div>
+          <div class="game-message ">
+            (Player) has changed their vote
+          </div>
+          <div class="game-message">
+            (Player) has changed their vote
+          </div>
+          <div class="game-message">
+            (Player2) has voted
+          </div>
+          <div class="game-message">
+            (Player5) has voted
+          </div>
+          <div class="game-message">
+            (Player2) has changed their vote
+          </div>
+          <div class="game-message game-message-alert">
+            You have been killed. Your were killed by a member of the evil team
+          </div>
+          <div class="game-message  ">
+            You have picked (player) to use your ability on
+          </div>
+          <div class="game-message game-message-info">
+            Your ability was blocked this night
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel -->
+      <div class="game-panel game-panel-day">
+        <div class="game-clock">
+          <div class="game-cycle">
+            <!-- Icon for the cycle -->
+            <img class="game-cycle-icon" alt="game cycle" src="/assets/icons/night.svg"></img>
+            <!-- E.g. Night 1 -->
+            <div class="game-cycle-wrapper">
+              <div class="game-cycle-text">Night</div>
+              <div class="game-cycle-count">1</div>
+            </div>
+          </div>
+          <div class="game-clock-divider game-day-border"></div>
+          <!-- Clock time -->
+          <div class="game-time">00:00
+            <!-- Clock -->
+            <!-- <div class="clock-container">
+              <p class="clock" id="time">0</p>
+            </div> -->
+          </div>
+        </div>
+        <!-- Players -->
+        <div class="game-players-container">
+          <div class="game-players-col1">
+            <div class="game-player">
+              <img class="game-player-mark" id="game-show-mark" alt="player mark" src="/assets/icons/target.svg"></img>
+              <div class="game-player-name">temporaryyup</div>
+            </div>
+            <div class="game-player">
+              <img class="game-player-mark" id="game-show-mark" alt="player mark" src="/assets/icons/briefcase.svg"></img>
+              <div class="game-player-name">temporaryyup</div>
+            </div>
+            <div class="game-player">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name">temporaryyup</div>
+            </div>
+            <div class="game-player">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name">temporaryyup</div>
+            </div>
+
+          </div>
+          <div class="game-players-col2">
+            <div class="game-player">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name">temporaryyup</div>
+            </div>
+            <div class="game-player">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name">temporaryyup</div>
+            </div>
+            <div class="game-player">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name">temporaryyup</div>
+            </div>
+            <div class="game-player">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name">temporaryyup</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="game-buttons">
+          <div class="game-button-ability">Use ability</div>
+          <div class="game-button-vote">Vote</div>
+        </div>
+      </div>
+
+      <!-- Cemetery -->
+      <div class="game-cemetery">
+        <div class="game-cemetery-wrapper">
+          <div class="game-cemetery-title">CEMETERY</div>
+          <div class="game-deceased">
+            <div class="game-deadplayer">temporaryyup (Investigator)</div>
+            <div class="game-deadplayer">temporaryyup (Serial Killer)</div>
+            <div class="game-deadplayer">temporaryyup (Executioner)</div>
+            <div class="game-deadplayer">temporaryyup (Investigator)</div>
+            <div class="game-deadplayer">temporaryyup (Serial Killer)</div>
+            <div class="game-deadplayer">temporaryyup (Executioner)</div>
+            <!-- <div class="game-deadplayer">temporaryyup (Investigator)</div>
+            <div class="game-deadplayer">temporaryyup (Serial Killer)</div>
+            <div class="game-deadplayer">temporaryyup (Executioner)</div>
+            <div class="game-deadplayer">temporaryyup (Investigator)</div>
+            <div class="game-deadplayer">temporaryyup (Serial Killer)</div>
+            <div class="game-deadplayer">temporaryyup (Executioner)</div>
+            <div class="game-deadplayer">temporaryyup (Serial Killer)</div>
+            <div class="game-deadplayer">temporaryyup (Executioner)</div> -->
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Leave button -->
+      <div class="game-leavebutton">Leave</div>
+
+      <!-- Leave popup -->
+      <div class="game-popup" id="leave">
+        <div class="game-popup-text">Leave game?</div>
+        <img class="game-popup-icon" alt="thinking emomji" src="/assets/icons/think.svg"></img>
+        <div class="game-popup-buttons">
+          <div class="game-popup-cancelbutton">Cancel</div>
+          <div class="game-popup-leavebutton">Yup</div>
+        </div>
+      </div>
+      
+      <!-- Death message -->
+      <!-- <lottie-player src="https://assets6.lottiefiles.com/packages/lf20_eo1xhbox.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player> -->
+
     </div>
 
   </body>
