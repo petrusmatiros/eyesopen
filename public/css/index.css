@@ -19,12 +19,12 @@ body {
   min-width: 100%;
 }
 
-.dark {
+.body-dark {
   color: var(--light-fg);
   background-color: var(--dark-bg);
 }
 
-.light {
+.body-light {
   color: var(--dark-fg);
   background-color: var(--main-bg);
 }

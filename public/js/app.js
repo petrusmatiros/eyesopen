@@ -98,13 +98,13 @@ function endGame() {
 
 function showGameUI(toShow) {
   if (toShow) {
-    var body = document.getElementsByClassName("light")[0];
-    body.id = "game-background";
+    var body = document.getElementsByClassName("body-light")[0];
+    body.classList.add("game-background");
     var game = document.getElementsByClassName("game")[0];
     game.style.display = "flex";
   } else {
-    var body = document.getElementsByClassName("light")[0];
-    body.id = "";
+    var body = document.getElementsByClassName("body-light")[0];
+    body.classList.remove("game-background");
     var game = document.getElementsByClassName("game")[0];
     game.style.display = "none";
   }
