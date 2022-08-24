@@ -138,6 +138,7 @@
   font-weight: 700;
 }
 
+
 .game-player-card {
   user-select: none;
   cursor: pointer;
@@ -356,11 +357,11 @@
   color: var(--dark-fg);
   padding: 0.6em;
   border-radius: 0.75rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   max-width: 7.5rem;
   min-width: 7.5rem;
-  max-height: 1.25rem;
-  min-height: 1.25rem;
+  max-height: 1rem;
+  min-height: 1rem;
 }
 
 #game-show-mark {
@@ -423,7 +424,7 @@
   width: 20.313rem;
   height: 23.75rem;
   background: url(/assets/icons/cemetery.svg);
-  margin: 0 0.5rem 1rem 0.5rem;
+  margin: 1rem 0.5rem 1rem 0.5rem;
 }
 
 .game-cemetery-wrapper {
