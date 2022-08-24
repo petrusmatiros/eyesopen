@@ -1,7 +1,7 @@
 {
     "roles": {
         "villager": {
-            "name": "villager",
+            "name": "Villager",
             "description": "just going about their day",
             "team": "good",
             "mission": "win with the good team",
@@ -9,7 +9,7 @@
             "voteCount": 1
         },
         "investigator": {
-            "name": "investigator",
+            "name": "Investigator",
             "description": "a distinguished and intelligent investigator",
             "team": "good",
             "mission": "investigate players and deduct what team they belong to",
@@ -17,7 +17,7 @@
             "voteCount": 1
         },
         "doctor": {
-            "name": "doctor",
+            "name": "Doctor",
             "description": "a trained and helpful doctor",
             "team": "good",
             "mission": "protect players or yourself (once)",
@@ -26,7 +26,7 @@
             "selfUsage": 1
         },
         "mayor": {
-            "name": "mayor",
+            "name": "Mayor",
             "description": "influential, sarcastic and a bit political",
             "team": "good",
             "mission": "your vote (day) counts as 2",
@@ -34,7 +34,7 @@
             "voteCount": 2
         },
         "trapper": {
-            "name": "trapper",
+            "name": "Trapper",
             "description": "a sneaky and experienced trapmaker",
             "team": "good",
             "mission": "trap another player, blocking their ability",
@@ -42,7 +42,7 @@
             "voteCount": 1
         },
         "godfather": {
-            "name": "godfather",
+            "name": "Godfather",
             "description": "say hello to their little friend >:)",
             "team": "evil",
             "mission": "your vote (night) counts as 2",
@@ -51,7 +51,7 @@
             "killVoteCount": 2
         },
         "mafioso": {
-            "name": "mafioso",
+            "name": "Mafioso",
             "description": "a skilled and deadly member of the mafia",
             "team": "evil",
             "mission": "vote to kill another player during the night",
@@ -60,7 +60,7 @@
             "killVoteCount": 1
         },
         "surgeon": {
-            "name": "surgeon",
+            "name": "Surgeon",
             "description": "you are a master of disguise, but just not with clothes",
             "team": "evil",
             "mission": " restructure someones face (or yours once) to make evil players look good",
@@ -70,7 +70,7 @@
             "killVoteCount": 1
         },
         "witch": {
-            "name": "witch",
+            "name": "Witch",
             "description": "a infamous spell caster, known to use dark magic to get what you want",
             "team": "evil",
             "mission": "block someone's (except mafia) ability at night",
@@ -79,7 +79,7 @@
             "killVoteCount": 1
         },
         "framer": {
-            "name": "framer",
+            "name": "Framer",
             "description": "you always tell the truth, just some parts of it ;)",
             "team": "evil",
             "mission": "frame another player, making them look like an evil player",
@@ -88,7 +88,7 @@
             "killVoteCount": 1
         },
         "jester": {
-            "name": "jester",
+            "name": "Jester",
             "description": "the joke's on YOU!",
             "team": "neutral",
             "mission": "make yourself get voted out",
@@ -96,7 +96,7 @@
             "voteCount": 1
         },
         "serial killer": {
-            "name": "serial killer",
+            "name": "Serial Killer",
             "description": "DIE, DIE, DIE!",
             "team": "neutral",
             "mission": "kill everyone",
@@ -105,7 +105,7 @@
             "killVoteCount": 1
         },
         "executioner": {
-            "name": "executioner",
+            "name": "Executioner",
             "description": "hiding in the shadows - waiting to strike",
             "team": "neutral",
             "mission": "Get your target voted out. You become the jester if you succeed",
@@ -114,7 +114,7 @@
             "target": null
         },
         "lawyer": {
-            "name": "lawyer",
+            "name": "Lawyer",
             "description": "sharp and determined - your client comes first",
             "team": "neutral",
             "mission": "make your client (evil or neutral) win",

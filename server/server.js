@@ -303,27 +303,32 @@ io.on("connection", async (socket) => {
           socket.emit(
             "displayRoleCard",
             display,
-            connectedUsers.get(playerID).getPlayer().getRole().type
+            connectedUsers.get(playerID).getPlayer().getRole().type,
+            connectedUsers.get(playerID).getPlayer().getRole().name,
+            connectedUsers.get(playerID).getPlayer().getRole().team,
+            connectedUsers.get(playerID).getPlayer().getRole().description,
+            connectedUsers.get(playerID).getPlayer().getRole().mission,
           );
         }
       }
     }
   });
 
-  socket.on("requestRoleCard", (playerID) => {
-    if (checkUserExist(playerID)) {
-      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        var room = rooms.get(roomCode);
-        if (room.getGame().getProgress()) {
-          socket.emit(
-            "fetchedRoleCard",
-            connectedUsers.get(playerID).getPlayer().getRole().type
-          );
-        }
-      }
-    }
-  });
+  // socket.on("requestRoleCard", (playerID) => {
+  //   if (checkUserExist(playerID)) {
+  //     if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+  //       var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+  //       var room = rooms.get(roomCode);
+  //       if (room.getGame().getProgress()) {
+  //         socket.emit(
+  //           "fetchedRoleCard",
+  //           connectedUsers.get(playerID).getPlayer().getRole().type
+  //         );
+  //       }
+  //     }
+  //   }
+  // });
+
   // set all users to inGame
   // set game to inProgress
   // make sure done is false

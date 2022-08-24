@@ -81,30 +81,21 @@ socket.on("connect", () => {
   });
 });
 
-// !! FIX THIS
-socket.on("ready-status-game", () => {
-  if (users.get(getPlayerID()).readyGame) {
-    var status = document.getElementsByClassName("game-button ready");
-    status[0].innerText = "ready";
-    status[0].id = "status-ready";
-  } else if (!users.get(getPlayerID()).readyGame) {
-    var status = document.getElementsByClassName("game-button ready");
-    status[0].innerText = "not ready";
-    status[0].id = "status-notready";
-  }
-});
+// // !! FIX THIS
+// socket.on("ready-status-game", () => {
+//   if (users.get(getPlayerID()).readyGame) {
+//     var status = document.getElementsByClassName("game-button");
+//     status[0].innerText = "ready";
+//     status[0].id = "rolecard-ready";
+//   } else if (!users.get(getPlayerID()).readyGame) {
+//     var status = document.getElementsByClassName("game-button");
+//     status[0].innerText = "not ready";
+//     status[0].id = "rolecard-notready";
+//   }
+// });
 
 function toggleCardButton(element) {
-  if (element.classList.contains("ready")) {
-    if (element.classList.toggle("not-ready")) {
-      element.innerText = "Unready";
-
-      socket.emit("player-ready", getPlayerID(), "game");
-    } else {
-      element.innerText = "Ready";
-      socket.emit("player-unready", getPlayerID(), "game");
-    }
-  }
+  socket.emit("player-ready", getPlayerID(), "game");
 }
 
 function endGame() {
@@ -121,45 +112,74 @@ function hideGameUI(toHide) {
   }
 }
 
-function showRoleCard(toShow, role) {
-  console.log("toShow is " + toShow);
+function showRoleCard(toShow, role="", name="", team="", description="", mission="") {
   if (toShow) {
     console.log("showing card");
-    document.getElementsByClassName("game-rolecard")[0].style.display = "flex";
-    document.getElementsByClassName("game-rolecard")[0].id = role;
-    document.getElementsByClassName("game-rolecard")[0].innerText = role;
+    var roleCard = document.getElementsByClassName("game-rolecard")[0];
+    roleCard.style.display = "flex";
+    roleCard.id = role;
+    var roleCardTitle = document.getElementsByClassName("game-rolecard-title")[0]
+    roleCardTitle.innerText = name;
+    var roleCardDescription = document.getElementsByClassName("game-rolecard-description")[0];
+    roleCardDescription.innerText = description;
+    var roleCardMission = document.getElementsByClassName("game-rolecard-mission")[0];
+    roleCardMission.innerText = mission;
+    var readyButton = document.getElementsByClassName("game-button")[0];
+    var icon = document.getElementsByClassName("game-rolecard-icon")[0];
+    icon.src = "/assets/rolecards/" + name + ".svg";
+    
+    if (team.includes("good")) {
+      roleCardTitle.classList.add("game-rolecard-good-fg");
+      roleCardMission.classList.add("game-rolecard-good-fg");
+      readyButton.classList.add("game-rolecard-good-bg");
+    } else if (team.includes("evil")) {
+      roleCardTitle.classList.add("game-rolecard-evil-fg");
+      roleCardMission.classList.add("game-rolecard-evil-fg");
+      readyButton.classList.add("game-rolecard-evil-bg");
+      
+    } else if (team.includes("neutral")) {
+      roleCardTitle.classList.add("game-rolecard-neutral-fg");
+      roleCardMission.classList.add("game-rolecard-neutral-fg");
+      readyButton.classList.add("game-rolecard-neutral-bg");
+
+    }
   } else {
-    console.log("hiding card");
-    document.getElementsByClassName("game-rolecard")[0].style.display = "none";
-    document.getElementsByClassName("game-rolecard")[0].id = "";
-    document.getElementsByClassName("game-rolecard")[0].innerText = "";
+    var roleCard = document.getElementsByClassName("game-rolecard")[0];
+    roleCard.style.display = "flex";
+    roleCard.id = role;
+    var roleCardTitle = document.getElementsByClassName("game-rolecard-title")[0]
+    roleCardTitle.innerText = name;
+    var roleCardDescription = document.getElementsByClassName("game-rolecard-description")[0];
+    roleCardDescription.innerText = description;
+    var roleCardMission = document.getElementsByClassName("game-rolecard-mission")[0];
+    roleCardMission.innerText = mission;
   }
 }
 // socket.emit("checkForRoleCard", getPlayerID());
-socket.on("displayRoleCard", (doDisplay, role) => {
+socket.on("displayRoleCard", (doDisplay, role, name, team, description, mission) => {
   if (doDisplay) {
     hideGameUI(true);
-    showRoleCard(true, role);
+    showRoleCard(true, role, name, team, description, mission);
   } else {
     hideGameUI(false);
-    showRoleCard(false, role);
+    showRoleCard(false);
   }
 });
 
-// check also if all other requirements are met (checkCanStart)
-// startAllowed, true or false
-// users, inGame
-// game object, inProgress
-socket.on("rolesAssigned", () => {
-  // ID set to inGame, needs to be reset when game ends
+// // check also if all other requirements are met (checkCanStart)
+// // startAllowed, true or false
+// // users, inGame
+// // game object, inProgress
+// socket.on("rolesAssigned", () => {
+//   // ID set to inGame, needs to be reset when game ends
 
-  socket.emit("requestRoleCard", getPlayerID());
-  // socket.on("gameStarted", () => {});
-});
+//   socket.emit("requestRoleCard", getPlayerID());
+//   // socket.on("gameStarted", () => {});
+// });
 
-socket.on("fetchedRoleCard", (role) => {
-  console.log("roles have been assigned");
-  // this role card needs to be maintained until all players have set ready-game to true and the game starts.
-  document.getElementsByClassName("game-rolecard")[0].id = role;
-  document.getElementsByClassName("game-rolecard")[0].innerText = role;
-});
+// socket.on("fetchedRoleCard", (role) => {
+//   console.log("roles have been assigned");
+//   // this role card needs to be maintained until all players have set ready-game to true and the game starts.
+//   document.getElementsByClassName("game-rolecard")[0].id = role;
+//   document.getElementsByClassName("game-rolecard")[0].innerText = role;
+// });
