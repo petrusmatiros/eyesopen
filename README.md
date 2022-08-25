@@ -89,13 +89,13 @@ npm build
 
 **Game UI** <br> Petrus Matiros
 
-**Emojis** <br> [Openmoji](https://openmoji.org/library/)
+**Emojis** <br> <a href="https://openmoji.org/library/" target="_blank">Openmoji</a>
 
-**Icons** <br> [Untitled UI](https://www.untitledui.com/icons)
+**Icons** <br> <a href="https://www.untitledui.com/icons" target="_blank">Untitled UI</a>
 
-**Eyes lottie animation** <br> [Blinking Eyes](https://lottiefiles.com/51493-blinking-eyes)
+**Eyes lottie animation** <br> <a href="https://lottiefiles.com/51493-blinking-eyes" target="_blank">Blinking Eyes</a>
 
-**Death lottie animation** <br> [your dead](https://lottiefiles.com/82054-your-dead)
+**Death lottie animation** <br> <a href="https://lottiefiles.com/82054-your-dead" target="_blank">your dead</a>
 
 ## Notes
 
