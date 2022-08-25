@@ -71,7 +71,7 @@
         },
         "witch": {
             "name": "Witch",
-            "description": "a infamous spell caster, known to use dark magic to get what you want",
+            "description": "an infamous spell caster, known to use dark magic to get what you want",
             "team": "evil",
             "mission": "block someone's (except mafia) ability at night",
             "hasNightAbility": true,

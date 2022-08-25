@@ -38,35 +38,22 @@ Enjoy ^-^
 ## Requirements
 - Minimum 3 players
 
-## Role info
-
-![Good roles](roleinfo/Good%20info.svg)
-
-<br>
-
-
-![Evil roles](roleinfo/Evil%20info.svg)
-
-<br>
-
-![Neutral roles](roleinfo/Neutral%20info.svg)
-
 ## Role cards
 <p>
-<img src="rolecards/Villager_card.svg" alt="role-card" width=150>
-<img src="rolecards/Investigator_card.svg" alt="role-card" width=150>
-<img src="rolecards/Doctor_card.svg" alt="role-card" width=150>
-<img src="rolecards/Mayor_card.svg" alt="role-card" width=150>
-<img src="rolecards/Trapper_card.svg" alt="role-card" width=150>
-<img src="rolecards/Godfather_card.svg" alt="role-card" width=150>
-<img src="rolecards/Mafioso_card.svg" alt="role-card" width=150>
-<img src="rolecards/Surgeon_card.svg" alt="role-card" width=150>
-<img src="rolecards/Witch_card.svg" alt="role-card" width=150>
-<img src="rolecards/Framer_card.svg" alt="role-card" width=150>
-<img src="rolecards/Jester_card.svg" alt="role-card" width=150>
-<img src="rolecards/Serial%20Killer_card.svg" alt="role-card" width=150>
-<img src="rolecards/Executioner_card.svg" alt="role-card" width=150>
-<img src="rolecards/Lawyer_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Villager_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Investigator_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Doctor_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Mayor_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Trapper_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Godfather_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Mafioso_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Surgeon_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Witch_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Framer_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Jester_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Serial%20Killer_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Executioner_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Lawyer_card.svg" alt="role-card" width=150>
 </p>
 
 
@@ -100,7 +87,15 @@ npm build
 
 **Game design** <br> Petrus Matiros
 
-**Visual UI elements** <br> Petrus Matiros
+**Game UI** <br> Petrus Matiros
+
+**Emojis** <br> [Openmoji](https://openmoji.org/library/)
+
+**Icons** <br> [Untitled UI](https://www.untitledui.com/icons)
+
+**Eyes lottie animation** <br> [Blinking Eyes](https://lottiefiles.com/51493-blinking-eyes)
+
+**Death lottie animation** <br> [your dead](https://lottiefiles.com/82054-your-dead)
 
 ## Notes
 
