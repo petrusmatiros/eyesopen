@@ -140,6 +140,7 @@ socket.on("recieveMessage", (message, type, cycle) => {
 
   newMessage.innerText = message;
   messages.appendChild(newMessage);
+  messages.scrollTop = messages.scrollHeight;
 });
 
 function messageBoxHandler() {}
@@ -173,11 +174,10 @@ function loadSavedMessages(messages, cycle) {
     } else if (cycle.includes("night")) {
       newMessage.classList.add(messageType);
     }
-    console.log(newMessage);
-    console.log(messages);
     newMessage.innerText = messages[i].message;
     messageScroller.appendChild(newMessage);
   }
+  messageScroller.scrollTop = messageScroller.scrollHeight;
 }
 
 socket.on("fetchedPlayerCardPress", (name, mission) => {
