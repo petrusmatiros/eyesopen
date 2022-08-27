@@ -10,6 +10,8 @@ socket.on("connect", () => {
   socket.on("userExists", (userExists) => {
     if (!userExists) {
       resetCookie();
+      var notSet = true;
+      setFocus(notSet);
     } else {
       socket.emit("setRoom", getPlayerID());
       var URL = window.location.href.replace("http://", "");
@@ -93,13 +95,19 @@ function checkIfSessionExists() {
   });
 }
 
-function displayUser() {
-  if (!checkIfSessionExists()) {
-    document.getElementById("overlay").style.display = "block";
-    document.getElementById("user").style.display = "flex";
+function setFocus(notSet) {
+  if (notSet) {
     document.getElementById("inputUser").focus();
   }
 }
+
+// function displayUser() {
+//   if (!checkIfSessionExists()) {
+//     document.getElementById("overlay").style.display = "block";
+//     document.getElementById("user").style.display = "flex";
+//     document.getElementById("inputUser").focus();
+//   }
+// }
 function hideUser() {
   document.getElementById("overlay").style.display = "none";
   document.getElementById("user").style.display = "none";

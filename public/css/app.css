@@ -147,9 +147,9 @@
   align-items: center;
   /* padding: 0.6em; */
   border-radius: 1rem;
-  margin: 1rem 0.5rem 1rem 0.5rem;
-  max-width: 21.5rem;
-  min-width: 21.5rem;
+  margin: 2rem 0.5rem 1rem 0.5rem;
+  max-width: 20.5rem;
+  min-width: 20.5rem;
   max-height: 6.65rem;
   min-height: 7.75rem;
 }
@@ -161,6 +161,7 @@
   max-width: 6.25rem;
   min-width: 6.25rem;
 }
+
 .game-player-card-wrapper {
   margin: 1rem;
 }
@@ -195,13 +196,13 @@
 .game-messagebox {
   display: flex;
   flex-direction: column;
-  padding: 0.75em;
+  padding: 1em;
   border-radius: 1rem;
   min-height: 9.375rem;
   max-height: 9.375rem;
-  max-width: 20rem;
-  min-width: 20rem;
-  margin: 0 0.5rem 1rem 0.5rem;
+  max-width: 18.5rem;
+  min-width: 18.5rem;
+  margin: 0 0.5rem 1.5rem 0.5rem;
 }
 .game-message-scroller {
   display: inline-block;
@@ -212,26 +213,36 @@
   touch-action: pan-y;
 }
 
-/* Two versions */
+/* ! Two versions */
 .game-message {
   user-select: none;
   display: flex;
   flex-direction: column;
-  min-width: 17.5rem;
-  max-width: 17.5rem;
+  min-width: 16rem;
+  max-width: 16rem;
   padding: 0.25rem 0.5rem 0.25rem 0.5rem;
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.5rem;
   border-radius: 0.35rem;
 }
 
+.game-message-red {
+  color: hsl(360, 100%, 50%);
+}
+
 .game-message-alert {
-  background-color: hsl(360, 100%, 50%);
+  background-color: hsl(360, 100%, 50%) !important;
 }
 .game-message-info {
-  background-color: hsl(43, 100%, 50%);
+  background-color: hsl(43, 100%, 50%) !important;
 }
 .game-message-confirm {
-  background-color: hsl(97, 100%, 40%);
+  background-color: hsl(97, 100%, 40%) !important;
+}
+.game-message-day {
+  background-color: hsl(0, 0%, 97%);
+}
+.game-message-night {
+  background-color: hsl(0, 0%, 18%);
 }
 
 .game-panel-day {
@@ -247,11 +258,11 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  min-width: 19.5rem;
-  max-width: 19.5rem;
+  min-width: 18.5rem;
+  max-width: 18.5rem;
   padding: 1.5em 1em 1.5em 1em;
   border-radius: 1rem;
-  margin: 0 0.5rem 1rem 0.5rem;
+  margin: 0 0.5rem 2rem 0.5rem;
 }
 
 
@@ -260,7 +271,6 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  background-color: var(--light-bg);
   padding: 0.5em 0.75em 0.5em 0.75em;
   border-radius: 0.75rem;
   font-weight: 500;
@@ -424,7 +434,7 @@
   width: 20.313rem;
   height: 23.75rem;
   background: url(/assets/icons/cemetery.svg);
-  margin: 1rem 0.5rem 1rem 0.5rem;
+  margin: 1rem 0.5rem 2rem 0.5rem;
 }
 
 .game-cemetery-wrapper {
@@ -472,10 +482,10 @@
   font-size: 2rem;
   font-weight: 500;
   padding: 1rem;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   width: 100%;
-  max-width: 18.5rem;
-  max-width: 18.5rem;
+  max-width: 12.5rem;
+  max-width: 12.5rem;
   margin: 0 0.5rem 1rem 0.5rem;
 }
 
@@ -587,6 +597,8 @@
   padding: 2em;
   border-radius: 1rem;
   margin-top: 8rem;
+  max-width: 15rem;
+  min-width: 15rem;
 }
 
 /* Rolecard */
@@ -709,10 +721,10 @@
     user-select: none;
     display: flex;
     flex-direction: column;
-    min-width: 18rem;
-    max-width: 18rem;
+    min-width: 17rem;
+    max-width: 17rem;
     padding: 0.25rem 0.5rem 0.25rem 0.5rem;
-    margin-bottom: 0.15rem;
+    margin-bottom: 0.5rem;
     border-radius: 0.35rem;
   }
 }
