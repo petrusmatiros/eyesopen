@@ -275,6 +275,8 @@
   border-radius: 0.75rem;
   font-weight: 500;
   margin: 0 0.5rem 1.5rem 0.5rem;
+  min-width: 13rem;
+  max-width: 13rem;
 }
 
 .game-cycle {
@@ -285,11 +287,13 @@
 }
 
 .game-cycle-icon {
-  display: flex;
+  display: inline;
   justify-content: center;
   align-items: center;
   vertical-align: text-top;
   width: 1.75rem;
+  margin-bottom: 0.15rem;
+  margin-right: 0.25rem;
 }
 
 .game-cycle-wrapper {
@@ -297,23 +301,17 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  margin-left: 0.5rem;
   font-size: 1.25rem;
 }
 
 .game-cycle-text {
   user-select: none;
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: center;
-}
-
-.game-cycle-count {
-  user-select: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: 0.25rem;
+  text-align: center;
+  min-width: 4.5rem;
+  max-width: 4.5rem;
 }
 
 .game-clock-divider {
@@ -327,10 +325,12 @@
 
 .game-time {
   user-select: none;
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: center;
   font-size: 1.75rem;
+  min-width: 5rem;
+  max-width: 5rem;
 }
 
 .game-players-container {
@@ -338,7 +338,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  margin: 0 0.5rem 1rem 0.5rem;
+  margin: 0 0.5rem 1.5rem 0.5rem;
 }
 
 .game-players-col1 {

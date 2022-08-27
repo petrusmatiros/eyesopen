@@ -138,18 +138,17 @@
       <div class="game-panel game-panel-night">
         <div class="game-clock game-night-bg game-night-fg">
           <div class="game-cycle">
-            <!-- Icon for the cycle -->
-            <img class="game-cycle-icon" alt="game cycle" src="/assets/icons/night.svg"></img>
             <!-- E.g. Night 1 -->
             <div class="game-cycle-wrapper">
-              <div class="game-cycle-text">Night</div>
-              <div class="game-cycle-count">1</div>
+              <!-- Icon for the cycle -->
+              <img class="game-cycle-icon" id="game-cycle-icon" alt="game cycle" src="/assets/icons/night.svg"></img>
+              <div class="game-cycle-text" id="game-cycle-text">--- -</div>
             </div>
           </div>
           <div class="game-clock-divider game-night-border"></div>
           <!-- Clock time -->
-          <div class="game-time">00:00
-            <!-- Clock -->
+          <div class="game-time" id="game-time">--:--
+            <!-- Time -->
             <!-- <div class="clock-container">
               <p class="clock" id="time">0</p>
             </div> -->

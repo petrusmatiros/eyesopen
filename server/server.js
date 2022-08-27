@@ -302,7 +302,7 @@ io.on("connection", async (socket) => {
             playerIsReady = true;
           }
           if (checkAllReadyGame(roomCode, playerID)) {
-            console.log("ALL PLAYERS READY in GAME")
+            console.log("ALL PLAYERS READY in GAME");
             var allReady = true;
           }
           socket.emit(
@@ -313,7 +313,7 @@ io.on("connection", async (socket) => {
             connectedUsers.get(playerID).getPlayer().getRole().name,
             connectedUsers.get(playerID).getPlayer().getRole().team,
             connectedUsers.get(playerID).getPlayer().getRole().description,
-            connectedUsers.get(playerID).getPlayer().getRole().mission,
+            connectedUsers.get(playerID).getPlayer().getRole().mission
           );
           io.to(roomCode).emit("showGame", allReady);
         }
@@ -345,8 +345,6 @@ io.on("connection", async (socket) => {
       }
     }
   });
-
-  
 
   function checkReq(playerID) {
     if (checkUserExist(playerID)) {
@@ -568,7 +566,7 @@ io.on("connection", async (socket) => {
           if (rooms.get(roomCode).getGame().getProgress() == true) {
             // emitTo = "ready-status-game";
             connectedUsers.get(playerID).setReadyGame(notReady);
-            
+
             // var playerIsReady = connectedUsers.get(playerID).getReadyGame();
             // socket.to(connectedUsers.get(playerID), playerIsReady, checkAllReadyGame(roomCode, playerID)).emit(emitTo);
           }
@@ -1071,67 +1069,206 @@ io.on("connection", async (socket) => {
       }
     }
   });
-});
 
-function nextCycle() {
+  // GAME related
+  // ====================================================
+
+  const roleTypes = {
+    Villager: "villager",
+    Investigator: "investigator",
+    Doctor: "doctor",
+    Mayor: "mayor",
+    Trapper: "trapper",
+    Godfather: "godfather",
+    Mafioso: "mafioso",
+    Surgeon: "surgeon",
+    Witch: "witch",
+    Framer: "framer",
+    Jester: "jester",
+    SerialKiller: "serial killer",
+    Executioner: "executioner",
+    Lawyer: "lawyer",
+  };
+
+  // ! DEBUG
+  var durations = {
+    night: {
+      actions: 5,
+      messages: 3,
+    },
+    day: {
+      recap: 7,
+      discussion: 6,
+      voting: 4,
+    },
+  };
+  // var durations = {
+  //   night: {
+  //     actions: 40,
+  //     messages: 3,
+  //   },
+  //   day: {
+  //     recap: 7,
+  //     discussion: 45,
+  //     voting: 30,
+  //   },
+  // };
+
+  socket.on("displayPlayerCard", (playerID) => {});
+  // socket.on("setMafiaRoom", (playerID) => {})
+  // players, dead, mafia, personal
+  socket.on("setPlayers", (playerID) => {});
+  socket.on("fetchMessages", (playerID) => {});
+  socket.on("sendMessage", (playerID) => {});
+
+  function gameHandler(playerID, roomCode, room, game) {
+    // Night and Day
+    var currentCycle = 0;
+    // Actions, discussion
+    var currentPhase = 0;
+    var theDurations = Object.values(durations);
+    var nightLength = Object.values(theDurations[0]).length;
+    var dayLength = Object.values(theDurations[1]).length;
+
+    game.setCycleCount(1);
+    // Two objects, Night object, Day object
+    // Set duration to night object -> first phase
+    initClock(
+      game.getTimer(),
+      Object.values(theDurations[currentCycle])[currentPhase]
+    );
+    game.setCycle("Night");
+    game.setPhase(Object.keys(theDurations[currentCycle])[currentPhase]);
+
+    // time is equal to intervalID
+    var time = setInterval(function () {
+      console.log(
+        game.getTimer().getCounter(),
+        game.getPhase(),
+        "phase:" + currentPhase,
+        "cycle:" + currentCycle,
+        game.getCycle(),
+        game.getCycleCount()
+      );
+
+      // set night, night 1, change ui
+      // init clock, send clock to clients
+
+      io.to(roomCode).emit(
+        "clock",
+        game.getTimer().getCounter(),
+        game.getPhase(),
+        game.getCycle(),
+        game.getCycleCount()
+      );
+
+      // ! DEBUG TIME
+      // console.log("counter from server:", counter);
+      if (game.getTimer().getCounter() <= 0) {
+        // clearInterval(time);
+
+        // NIGHT
+        if (currentCycle == 0) {
+          if (currentPhase < nightLength) {
+            currentPhase++;
+            game.setPhase(
+              Object.keys(theDurations[currentCycle])[currentPhase]
+            );
+            console.log("night less");
+          }
+          if (currentPhase >= nightLength) {
+            currentPhase = 0;
+            currentCycle = 1;
+            game.setPhase(
+              Object.keys(theDurations[currentCycle])[currentPhase]
+            );
+            game.setCycle("Day");
+          }
+          initClock(
+            game.getTimer(),
+            Object.values(theDurations[currentCycle])[currentPhase]
+          );
+        }
+        // DAY
+        else if (currentCycle == 1) {
+          if (currentPhase < dayLength) {
+            currentPhase++;
+            game.setPhase(
+              Object.keys(theDurations[currentCycle])[currentPhase]
+            );
+            console.log("day less");
+          }
+          if (currentPhase >= dayLength) {
+            currentPhase = 0;
+            currentCycle = 0;
+            game.setPhase(
+              Object.keys(theDurations[currentCycle])[currentPhase]
+            );
+            game.setCycle("Night");
+            // Increment cycle count
+            game.setCycleCount(game.getCycleCount() + 1);
+          }
+          initClock(
+            game.getTimer(),
+            Object.values(theDurations[currentCycle])[currentPhase]
+          );
+        }
+      } else {
+        game.getTimer().tick();
+      }
+    }, 1000);
+  }
+
+  function initClock(timer, duration) {
+    timer.init(duration);
+  }
+
+  function emitClock(roomCode, game) {}
+
+  socket.on("initGame", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (game.getProgress()) {
+          if (checkAllReadyGame(roomCode, playerID)) {
+            if (room.getUsers().includes(connectedUsers.get(playerID))) {
+              if (room.getHost() == playerID) {
+                if (game.getTimer().getRunning() == false) {
+                  gameHandler(playerID, roomCode, room, game);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  });
+
+  function nextCycle() {
     // CLEAR ALL PLAYER VALUES, except the important ones
     // reset player values if player is NOT lynched or NOT killed
-  // exception for executioner where they will be alive, but their target can be dead (they turn into jester)
+    // exception for executioner where they will be alive, but their target can be dead (they turn into jester)
     this.cycle++;
     // ! SHOULD clear DEAD array after they have been announced
   }
 
-var timeDurations = {
-  discussion: 45,
-  voting: 30,
-  night: 40,
-  test: 5,
-};
-var counter = timeDurations.voting;
-// room.game.timer.getCounter
-var time = setInterval(function () {
-  io.emit("counter", counter);
-  // ! DEBUG TIME
-  // console.log("counter from server:", counter);
-  if (counter <= 0) {
-    clearInterval(time);
-    // next phase
-  } else {
-    counter--;
-  }
-}, 1000);
+  // Game related
+  // #############
 
-// Game related
-// #############
-
-function disguiseChecker() {
-  // REMAKE THIS
-  console.log("it is working");
-  // !! DO NOT USE FOR EACH HERE, THINK ABOUT IT FIRST
-  players.forEach((player) => {
-    if (player.isDisguised) {
-      if (player.role.team == "good") {
-        player.fakeTeam = "evil";
-      } else if (player.role.team == "evil") {
-        player.fakeTeam = "good";
+  function disguiseChecker() {
+    // REMAKE THIS
+    console.log("it is working");
+    // !! DO NOT USE FOR EACH HERE, THINK ABOUT IT FIRST
+    players.forEach((player) => {
+      if (player.isDisguised) {
+        if (player.role.team == "good") {
+          player.fakeTeam = "evil";
+        } else if (player.role.team == "evil") {
+          player.fakeTeam = "good";
+        }
       }
-    }
-  });
-}
-
-const roleTypes = {
-  Villager: "villager",
-  Investigator: "investigator",
-  Doctor: "doctor",
-  Mayor: "mayor",
-  Trapper: "trapper",
-  Godfather: "godfather",
-  Mafioso: "mafioso",
-  Surgeon: "surgeon",
-  Witch: "witch",
-  Framer: "framer",
-  Jester: "jester",
-  SerialKiller: "serial killer",
-  Executioner: "executioner",
-  Lawyer: "lawyer",
-};
+    });
+  }
+});

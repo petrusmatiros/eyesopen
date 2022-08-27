@@ -68,6 +68,14 @@ class Game {
     this.phase = phase;
   }
 
+  getTimer() {
+    return this.timer;
+  }
+
+  setTimer(timer) {
+    this.timer = timer;
+  }
+
   getEvil() {
     return this.evil;
   }

@@ -204,7 +204,27 @@ socket.on("showGame", (allReady) => {
     showGameUI(true);
     showRoleCard(false);
     showWaiting(false);
+
+    socket.emit("initGame", getPlayerID());
   }
+})
+
+
+socket.on("clock", (counter, phase, cycle, cycleCount) => {
+  var clock = document.getElementById("game-time");
+  var gameCycle = document.getElementById("game-cycle-text");
+  if (counter < 10) {
+    clock.innerText = "00:0" + counter;
+  } else if (counter >= 10) {
+    clock.innerText = "00:" + counter;
+  }
+  if (cycle.includes("Night")) {
+    document.getElementById("game-cycle-icon").src = "/assets/icons/night.svg";
+  } else if (cycle.includes("Day")) {
+    document.getElementById("game-cycle-icon").src = "/assets/icons/day.svg";
+  }
+  gameCycle.innerText = cycle + " " + cycleCount;
+  console.log(phase);
 })
 
 // socket.emit("checkForRoleCard", getPlayerID());
