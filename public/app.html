@@ -45,8 +45,8 @@
     ></script>
     <script defer src="/js/app.js"></script>
   </head>
-  <body class="body-light game-background-night">
-    <nav class="navbar-dark">
+  <body class="body-light game-background-night" id="game-body">
+    <nav class="navbar-dark" id="game-navbar">
       <div class="navbar-container">
         <div class="logo-link-container">
           <a href="/" class="logo-link"
@@ -85,58 +85,28 @@
     <div class="game">
 
       <!-- Player card -->
-      <div class="game-player-card game-night-bg game-night-fg" onclick="togglePlayerCard(this)">
-        <div class="game-player-card-questionmark game-night-bg game-night-fg">?</div>
+      <div class="game-player-card game-night-bg game-night-fg" id="game-player-card" onclick="togglePlayerCard(this)">
+        <div class="game-player-card-questionmark game-night-bg game-night-fg" id="game-player-card-questionmark">?</div>
         <div class="game-row">
-          <img class="game-player-card-icon" alt="icon" src="/assets/rolecards/Villager.svg"></img>
-          <div class="game-player-card-divider game-night-border"></div>
+          <img class="game-player-card-icon" id="game-player-card-icon" alt="icon" src=""></img>
+          <div class="game-player-card-divider game-night-border" id="game-player-card-divider"></div>
           <div class="game-player-card-wrapper">
-            <div class="game-player-card-role">Role</div>
-            <div class="game-player-card-mission">an infamous spell caster, known to use dark magic to get what you want</div>
-            <div class="game-player-card-button game-night-secondary">Tap to hide</div>
+            <div class="game-player-card-role" id="game-player-card-role">Role</div>
+            <div class="game-player-card-mission" id="game-player-card-mission">---</div>
+            <div class="game-player-card-button game-night-secondary" id="game-player-card-button">Tap to hide</div>
           </div>
         </div>
       </div>
 
       <!-- Message box -->
-      <div class="game-messagebox game-night-bg game-night-fg">
-        <div class="game-message-scroller">
-          <div class="game-message game-message-confirm">
-            You successfully protected (target)
-          </div>
-          <div class="game-message game-message-night">
-            (Player) has voted
-          </div>
-          <div class="game-message game-message-night">
-            (Player) has changed their vote
-          </div>
-          <div class="game-message game-message-night">
-            (Player) has changed their vote
-          </div>
-          <div class="game-message game-message-night">
-            (Player2) has voted
-          </div>
-          <div class="game-messagegame-message-night">
-            (Player5) has voted
-          </div>
-          <div class="game-message game-message-night">
-            (Player2) has changed their vote
-          </div>
-          <div class="game-message game-message-night game-message-alert">
-            You have been killed. Your were killed by a member of the evil team
-          </div>
-          <div class="game-message game-message-night">
-            You have picked (player) to use your ability on
-          </div>
-          <div class="game-message game-message-night game-message-info">
-            Your ability was blocked this night
-          </div>
+      <div class="game-messagebox game-night-bg game-night-fg" id="game-messagebox">
+        <div class="game-message-scroller" id="game-message-scroller">
         </div>
       </div>
 
       <!-- Panel -->
-      <div class="game-panel game-panel-night">
-        <div class="game-clock game-night-bg game-night-fg">
+      <div class="game-panel game-panel-night" id="game-panel">
+        <div class="game-clock game-night-bg game-night-fg" id="game-clock">
           <div class="game-cycle">
             <!-- E.g. Night 1 -->
             <div class="game-cycle-wrapper">
@@ -145,7 +115,7 @@
               <div class="game-cycle-text" id="game-cycle-text">--- -</div>
             </div>
           </div>
-          <div class="game-clock-divider game-night-border"></div>
+          <div class="game-clock-divider game-night-border" id="game-clock-divider"></div>
           <!-- Clock time -->
           <div class="game-time" id="game-time">--:--
             <!-- Time -->

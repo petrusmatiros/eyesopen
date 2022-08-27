@@ -35,12 +35,6 @@ function getPlayerID() {
   }
 }
 
-socket.on("counter", function (count) {
-  var display = document.querySelector("#time");
-  // console.log(count);
-  display.innerText = count;
-});
-
 socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
   socket.on("userExists", (userExists) => {
@@ -68,6 +62,34 @@ socket.on("connect", () => {
         if (apartOfGame && inProgress == true) {
           console.log("checking for role card availability");
           socket.emit("checkForRoleCard", getPlayerID());
+
+          socket.emit("fetchMessages", getPlayerID());
+          socket.on("savedMessages", (messages) => {
+            var messages = document.getElementById("game-message-scroller");
+            for (var i = 0; i < messages.length; i++) {
+              var messageType = "game-message-";
+              var newMessage = document.createElement("div");
+              newMessage.classList.add("game-message");
+              if (messages[i].type.includes("day")) {
+                messageType += "day";
+                newMessage.classList.add(messageType);
+              } else if (messages[i].type.includes("night")) {
+                messageType += "night";
+                newMessage.classList.add(messageType);
+              } else if (messages[i].type.includes("confirm")) {
+                messageType += "confirm";
+                newMessage.classList.add(messageType);
+              } else if (messages[i].type.includes("info")) {
+                messageType += "info";
+                newMessage.classList.add(messageType);
+              } else if (messages[i].type.includes("alert")) {
+                messageType += "alert";
+                newMessage.classList.add(messageType);
+              }
+              newMessage.innerText = messages[i].message;
+              messages.appendChild(newMessage);
+            }
+          });
         } else if (apartOfGame == false) {
           var URL = window.location.href.replace("/game", "");
           window.location.href = URL;
@@ -102,12 +124,49 @@ function togglePlayerCard(element) {
   if (toHide.style.display == "none") {
     toHide.style.display = "flex";
     questionMark.style.display = "none";
-    
   } else {
     toHide.style.display = "none";
     questionMark.style.display = "flex";
   }
+  socket.emit("requestPlayerCard", getPlayerID(), "press");
 }
+
+socket.on("recieveMessage", (message, type) => {
+  var messages = document.getElementById("game-message-scroller");
+  var messageType = "game-message-";
+  var newMessage = document.createElement("div");
+  newMessage.classList.add("game-message");
+
+  if (type.includes("day")) {
+    messageType += "day";
+    newMessage.classList.add(messageType);
+  } else if (type.includes("night")) {
+    messageType += "night";
+    newMessage.classList.add(messageType);
+  } else if (type.includes("confirm")) {
+    messageType += "confirm";
+    newMessage.classList.add(messageType);
+  } else if (type.includes("info")) {
+    messageType += "info";
+    newMessage.classList.add(messageType);
+  } else if (type.includes("alert")) {
+    messageType += "alert";
+    newMessage.classList.add(messageType);
+  }
+  newMessage.innerText = message;
+  messages.appendChild(newMessage);
+});
+
+function messageBoxHandler() {}
+
+socket.on("fetchedPlayerCardPress", (name, mission) => {
+  var playerIcon = document.getElementById("game-player-card-icon");
+  var playerRole = document.getElementById("game-player-card-role");
+  var playerMission = document.getElementById("game-player-card-mission");
+  playerIcon.src = "/assets/rolecards/" + name + ".svg";
+  playerRole.innerText = name;
+  playerMission.innerText = mission;
+});
 
 function showGameUI(toShow) {
   if (toShow) {
@@ -123,7 +182,7 @@ function showGameUI(toShow) {
   }
 }
 
-function showWaiting(toShow=false) {
+function showWaiting(toShow = false) {
   var waiting = document.getElementsByClassName("game-waiting-container")[0];
   if (toShow) {
     waiting.style.display = "flex";
@@ -198,6 +257,74 @@ function showRoleCard(
     roleCardMission.innerText = mission;
   }
 }
+function changeUI(theme) {
+  var navbar = document.getElementById("game-navbar");
+  var body = document.getElementById("game-body");
+  var playerCard = document.getElementById("game-player-card");
+  var playerCardQuestionMark = document.getElementById(
+    "game-player-card-questionmark"
+  );
+  var playerCardDivider = document.getElementById("game-player-card-divider");
+  var playerCardButton = document.getElementById("game-player-card-button");
+  var messageBox = document.getElementById("game-messagebox");
+  var gamePanel = document.getElementById("game-panel");
+  var gameClock = document.getElementById("game-clock");
+  var gameClockDivider = document.getElementById("game-clock-divider");
+  var messages = document.getElementById("game-message-scroller").children;
+
+  if (theme.includes("Night")) {
+    navbar.className = "navbar-dark";
+    body.classList.remove("game-background-day");
+    body.classList.add("game-background-night");
+    playerCard.classList.remove("game-day-bg", "game-day-fg");
+    playerCard.classList.add("game-night-bg", "game-night-fg");
+    playerCardQuestionMark.classList.remove("game-day-bg", "game-day-fg");
+    playerCardQuestionMark.classList.add("game-night-bg", "game-night-fg");
+    playerCardDivider.classList.remove("game-day-border");
+    playerCardDivider.classList.add("game-night-border");
+    playerCardButton.classList.remove("game-day-secondary");
+    playerCardButton.classList.add("game-night-secondary");
+    messageBox.classList.remove("game-day-bg", "game-day-fg");
+    messageBox.classList.add("game-night-bg", "game-night-fg");
+    gamePanel.classList.remove("game-panel-day");
+    gamePanel.classList.add("game-panel-night");
+    gameClock.classList.remove("game-day-bg", "game-day-fg");
+    gameClock.classList.add("game-night-bg", "game-night-fg");
+    gameClockDivider.classList.remove("game-day-border");
+    gameClockDivider.classList.add("game-night-border");
+    for (var i = 0; i < messages.length; i++) {
+      messages[i].classList.add("game-message-night");
+      messages[i].classList.remove("game-message-day");
+    }
+  } else if (theme.includes("Day")) {
+    navbar.className = "navbar-light";
+    body.classList.remove("game-background-night");
+    body.classList.add("game-background-day");
+    playerCard.classList.remove("game-night-bg", "game-night-fg");
+    playerCard.classList.add("game-day-bg", "game-day-fg");
+    playerCardQuestionMark.classList.remove("game-night-bg", "game-night-fg");
+    playerCardQuestionMark.classList.add("game-day-bg", "game-day-fg");
+    playerCardDivider.classList.remove("game-night-border");
+    playerCardDivider.classList.add("game-day-border");
+    playerCardButton.classList.remove("game-night-secondary");
+    playerCardButton.classList.add("game-day-secondary");
+    messageBox.classList.remove("game-night-bg", "game-night-fg");
+    messageBox.classList.add("game-day-bg", "game-day-fg");
+    gamePanel.classList.remove("game-panel-night");
+    gamePanel.classList.add("game-panel-day");
+    gameClock.classList.remove("game-night-bg", "game-night-fg");
+    gameClock.classList.add("game-day-bg", "game-day-fg");
+    gameClockDivider.classList.remove("game-night-border");
+    gameClockDivider.classList.add("game-day-border");
+    for (var i = 0; i < messages.length; i++) {
+      messages[i].classList.remove("game-message-night");
+      messages[i].classList.add("game-message-day");
+    }
+  }
+}
+socket.on("changeUI", (theme) => {
+  changeUI(theme);
+});
 
 socket.on("showGame", (allReady) => {
   if (allReady) {
@@ -206,9 +333,18 @@ socket.on("showGame", (allReady) => {
     showWaiting(false);
 
     socket.emit("initGame", getPlayerID());
+    socket.emit("requestPlayerCard", getPlayerID(), "first");
+    socket.on("fetchedPlayerCardFirst", (name, mission) => {
+      var playerIcon = document.getElementById("game-player-card-icon");
+      var playerRole = document.getElementById("game-player-card-role");
+      var playerMission = document.getElementById("game-player-card-mission");
+      playerIcon.src = "/assets/rolecards/" + name + ".svg";
+      playerRole.innerText = name;
+      playerMission.innerText = mission;
+    });
+    socket.emit("updateUI", getPlayerID());
   }
-})
-
+});
 
 socket.on("clock", (counter, phase, cycle, cycleCount) => {
   var clock = document.getElementById("game-time");
@@ -224,8 +360,7 @@ socket.on("clock", (counter, phase, cycle, cycleCount) => {
     document.getElementById("game-cycle-icon").src = "/assets/icons/day.svg";
   }
   gameCycle.innerText = cycle + " " + cycleCount;
-  console.log(phase);
-})
+});
 
 // socket.emit("checkForRoleCard", getPlayerID());
 socket.on(

@@ -1114,12 +1114,88 @@ io.on("connection", async (socket) => {
   //   },
   // };
 
-  socket.on("displayPlayerCard", (playerID) => {});
+  socket.on("updateUI", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (game.getProgress()) {
+          if (checkAllReadyGame(roomCode, playerID)) {
+            if (room.getUsers().includes(connectedUsers.get(playerID))) {
+              socket.emit("changeUI", game.getCycle());
+            }
+          }
+        }
+      }
+    }
+  });
+
+  socket.on("requestPlayerCard", (playerID, state) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (game.getProgress()) {
+          if (checkAllReadyGame(roomCode, playerID)) {
+            if (room.getUsers().includes(connectedUsers.get(playerID))) {
+              var emitTo = "";
+              var role = connectedUsers.get(playerID).getPlayer().getRole();
+              if (state.includes("first")) {
+                emitTo = "fetchedPlayerCardFirst";
+              } else if (state.includes("refresh")) {
+                emitTo = "fetchedPlayerCardRefresh";
+              } else if (state.includes("press")) {
+                emitTo = "fetchedPlayerCardPress";
+              }
+              socket.emit(emitTo, role.name, role.mission);
+            }
+          }
+        }
+      }
+    }
+  });
   // socket.on("setMafiaRoom", (playerID) => {})
   // players, dead, mafia, personal
   socket.on("setPlayers", (playerID) => {});
-  socket.on("fetchMessages", (playerID) => {});
-  socket.on("sendMessage", (playerID) => {});
+
+  socket.on("fetchMessages", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (game.getProgress()) {
+          if (room.getUsers().includes(connectedUsers.get(playerID))) {
+            socket.emit(
+              "savedMessages",
+              connectedUsers.get(playerID).getMessages()
+            );
+          }
+        }
+      }
+    }
+  });
+
+  function sendMessage(playerID, toAll = false, message = "", type = "") {
+    var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+    var room = rooms.get(roomCode);
+
+    if (toAll) {
+      for (var i = 0; i < room.getUsers().length; i++) {
+        if (room.getUsers()[i].getInGame()) {
+          room.getUsers()[i].addMessage({ message, type });
+        }
+      }
+      io.to(roomCode).emit("recieveMessage", message, type);
+    } else {
+      if (connectedUsers.get(playerID).getInGame()) {
+        connectedUsers.get(playerID).addMessage({ message, type });
+      }
+      socket.emit("recieveMessage", message, type);
+    }
+  }
 
   function gameHandler(playerID, roomCode, room, game) {
     // Night and Day
@@ -1140,6 +1216,8 @@ io.on("connection", async (socket) => {
     game.setCycle("Night");
     game.setPhase(Object.keys(theDurations[currentCycle])[currentPhase]);
 
+    // Prevent message from being spammed
+    var emitMessagesOnce = true;
     // time is equal to intervalID
     var time = setInterval(function () {
       console.log(
@@ -1153,7 +1231,6 @@ io.on("connection", async (socket) => {
 
       // set night, night 1, change ui
       // init clock, send clock to clients
-
       io.to(roomCode).emit(
         "clock",
         game.getTimer().getCounter(),
@@ -1161,6 +1238,18 @@ io.on("connection", async (socket) => {
         game.getCycle(),
         game.getCycleCount()
       );
+      if (emitMessagesOnce) {
+        if (game.getCycle().includes("Night")) {
+          sendMessage(playerID, true, "========================", "night");
+          sendMessage(playerID, true, "The moon glows. The night has begun", "night");
+          
+        } else if (game.getCycle().includes("Day")) {
+          sendMessage(playerID, true, "========================", "day");
+          sendMessage(playerID, true, "The sun rises. The day has begun", "day");
+        }
+        emitMessagesOnce = false;
+      }
+      io.to(roomCode).emit("changeUI", game.getCycle());
 
       // ! DEBUG TIME
       // console.log("counter from server:", counter);
@@ -1183,6 +1272,8 @@ io.on("connection", async (socket) => {
               Object.keys(theDurations[currentCycle])[currentPhase]
             );
             game.setCycle("Day");
+            // Prevent from spamming message
+            emitMessagesOnce = true;
           }
           initClock(
             game.getTimer(),
@@ -1205,6 +1296,8 @@ io.on("connection", async (socket) => {
               Object.keys(theDurations[currentCycle])[currentPhase]
             );
             game.setCycle("Night");
+            // Prevent from spamming message
+            emitMessagesOnce = true;
             // Increment cycle count
             game.setCycleCount(game.getCycleCount() + 1);
           }
