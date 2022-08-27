@@ -1170,7 +1170,8 @@ io.on("connection", async (socket) => {
           if (room.getUsers().includes(connectedUsers.get(playerID))) {
             socket.emit(
               "savedMessages",
-              connectedUsers.get(playerID).getMessages()
+              connectedUsers.get(playerID).getMessages(),
+              game.getCycle()
             );
           }
         }
@@ -1181,6 +1182,7 @@ io.on("connection", async (socket) => {
   function sendMessage(playerID, toAll = false, message = "", type = "") {
     var roomCode = connectedUsers.get(playerID).getCurrentRoom();
     var room = rooms.get(roomCode);
+    var game = room.getGame();
 
     if (toAll) {
       for (var i = 0; i < room.getUsers().length; i++) {
@@ -1188,12 +1190,12 @@ io.on("connection", async (socket) => {
           room.getUsers()[i].addMessage({ message, type });
         }
       }
-      io.to(roomCode).emit("recieveMessage", message, type);
+      io.to(roomCode).emit("recieveMessage", message, type, game.getCycle());
     } else {
       if (connectedUsers.get(playerID).getInGame()) {
         connectedUsers.get(playerID).addMessage({ message, type });
       }
-      socket.emit("recieveMessage", message, type);
+      socket.emit("recieveMessage", message, type, game.getCycle());
     }
   }
 
@@ -1241,11 +1243,20 @@ io.on("connection", async (socket) => {
       if (emitMessagesOnce) {
         if (game.getCycle().includes("Night")) {
           sendMessage(playerID, true, "========================", "night");
-          sendMessage(playerID, true, "The moon glows. The night has begun", "night");
-          
+          sendMessage(
+            playerID,
+            true,
+            "The moon glows. The night has begun",
+            "night"
+          );
         } else if (game.getCycle().includes("Day")) {
           sendMessage(playerID, true, "========================", "day");
-          sendMessage(playerID, true, "The sun rises. The day has begun", "day");
+          sendMessage(
+            playerID,
+            true,
+            "The sun rises. The day has begun",
+            "day"
+          );
         }
         emitMessagesOnce = false;
       }

@@ -64,31 +64,8 @@ socket.on("connect", () => {
           socket.emit("checkForRoleCard", getPlayerID());
 
           socket.emit("fetchMessages", getPlayerID());
-          socket.on("savedMessages", (messages) => {
-            var messages = document.getElementById("game-message-scroller");
-            for (var i = 0; i < messages.length; i++) {
-              var messageType = "game-message-";
-              var newMessage = document.createElement("div");
-              newMessage.classList.add("game-message");
-              if (messages[i].type.includes("day")) {
-                messageType += "day";
-                newMessage.classList.add(messageType);
-              } else if (messages[i].type.includes("night")) {
-                messageType += "night";
-                newMessage.classList.add(messageType);
-              } else if (messages[i].type.includes("confirm")) {
-                messageType += "confirm";
-                newMessage.classList.add(messageType);
-              } else if (messages[i].type.includes("info")) {
-                messageType += "info";
-                newMessage.classList.add(messageType);
-              } else if (messages[i].type.includes("alert")) {
-                messageType += "alert";
-                newMessage.classList.add(messageType);
-              }
-              newMessage.innerText = messages[i].message;
-              messages.appendChild(newMessage);
-            }
+          socket.on("savedMessages", (messages, cycle) => {
+            loadSavedMessages(messages, cycle);
           });
         } else if (apartOfGame == false) {
           var URL = window.location.href.replace("/game", "");
@@ -131,7 +108,7 @@ function togglePlayerCard(element) {
   socket.emit("requestPlayerCard", getPlayerID(), "press");
 }
 
-socket.on("recieveMessage", (message, type) => {
+socket.on("recieveMessage", (message, type, cycle) => {
   var messages = document.getElementById("game-message-scroller");
   var messageType = "game-message-";
   var newMessage = document.createElement("div");
@@ -153,11 +130,55 @@ socket.on("recieveMessage", (message, type) => {
     messageType += "alert";
     newMessage.classList.add(messageType);
   }
+
+  if (cycle.includes("day")) {
+    messageType += "day";
+    newMessage.classList.add(messageType);
+  } else if (cycle.includes("night")) {
+    newMessage.classList.add(messageType);
+  }
+
   newMessage.innerText = message;
   messages.appendChild(newMessage);
 });
 
 function messageBoxHandler() {}
+
+function loadSavedMessages(messages, cycle) {
+  var messageScroller = document.getElementById("game-message-scroller");
+  for (var i = 0; i < messages.length; i++) {
+    var messageType = "game-message-";
+    var newMessage = document.createElement("div");
+    newMessage.classList.add("game-message");
+    if (messages[i].type.includes("day")) {
+      messageType += "day";
+      newMessage.classList.add(messageType);
+    } else if (messages[i].type.includes("night")) {
+      messageType += "night";
+      newMessage.classList.add(messageType);
+    } else if (messages[i].type.includes("confirm")) {
+      messageType += "confirm";
+      newMessage.classList.add(messageType);
+    } else if (messages[i].type.includes("info")) {
+      messageType += "info";
+      newMessage.classList.add(messageType);
+    } else if (messages[i].type.includes("alert")) {
+      messageType += "alert";
+      newMessage.classList.add(messageType);
+    }
+
+    if (cycle.includes("day")) {
+      messageType += "day";
+      newMessage.classList.add(messageType);
+    } else if (cycle.includes("night")) {
+      newMessage.classList.add(messageType);
+    }
+    console.log(newMessage);
+    console.log(messages);
+    newMessage.innerText = messages[i].message;
+    messageScroller.appendChild(newMessage);
+  }
+}
 
 socket.on("fetchedPlayerCardPress", (name, mission) => {
   var playerIcon = document.getElementById("game-player-card-icon");
