@@ -1149,7 +1149,7 @@ io.on("connection", async (socket) => {
               } else if (state.includes("press")) {
                 emitTo = "fetchedPlayerCardPress";
               }
-              socket.emit(emitTo, role.name, role.mission);
+              socket.emit(emitTo, role.name, role.team, role.mission);
             }
           }
         }
@@ -1178,6 +1178,59 @@ io.on("connection", async (socket) => {
       }
     }
   });
+
+  // Prevent message from being spammed
+  var emitCycleOnce = true;
+  var emitPhaseOnce = true;
+
+  function messageHandlerForPhases(playerID, game) {
+    if (emitPhaseOnce) {
+      if (game.getPhase().includes("actions")) {
+        sendMessage(playerID, true, "------------------------", "night");
+        sendMessage(
+          playerID,
+          true,
+          "It's time to act. The action phase has begun",
+          "info"
+        );
+      }
+      if (game.getPhase().includes("message")) {
+        sendMessage(playerID, true, "------------------------", "night");
+        sendMessage(playerID, true, "The sun begins to rise", "extra");
+      }
+      if (game.getPhase().includes("recap")) {
+        sendMessage(playerID, true, "------------------------", "day");
+        sendMessage(playerID, true, "This happened last night", "extra");
+      }
+      if (game.getPhase().includes("discussion")) {
+        sendMessage(playerID, true, "------------------------", "day");
+        sendMessage(playerID, true, "Time for discussion!", "info");
+      }
+      if (game.getPhase().includes("voting")) {
+        sendMessage(playerID, true, "------------------------", "day");
+        sendMessage(playerID, true, "It's time to cast your votes", "info");
+      }
+      emitPhaseOnce = false;
+    }
+  }
+
+  function messageHandlerForCycles(playerID, game) {
+    if (emitCycleOnce) {
+      if (game.getCycle().includes("Night")) {
+        sendMessage(playerID, true, "========================", "night");
+        sendMessage(
+          playerID,
+          true,
+          "The moon glows. The night has begun",
+          "important"
+        );
+      } else if (game.getCycle().includes("Day")) {
+        sendMessage(playerID, true, "========================", "day");
+        sendMessage(playerID, true, "The day has begun", "important");
+      }
+    }
+    emitCycleOnce = false;
+  }
 
   function sendMessage(playerID, toAll = false, message = "", type = "") {
     var roomCode = connectedUsers.get(playerID).getCurrentRoom();
@@ -1218,8 +1271,6 @@ io.on("connection", async (socket) => {
     game.setCycle("Night");
     game.setPhase(Object.keys(theDurations[currentCycle])[currentPhase]);
 
-    // Prevent message from being spammed
-    var emitMessagesOnce = true;
     // time is equal to intervalID
     var time = setInterval(function () {
       console.log(
@@ -1240,26 +1291,8 @@ io.on("connection", async (socket) => {
         game.getCycle(),
         game.getCycleCount()
       );
-      if (emitMessagesOnce) {
-        if (game.getCycle().includes("Night")) {
-          sendMessage(playerID, true, "========================", "night");
-          sendMessage(
-            playerID,
-            true,
-            "The moon glows. The night has begun",
-            "night"
-          );
-        } else if (game.getCycle().includes("Day")) {
-          sendMessage(playerID, true, "========================", "day");
-          sendMessage(
-            playerID,
-            true,
-            "The sun rises. The day has begun",
-            "day"
-          );
-        }
-        emitMessagesOnce = false;
-      }
+      messageHandlerForCycles(playerID, game, emitCycleOnce);
+      messageHandlerForPhases(playerID, game, emitPhaseOnce);
       io.to(roomCode).emit("changeUI", game.getCycle());
 
       // ! DEBUG TIME
@@ -1274,6 +1307,7 @@ io.on("connection", async (socket) => {
             game.setPhase(
               Object.keys(theDurations[currentCycle])[currentPhase]
             );
+            emitPhaseOnce = true;
             console.log("night less");
           }
           if (currentPhase >= nightLength) {
@@ -1282,9 +1316,10 @@ io.on("connection", async (socket) => {
             game.setPhase(
               Object.keys(theDurations[currentCycle])[currentPhase]
             );
+            emitPhaseOnce = true;
             game.setCycle("Day");
             // Prevent from spamming message
-            emitMessagesOnce = true;
+            emitCycleOnce = true;
           }
           initClock(
             game.getTimer(),
@@ -1298,6 +1333,7 @@ io.on("connection", async (socket) => {
             game.setPhase(
               Object.keys(theDurations[currentCycle])[currentPhase]
             );
+            emitPhaseOnce = true;
             console.log("day less");
           }
           if (currentPhase >= dayLength) {
@@ -1306,9 +1342,10 @@ io.on("connection", async (socket) => {
             game.setPhase(
               Object.keys(theDurations[currentCycle])[currentPhase]
             );
+            emitPhaseOnce = true;
             game.setCycle("Night");
             // Prevent from spamming message
-            emitMessagesOnce = true;
+            emitCycleOnce = true;
             // Increment cycle count
             game.setCycleCount(game.getCycleCount() + 1);
           }

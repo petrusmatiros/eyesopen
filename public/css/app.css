@@ -219,6 +219,25 @@
   touch-action: pan-y;
 }
 
+.game-messagebox-scrolldown {
+  user-select: none;
+  cursor: pointer;
+  position: absolute;
+  margin-bottom: 1rem;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75rem;
+  min-width: 6rem;
+  max-width: 6rem;
+  background-color: rgba(128, 128, 128, 0.85);
+  padding: 0.6em;
+  border-radius: 1rem;
+}
+.game-messagebox-scrolldown:active {
+  background-color: rgba(120, 120, 120, 0.85);
+}
+
 /* ! Two versions */
 .game-message {
   user-select: none;
@@ -239,6 +258,12 @@
 }
 .game-message-confirm {
   background-color: hsl(97, 100%, 40%) !important;
+}
+.game-message-important {
+  background-color: hsl(280, 100%, 50%) !important;
+}
+.game-message-extra {
+  background-color: hsl(197, 100%, 50%) !important;
 }
 .game-message-day {
   background-color: hsl(0, 0%, 97%);

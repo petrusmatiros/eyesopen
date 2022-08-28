@@ -100,7 +100,10 @@
 
       <!-- Message box -->
       <div class="game-messagebox game-night-bg game-night-fg" id="game-messagebox">
-        <div class="game-message-scroller" id="game-message-scroller">
+        <div class="game-message-scroller" id="game-message-scroller" ontouchstart="overrideSroll()" onmousedown="overrideSroll()">
+        </div>
+        <div class="game-row">
+          <div class="game-messagebox-scrolldown game-night-fg" id="game-messagebox-scrolldown" onclick="autoScroll()">Scroll for me</div>
         </div>
       </div>
 
