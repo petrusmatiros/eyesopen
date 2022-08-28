@@ -13,6 +13,8 @@ class Game {
     this.evil = [];
     // Evil room code
     this.evilRoom = "";
+    // in game users
+    this.users = [];
     // Keeping track of total players for voting
     this.alive = [];
     // Array for current dead players
@@ -37,6 +39,8 @@ class Game {
     this.evil = [];
     // Evil room code
     this.evilRoom = "";
+    // in game users
+    this.users = [];
     // Keeping track of total players for voting
     this.alive = [];
     // Array for current dead players
@@ -98,6 +102,18 @@ class Game {
 
   removeEvil(evilPlayer) {
     this.evil.splice(this.evil.indexOf(evilPlayer), 1);
+  }
+
+  getUsers() {
+    return this.users;
+  }
+
+  addUser(player) {
+    this.users.push(player);
+  }
+
+  removeUser(player) {
+    this.users.splice(this.users.indexOf(player), 1);
   }
 
   getAlive() {

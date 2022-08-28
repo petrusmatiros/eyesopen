@@ -64,6 +64,7 @@ socket.on("connect", () => {
           socket.emit("checkForRoleCard", getPlayerID());
 
           socket.emit("setEvilRoom");
+          
 
           socket.emit("fetchMessages", getPlayerID());
           socket.on("savedMessages", (messages, cycle) => {
@@ -109,7 +110,6 @@ function togglePlayerCard(element) {
   }
   socket.emit("requestPlayerCard", getPlayerID(), "press");
 }
-
 
 var manualScroll = false;
 
@@ -170,8 +170,9 @@ socket.on("recieveMessage", (message, type, cycle) => {
   }
 });
 
-function messageBoxHandler() {}
-
+function messageBoxHandler() {
+  // used for action messages
+}
 
 function loadSavedMessages(messages, cycle) {
   var messageScroller = document.getElementById("game-message-scroller");
@@ -214,10 +215,109 @@ function loadSavedMessages(messages, cycle) {
   }
 }
 
+function actionHandler(element) {
+  // remove onclick, when not able to click
+  // reset choices when shifting between day and night
+  // vote and abilities are seperate
+  // self usage sets yourself as target, ability button is reset
+  // when using ability, self usage is reset
+  // setPlayers will be different when night and day for e
+}
 
-socket.on("setPlayer", (players) => {
-  // set all to selectable, but if dead or unselectable, cannot be selected;
-})
+socket.on("setPlayersClock", (players, cycle) => {
+  setPlayers(players, cycle);
+});
+
+function setPlayers(players, cycle) {
+  var playersContainer = document.getElementById("game-players-container");
+  var colOne = playersContainer.children[0];
+  var colOneSlots = colOne.children;
+  var colTwo = playersContainer.children[1];
+  var colTwoSlots = colTwo.children;
+  var colCount = 0;
+  for (var i = 0; i < players.length; i++) {
+    var currentElement;
+
+    if (colCount == 0) {
+      // Pick col 1
+      currentElement = colOneSlots[i];
+
+      currentElement.classList.remove("game-player-hidden");
+      currentElement.id = players[i].userID;
+      currentElement.children[1].innerText = players[i].userName;
+
+      if (players[i].userID == getPlayerID()) {
+        currentElement.classList.add("game-player-unselectable");
+      }
+
+      // Dead
+      if (players[i].type.includes("dead")) {
+        currentElement.classList.add("game-player-dead");
+      } else {
+        currentElement.classList.remove("game-player-dead");
+      }
+
+      // Client, Target, Evil (Night and Day)
+      if (players[i].type.includes("client")) {
+        currentElement.children[0].id = "game-show-mark";
+        currentElement.children[0].src = "/assets/icons/briefcase.svg";
+      }
+      else if (players[i].type.includes("target")) {
+        currentElement.children[0].id = "game-show-mark";
+        currentElement.children[0].src = "/assets/icons/target.svg";
+      } 
+      else if (players[i].type.includes("evil")) {
+        if (cycle.includes("Night")) {
+          currentElement.classList.add("game-player-evil", "game-player-unselectable");
+        } else if (cycle.includes("Day")) {
+          currentElement.classList.remove("game-player-unselectable");
+          currentElement.classList.add("game-player-evil");
+        }
+      }
+
+      colCount = 1;
+    } else if (colCount == 1) {
+      // Pick col 2
+      currentElement = colTwoSlots[i];
+
+      currentElement.classList.remove("game-player-hidden");
+      currentElement.id = players[i].userID;
+      currentElement.children[1].innerText = players[i].userName;
+
+      if (players[i].userID == getPlayerID()) {
+        currentElement.classList.add("game-player-unselectable");
+      }
+
+      // Dead
+      if (players[i].type.includes("dead")) {
+        currentElement.classList.add("game-player-dead");
+      } else {
+        currentElement.classList.remove("game-player-dead");
+      }
+
+      // Client, Target, Evil (Night and Day)
+      if (players[i].type.includes("client")) {
+        currentElement.children[0].id = "game-show-mark";
+        currentElement.children[0].src = "/assets/icons/briefcase.svg";
+      }
+      else if (players[i].type.includes("target")) {
+        currentElement.children[0].id = "game-show-mark";
+        currentElement.children[0].src = "/assets/icons/target.svg";
+      } 
+      else if (players[i].type.includes("evil")) {
+        if (cycle.includes("Night")) {
+          currentElement.classList.add("game-player-evil", "game-player-unselectable");
+        } else if (cycle.includes("Day")) {
+          currentElement.classList.remove("game-player-unselectable");
+          currentElement.classList.add("game-player-evil");
+        }
+      }
+
+      colCount = 0;
+    }
+  }
+}
+
 
 
 socket.on("fetchedPlayerCardPress", (name, team, mission) => {
@@ -408,11 +508,15 @@ socket.on("showGame", (allReady) => {
       var playerMission = document.getElementById("game-player-card-mission");
       var playerTeam = team.charAt(0).toUpperCase() + team.slice(1);
       playerIcon.src = "/assets/rolecards/" + name + ".svg";
-      playerRole.innerText = name + ` (${playerTeam})`;;
+      playerRole.innerText = name + ` (${playerTeam})`;
       playerMission.innerText = mission;
     });
     socket.emit("setEvilRoom");
     socket.emit("updateUI", getPlayerID());
+    socket.emit("setPlayers", getPlayerID(), "first");
+    socket.on("setPlayersFirst", (players, cycle) => {
+      setPlayers(players, cycle);
+    });
   }
 });
 

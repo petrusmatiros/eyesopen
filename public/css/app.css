@@ -36,7 +36,7 @@
 
   /* Player colors */
   --evilteam: hsl(360, 100%, 50%);
-  --killed: hsl(0, 0%, 57%);
+  --dead: hsl(0, 0%, 50%);
   --ability-target-bg: hsl(360, 100%, 60%);
   --vote-target-bg: hsl(100, 100%, 40%);
   --double-target-bg: linear-gradient(
@@ -399,6 +399,22 @@
   min-height: 1rem;
 }
 
+.game-player-hidden {
+  display: none !important;
+}
+
+.game-player-evil {
+  color: rgb(255, 51, 51) !important;
+}
+.game-player-dead {
+  cursor: not-allowed;
+  background-color: var(--dead);
+}
+.game-player-unselectable {
+  cursor: not-allowed;
+  opacity: 30%;
+}
+
 #game-show-mark {
   display: flex;
   opacity: 100%;
@@ -415,7 +431,6 @@
 
 .game-player-name {
   user-select: none;
-  color: var(--dark-fg);
   margin-left: 0.25rem;
 }
 
@@ -448,22 +463,34 @@
   vertical-align: center;
   text-align: center;
   color: var(--dark-fg);
-  padding: 0.65em 1em 0.65em 1em;
+  padding: 0.35em 1em 0.35em 1em;
   border-radius: 0.65rem;
   min-height: 2rem;
   max-height: 2rem;
 }
 
 .game-button-ability {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   background-color: var(--ability-button-bg--notused);
 }
 
 .game-button-selfusage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   background-color: var(--selfusage-button-bg--notused);
   margin-left: 1rem;
 }
 
 .game-button-vote {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   background-color: var(--vote-button-bg--notused);
   margin-left: 1rem;
 }

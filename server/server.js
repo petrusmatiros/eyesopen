@@ -147,7 +147,7 @@ io.on("connection", async (socket) => {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         // if (!connectedUsers.get(playerID).getInGame()) {
         var room = rooms.get(roomCode);
-        if (room.getGame().getAlive().includes(connectedUsers.get(playerID))) {
+        if (room.getGame().getUsers().includes(connectedUsers.get(playerID))) {
           if (state.includes("index")) {
             console.log(playerID, "(index) is apart of room", roomCode);
             socket.emit("apartOfGameIndex", true, room.getGame().getProgress());
@@ -213,7 +213,9 @@ io.on("connection", async (socket) => {
           // have used up this role
           seen.push(rand);
 
+          // add user to all in game users
           // add user to all alive players
+          room.getGame().addUser(users[i]);
           room.getGame().addAlive(users[i]);
           // if user has an evil role, add them to evil
           if (users[i].getPlayer().role.team == "evil") {
@@ -653,7 +655,7 @@ io.on("connection", async (socket) => {
             rooms
               .get(roomCode)
               .getGame()
-              .getAlive()
+              .getUsers()
               .includes(connectedUsers.get(playerID)))
         ) {
           socket.join(connectedUsers.get(playerID).getCurrentRoom());
@@ -709,7 +711,7 @@ io.on("connection", async (socket) => {
             rooms
               .get(roomCode)
               .getGame()
-              .getAlive()
+              .getUsers()
               .includes(connectedUsers.get(playerID)))
         ) {
           socket.join(connectedUsers.get(playerID).getCurrentRoom());
@@ -1125,7 +1127,7 @@ io.on("connection", async (socket) => {
         var game = room.getGame();
         if (game.getProgress()) {
           if (checkAllReadyGame(roomCode, playerID)) {
-            if (room.getUsers().includes(connectedUsers.get(playerID))) {
+            if (game.getUsers().includes(connectedUsers.get(playerID))) {
               socket.emit("changeUI", game.getCycle());
             }
           }
@@ -1142,7 +1144,7 @@ io.on("connection", async (socket) => {
         var game = room.getGame();
         if (game.getProgress()) {
           if (checkAllReadyGame(roomCode, playerID)) {
-            if (room.getUsers().includes(connectedUsers.get(playerID))) {
+            if (game.getUsers().includes(connectedUsers.get(playerID))) {
               var emitTo = "";
               var role = connectedUsers.get(playerID).getPlayer().getRole();
               if (state.includes("first")) {
@@ -1167,7 +1169,7 @@ io.on("connection", async (socket) => {
         var room = rooms.get(roomCode);
         var game = room.getGame();
         if (game.getProgress()) {
-          if (room.getUsers().includes(connectedUsers.get(playerID))) {
+          if (game.getUsers().includes(connectedUsers.get(playerID))) {
             if (
               connectedUsers
                 .get(playerID)
@@ -1188,6 +1190,14 @@ io.on("connection", async (socket) => {
     }
   });
 
+  function pushPlayer(toSend, seen, userID, userName, type) {
+    var user = { userID, userName, type };
+    if (!seen.includes(userID)) {
+      seen.push(userID);
+      toSend.push(user);
+    }
+  }
+
   // on connect, set all players that are in evil array, to join that room
   // on refresh, do the same.
   // create socket for handling sending players names, setting IDs for their elements
@@ -1199,92 +1209,119 @@ io.on("connection", async (socket) => {
   // if normal, just names, and disable self
   // players, dead, mafia, personal
   socket.on("setPlayers", (playerID, state) => {
+    setPlayers(playerID, state);
+  });
+
+  function setPlayers(playerID, state) {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         var room = rooms.get(roomCode);
         var game = room.getGame();
         if (game.getProgress()) {
-          if (room.getUsers().includes(connectedUsers.get(playerID))) {
+          if (game.getUsers().includes(connectedUsers.get(playerID))) {
             var emitTo = "";
-            if (state.includes("refresh")) {
-              emitTo = "setPlayersRefresh";
-            } else if (state.includes("first")) {
+            if (state.includes("first")) {
               emitTo = "setPlayersFirst";
-            } else if (state.includes("press")) {
-              emitTo = "setPlayersPress";
+            } else if (state.includes("clock")) {
+              emitTo = "setPlayersClock";
             }
             var toSend = [];
+            var seen = [];
 
-            var socketUser = connectedUsers.get(playerID).getUser();
-            var socketRole = connectedUsers
-              .get(playerID)
-              .getUser()
-              .getPlayer()
-              .getRole();
+            var socketUser = connectedUsers.get(playerID);
+            var socketRole = connectedUsers.get(playerID).getPlayer().getRole();
 
             for (var i = 0; i < game.getUsers().length; i++) {
-              var noType = "";
-              var noTarget = "";
-              var noClient = "";
-
-              var target = "";
-              var client = "";
-              var type = "";
+              var type = "none";
 
               var user = game.getUsers()[i];
               var userID = game.getUsers()[i].getPlayerID();
               var userName = game.getUsers()[i].getName();
               var userRole = game.getUsers()[i].getPlayer().getRole();
 
-              // user is the socket
-              if (user == socketUser) {
-                // if socket is dead
-                if (
-                  user.getPlayer().getIsKilled() ||
-                  user.getPlayer().getIsLynched()
-                ) {
-                  type = "dead";
-                  toSend.push({ userID, userName, type });
-                } else { // if socket is alive
-                  type = "unselectable";
-                  toSend.push({ userID, userName, type });
+              if (game.getCycle().includes("Night")) {
+                // user is the socket
+                if (user == socketUser) {
+                  if (userRole.team.includes("evil")) {
+                    type = "evil";
+                    pushPlayer(toSend, seen, userID, userName, type);
+                  } else {
+                    type = "unselectable";
+                    pushPlayer(toSend, seen, userID, userName, type);
+                  }
+                } else {
+                  if (
+                    user.getPlayer().getIsKilled() ||
+                    user.getPlayer().getIsLynched()
+                  ) {
+                    type = "dead";
+                    pushPlayer(toSend, seen, userID, userName, type);
+                  }
+                  // if socket is executioner
+                  if (socketRole.type.includes("executioner")) {
+                    if (user == socketRole.target) {
+                      type = "target";
+                      pushPlayer(toSend, seen, userID, userName, type);
+                    }
+                  }
+                  // if socket is lawyer
+                  else if (socketRole.type.includes("lawyer")) {
+                    if (user == socketRole.client) {
+                      type = "client";
+                      pushPlayer(toSend, seen, userID, userName, type);
+                    }
+                  }
+                  if (socketRole.team.includes("evil")) {
+                    if (userRole.team.includes("evil")) {
+                      type = "evil";
+                      pushPlayer(toSend, seen, userID, userName, type);
+                    } else {
+                      type = "none";
+                      pushPlayer(toSend, seen, userID, userName, type);
+                    }
+                  } else {
+                    // everyone else
+                    type = "none";
+                    pushPlayer(toSend, seen, userID, userName, type);
+                  }
                 }
-              }
-              // if socket is executioner
-              if (
-                socketRole.type.includes("executioner")
-              ) {
-                if (user == socketRole.target) {
-                  type = "target";
-                  toSend.push({ userID, userName, type });
+              } else if (game.getCycle().includes("Day")) {
+                // if socket is executioner
+                if (socketRole.type.includes("executioner")) {
+                  if (user == socketRole.target) {
+                    type = "target";
+                    pushPlayer(toSend, seen, userID, userName, type);
+                  }
                 }
-              }
-              // if socket is lawyer
-              else if (
-                socketRole.type.includes("lawyer")
-              ) {
-                if (user == socketRole.client) {
-                  type = "client";
-                  toSend.push({ userID, userName, type });
+                // if socket is lawyer
+                else if (socketRole.type.includes("lawyer")) {
+                  if (user == socketRole.client) {
+                    type = "client";
+                    pushPlayer(toSend, seen, userID, userName, type);
+                  }
                 }
-              } else if (socketRole.team.includes("evil")) {
-                type = "evil";
-                toSend.push({ userID, userName, type });
-              } else { // everyone else
-                toSend.push({ userID, userName, noType });
+                if (socketRole.team.includes("evil")) {
+                  if (userRole.team.includes("evil")) {
+                    type = "evil";
+                    pushPlayer(toSend, seen, userID, userName, type);
+                  } else {
+                    type = "none";
+                    pushPlayer(toSend, seen, userID, userName, type);
+                  }
+                } else {
+                  // everyone else
+                  type = "none";
+                  pushPlayer(toSend, seen, userID, userName, type);
+                }
               }
             }
-            socket.emit(
-              emitTo,
-              toSend,
-              game.getCycle()
-            );
+            socket.emit(emitTo, toSend, game.getCycle());
           }
         }
       }
     }
-  });
+  }
 
   socket.on("fetchMessages", (playerID) => {
     if (checkUserExist(playerID)) {
@@ -1293,7 +1330,7 @@ io.on("connection", async (socket) => {
         var room = rooms.get(roomCode);
         var game = room.getGame();
         if (game.getProgress()) {
-          if (room.getUsers().includes(connectedUsers.get(playerID))) {
+          if (game.getUsers().includes(connectedUsers.get(playerID))) {
             socket.emit(
               "savedMessages",
               connectedUsers.get(playerID).getMessages(),
@@ -1365,9 +1402,9 @@ io.on("connection", async (socket) => {
     var game = room.getGame();
 
     if (toAll) {
-      for (var i = 0; i < room.getUsers().length; i++) {
-        if (room.getUsers()[i].getInGame()) {
-          room.getUsers()[i].addMessage({ message, type });
+      for (var i = 0; i < game.getUsers().length; i++) {
+        if (game.getUsers()[i].getInGame()) {
+          game.getUsers()[i].addMessage({ message, type });
         }
       }
       io.to(roomCode).emit("recieveMessage", message, type, game.getCycle());
@@ -1421,6 +1458,7 @@ io.on("connection", async (socket) => {
       messageHandlerForCycles(playerID, game, emitCycleOnce);
       messageHandlerForPhases(playerID, game, emitPhaseOnce);
       io.to(roomCode).emit("changeUI", game.getCycle());
+      setPlayers(playerID, "clock");
 
       // ! DEBUG TIME
       // console.log("counter from server:", counter);
@@ -1476,6 +1514,7 @@ io.on("connection", async (socket) => {
             // Increment cycle count
             game.setCycleCount(game.getCycleCount() + 1);
           }
+
           initClock(
             game.getTimer(),
             Object.values(theDurations[currentCycle])[currentPhase]
@@ -1491,8 +1530,6 @@ io.on("connection", async (socket) => {
     timer.init(duration);
   }
 
-  function emitClock(roomCode, game) {}
-
   socket.on("initGame", (playerID) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
@@ -1501,7 +1538,7 @@ io.on("connection", async (socket) => {
         var game = room.getGame();
         if (game.getProgress()) {
           if (checkAllReadyGame(roomCode, playerID)) {
-            if (room.getUsers().includes(connectedUsers.get(playerID))) {
+            if (game.getUsers().includes(connectedUsers.get(playerID))) {
               if (room.getHost() == playerID) {
                 if (game.getTimer().getRunning() == false) {
                   gameHandler(playerID, roomCode, room, game);
