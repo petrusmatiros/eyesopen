@@ -187,6 +187,7 @@ io.on("connection", async (socket) => {
 
   function setUp(roomCode) {
     var room = rooms.get(roomCode);
+    var game = room.getGame();
     var roles = room.getRoles();
     var users = room.getUsers();
     // reset game
@@ -217,6 +218,8 @@ io.on("connection", async (socket) => {
           // if user has an evil role, add them to evil
           if (users[i].getPlayer().role.team == "evil") {
             room.getGame().addEvil(users[i]);
+            // if there is atleast one evil role, create evil room code
+            game.setEvilRoom("evil-" + roomCode);
           }
 
           // assign which user is which neutral role
@@ -1156,9 +1159,132 @@ io.on("connection", async (socket) => {
       }
     }
   });
-  // socket.on("setMafiaRoom", (playerID) => {})
+
+  socket.on("setEvilRoom", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (game.getProgress()) {
+          if (room.getUsers().includes(connectedUsers.get(playerID))) {
+            if (
+              connectedUsers
+                .get(playerID)
+                .getPlayer()
+                .getRole()
+                .team.includes("evil")
+            ) {
+              console.log(
+                connectedUsers.get(playerID) +
+                  " is joining evil room: " +
+                  game.getEvilRoom()
+              );
+              socket.join(game.getEvilRoom());
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // on connect, set all players that are in evil array, to join that room
+  // on refresh, do the same.
+  // create socket for handling sending players names, setting IDs for their elements
+  // lawyer, executioner, yourself, doctor and surgeon, mafia, normal people
+  // if evil send evil array, if playerID is lawyer, send client, if playerID is exe, send target
+  // if DEAD, then they are DEAD
+  // if doctor, make player accessible, and always check for self usage,
+  // if surgeon, make player accessible, and always check for self usage,
+  // if normal, just names, and disable self
   // players, dead, mafia, personal
-  socket.on("setPlayers", (playerID) => {});
+  socket.on("setPlayers", (playerID, state) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (game.getProgress()) {
+          if (room.getUsers().includes(connectedUsers.get(playerID))) {
+            var emitTo = "";
+            if (state.includes("refresh")) {
+              emitTo = "setPlayersRefresh";
+            } else if (state.includes("first")) {
+              emitTo = "setPlayersFirst";
+            } else if (state.includes("press")) {
+              emitTo = "setPlayersPress";
+            }
+            var toSend = [];
+
+            var socketUser = connectedUsers.get(playerID).getUser();
+            var socketRole = connectedUsers
+              .get(playerID)
+              .getUser()
+              .getPlayer()
+              .getRole();
+
+            for (var i = 0; i < game.getUsers().length; i++) {
+              var noType = "";
+              var noTarget = "";
+              var noClient = "";
+
+              var target = "";
+              var client = "";
+              var type = "";
+
+              var user = game.getUsers()[i];
+              var userID = game.getUsers()[i].getPlayerID();
+              var userName = game.getUsers()[i].getName();
+              var userRole = game.getUsers()[i].getPlayer().getRole();
+
+              // user is the socket
+              if (user == socketUser) {
+                // if socket is dead
+                if (
+                  user.getPlayer().getIsKilled() ||
+                  user.getPlayer().getIsLynched()
+                ) {
+                  type = "dead";
+                  toSend.push({ userID, userName, type });
+                } else { // if socket is alive
+                  type = "unselectable";
+                  toSend.push({ userID, userName, type });
+                }
+              }
+              // if socket is executioner
+              if (
+                socketRole.type.includes("executioner")
+              ) {
+                if (user == socketRole.target) {
+                  type = "target";
+                  toSend.push({ userID, userName, type });
+                }
+              }
+              // if socket is lawyer
+              else if (
+                socketRole.type.includes("lawyer")
+              ) {
+                if (user == socketRole.client) {
+                  type = "client";
+                  toSend.push({ userID, userName, type });
+                }
+              } else if (socketRole.team.includes("evil")) {
+                type = "evil";
+                toSend.push({ userID, userName, type });
+              } else { // everyone else
+                toSend.push({ userID, userName, noType });
+              }
+            }
+            socket.emit(
+              emitTo,
+              toSend,
+              game.getCycle()
+            );
+          }
+        }
+      }
+    }
+  });
 
   socket.on("fetchMessages", (playerID) => {
     if (checkUserExist(playerID)) {
@@ -1232,6 +1358,7 @@ io.on("connection", async (socket) => {
     emitCycleOnce = false;
   }
 
+  // be able to send toAll, to player, and to target
   function sendMessage(playerID, toAll = false, message = "", type = "") {
     var roomCode = connectedUsers.get(playerID).getCurrentRoom();
     var room = rooms.get(roomCode);

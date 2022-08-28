@@ -63,6 +63,8 @@ socket.on("connect", () => {
           console.log("checking for role card availability");
           socket.emit("checkForRoleCard", getPlayerID());
 
+          socket.emit("setEvilRoom");
+
           socket.emit("fetchMessages", getPlayerID());
           socket.on("savedMessages", (messages, cycle) => {
             loadSavedMessages(messages, cycle);
@@ -211,6 +213,12 @@ function loadSavedMessages(messages, cycle) {
     messages.scrollTop = messages.scrollHeight;
   }
 }
+
+
+socket.on("setPlayer", (players) => {
+  // set all to selectable, but if dead or unselectable, cannot be selected;
+})
+
 
 socket.on("fetchedPlayerCardPress", (name, team, mission) => {
   var playerIcon = document.getElementById("game-player-card-icon");
@@ -381,6 +389,7 @@ function changeUI(theme) {
     scrollDown.classList.remove("game-night-fg");
   }
 }
+
 socket.on("changeUI", (theme) => {
   changeUI(theme);
 });
@@ -402,6 +411,7 @@ socket.on("showGame", (allReady) => {
       playerRole.innerText = name + ` (${playerTeam})`;;
       playerMission.innerText = mission;
     });
+    socket.emit("setEvilRoom");
     socket.emit("updateUI", getPlayerID());
   }
 });

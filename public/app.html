@@ -69,7 +69,7 @@
         <img class="game-rolecard-icon" alt="role" src=""></img>
           <div class="game-rolecard-mission"></div>
           <div class="game-button-container">
-            <div class="game-button" onclick="readyCardButton()">
+            <div class="game-ready-button" onclick="readyCardButton()">
               Ready
             </div>
           </div>
@@ -194,8 +194,18 @@
 
         <!-- Action buttons -->
         <div class="game-buttons">
-          <div class="game-button-ability">Use ability</div>
-          <div class="game-button-vote">Vote</div>
+          <div class="game-button-ability game-button">
+            <div class="game-button-state">Use</div>
+            <div class="game-button-text">Ability</div>
+          </div>
+          <div class="game-button-selfusage game-button">
+            <div class="game-button-state">Use</div> 
+            <div class="game-button-text">Self Usage</div>
+          </div>
+          <div class="game-button-vote game-button">
+            <div class="game-button-state">Use</div>
+            <div class="game-button-text">Vote</div>
+          </div>
         </div>
       </div>
 

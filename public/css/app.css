@@ -45,10 +45,12 @@
     rgba(68, 204, 0, 1) 100%
   );
   /* In game buttons */
-  --vote-button-bg--notused: hsl(100, 100%, 40%);
-  --vote-button-bg--used: hsl(100, 100%, 90%);
   --ability-button-bg--notused: hsl(360, 100%, 60%);
   --ability-button-bg--used: hsl(360, 98%, 95%);
+  --vote-button-bg--notused: hsl(100, 100%, 40%);
+  --vote-button-bg--used: hsl(100, 100%, 90%);
+  --selfusage-button-bg--notused: hsl(280, 100%, 60%);
+  --selfusage-button-bg--used: hsl(280, 100%, 90%);
 }
 
 /* Game backgrounds */
@@ -137,7 +139,6 @@
   font-size: 6rem;
   font-weight: 700;
 }
-
 
 .game-player-card {
   user-select: none;
@@ -292,7 +293,6 @@
   margin: 0 0.5rem 2rem 0.5rem;
 }
 
-
 .game-clock {
   display: flex;
   justify-content: center;
@@ -337,8 +337,8 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  min-width: 4.5rem;
-  max-width: 4.5rem;
+  min-width: 4.75rem;
+  max-width: 4.75rem;
 }
 
 .game-clock-divider {
@@ -425,28 +425,46 @@
   align-items: center;
   flex-direction: row;
   font-weight: 700;
-  font-size: 1.25rem;
-  margin: 0 0.5rem 0 0.5rem;
+  font-size: 1rem;
+  /* margin: 0 0.5rem 0 0.5rem; */
+}
+
+.game-button-state {
+  margin-bottom: 0.15rem;
+}
+.game-button-text {
+
 }
 
 /* Game buttons */
 
-.game-button-ability {
+.game-button {
   user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   cursor: pointer;
+  vertical-align: center;
+  text-align: center;
   color: var(--dark-fg);
-  background-color: var(--ability-button-bg--notused);
-  
-  padding: 0.5em 1em 0.5em 1em;
+  padding: 0.65em 1em 0.65em 1em;
   border-radius: 0.65rem;
+  min-height: 2rem;
+  max-height: 2rem;
 }
+
+.game-button-ability {
+  background-color: var(--ability-button-bg--notused);
+}
+
+.game-button-selfusage {
+  background-color: var(--selfusage-button-bg--notused);
+  margin-left: 1rem;
+}
+
 .game-button-vote {
-  user-select: none;
-  cursor: pointer;
-  color: var(--dark-fg);
   background-color: var(--vote-button-bg--notused);
-  padding: 0.5em 1em 0.5em 1em;
-  border-radius: 0.65rem;
   margin-left: 1rem;
 }
 
@@ -534,11 +552,9 @@
   color: var(--dark-fg);
 }
 .game-popup-icon {
-
 }
 
 .game-popup-close {
-
 }
 
 /* Leave popup */
@@ -548,7 +564,6 @@
   align-items: center;
   flex-direction: row;
 }
-
 
 .game-popup-leavebutton {
   user-select: none;
@@ -730,7 +745,7 @@
   max-width: 19rem;
 }
 
-.game-button {
+.game-ready-button {
   user-select: none;
   cursor: pointer;
   text-align: center;

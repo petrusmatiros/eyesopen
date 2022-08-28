@@ -8,9 +8,11 @@ class Game {
     // Phase
     this.phase = "";
     // Timer
-    this.timer = new Timer()
+    this.timer = new Timer();
     // Keeping track of evil players
     this.evil = [];
+    // Evil room code
+    this.evilRoom = "";
     // Keeping track of total players for voting
     this.alive = [];
     // Array for current dead players
@@ -30,9 +32,11 @@ class Game {
     // Phase
     this.phase = "";
     // Timer
-    this.timer = new Timer()
+    this.timer = new Timer();
     // Keeping track of evil players
     this.evil = [];
+    // Evil room code
+    this.evilRoom = "";
     // Keeping track of total players for voting
     this.alive = [];
     // Array for current dead players
@@ -51,7 +55,7 @@ class Game {
   setCycleCount(cycleCount) {
     this.cycleCount = cycleCount;
   }
-  
+
   getCycle() {
     return this.cycle;
   }
@@ -78,6 +82,14 @@ class Game {
 
   getEvil() {
     return this.evil;
+  }
+
+  getEvilRoom() {
+    return this.evilRoom;
+  }
+
+  setEvilRoom(evilRoom) {
+    this.evilRoom = evilRoom;
   }
 
   addEvil(evilPlayer) {
