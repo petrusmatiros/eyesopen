@@ -245,6 +245,21 @@ socket.on("currentPlayerTargets", (abilityTarget, voteTarget, socketPlayer) => {
   }
 });
 
+
+function validSelection(isValid, element, cycle, socketRole) {
+  if (isValid) {
+    if (element.id.includes("game-button-ability")) {
+      element.classList.add()
+    }
+    else if (element.id.includes("game-button-vote")) {
+
+    }
+
+  } else {
+
+  }
+}
+
 // ! FIX THIS
 function actionHandler(element) {
   if (currentTarget != null) {
@@ -264,7 +279,9 @@ function actionHandler(element) {
 
     // pressed action button
     socket.emit("checkValidSelectedPlayer", getPlayerID());
-    socket.on();
+    socket.on("isValidSelectedPlayer", (isValid) => {
+      validSelection(isValid, element, cycle, socketRole);
+    });
 
     if (element.id.includes("game-button-ability")) {
     } else if (element.id.includes("game-button-vote")) {
@@ -294,10 +311,10 @@ function actionHandler(element) {
 
 socket.on("setPlayersClock", (players, cycle, socketRole) => {
   setPlayers(players, cycle, socketRole);
-  setPanelButtons(players, cycle, socketRole);
+  setPanelButtons(cycle, socketRole);
 });
 
-function setPanelButtons(players, cycle, socketRole) {
+function setPanelButtons(cycle, socketRole) {
   var panelButtons = document.getElementById("game-buttons");
   var abilityButton = panelButtons.children[0];
   var voteButton = panelButtons.children[1];
@@ -317,9 +334,11 @@ function setPanelButtons(players, cycle, socketRole) {
       if (socketRole.team.includes("evil")) {
         voteButton.style.display = "flex";
         voteButton.setAttribute("onclick", "actionHandler(this)");
+        voteButton.style.marginLeft = "1.5rem";
       } else {
         voteButton.style.display = "none";
         voteButton.setAttribute("onclick", "");
+        voteButton.style.marginLeft = "0";
       }
     } else {
       abilityButton.style.display = "none";
@@ -327,9 +346,11 @@ function setPanelButtons(players, cycle, socketRole) {
       if (socketRole.team.includes("evil")) {
         voteButton.style.display = "flex";
         voteButton.setAttribute("onclick", "actionHandler(this)");
+        voteButton.style.marginLeft = "1.5rem";
       } else {
         voteButton.style.display = "none";
         voteButton.setAttribute("onclick", "");
+        voteButton.style.marginLeft = "0";
       }
     }
   } else if (cycle.includes("Day")) {
@@ -337,6 +358,7 @@ function setPanelButtons(players, cycle, socketRole) {
     abilityButton.setAttribute("onclick", "");
     voteButton.style.display = "flex";
     voteButton.setAttribute("onclick", "actionHandler(this)");
+    voteButton.style.marginLeft = "1.5rem";
   }
 }
 

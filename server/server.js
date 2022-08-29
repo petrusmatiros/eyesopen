@@ -82,13 +82,7 @@ app.get("/lobby/:id/join", (req, res) => {
   }
 });
 
-var timeDurations = {
-  discussion: 45,
-  voting: 25,
-  night: 30,
-  test: 5,
-};
-var counter = timeDurations.voting;
+
 var jsonData = require("./roles.json");
 
 // establish server connection with socket
@@ -1106,13 +1100,13 @@ io.on("connection", async (socket) => {
   // ! DEBUG
   var durations = {
     night: {
-      actions: 5,
+      actions: 15,
       messages: 3,
     },
     day: {
-      recap: 7,
+      recap: 3,
       discussion: 6,
-      voting: 4,
+      voting: 15,
     },
   };
   // var durations = {

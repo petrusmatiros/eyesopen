@@ -444,14 +444,14 @@
   align-items: center;
   flex-direction: row;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.15rem;
   /* margin: 0 0.5rem 0 0.5rem; */
 }
 
 .game-button-state {
-  margin-bottom: 0.15rem;
 }
 .game-button-text {
+  margin-left: 0.35rem;
 }
 
 /* Game buttons */
@@ -462,22 +462,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
   cursor: pointer;
   vertical-align: center;
   text-align: center;
   color: var(--dark-fg);
-  padding: 0.35em 1em 0.35em 1em;
+  padding: 0.5em 1em 0.5em 1em;
   border-radius: 0.65rem;
-  min-height: 2rem;
-  max-height: 2rem;
 }
 
 .game-button-ability {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
   background-color: var(--ability-button-bg--notused);
 }
 
@@ -485,9 +483,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
   background-color: var(--vote-button-bg--notused);
-  margin-left: 1rem;
+  margin-left: 1.5rem;
 }
 
 /* Cemetery */
