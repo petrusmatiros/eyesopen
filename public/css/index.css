@@ -404,11 +404,13 @@ input[type="text"] {
   font-size: 1rem;
   margin: 0.5em 1em 0.5em 1em;
   padding: 0.5em 1em 0.5em 1em;
+  outline: none;
   border-radius: 0.6em;
   border: 2px solid #b1b1b1;
 }
 
 input[type="text"]:focus {
+  outline: none;
   border: 2px solid #000000;
 }
 

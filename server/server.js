@@ -1291,13 +1291,37 @@ io.on("connection", async (socket) => {
                   if (user == socketUser) {
                     // yourself
                     if (userRole.team.includes("evil")) {
-                      type = "evil+unselectable";
-                      isEvil = true;
-                      pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                      if (userRole.type.includes("surgeon")) {
+                        if (userRole.selfUsage > 0) {
+                          type = "evil";
+                          isEvil = true;
+                          pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        } else {
+                          type = "evil+unselectable";
+                          isEvil = true;
+                          pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        }
+                      } else {
+                        type = "evil+unselectable";
+                        isEvil = true;
+                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                      }
                     } else {
-                      isEvil = null;
-                      type = "unselectable";
-                      pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                      if (userRole.type.includes("doctor")) {
+                        if (userRole.selfUsage > 0) {
+                          type = "none";
+                          isEvil = null;
+                          pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        } else {
+                          type = "unselectable";
+                          isEvil = null;
+                          pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        }
+                      } else {
+                        isEvil = null;
+                        type = "unselectable";
+                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                      }
                     }
                   } else {
                     // everyone else
