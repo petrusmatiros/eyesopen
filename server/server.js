@@ -1308,7 +1308,7 @@ io.on("connection", async (socket) => {
                         pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
                       } else {
                         isEvil = false;
-                        type = "unselectable";
+                        type = "none";
                         pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
                       }
                     } else if (socketRole.type.includes("witch")) {

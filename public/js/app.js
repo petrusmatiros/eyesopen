@@ -218,9 +218,11 @@ var voteTarget = null;
 var currentTarget = null;
 
 socket.on("clearCurrentTarget", () => {
-  currentTarget.blur();
-  currentTarget = null;
-  console("currentTarget cleared, cycle has passed", currentTarget)
+  if (currentTarget !== null) {
+    currentTarget.blur();
+    currentTarget = null;
+    console.log("currentTarget cleared, cycle has passed", currentTarget)
+  }
 
 })
 
@@ -484,8 +486,8 @@ function setPlayers(players, cycle, socketRole) {
                   currentElement.setAttribute("onclick", "selectPlayer(this, true)");
                   currentElement.setAttribute("tabIndex", "0");
                 } else {
-                  currentElement.setAttribute("onclick", "selectPlayer(this, false)");
-                  currentElement.removeAttribute("tabIndex");
+                  currentElement.setAttribute("onclick", "selectPlayer(this, true)");
+                  currentElement.setAttribute("tabIndex", "0");
                 }
               }
               if (socketRole.type.includes("witch")) {
