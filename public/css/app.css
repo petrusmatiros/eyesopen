@@ -60,7 +60,7 @@
 }
 
 .game-background-night {
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
     url(/assets/images/game_background.jpg);
   background-attachment: fixed;
 }
@@ -274,7 +274,7 @@
 }
 
 .game-panel-day {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.35);
 }
 .game-panel-night {
   background-color: rgba(38, 38, 38, 0.35);
@@ -399,6 +399,12 @@
   min-height: 1rem;
 }
 
+.game-player:focus {
+  transform: scale(0.90);
+  background-color: hsl(194, 94%, 97%);
+  outline: 4px solid var(--dark-fg);
+}
+
 .game-player-hidden {
   display: none !important;
 }
@@ -448,10 +454,10 @@
   margin-bottom: 0.15rem;
 }
 .game-button-text {
-
 }
 
 /* Game buttons */
+
 
 .game-button {
   user-select: none;
@@ -484,6 +490,11 @@
   flex-direction: column;
   background-color: var(--selfusage-button-bg--notused);
   margin-left: 1rem;
+}
+
+.game-button-selfusage-used {
+  cursor: not-allowed;
+  opacity: 30%;
 }
 
 .game-button-vote {

@@ -185,10 +185,19 @@ io.on("connection", async (socket) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
   function setUp(roomCode) {
     var room = rooms.get(roomCode);
     var game = room.getGame();
     var roles = room.getRoles();
+    // SHUFFLE ARRAY (ROLES)
+    shuffle(roles);
     var users = room.getUsers();
     // reset game
     room.getGame().reset();
@@ -1189,6 +1198,21 @@ io.on("connection", async (socket) => {
     }
   });
 
+  socket.on("requestActionData", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (game.getProgress()) {
+          if (game.getUsers().includes(connectedUsers.get(playerID))) {
+            socket.emit("fetchedActionData", game.getCycle(), connectedUsers.get(playerID).getPlayer().getRole());
+          }
+        }
+      }
+    }
+  })
+
   function pushPlayer(toSend, seen, userID, userName, type, isEvil) {
     var user = { userID, userName, type, isEvil };
     if (!seen.includes(userID)) {
@@ -1513,10 +1537,12 @@ io.on("connection", async (socket) => {
           "The moon glows. The night has begun",
           "important"
         );
+        
       } else if (game.getCycle().includes("Day")) {
         sendMessage(playerID, true, "========================", "day");
         sendMessage(playerID, true, "The day has begun", "important");
       }
+      
     }
     emitCycleOnce = false;
   }
@@ -1610,6 +1636,8 @@ io.on("connection", async (socket) => {
             game.setCycle("Day");
             // Prevent from spamming message
             emitCycleOnce = true;
+            setPlayers(playerID, "clock");
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("clearCurrentTarget");
           }
           initClock(
             game.getTimer(),
@@ -1638,6 +1666,8 @@ io.on("connection", async (socket) => {
             emitCycleOnce = true;
             // Increment cycle count
             game.setCycleCount(game.getCycleCount() + 1);
+            setPlayers(playerID, "clock");
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("clearCurrentTarget");
           }
 
           initClock(

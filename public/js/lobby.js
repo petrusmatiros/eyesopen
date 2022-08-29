@@ -86,6 +86,8 @@ socket.on("connect", () => {
           socket.emit("checkIfHost", getPlayerID(), "visibility");
           socket.on("isHost", (isHost) => {
             if (isHost) {
+              // Copy link to clipboard
+              navigator.clipboard.writeText(window.location.href);
               console.log("SETTING HOST VISIBILITY");
               document
                 .getElementById("role-container")
