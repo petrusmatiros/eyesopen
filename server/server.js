@@ -85,6 +85,8 @@ app.get("/lobby/:id/join", (req, res) => {
 
 var jsonData = require("./roles.json");
 
+
+
 // establish server connection with socket
 io.on("connection", async (socket) => {
   console.log("a user connected, with socket id:", socket.id);
