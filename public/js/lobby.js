@@ -1,12 +1,10 @@
 // ? Change this
 // const domain = "https://eyes-open.onrender.com/";
-const domain = "http://84.216.161.205:15000/";
+const domain = "https://84.216.161.205:15000/";
 // const domain = "http://localhost:3000/";
 const socket = io(domain);
 
-
 const lobby = domain + "lobby/";
-
 
 const minPlayers = 3;
 
@@ -50,11 +48,9 @@ socket.on("connect", () => {
             if (window.location.href.includes("/game") == false) {
               window.location.href += "/game";
             }
-            
           } else if (apartOfGame == false && inProgress == true) {
             var URL = window.location.href.replace("/game", "");
             window.location.href = URL;
-            
           }
 
           if (window.location.href !== lobby) {
@@ -82,20 +78,13 @@ socket.on("connect", () => {
             updatePlayerSlots(host, slots);
             console.log("updated player slots");
           });
-          // !! this is only for LOBBY, is this needed for game?
-          setTimeout(() => {
-            socket.emit("refreshReady", getPlayerID());
-          }, 300);
 
           socket.emit("checkIfHost", getPlayerID(), "visibility");
           socket.on("isHost", (isHost) => {
             if (isHost) {
-              // Copy link to clipboard
-              navigator.clipboard.writeText(window.location.href);
+              canPickRole = isHost;
               console.log("SETTING HOST VISIBILITY");
-              document
-                .getElementById("role-container")
-                .classList.add("selectable");
+              document.getElementById("roles").classList.add("selectable");
               var array = document.getElementsByClassName("lobby-role-tag");
               for (var i = 0; i < array.length; i++) {
                 array[i].setAttribute("onclick", "selectRole(this)");
@@ -106,9 +95,7 @@ socket.on("connect", () => {
               startButton[0].style.display = "inline";
             } else {
               console.log("REMOVING HOST VISIBILITY");
-              document
-                .getElementById("role-container")
-                .classList.remove("selectable");
+              document.getElementById("roles").classList.remove("selectable");
               var array = document.getElementsByClassName("lobby-role-tag");
               for (var i = 0; i < array.length; i++) {
                 array[i].setAttribute("onclick", "");
@@ -119,6 +106,7 @@ socket.on("connect", () => {
               startButton[0].style.display = "none";
             }
           });
+
           socket.on(
             "viewPlayerCount",
             (
@@ -199,9 +187,9 @@ socket.on("connect", () => {
             updateRoles(roles);
           });
 
-          socket.on("roleCountAfter", (userAmount, roleAmount) => {
-            roleReqHandler(roleAmount, userAmount);
-          });
+          // socket.on("roleCountAfter", (userAmount, roleAmount) => {
+          //   roleReqHandler(roleAmount, userAmount);
+          // });
 
           socket.on("rolePickCondition", (valid) => {
             rolePickConditionHandler(valid);
@@ -217,6 +205,16 @@ socket.on("connect", () => {
           socket.on("fetchedRolesDisconnect", (roles) => {
             updateRoles(roles);
           });
+
+          // Copy link to clipboard
+          navigator.clipboard
+            .readText()
+            .then((clipText) => {
+              if (!clipText.includes(window.location.href)) {
+                navigator.clipboard.writeText(window.location.href);
+              }
+            })
+            .catch("Cannot copy shareable room link into clipboard (>_<)");
         }
       });
     }
@@ -268,12 +266,18 @@ socket.on("ready-status-lobby", (users) => {
   }
 });
 
+socket.on("currentRoleCount", (amountOfRoles, amountOfUsers) => {
+  roleCount = amountOfRoles;
+    userCount = amountOfUsers;
+    roleReqHandler(roleCount, userCount);
+})
+
 function selectRole(element) {
-  socket.emit("checkIfHost", getPlayerID(), "roles");
-  socket.on("isHostRoles", (isHost) => {
-    canPickRole = isHost;
-  });
   socket.emit("checkRoleCount", getPlayerID(), "before");
+  socket.on("roleCountBefore", (roleAmount, amountOfUsers) => {
+    roleCount = roleAmount;
+    userCount = amountOfUsers;
+  });
   roleCounter(element);
 }
 
@@ -289,11 +293,10 @@ function rolePickConditionHandler(isValid) {
 }
 
 function roleCounter(element) {
-  socket.on("roleCountBefore", (roleAmount, amountOfUsers) => {
-    roleCount = roleAmount;
-    userCount = amountOfUsers;
-  });
-  setTimeout(roleHandler, 100, element);
+  
+  roleHandler(element);
+  socket.emit("fetchRoles", getPlayerID(), "after");
+  socket.emit("checkRolePick", getPlayerID(), "pick");
 }
 
 function roleReqHandler(roles, users) {
@@ -361,10 +364,6 @@ function roleHandler(element) {
         }
       }
     }
-
-    socket.emit("fetchRoles", getPlayerID(), "after");
-    socket.emit("checkRoleCount", getPlayerID(), "after");
-    socket.emit("checkRolePick", getPlayerID(), "pick");
   }
 }
 
@@ -443,6 +442,7 @@ function updatePlayerSlots(host, slots) {
         "2px solid var(--slot-empty)";
     }
   }
+  socket.emit("refreshReady", getPlayerID());
 }
 
 function getPlayerID() {

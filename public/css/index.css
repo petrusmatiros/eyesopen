@@ -32,7 +32,7 @@ body {
 
 .body-light {
   color: var(--dark-fg);
-  background-color: var(--main-bg);
+  background-color: var(--light-bg);
 }
 
 p {
@@ -143,6 +143,10 @@ p {
   height: auto;
 }
 
+.drop-shadow {
+  box-shadow: 0 0.1rem 0.5rem rgb(0 0 0 / 12%);
+}
+
 .navbar-container {
   display: flex;
   flex-wrap: wrap;
@@ -150,7 +154,7 @@ p {
   justify-content: space-between;
   width: auto;
   height: auto;
-  padding: 0.4rem 0.4rem 0.4rem 0.4rem;
+  padding: 0.5em;
 }
 
 .author-dark {
@@ -192,7 +196,7 @@ p {
     justify-content: space-between;
     width: auto;
     height: auto;
-    padding: 0.4rem 0.4rem 0.4rem 0.4rem;
+    padding: 0.5em;
   }
 
   #with-eyes {

@@ -32,7 +32,7 @@ body {
 
 .body-light {
   color: var(--dark-fg);
-  background-color: var(--main-bg);
+  background-color: var(--light-bg);
 }
 
 p {
@@ -94,7 +94,12 @@ p {
 
 .navbar-container {
   display: flex;
-  padding: 0.4rem 0.4rem 0.15rem 0.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: start;
+  width: auto;
+  height: auto;
+  padding: 0.5em;
 }
 
 @media screen and (max-width: 600px) {
@@ -112,7 +117,12 @@ p {
 
   .navbar-container {
     display: flex;
-    padding: 0.4rem 0.4rem 0.15rem 0.4rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: start;
+    width: auto;
+    height: auto;
+    padding: 0.5em;
   }
   #with-eyes {
     margin-top: 3rem;

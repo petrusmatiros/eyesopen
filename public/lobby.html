@@ -46,7 +46,7 @@
   </head>
   <body class="body-light">
     <nav class="navbar-light">
-      <div class="navbar-container">
+      <div class="navbar-container drop-shadow">
         <div class="logo-link-container">
           <a href="/" class="logo-link"
             ><img class="logo" src="/assets/icons/eyesopen.svg"
@@ -98,43 +98,43 @@
             <div id="players" class="lobby-player-container">
               <div id="col1" class="lobby-player-col">
                 <div class="lobby-player-wrapper">
-                  <div>
+                  <div class="lobby-player-id">
                     <div id="slot1" class="lobby-player"></div>
                   </div>
                   <div class="lobby-ready-status">not ready</div>
                 </div>
                 <div class="lobby-player-wrapper">
-                  <div>
+                  <div class="lobby-player-id">
                     <div id="slot2" class="lobby-player"></div>
                   </div>
                   <div class="lobby-ready-status">not ready</div>
                 </div>
                 <div class="lobby-player-wrapper">
-                  <div>
+                  <div class="lobby-player-id">
                     <div id="slot3" class="lobby-player"></div>
                   </div>
                   <div class="lobby-ready-status">not ready</div>
                 </div>
                 <div class="lobby-player-wrapper">
-                  <div>
+                  <div class="lobby-player-id">
                     <div id="slot4" class="lobby-player"></div>
                   </div>
                   <div class="lobby-ready-status">not ready</div>
                 </div>
                 <div class="lobby-player-wrapper">
-                  <div>
+                  <div class="lobby-player-id">
                     <div id="slot5" class="lobby-player"></div>
                   </div>
                   <div class="lobby-ready-status">not ready</div>
                 </div>
                 <div class="lobby-player-wrapper">
-                  <div>
+                  <div class="lobby-player-id">
                     <div id="slot6" class="lobby-player"></div>
                   </div>
                   <div class="lobby-ready-status">not ready</div>
                 </div>
                 <div class="lobby-player-wrapper">
-                  <div>
+                  <div class="lobby-player-id">
                     <div id="slot7" class="lobby-player"></div>
                   </div>
                   <div class="lobby-ready-status">not ready</div>
@@ -142,43 +142,43 @@
               </div>
               <div id="col2" class="lobby-player-col">
                 <div class="lobby-player-wrapper">
-                  <div>
+                  <div class="lobby-player-id">
                     <div id="slot8" class="lobby-player"></div>
                   </div>
                   <div class="lobby-ready-status">not ready</div>
                 </div>
                 <div class="lobby-player-wrapper">
-                  <div>
+                  <div class="lobby-player-id">
                     <div id="slot9" class="lobby-player"></div>
                   </div>
                   <div class="lobby-ready-status">not ready</div>
                 </div>
                 <div class="lobby-player-wrapper">
-                  <div>
+                  <div class="lobby-player-id">
                     <div id="slot10" class="lobby-player"></div>
                   </div>
                   <div class="lobby-ready-status">not ready</div>
                 </div>
                 <div class="lobby-player-wrapper">
-                  <div>
+                  <div class="lobby-player-id">
                     <div id="slot11" class="lobby-player"></div>
                   </div>
                   <div class="lobby-ready-status">not ready</div>
                 </div>
                 <div class="lobby-player-wrapper">
-                  <div>
+                  <div class="lobby-player-id">
                     <div id="slot12" class="lobby-player"></div>
                   </div>
                   <div class="lobby-ready-status">not ready</div>
                 </div>
                 <div class="lobby-player-wrapper">
-                  <div>
+                  <div class="lobby-player-id">
                     <div id="slot13" class="lobby-player"></div>
                   </div>
                   <div class="lobby-ready-status">not ready</div>
                 </div>
                 <div class="lobby-player-wrapper">
-                  <div>
+                  <div class="lobby-player-id">
                     <div id="slot14" class="lobby-player"></div>
                   </div>
                   <div class="lobby-ready-status">not ready</div>
@@ -198,7 +198,7 @@
 
           <div id="role-card" class="lobby-card">
             <div class="lobby-card-title-container">
-              <div class="lobby-card-title">
+              <div class="lobby-card-title" id="lobby-card-title">
                 Roles
                 <img
                   class="info-button"
@@ -207,7 +207,7 @@
                   alt="info icon"
                 />
               </div>
-              <div class="lobby-req">
+              <div id="role-req" class="lobby-req">
                 Requirement: nr of players == nr of roles
                 <div class="lobby-icon-container">
                   <img
@@ -225,7 +225,7 @@
             </div>
             <div id="roles" class="lobby-role-wrapper">
               <div id="good" class="lobby-role-container">
-                <div class="lobby-role-title">Good</div>
+                <div id="role-good" class="lobby-role-title">Good</div>
                 <div class="lobby-role-row">
                   <div id="villager" class="lobby-role-tag good unpicked">
                     Villager
@@ -245,7 +245,7 @@
                 </div>
               </div>
               <div id="evil" class="lobby-role-container">
-                <div class="lobby-role-title">Evil</div>
+                <div id="role-evil" class="lobby-role-title">Evil</div>
                 <div class="lobby-role-row">
                   <div id="godfather" class="lobby-role-tag evil unpicked">
                     Godfather
@@ -265,7 +265,7 @@
                 </div>
               </div>
               <div id="neutral" class="lobby-role-container">
-                <div class="lobby-role-title">Neutral</div>
+                <div id="role-neutral" class="lobby-role-title">Neutral</div>
 
                 <div class="lobby-role-row">
                   <div id="jester" class="lobby-role-tag neutral unpicked">

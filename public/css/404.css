@@ -38,11 +38,16 @@ body {
   background-color: var(--light-bg);
   width: auto;
   height: auto;
-  padding: 0.5em;
 }
 
 .navbar-container {
-  margin: 0.15em 0.25em 0.15em 0.25em;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: start;
+  width: auto;
+  height: auto;
+  padding: 0.5em;
 }
 
 .logo {

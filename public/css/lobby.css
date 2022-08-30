@@ -176,7 +176,7 @@
   height: 1.35rem;
   vertical-align: middle;
   border-radius: 100%;
-  padding: 0.15em;
+  padding: 0.25em;
   margin-left: 0.15rem;
 }
 
@@ -275,14 +275,18 @@
   margin-top: 0.75rem;
   max-width: 19rem;
   min-height: 1.3rem;
+  line-height: 1;
 }
 .lobby-card-container {
-  opacity: 35%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   width: 100%;
+}
+
+#role-card {
+  margin-bottom: 0.75rem;
 }
 
 .lobby-card {
@@ -293,10 +297,12 @@
   background-color: var(--light-bg);
   padding: 0.9em 1em 0.9em 1em;
   border-radius: 0.5em;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
   margin-bottom: 0.5rem;
   min-width: 19rem;
   max-width: 19rem;
+  border: 2px solid var(--light-bg);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12);
 }
 .lobby-card-title-container {
   display: block;
@@ -304,11 +310,12 @@
 }
 .lobby-card-title {
   user-select: none;
+  opacity: 100% !important;
   display: flex;
+  border-radius: 50rem;
   color: var(--dark-fg);
   font-size: 1.4rem;
   font-weight: 600;
-  padding-top: 0.25em;
   align-items: center;
 }
 
@@ -320,12 +327,17 @@
   font-weight: 600;
 }
 
+#role-req {
+  margin-top: 0;
+}
+
 .lobby-req {
   user-select: none;
   color: var(--dark-fg);
   font-size: 1rem;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
   min-height: 1.25rem;
+  line-height: 1.35;
 }
 
 .lobby-icon-container {
@@ -345,6 +357,7 @@
   align-items: center;
   margin-top: 0.25rem;
   min-height: 11.9rem;
+  max-height: 11.9rem;
 }
 
 .lobby-player-col {
@@ -373,6 +386,17 @@
   min-height: 1.25rem;
   max-height: 1.25rem;
   margin-bottom: 0.2rem;
+  border: 2px solid var(--slot-empty);
+}
+
+.lobby-player-id {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 5rem;
+  max-width: 5rem;
+  min-height: 0.35rem;
+  max-height: 0.35rem;
 }
 
 .lobby-player {
@@ -406,14 +430,19 @@
   user-select: none;
   visibility: hidden;
   color: var(--dark-fg);
+  font-weight: 500;
   text-align: center;
-  padding: 0.15rem 0.25em 0.15rem 0.25em;
+  padding: 0.175rem 0.25rem 0.175rem 0.25rem;
   border-radius: 0.45em;
   font-size: 0.55rem;
   margin-left: 0.35rem;
+  width: 2.208rem;
+  min-width: 2.208rem;
+  max-width: 2.208rem;
 }
 
 .lobby-role-wrapper {
+  opacity: 35%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -421,6 +450,22 @@
   min-width: 18.5rem;
   max-width: 18.5rem;
 }
+
+#good {
+  margin-top: 0.5rem;
+}
+
+/* #role-good {
+  color: var(--good-bg-selected)
+}
+#role-evil {
+  color: var(--evil-bg-selected)
+  
+}
+#role-neutral {
+  color: var(--neutral-bg-selected)
+
+} */
 
 .lobby-role-container {
   display: block;
@@ -485,6 +530,7 @@
   font-weight: 400;
   margin-top: 0.25rem;
   margin-right: 0.5rem;
+  box-shadow: 0 0.25rem 0.2rem rgba(0, 0, 0, 0.07);
 }
 
 .lobby-button-container {
@@ -532,11 +578,13 @@
     flex-direction: column;
     background-color: var(--light-bg);
     padding: 0.9em 1em 0.9em 1em;
-    margin-top: 0.5rem;
+    margin-top: 0.25rem;
     margin-bottom: 0.5rem;
     border-radius: 0.5em;
     min-width: 18.5rem;
     max-width: 18.5rem;
+    border: 2px solid var(--light-bg);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
   }
   .lobby-button {
     user-select: none;

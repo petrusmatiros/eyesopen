@@ -1,14 +1,15 @@
 // server set up
 const express = require("express");
+const fs = require('fs');
 const app = express();
 // const port = 3000;
 // const port = process.env.PORT | 3000;
 const port = 15000;
-// var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
-// var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
-// var credentials = {key: privateKey, cert: certificate};
-const server = require("http").createServer(app);
-// const server = require("https").createServer(app);
+var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
+var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
+var credentials = {key: privateKey, cert: certificate};
+const server = require("https").createServer(credentials, app);
+// const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 
 
@@ -1080,6 +1081,7 @@ io.on("connection", async (socket) => {
                   rooms.get(roomCode).removeRole(role);
                 }
               }
+              io.to(roomCode).emit("currentRoleCount", rooms.get(roomCode).getRoles().length, rooms.get(roomCode).getUsers().length )
               console.log(rooms.get(roomCode).getRoles());
               reqHandler(playerID);
             }
