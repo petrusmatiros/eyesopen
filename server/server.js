@@ -4,10 +4,10 @@ const app = express();
 const port = process.env.PORT | 3000;
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {});
-app.listen(port)
-// server.listen(port, () => {
-//   console.log("Server listening at port %d", port);
-// });
+
+server.listen(port, () => {
+  console.log("Server listening at port %d", port);
+});
 
 // ? Change this
 var __dirname = "/mnt/c/Users/petru/Documents/Code/eyesopen/public/";

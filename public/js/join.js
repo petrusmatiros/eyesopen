@@ -1,9 +1,9 @@
 // ? Change this
-const socket = io("https://eyes-open.onrender.com/");
+const socket = io("http://localhost:3000");
 // const socket = io("http://192.168.1.203:3000/");
 
-const domain = "https://eyes-open.onrender.com/";
-const lobby = "https://eyes-open.onrender.com/lobby/";
+const domain = "http://localhost:3000/";
+const lobby = "http://localhost:3000/lobby/";
 
 socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
