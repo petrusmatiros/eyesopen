@@ -11,7 +11,7 @@ server.listen(port, () => {
 
 // ? Change this
 // var __dirname = "/mnt/c/Users/petru/Documents/Code/eyesopen/public/";
-var __dirname = "../public/";
+var __dirname = process.cwd() + "/public/";
 
 // // random string generator
 var randomstring = require("randomstring");
