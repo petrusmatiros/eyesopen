@@ -1,3 +1,6 @@
+# SSL cert
+sslcert
+
 # Logs
 logs
 *.log

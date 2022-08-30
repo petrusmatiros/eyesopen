@@ -1,9 +1,17 @@
 // server set up
 const express = require("express");
 const app = express();
-const port = process.env.PORT | 3000;
+// const port = 3000;
+// const port = process.env.PORT | 3000;
+const port = 15000;
+// var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
+// var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
+// var credentials = {key: privateKey, cert: certificate};
 const server = require("http").createServer(app);
-const io = require("socket.io")(server, { cors: { origin: '*' } });
+// const server = require("https").createServer(app);
+const io = require("socket.io")(server);
+
+
 
 server.listen(port, () => {
   console.log("Server listening at port %d", port);
@@ -46,6 +54,7 @@ setInterval(checkClearData, 1000);
 
 // static folder
 app.use(express.static("public"));
+
 
 app.use((req, res, next) => {
   res.set("Cache-Control", "no-store");
