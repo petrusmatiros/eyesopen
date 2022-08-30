@@ -8,10 +8,7 @@
     "dev": "nodemon -L server/server.js",
     "start": "node server/server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@github-personal:petrusmatiros/eyesopen.git"
-  },
+  "repository": "git@github-personal:petrusmatiros/eyesopen.git",
   "author": "petrus matiros",
   "license": "ISC",
   "keywords": [],
