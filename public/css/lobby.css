@@ -350,6 +350,7 @@
   width: 1.25rem;
   height: 1.25rem;
   vertical-align: middle;
+  margin-bottom: 0.15rem;
 }
 .lobby-player-container {
   display: flex;
@@ -447,8 +448,8 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  min-width: 18.5rem;
-  max-width: 18.5rem;
+  min-width: 19.5rem;
+  max-width: 19.5rem;
 }
 
 #good {
@@ -524,7 +525,7 @@
 
 .lobby-role-tag {
   user-select: none;
-  padding: 0.25rem;
+  padding: 0.35rem;
   border-radius: 0.45em;
   font-size: 0.85rem;
   font-weight: 400;
@@ -581,8 +582,8 @@
     margin-top: 0.25rem;
     margin-bottom: 0.5rem;
     border-radius: 0.5em;
-    min-width: 18.5rem;
-    max-width: 18.5rem;
+    min-width: 19.5rem;
+    max-width: 19.5rem;
     border: 2px solid var(--light-bg);
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
   }
