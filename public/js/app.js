@@ -1,9 +1,8 @@
 // ? Change this
 // const domain = "https://eyes-open.onrender.com/";
-const domain = "https://84.216.161.205:15000/";
+const domain = "https://84.216.161.205/";
 // const domain = "http://localhost:3000/";
-const socket = io(domain);
-
+const socket = io(domain, {secure: true});
 
 const lobby = domain + "lobby/";
 
@@ -237,34 +236,54 @@ function selectPlayer(element, canPress = false) {
   }
 }
 
-socket.emit("checkPlayerTargets", getPlayerID());
-socket.on("currentPlayerTargets", (abilityTarget, voteTarget, socketPlayer) => {
-  if (socketPlayer.role.hasNightAbility) {
-  }
-  if (abilityTarget == socketPlayer.abilityTarget) {
-    // clear ability button
-    if (socketPlayer.role.hasOwnProperty(selfUsage)) {
-    }
-  }
-});
-
-
-function validSelection(isValid, element, cycle, socketRole) {
-  if (isValid) {
+function validSelection(element, cycle, socketRole) {
+    var playersContainer = document.getElementById("game-players-container");
+    var panelButtons = document.getElementById("game-buttons");
+    var abilityButton = panelButtons.children[0];
+    var voteButton = panelButtons.children[1];
     if (element.id.includes("game-button-ability")) {
-      element.classList.add()
+      element.classList.add();
+    } else if (element.id.includes("game-button-vote")) {
     }
-    else if (element.id.includes("game-button-vote")) {
+  
 
+  if (cycle.includes("Night")) {
+    if (socketRole.hasNightAbility) {
+      if (socketRole.team.includes("evil")) {
+      } else {
+      }
+      if (socketRole.hasOwnProperty("selfUsage")) {
+        if (socketRole.selfUsage > 0) {
+        } else {
+        }
+      } else {
+      }
+    } else {
     }
-
-  } else {
-
+  } else if (cycle.includes("Day")) {
   }
 }
 
 // ! FIX THIS
+// // Clear current target when not in focus
+// if (currentTarget !== null) {
+//   if ($(`#${currentTarget.id}`).is(":focus") == false) {
+//     currentTarget = null;
+//     console.log("cleared:", currentTarget);
+//   }
+// }
+
+// currentTarget begins as null
+// focusing a game-player -> currentTarget = that element id (playerID)
+
+// unfocusing makes action buttons unavilable (but currentTarget remains);
+// if one of the respective targets are set, then the respective button is available
+// focusing another game-player or the same one, just sets it to that element
+// if action is taken, and if one of either targets are not null (server side)
+// then keep the focus of that player, and do NOT clear the currentTarget
 function actionHandler(element) {
+
+  // ? Sustain focus
   if (currentTarget != null) {
     currentTarget.focus();
   }
@@ -274,42 +293,26 @@ function actionHandler(element) {
   // Could be problem with setPanelButtons being called every second
   socket.emit("requestActionData", getPlayerID());
   socket.on("fetchedActionData", (cycle, socketRole) => {
-    // var playersContainer = document.getElementById("game-players-container");
-    // var panelButtons = document.getElementById("game-buttons");
-    // var abilityButton = panelButtons.children[0];
-
-    // var voteButton = panelButtons.children[1];
+    
 
     // pressed action button
-    socket.emit("checkValidSelectedPlayer", getPlayerID());
-    socket.on("isValidSelectedPlayer", (isValid) => {
-      validSelection(isValid, element, cycle, socketRole);
-    });
+    validSelection(element, cycle, socketRole);
+    // socket.emit("checkValidSelectedPlayer", getPlayerID());
+    // socket.on("isValidSelectedPlayer", (isValid) => {
+    // });
 
-    if (element.id.includes("game-button-ability")) {
-    } else if (element.id.includes("game-button-vote")) {
-    }
-
-    if (cycle.includes("Night")) {
-      if (socketRole.hasNightAbility) {
-        if (socketRole.team.includes("evil")) {
-        } else {
+    socket.emit("checkPlayerTargets", getPlayerID());
+    socket.on("currentPlayerTargets",(abilityTarget, voteTarget, socketPlayer) => {
+        if (socketPlayer.role.hasNightAbility) {
         }
-        if (socketRole.hasOwnProperty("selfUsage")) {
-          if (socketRole.selfUsage > 0) {
-          } else {
+        if (abilityTarget == socketPlayer.abilityTarget) {
+          // clear ability button
+          if (socketPlayer.role.hasOwnProperty(selfUsage)) {
           }
-        } else {
         }
-      } else {
       }
-    } else if (cycle.includes("Day")) {
-    }
+    );
   });
-  // remove onclick, when not able to click
-  // reset choices when shifting between day and night
-  // vote and abilities are seperate
-  // setPlayers will be different when night and day for e
 }
 
 socket.on("setPlayersClock", (players, cycle, socketRole) => {
@@ -321,14 +324,6 @@ function setPanelButtons(cycle, socketRole) {
   var panelButtons = document.getElementById("game-buttons");
   var abilityButton = panelButtons.children[0];
   var voteButton = panelButtons.children[1];
-
-  // Clear current target when not in focus
-  if (currentTarget !== null) {
-    if ($(`#${currentTarget.id}`).is(":focus") == false) {
-      currentTarget = null;
-      console.log("cleared:", currentTarget);
-    }
-  }
 
   if (cycle.includes("Night")) {
     if (socketRole.hasNightAbility) {
@@ -452,31 +447,44 @@ function setPlayers(players, cycle, socketRole) {
               );
               currentElement.setAttribute("tabIndex", "0");
             }
-          } else { // NOT SPECIAL roles
+          } else {
+            // NOT SPECIAL roles
             // Evil, None
             if (players[i].type.includes("evil+unselectable")) {
               currentElement.classList.add(
                 "game-player-evil",
                 "game-player-unselectable"
               );
-              currentElement.setAttribute("onclick", "selectPlayer(this, false)");
+              currentElement.setAttribute(
+                "onclick",
+                "selectPlayer(this, false)"
+              );
               currentElement.removeAttribute("tabIndex");
             } else if (players[i].type.includes("evil")) {
               currentElement.classList.add("game-player-evil");
               currentElement.classList.remove("game-player-unselectable");
-              currentElement.setAttribute("onclick", "selectPlayer(this, false)");
+              currentElement.setAttribute(
+                "onclick",
+                "selectPlayer(this, false)"
+              );
               currentElement.removeAttribute("tabIndex");
             } else if (players[i].type.includes("unselectable")) {
               currentElement.classList.remove("game-player-evil");
               currentElement.classList.add("game-player-unselectable");
-              currentElement.setAttribute("onclick", "selectPlayer(this, false)");
+              currentElement.setAttribute(
+                "onclick",
+                "selectPlayer(this, false)"
+              );
               currentElement.removeAttribute("tabIndex");
             } else if (players[i].type.includes("none")) {
               currentElement.classList.remove(
                 "game-player-evil",
                 "game-player-unselectable"
               );
-              currentElement.setAttribute("onclick", "selectPlayer(this, false)");
+              currentElement.setAttribute(
+                "onclick",
+                "selectPlayer(this, false)"
+              );
               currentElement.removeAttribute("tabIndex");
             }
           }
@@ -550,12 +558,28 @@ function setPlayers(players, cycle, socketRole) {
             if (socketRole.team.includes("evil")) {
               if (socketRole.type.includes("surgeon")) {
                 if (players[i].type.includes("evil")) {
+                  currentElement.classList.add("game-player-evil");
+                  currentElement.classList.remove("game-player-unselectable");
                   currentElement.setAttribute(
                     "onclick",
                     "selectPlayer(this, true)"
                   );
                   currentElement.setAttribute("tabIndex", "0");
+                } else if (players[i].type.includes("evil+unselectable")) {
+                  currentElement.classList.add(
+                    "game-player-evil",
+                    "game-player-unselectable"
+                  );
+                  currentElement.setAttribute(
+                    "onclick",
+                    "selectPlayer(this, false)"
+                  );
+                  currentElement.removeAttribute("tabIndex");
                 } else {
+                  currentElement.classList.remove(
+                    "game-player-evil",
+                    "game-player-unselectable"
+                  );
                   currentElement.setAttribute(
                     "onclick",
                     "selectPlayer(this, true)"
@@ -565,12 +589,28 @@ function setPlayers(players, cycle, socketRole) {
               }
               if (socketRole.type.includes("witch")) {
                 if (players[i].type.includes("evil")) {
+                  currentElement.classList.add("game-player-evil");
+                  currentElement.classList.remove("game-player-unselectable");
+                  currentElement.setAttribute(
+                    "onclick",
+                    "selectPlayer(this, false)"
+                  );
+                  currentElement.removeAttribute("tabIndex");
+                } else if (players[i].type.includes("evil+unselectable")) {
+                  currentElement.classList.add(
+                    "game-player-evil",
+                    "game-player-unselectable"
+                  );
                   currentElement.setAttribute(
                     "onclick",
                     "selectPlayer(this, false)"
                   );
                   currentElement.removeAttribute("tabIndex");
                 } else {
+                  currentElement.classList.remove(
+                    "game-player-evil",
+                    "game-player-unselectable"
+                  );
                   currentElement.setAttribute(
                     "onclick",
                     "selectPlayer(this, true)"
@@ -580,12 +620,28 @@ function setPlayers(players, cycle, socketRole) {
               }
               if (socketRole.type.includes("framer")) {
                 if (players[i].type.includes("evil")) {
+                  currentElement.classList.add("game-player-evil");
+                  currentElement.classList.remove("game-player-unselectable");
+                  currentElement.setAttribute(
+                    "onclick",
+                    "selectPlayer(this, false)"
+                  );
+                  currentElement.removeAttribute("tabIndex");
+                } else if (players[i].type.includes("evil+unselectable")) {
+                  currentElement.classList.add(
+                    "game-player-evil",
+                    "game-player-unselectable"
+                  );
                   currentElement.setAttribute(
                     "onclick",
                     "selectPlayer(this, false)"
                   );
                   currentElement.removeAttribute("tabIndex");
                 } else {
+                  currentElement.classList.remove(
+                    "game-player-evil",
+                    "game-player-unselectable"
+                  );
                   currentElement.setAttribute(
                     "onclick",
                     "selectPlayer(this, true)"
@@ -607,18 +663,27 @@ function setPlayers(players, cycle, socketRole) {
                   "game-player-evil",
                   "game-player-unselectable"
                 );
-                currentElement.setAttribute("onclick", "selectPlayer(this, false)");
+                currentElement.setAttribute(
+                  "onclick",
+                  "selectPlayer(this, false)"
+                );
                 currentElement.removeAttribute("tabIndex");
               } else if (players[i].type.includes("none")) {
                 currentElement.classList.remove(
                   "game-player-evil",
                   "game-player-unselectable"
                 );
-                currentElement.setAttribute("onclick", "selectPlayer(this, true)");
+                currentElement.setAttribute(
+                  "onclick",
+                  "selectPlayer(this, true)"
+                );
                 currentElement.setAttribute("tabIndex", "0");
               }
             } else {
-              currentElement.setAttribute("onclick", "selectPlayer(this, false)");
+              currentElement.setAttribute(
+                "onclick",
+                "selectPlayer(this, false)"
+              );
               currentElement.removeAttribute("tabIndex");
             }
           }
@@ -633,17 +698,17 @@ function setPlayers(players, cycle, socketRole) {
           } else if (players[i].type.includes("target")) {
             currentElement.children[0].id = "game-show-mark";
             currentElement.children[0].src = "/assets/icons/target.svg";
-          } 
+          }
           // else if (players[i].type.includes("evil+unselectable")) {
           //   currentElement.classList.add(
           //     "game-player-evil",
           //     "game-player-unselectable"
           //   );
-          // } 
+          // }
           // else if (players[i].type.includes("evil")) {
           //   currentElement.classList.add("game-player-evil");
           //   currentElement.classList.remove("game-player-unselectable");
-          // } 
+          // }
           else if (players[i].type.includes("unselectable")) {
             currentElement.classList.remove("game-player-evil");
             currentElement.classList.add("game-player-unselectable");

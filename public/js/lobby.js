@@ -1,8 +1,8 @@
 // ? Change this
 // const domain = "https://eyes-open.onrender.com/";
-const domain = "https://84.216.161.205:15000/";
+const domain = "https://84.216.161.205/";
 // const domain = "http://localhost:3000/";
-const socket = io(domain);
+const socket = io(domain, {secure: true});
 
 const lobby = domain + "lobby/";
 
@@ -187,6 +187,12 @@ socket.on("connect", () => {
             updateRoles(roles);
           });
 
+          socket.emit("checkRoleCount", getPlayerID(), "before");
+          socket.on("roleCountBefore", (roleAmount, amountOfUsers) => {
+            roleCount = roleAmount;
+            userCount = amountOfUsers;
+          });
+
           // socket.on("roleCountAfter", (userAmount, roleAmount) => {
           //   roleReqHandler(roleAmount, userAmount);
           // });
@@ -205,6 +211,10 @@ socket.on("connect", () => {
           socket.on("fetchedRolesDisconnect", (roles) => {
             updateRoles(roles);
           });
+
+          setTimeout(() => {
+            socket.emit("refreshReady", getPlayerID());
+          }, 100);
 
           // Copy link to clipboard
           navigator.clipboard
@@ -268,16 +278,11 @@ socket.on("ready-status-lobby", (users) => {
 
 socket.on("currentRoleCount", (amountOfRoles, amountOfUsers) => {
   roleCount = amountOfRoles;
-    userCount = amountOfUsers;
-    roleReqHandler(roleCount, userCount);
-})
+  userCount = amountOfUsers;
+  roleReqHandler(roleCount, userCount);
+});
 
 function selectRole(element) {
-  socket.emit("checkRoleCount", getPlayerID(), "before");
-  socket.on("roleCountBefore", (roleAmount, amountOfUsers) => {
-    roleCount = roleAmount;
-    userCount = amountOfUsers;
-  });
   roleCounter(element);
 }
 
@@ -293,7 +298,6 @@ function rolePickConditionHandler(isValid) {
 }
 
 function roleCounter(element) {
-  
   roleHandler(element);
   socket.emit("fetchRoles", getPlayerID(), "after");
   socket.emit("checkRolePick", getPlayerID(), "pick");
@@ -442,7 +446,6 @@ function updatePlayerSlots(host, slots) {
         "2px solid var(--slot-empty)";
     }
   }
-  socket.emit("refreshReady", getPlayerID());
 }
 
 function getPlayerID() {

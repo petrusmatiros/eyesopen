@@ -1,8 +1,8 @@
 // ? Change this
 // const domain = "https://eyes-open.onrender.com/";
-const domain = "https://84.216.161.205:15000/";
+const domain = "https://84.216.161.205/";
 // const domain = "http://localhost:3000/";
-const socket = io(domain);
+const socket = io(domain, {secure: true});
 
 
 const lobby = domain + "lobby/";

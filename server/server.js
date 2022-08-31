@@ -3,15 +3,15 @@ const express = require("express");
 const fs = require('fs');
 const app = express();
 // const port = 3000;
-// const port = process.env.PORT | 3000;
+// const port = process.env.PORT | 15000;
 const port = 15000;
-var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
-var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
+var privateKey  = fs.readFileSync('sslcert/privateKey.key', 'utf8');
+var certificate = fs.readFileSync('sslcert/certificate.crt', 'utf8');
+
 var credentials = {key: privateKey, cert: certificate};
 const server = require("https").createServer(credentials, app);
 // const server = require("http").createServer(app);
-const io = require("socket.io")(server);
-
+const io = require("socket.io")(server, {cors : {origin: '*'}});
 
 
 server.listen(port, () => {
@@ -96,6 +96,10 @@ app.get("/lobby/:id/join", (req, res) => {
 
 var jsonData = require("./roles.json");
 
+io.engine.on("connection", (rawSocket) => {
+  // if you need the certificate details (it is no longer available once the handshake is completed)
+  rawSocket.peerCertificate = rawSocket.request.client.getPeerCertificate();
+});
 
 
 // establish server connection with socket
@@ -550,6 +554,7 @@ io.on("connection", async (socket) => {
       }
     }
   }
+
 
   socket.on("refreshReady", (playerID) => {
     if (checkUserExist(playerID)) {
@@ -1205,6 +1210,40 @@ io.on("connection", async (socket) => {
       }
     }
   });
+
+
+  socket.on("checkPlayerTargets", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (game.getProgress()) {
+          if (game.getUsers().includes(connectedUsers.get(playerID))) {
+            var player = connectedUsers.get(playerID).getPlayer();
+            socket.emit("currentPlayerTargets", player.abilityTarget, player.voteTarget, player);
+          }
+        }
+      }
+    }
+  })
+
+  // socket.on("checkValidSelectedPlayer", (playerID) => {
+  //   if (checkUserExist(playerID)) {
+  //     if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+  //       var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+  //       var room = rooms.get(roomCode);
+  //       var game = room.getGame();
+  //       if (game.getProgress()) {
+  //         if (game.getUsers().includes(connectedUsers.get(playerID))) {
+  //           // ? DO SOMETHING THERE TO CHECK IF THE SELECTION IS VALID;
+  //           // socket.emit("isValidSelectedPlayer", isValid);
+
+  //         }
+  //       }
+  //     }
+  //   }
+  // })
 
   socket.on("requestActionData", (playerID) => {
     if (checkUserExist(playerID)) {
