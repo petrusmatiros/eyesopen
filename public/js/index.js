@@ -1,9 +1,7 @@
-// ? Change this
-// const domain = "https://eyes-open.onrender.com/";
-const domain = "https://84.216.161.205/";
-// const domain = "http://localhost:3000/";
-const socket = io(domain, {secure: true});
-
+// const domain = "https://84.216.161.205/";
+// const socket = io(domain, {secure: true});
+const domain = "http://84.216.161.205/";
+const socket = io(domain);
 
 const lobby = domain + "lobby/";
 
