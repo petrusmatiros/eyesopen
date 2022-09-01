@@ -229,8 +229,8 @@ input[type="text"]:focus {
   align-items: center;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--menu-button-fg);
-  background-color: var(--menu-button-bg);
+  color: var(--light-fg);
+  background-color: var(--dark-fg);
   margin: 0.5em 1em 0.5em 1em;
   padding: 0.6em 0.6em 0.6em 0.6em;
   border: none;

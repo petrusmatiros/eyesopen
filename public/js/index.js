@@ -1,6 +1,6 @@
 // const domain = "https://84.216.161.205/";
 // const socket = io(domain, {secure: true});
-const domain = "http://84.216.161.205/";
+const domain = "https://84.216.161.205/";
 const socket = io(domain);
 
 const lobby = domain + "lobby/";
@@ -15,6 +15,31 @@ socket.on("connect", () => {
     }
   });
 });
+
+var animatedEyesInterval = setInterval(() => {
+  var animatedEyes = document.getElementsByClassName("animated-eye");
+  for (var i = 0; i < animatedEyes.length; i++) {
+    if (animatedEyes[i].id == "rotate1") {
+      animatedEyes[i].src = "/assets/icons/eye2.svg";
+      animatedEyes[i].id = "rotate2";
+    } else if (animatedEyes[i].id == "rotate2") {
+      animatedEyes[i].src = "/assets/icons/eye3.svg";
+      animatedEyes[i].id = "rotate3";
+    } else if (animatedEyes[i].id == "rotate3") {
+      animatedEyes[i].src = "/assets/icons/eye4.svg";
+      animatedEyes[i].id = "rotate4";
+    } else if (animatedEyes[i].id == "rotate4") {
+      animatedEyes[i].src = "/assets/icons/eye5.svg";
+      animatedEyes[i].id = "rotate5";
+    } else if (animatedEyes[i].id == "rotate5") {
+      animatedEyes[i].src = "/assets/icons/eye6.svg";
+      animatedEyes[i].id = "rotate6";
+    } else if (animatedEyes[i].id == "rotate6") {
+      animatedEyes[i].src = "/assets/icons/eye1.svg";
+      animatedEyes[i].id = "rotate1";
+    }
+  }
+}, 475);
 
 /**
  * [resetCookie resets the playerID cookie to null]

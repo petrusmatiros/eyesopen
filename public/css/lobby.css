@@ -10,12 +10,13 @@
   --light-bg: hsl(0, 0%, 100%);
   --dark-fg: hsl(0, 0%, 0%);
   /* Lobby player slots */
-  --slot-empty: hsl(0, 0%, 95%);
-  --slot-joined: hsl(0, 0%, 82%);
-  --slot-ready: hsl(100, 30%, 82%);
+  /* --slot-empty: hsl(0, 0%, 95%); */
+  --slot-empty: hsl(0, 0%, 15%);
+  /* --slot-joined: hsl(0, 0%, 82%); */
+  --slot-joined: hsl(0, 0%, 35%);
   /* Not ready and ready */
   --ready-fg: hsl(100, 100%, 100%);
-  --ready-bg: hsl(108, 100%, 25%);
+  --ready-bg: hsl(150, 50%, 35%);
   --not-ready-fg: hsl(0, 0%, 0%);
   --not-ready-bg: hsl(0, 100%, 70%);
   /* Role tags */
@@ -249,13 +250,13 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  color: var(--dark-fg);
-  background-color: var(--light-bg);
+  color: var(--light-fg);
+  background-color: var(--dark-fg);
   padding: 0.35em;
   font-size: 1rem;
   font-weight: 600;
   border-radius: 0.5em;
-  border: 2px solid #b1b1b1;
+  border: 2px solid var(--light-fg);
 }
 
 #copy-code {
@@ -270,7 +271,7 @@
 .lobby-help {
   user-select: none;
   text-align: center;
-  color: var(--dark-fg);
+  color: var(--light-fg);
   font-size: 1rem;
   margin-top: 0.75rem;
   max-width: 19rem;
@@ -286,7 +287,7 @@
 }
 
 #role-card {
-  margin-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .lobby-card {
@@ -294,15 +295,15 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color: var(--light-bg);
+  background-color: var(--dark-fg);
   padding: 0.9em 1em 0.9em 1em;
   border-radius: 0.5em;
   margin-top: 0.25rem;
   margin-bottom: 0.5rem;
-  min-width: 19rem;
-  max-width: 19rem;
-  border: 2px solid var(--light-bg);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12);
+  min-width: 19.5rem;
+  max-width: 19.5rem;
+  border: 2px solid var(--dark-fg);
+  box-shadow: 0 0.5rem 1rem var(--dark-fg);
 }
 .lobby-card-title-container {
   display: block;
@@ -322,7 +323,7 @@
 .lobby-card-title {
   user-select: none;
   display: flex;
-  color: var(--dark-fg);
+  color: var(--light-fg);
   font-size: 1.4rem;
   font-weight: 600;
 }
@@ -333,7 +334,7 @@
 
 .lobby-req {
   user-select: none;
-  color: var(--dark-fg);
+  color: var(--light-fg);
   font-size: 1rem;
   margin-top: 0.25rem;
   min-height: 1.25rem;
@@ -405,7 +406,7 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  color: var(--dark-fg);
+  color: var(--light-fg);
   border-radius: 0.5em;
   font-size: 0.75rem;
   font-weight: 500;
@@ -430,7 +431,7 @@
 .lobby-ready-status {
   user-select: none;
   visibility: hidden;
-  color: var(--dark-fg);
+  color: var(--light-fg);
   font-weight: 500;
   text-align: center;
   padding: 0.175rem 0.25rem 0.175rem 0.25rem;
@@ -572,20 +573,23 @@
 }
 
 @media screen and (max-width: 600px) {
+  #role-card {
+    margin-bottom: 0.75rem;
+  }
   .lobby-card {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: var(--light-bg);
+    background-color: var(--dark-fg);
     padding: 0.9em 1em 0.9em 1em;
     margin-top: 0.25rem;
     margin-bottom: 0.5rem;
     border-radius: 0.5em;
     min-width: 19.5rem;
     max-width: 19.5rem;
-    border: 2px solid var(--light-bg);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+    border: 2px solid var(--dark-fg);
+    box-shadow: 0 0.5rem 1rem var(--dark-fg);
   }
   .lobby-button {
     user-select: none;

@@ -5,13 +5,14 @@ const app = express();
 // const port = 3000;
 // const port = process.env.PORT | 15000;
 const port = 15000;
-// var privateKey  = fs.readFileSync('sslcert/private.key', 'utf8');
-// var certificate = fs.readFileSync('sslcert/certificate.crt', 'utf8');
+var privateKey  = fs.readFileSync('sslcert/origin.key', 'utf8');
+var certificate = fs.readFileSync('sslcert/previous/origin.crt', 'utf8');
 // var ca = fs.readFileSync('sslcert/ca_bundle.crt', 'utf8');
 
 // var credentials = {key: privateKey, cert: certificate, ca: ca};
-// const server = require("https").createServer(credentials, app);
-const server = require("http").createServer(app);
+var credentials = {key: privateKey, cert: certificate};
+const server = require("https").createServer(credentials, app);
+// const server = require("https").createServer(app);
 
 // const io = require("socket.io")(server, { cors : { origin: '*'}});
 const io = require("socket.io")(server);
@@ -1209,6 +1210,13 @@ io.on("connection", async (socket) => {
     }
   });
 
+  // Socket that handles the voteCount, depending on night and day
+  // Voting system day
+  // Voting system for evil room, check that evil room works
+  // Check that dead works
+  // Dead popup, everything remains
+
+  // System for handling the different abilities, in priorirty order
 
   socket.on("checkPlayerTargets", (playerID) => {
     if (checkUserExist(playerID)) {

@@ -1,6 +1,6 @@
 // const domain = "https://84.216.161.205/";
 // const socket = io(domain, {secure: true});
-const domain = "http://84.216.161.205/";
+const domain = "https://84.216.161.205/";
 const socket = io(domain);
 
 const lobby = domain + "lobby/";
@@ -117,7 +117,7 @@ socket.on("connect", () => {
               totalRoles
             ) => {
               document.getElementById("player-card").style.border =
-                "2px solid hsl(360, 100%, 55%)";
+                "2px solid var(--evil-bg)";
               roleReqHandler(totalRoles, totalUsers);
 
               if (totalUsers >= minPlayers) {
@@ -138,7 +138,7 @@ socket.on("connect", () => {
               }
               if (!hostExists) {
                 document.getElementById("player-count").style.color =
-                  "var(--dark-fg)";
+                  "var(--light-fg)";
                 document.getElementById("player-count").innerText =
                   "Host is not in room";
               } else {
@@ -146,14 +146,14 @@ socket.on("connect", () => {
                 if (allReady) {
                   //? all ready check
                   document.getElementById("player-card").style.border =
-                    "2px solid hsl(108, 100%, 45%)";
+                    "2px solid var(--good-bg)";
                   document.getElementById("player-count").innerText =
                     "Everyone is ready, " + host;
                   document.getElementById("player-count").style.color =
-                    "hsl(100, 100%, 35%)";
+                    "var(--good-bg)";
                 } else {
                   document.getElementById("player-count").style.color =
-                    "var(--dark-fg)";
+                    "var(--light-fg)";
                   document.getElementById("player-count").innerText =
                     amountUnready + " player(s) not ready";
                 }
@@ -215,15 +215,15 @@ socket.on("connect", () => {
             socket.emit("refreshReady", getPlayerID());
           }, 100);
 
-          // Copy link to clipboard
-          navigator.clipboard
-            .readText()
-            .then((clipText) => {
-              if (!clipText.includes(window.location.href)) {
-                navigator.clipboard.writeText(window.location.href);
-              }
-            })
-            .catch("Cannot copy shareable room link into clipboard (>_<)");
+          // // Copy link to clipboard
+          // navigator.clipboard
+          //   .readText()
+          //   .then((clipText) => {
+          //     if (!clipText.includes(window.location.href)) {
+          //       navigator.clipboard.writeText(window.location.href);
+          //     }
+          //   })
+          //   .catch("Cannot copy shareable room link into clipboard (>_<)");
         }
       });
     }
@@ -289,10 +289,10 @@ function rolePickConditionHandler(isValid) {
   if (isValid) {
     //? valid pick condition
     document.getElementById("role-card").style.border =
-      "2px solid hsl(108, 100%, 45%)";
+      "2px solid var(--good-bg)";
   } else {
     document.getElementById("role-card").style.border =
-      "2px solid hsl(360, 100%, 55%)";
+      "2px solid var(--evil-bg)";
   }
 }
 
@@ -425,10 +425,10 @@ function updatePlayerSlots(host, slots) {
       var status = slot.parentElement.parentElement.children[1];
       if (value.userID == host) {
         slot.parentElement.parentElement.style.border =
-          "2px solid var(--dark-fg)";
+          "2px solid var(--light-fg)";
       } else if (value.userID == getPlayerID()) {
         slot.parentElement.parentElement.style.border =
-          "2px dashed var(--dark-fg)";
+          "2px dashed var(--light-fg)";
       } else {
         slot.parentElement.parentElement.style.border =
           "2px dashed var(--slot-joined)";
@@ -478,9 +478,9 @@ function showClearCheck(reset = false) {
 function copyButtonAnimate(reset = false) {
   if (reset) {
     document.getElementById("copy-code").style.backgroundColor =
-      "var(--light-bg)";
-    document.getElementById("roomcode-copy").style.color = "var(--dark-fg)";
-    document.getElementById("copy-code").style.border = "2px solid #b1b1b1";
+      "var(--dark-fg)";
+    document.getElementById("roomcode-copy").style.color = "var(--light-fg)";
+    document.getElementById("copy-code").style.border = "2px solid var(--light-fg)";
   } else {
     document.getElementById("copy-code").style.backgroundColor =
       "hsl(100, 100%, 90%)";

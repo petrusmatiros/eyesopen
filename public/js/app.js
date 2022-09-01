@@ -1,6 +1,6 @@
 // const domain = "https://84.216.161.205/";
 // const socket = io(domain, {secure: true});
-const domain = "http://84.216.161.205/";
+const domain = "https://84.216.161.205/";
 const socket = io(domain);
 
 const lobby = domain + "lobby/";
@@ -698,16 +698,6 @@ function setPlayers(players, cycle, socketRole) {
             currentElement.children[0].id = "game-show-mark";
             currentElement.children[0].src = "/assets/icons/target.svg";
           }
-          // else if (players[i].type.includes("evil+unselectable")) {
-          //   currentElement.classList.add(
-          //     "game-player-evil",
-          //     "game-player-unselectable"
-          //   );
-          // }
-          // else if (players[i].type.includes("evil")) {
-          //   currentElement.classList.add("game-player-evil");
-          //   currentElement.classList.remove("game-player-unselectable");
-          // }
           else if (players[i].type.includes("unselectable")) {
             currentElement.classList.remove("game-player-evil");
             currentElement.classList.add("game-player-unselectable");
