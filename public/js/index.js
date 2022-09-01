@@ -16,30 +16,39 @@ socket.on("connect", () => {
   });
 });
 
-var animatedEyesInterval = setInterval(() => {
-  var animatedEyes = document.getElementsByClassName("animated-eye");
-  for (var i = 0; i < animatedEyes.length; i++) {
-    if (animatedEyes[i].id == "rotate1") {
-      animatedEyes[i].src = "/assets/icons/eye2.svg";
-      animatedEyes[i].id = "rotate2";
-    } else if (animatedEyes[i].id == "rotate2") {
-      animatedEyes[i].src = "/assets/icons/eye3.svg";
-      animatedEyes[i].id = "rotate3";
-    } else if (animatedEyes[i].id == "rotate3") {
-      animatedEyes[i].src = "/assets/icons/eye4.svg";
-      animatedEyes[i].id = "rotate4";
-    } else if (animatedEyes[i].id == "rotate4") {
-      animatedEyes[i].src = "/assets/icons/eye5.svg";
-      animatedEyes[i].id = "rotate5";
-    } else if (animatedEyes[i].id == "rotate5") {
-      animatedEyes[i].src = "/assets/icons/eye6.svg";
-      animatedEyes[i].id = "rotate6";
-    } else if (animatedEyes[i].id == "rotate6") {
-      animatedEyes[i].src = "/assets/icons/eye1.svg";
-      animatedEyes[i].id = "rotate1";
-    }
+animateEyes();
+function animateEyes() {
+  var eyes = document.getElementsByClassName("animated-eye");
+  for (let i = 0; i < eyes.length; i++) {
+    let rand = random(250, 1000);
+    let eye = eyes[i];
+    setInterval(() => {
+      if (eye.id == "rotate1") {
+        eye.src = "/assets/icons/eye2.svg";
+        eye.id = "rotate2";
+      } else if (eye.id == "rotate2") {
+        eye.src = "/assets/icons/eye3.svg";
+        eye.id = "rotate3";
+      } else if (eye.id == "rotate3") {
+        eye.src = "/assets/icons/eye4.svg";
+        eye.id = "rotate4";
+      } else if (eye.id == "rotate4") {
+        eye.src = "/assets/icons/eye5.svg";
+        eye.id = "rotate5";
+      } else if (eye.id == "rotate5") {
+        eye.src = "/assets/icons/eye6.svg";
+        eye.id = "rotate6";
+      } else if (eye.id == "rotate6") {
+        eye.src = "/assets/icons/eye1.svg";
+        eye.id = "rotate1";
+      }
+    }, rand);
   }
-}, 475);
+}
+
+function random(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 /**
  * [resetCookie resets the playerID cookie to null]

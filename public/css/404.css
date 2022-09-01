@@ -91,6 +91,14 @@ p {
   color: #000000;
   margin: 0.25rem 2rem 0.25rem 2rem;
 }
+.header-bold {
+  display: block;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000000;
+  margin: 1rem 2rem 0.25rem 2rem;
+}
 
 #with-eyes {
   margin-top: 3rem;

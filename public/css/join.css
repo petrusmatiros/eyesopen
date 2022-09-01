@@ -5,7 +5,8 @@
   --menu-button-fg: hsl(280, 100%, 35%);
   --menu-button-hover-fg: hsl(0, 0%, 100%);
   --menu-button-active-fg: hsl(0, 0%, 80%);
-  --main-bg: hsl(0, 0%, 93%);
+  --main-shadow: hsl(320, 49%, 17%);
+  --main-highlight: hsl(320, 49%, 35%);
   --dark-bg: hsl(0, 0%, 13%);
   --light-fg: hsl(0, 0%, 100%);
   --light-bg: hsl(0, 0%, 100%);

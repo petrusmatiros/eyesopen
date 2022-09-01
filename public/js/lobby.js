@@ -186,15 +186,15 @@ socket.on("connect", () => {
             updateRoles(roles);
           });
 
-          socket.emit("checkRoleCount", getPlayerID(), "before");
-          socket.on("roleCountBefore", (roleAmount, amountOfUsers) => {
-            roleCount = roleAmount;
-            userCount = amountOfUsers;
-          });
-
-          // socket.on("roleCountAfter", (userAmount, roleAmount) => {
-          //   roleReqHandler(roleAmount, userAmount);
+          socket.emit("checkRoleCount", getPlayerID());
+          // socket.on("roleCountBefore", (roleAmount, amountOfUsers) => {
+          //   roleCount = roleAmount;
+          //   userCount = amountOfUsers;
           // });
+
+          // // socket.on("roleCountAfter", (userAmount, roleAmount) => {
+          // //   roleReqHandler(roleAmount, userAmount);
+          // // });
 
           socket.on("rolePickCondition", (valid) => {
             rolePickConditionHandler(valid);
@@ -213,7 +213,7 @@ socket.on("connect", () => {
 
           setTimeout(() => {
             socket.emit("refreshReady", getPlayerID());
-          }, 100);
+          }, 300);
 
           // // Copy link to clipboard
           // navigator.clipboard

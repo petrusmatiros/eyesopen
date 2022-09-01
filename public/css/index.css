@@ -5,7 +5,8 @@
   --menu-button-fg: hsl(280, 100%, 35%);
   --menu-button-hover-fg: hsl(0, 0%, 100%);
   --menu-button-active-fg: hsl(0, 0%, 80%);
-  --main-bg: hsl(0, 0%, 93%);
+  --main-shadow: hsl(320, 49%, 17%);
+  --main-highlight: hsl(320, 49%, 35%);
   --dark-bg: hsl(0, 0%, 13%);
   --light-fg: hsl(0, 0%, 100%);
   --light-bg: hsl(0, 0%, 100%);
@@ -19,56 +20,56 @@
 .eye1 {
   top: 5rem;
   left: 1.5rem;
-  width: 65px;
+  width: 4.063rem;
   transform: rotate(-30deg);
 }
 .eye2 {
   top: 4rem;
   right: 1.5rem;
-  width: 50px;
+  width: 3.125rem;
   transform: rotate(70deg);
 }
 .eye3 {
   bottom: 10rem;
   right: 2rem;
-  width: 80px;
+  width: 5rem;
   transform: rotate(-30deg);
 }
 .eye4 {
   bottom: 3rem;
   right: 1.5rem;
-  width: 25px;
-  transform: rotate(-30deg);
+  width: 1.563rem;
+  transform: rotate(16deg);
 }
 .eye5 {
   bottom: 11rem;
   left: 4rem;
-  width: 60px;
+  width: 3.75rem;
   transform: rotate(30deg);
 }
 .eye6 {
   bottom: 27rem;
   right: 1.5rem;
-  width: 40px;
+  width: 2.5rem;
   transform: rotate(30deg);
 }
 .eye7 {
   bottom: 3rem;
   left: 3rem;
-  width: 35px;
-  transform: rotate(-40deg);
+  width: 2.188rem;
+  transform: rotate(-8deg);
 }
 .eye8 {
   bottom: 17.5rem;
   left: 1.5rem;
-  width: 25px;
+  width: 1.563rem;
   transform: rotate(-30deg);
 }
 .eye9 {
   bottom: 18.5rem;
   right: 1.5rem;
-  width: 25px;
-  transform: rotate(30deg);
+  width: 1.563rem;
+  transform: rotate(65deg);
 }
 
 .animated-eyes-container {
@@ -109,8 +110,8 @@ body {
   /* background-color: var(--dark-bg);*/
   background: radial-gradient(
     50% 50% at 50% 50%,
-    hsl(320, 49%, 35%) 0%,
-    hsl(320, 49%, 17%) 100%
+    var(--main-highlight) 0%,
+    var(--main-shadow) 100%
   );
   background-attachment: fixed;
 }
@@ -157,7 +158,7 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 350px;
+  width: 21.875rem;
   margin: 1rem 0 1rem 0;
 }
 
@@ -185,13 +186,14 @@ p {
   /* background-color: var(--dark-bg); */
   height: 100%;
   width: 100%;
+  
 }
 
 .eyes {
   margin-top: -7rem;
   margin-bottom: -7rem;
-  width: 300px;
-  height: 300px;
+  width: 18.75rem;
+  height: 18.75rem;
 }
 
 .title-button-container {

@@ -83,9 +83,9 @@ npm build
 ## Assets
 
 
-**Illustrations** <br> Beatriz Ines Avila Cutiño
+**Design & Illustrations** <br> Beatriz Ines Avila Cutiño
 
-**Game design** <br> Petrus Matiros
+**Code & Design** <br> Petrus Matiros
 
 **Game UI** <br> Petrus Matiros
 

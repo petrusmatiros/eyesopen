@@ -1,22 +1,21 @@
 // server set up
 const express = require("express");
-const fs = require('fs');
+const fs = require("fs");
 const app = express();
 // const port = 3000;
 // const port = process.env.PORT | 15000;
 const port = 15000;
-var privateKey  = fs.readFileSync('sslcert/origin.key', 'utf8');
-var certificate = fs.readFileSync('sslcert/previous/origin.crt', 'utf8');
+var privateKey = fs.readFileSync("sslcert/origin.key", "utf8");
+var certificate = fs.readFileSync("sslcert/previous/origin.crt", "utf8");
 // var ca = fs.readFileSync('sslcert/ca_bundle.crt', 'utf8');
 
 // var credentials = {key: privateKey, cert: certificate, ca: ca};
-var credentials = {key: privateKey, cert: certificate};
+var credentials = { key: privateKey, cert: certificate };
 const server = require("https").createServer(credentials, app);
 // const server = require("https").createServer(app);
 
 // const io = require("socket.io")(server, { cors : { origin: '*'}});
 const io = require("socket.io")(server);
-
 
 server.listen(port, () => {
   console.log("Server listening at port %d", port);
@@ -60,7 +59,6 @@ setInterval(checkClearData, 1000);
 // static folder
 app.use(express.static("public"));
 
-
 app.use((req, res, next) => {
   res.set("Cache-Control", "no-store");
   next();
@@ -97,9 +95,7 @@ app.get("/lobby/:id/join", (req, res) => {
   }
 });
 
-
 var jsonData = require("./roles.json");
-
 
 // establish server connection with socket
 io.on("connection", async (socket) => {
@@ -554,7 +550,6 @@ io.on("connection", async (socket) => {
     }
   }
 
-
   socket.on("refreshReady", (playerID) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
@@ -694,6 +689,10 @@ io.on("connection", async (socket) => {
           console.log(socket.rooms);
           console.log(connectedUsers.get(playerID));
           socket.emit("joinPlayerSlot");
+          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+            emitTo,
+            rooms.get(roomCode).getUsers()
+          );
         }
       }
     }
@@ -1030,24 +1029,17 @@ io.on("connection", async (socket) => {
     }
   });
 
-  socket.on("checkRoleCount", (playerID, state) => {
+  socket.on("checkRoleCount", (playerID) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         if (!checkUserInGame(roomCode, playerID)) {
-          if (rooms.get(roomCode).getHost() == playerID) {
-            var emitTo = "";
-            if (state.includes("before")) {
-              emitTo = "roleCountBefore";
-            } else if (state.includes("after")) {
-              emitTo = "roleCountAfter";
-            }
             io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-              emitTo,
+              "currentRoleCount",
               rooms.get(roomCode).getRoles().length,
               rooms.get(roomCode).getUsers().length
             );
-          }
+          
         }
       }
     }
@@ -1074,21 +1066,23 @@ io.on("connection", async (socket) => {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         if (!checkUserInGame(roomCode, playerID)) {
-          if (rooms.get(roomCode).getHost() == playerID) {
-            if (rooms.get(roomCode).getGame().getProgress() == false) {
-              if (op.includes("add")) {
-                if (!rooms.get(roomCode).getRoles().includes(role)) {
-                  rooms.get(roomCode).addRole(role);
-                }
-              } else if (op.includes("remove")) {
-                if (rooms.get(roomCode).getRoles().includes(role)) {
-                  rooms.get(roomCode).removeRole(role);
-                }
+          if (rooms.get(roomCode).getGame().getProgress() == false) {
+            if (op.includes("add")) {
+              if (!rooms.get(roomCode).getRoles().includes(role)) {
+                rooms.get(roomCode).addRole(role);
               }
-              io.to(roomCode).emit("currentRoleCount", rooms.get(roomCode).getRoles().length, rooms.get(roomCode).getUsers().length )
-              console.log(rooms.get(roomCode).getRoles());
-              reqHandler(playerID);
+            } else if (op.includes("remove")) {
+              if (rooms.get(roomCode).getRoles().includes(role)) {
+                rooms.get(roomCode).removeRole(role);
+              }
             }
+            console.log(rooms.get(roomCode).getRoles());
+            reqHandler(playerID);
+            io.to(roomCode).emit(
+              "currentRoleCount",
+              rooms.get(roomCode).getRoles().length,
+              rooms.get(roomCode).getUsers().length
+            );
           }
         }
       }
@@ -1227,12 +1221,17 @@ io.on("connection", async (socket) => {
         if (game.getProgress()) {
           if (game.getUsers().includes(connectedUsers.get(playerID))) {
             var player = connectedUsers.get(playerID).getPlayer();
-            socket.emit("currentPlayerTargets", player.abilityTarget, player.voteTarget, player);
+            socket.emit(
+              "currentPlayerTargets",
+              player.abilityTarget,
+              player.voteTarget,
+              player
+            );
           }
         }
       }
     }
-  })
+  });
 
   // socket.on("checkValidSelectedPlayer", (playerID) => {
   //   if (checkUserExist(playerID)) {
@@ -1259,12 +1258,16 @@ io.on("connection", async (socket) => {
         var game = room.getGame();
         if (game.getProgress()) {
           if (game.getUsers().includes(connectedUsers.get(playerID))) {
-            socket.emit("fetchedActionData", game.getCycle(), connectedUsers.get(playerID).getPlayer().getRole());
+            socket.emit(
+              "fetchedActionData",
+              game.getCycle(),
+              connectedUsers.get(playerID).getPlayer().getRole()
+            );
           }
         }
       }
     }
-  })
+  });
 
   function pushPlayer(toSend, seen, userID, userName, type, isEvil) {
     var user = { userID, userName, type, isEvil };
@@ -1319,9 +1322,9 @@ io.on("connection", async (socket) => {
               var userRole = game.getUsers()[i].getPlayer().getRole();
 
               // Fix this, seenNight, seenDay
-              
 
-              if (game.getCycle().includes("Night")) { // Night
+              if (game.getCycle().includes("Night")) {
+                // Night
                 if (
                   user.getPlayer().getIsKilled() ||
                   user.getPlayer().getIsLynched()
@@ -1348,32 +1351,74 @@ io.on("connection", async (socket) => {
                         if (userRole.selfUsage > 0) {
                           type = "evil";
                           isEvil = true;
-                          pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                          pushPlayer(
+                            toSend,
+                            seenNight,
+                            userID,
+                            userName,
+                            type,
+                            isEvil
+                          );
                         } else {
                           type = "evil+unselectable";
                           isEvil = true;
-                          pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                          pushPlayer(
+                            toSend,
+                            seenNight,
+                            userID,
+                            userName,
+                            type,
+                            isEvil
+                          );
                         }
                       } else {
                         type = "evil+unselectable";
                         isEvil = true;
-                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        pushPlayer(
+                          toSend,
+                          seenNight,
+                          userID,
+                          userName,
+                          type,
+                          isEvil
+                        );
                       }
                     } else {
                       if (userRole.type.includes("doctor")) {
                         if (userRole.selfUsage > 0) {
                           type = "none";
                           isEvil = null;
-                          pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                          pushPlayer(
+                            toSend,
+                            seenNight,
+                            userID,
+                            userName,
+                            type,
+                            isEvil
+                          );
                         } else {
                           type = "unselectable";
                           isEvil = null;
-                          pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                          pushPlayer(
+                            toSend,
+                            seenNight,
+                            userID,
+                            userName,
+                            type,
+                            isEvil
+                          );
                         }
                       } else {
                         isEvil = null;
                         type = "unselectable";
-                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        pushPlayer(
+                          toSend,
+                          seenNight,
+                          userID,
+                          userName,
+                          type,
+                          isEvil
+                        );
                       }
                     }
                   } else {
@@ -1382,36 +1427,85 @@ io.on("connection", async (socket) => {
                       if (userRole.team.includes("evil")) {
                         isEvil = true;
                         type = "evil";
-                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        pushPlayer(
+                          toSend,
+                          seenNight,
+                          userID,
+                          userName,
+                          type,
+                          isEvil
+                        );
                       } else {
                         isEvil = false;
                         type = "none";
-                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        pushPlayer(
+                          toSend,
+                          seenNight,
+                          userID,
+                          userName,
+                          type,
+                          isEvil
+                        );
                       }
                     } else if (socketRole.type.includes("witch")) {
                       if (userRole.team.includes("evil")) {
                         isEvil = true;
                         type = "evil+unselectable";
-                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        pushPlayer(
+                          toSend,
+                          seenNight,
+                          userID,
+                          userName,
+                          type,
+                          isEvil
+                        );
                       } else {
                         isEvil = false;
                         type = "none";
-                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        pushPlayer(
+                          toSend,
+                          seenNight,
+                          userID,
+                          userName,
+                          type,
+                          isEvil
+                        );
                       }
                     } else if (socketRole.type.includes("framer")) {
                       if (userRole.team.includes("evil")) {
                         isEvil = true;
                         type = "evil+unselectable";
-                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        pushPlayer(
+                          toSend,
+                          seenNight,
+                          userID,
+                          userName,
+                          type,
+                          isEvil
+                        );
                       } else {
                         isEvil = false;
                         type = "none";
-                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        pushPlayer(
+                          toSend,
+                          seenNight,
+                          userID,
+                          userName,
+                          type,
+                          isEvil
+                        );
                       }
                     } else {
                       isEvil = null;
                       type = "none";
-                      pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                      pushPlayer(
+                        toSend,
+                        seenNight,
+                        userID,
+                        userName,
+                        type,
+                        isEvil
+                      );
                     }
                   }
                 } else {
@@ -1421,22 +1515,50 @@ io.on("connection", async (socket) => {
                     if (userRole.team.includes("evil")) {
                       isEvil = true;
                       type = "evil+unselectable";
-                      pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                      pushPlayer(
+                        toSend,
+                        seenNight,
+                        userID,
+                        userName,
+                        type,
+                        isEvil
+                      );
                     } else {
                       isEvil = null;
                       type = "none";
-                      pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                      pushPlayer(
+                        toSend,
+                        seenNight,
+                        userID,
+                        userName,
+                        type,
+                        isEvil
+                      );
                     }
                   } else {
                     if (socketRole.team.includes("evil")) {
                       if (userRole.team.includes("evil")) {
                         isEvil = true;
                         type = "evil+unselectable";
-                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        pushPlayer(
+                          toSend,
+                          seenNight,
+                          userID,
+                          userName,
+                          type,
+                          isEvil
+                        );
                       } else {
                         isEvil = false;
                         type = "none";
-                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        pushPlayer(
+                          toSend,
+                          seenNight,
+                          userID,
+                          userName,
+                          type,
+                          isEvil
+                        );
                       }
                     }
                     // if socket is executioner
@@ -1444,11 +1566,25 @@ io.on("connection", async (socket) => {
                       if (user == socketRole.target) {
                         isEvil = null;
                         type = "target";
-                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        pushPlayer(
+                          toSend,
+                          seenNight,
+                          userID,
+                          userName,
+                          type,
+                          isEvil
+                        );
                       } else {
                         isEvil = null;
                         type = "none";
-                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        pushPlayer(
+                          toSend,
+                          seenNight,
+                          userID,
+                          userName,
+                          type,
+                          isEvil
+                        );
                       }
                     }
                     // if socket is lawyer
@@ -1456,20 +1592,42 @@ io.on("connection", async (socket) => {
                       if (user == socketRole.client) {
                         isEvil = null;
                         type = "client";
-                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        pushPlayer(
+                          toSend,
+                          seenNight,
+                          userID,
+                          userName,
+                          type,
+                          isEvil
+                        );
                       } else {
                         isEvil = null;
                         type = "none";
-                        pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                        pushPlayer(
+                          toSend,
+                          seenNight,
+                          userID,
+                          userName,
+                          type,
+                          isEvil
+                        );
                       }
                     } else {
                       isEvil = null;
                       type = "none";
-                      pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                      pushPlayer(
+                        toSend,
+                        seenNight,
+                        userID,
+                        userName,
+                        type,
+                        isEvil
+                      );
                     }
                   }
                 }
-              } else if (game.getCycle().includes("Day")) { // Day
+              } else if (game.getCycle().includes("Day")) {
+                // Day
                 if (
                   user.getPlayer().getIsKilled() ||
                   user.getPlayer().getIsLynched()
@@ -1504,11 +1662,25 @@ io.on("connection", async (socket) => {
                     if (userRole.team.includes("evil")) {
                       isEvil = true;
                       type = "evil";
-                      pushPlayer(toSend, seenDay, userID, userName, type, isEvil);
+                      pushPlayer(
+                        toSend,
+                        seenDay,
+                        userID,
+                        userName,
+                        type,
+                        isEvil
+                      );
                     } else {
                       isEvil = false;
                       type = "none";
-                      pushPlayer(toSend, seenDay, userID, userName, type, isEvil);
+                      pushPlayer(
+                        toSend,
+                        seenDay,
+                        userID,
+                        userName,
+                        type,
+                        isEvil
+                      );
                     }
                   }
                   // if socket is executioner
@@ -1516,11 +1688,25 @@ io.on("connection", async (socket) => {
                     if (user == socketRole.target) {
                       isEvil = null;
                       type = "target";
-                      pushPlayer(toSend, seenDay, userID, userName, type, isEvil);
+                      pushPlayer(
+                        toSend,
+                        seenDay,
+                        userID,
+                        userName,
+                        type,
+                        isEvil
+                      );
                     } else {
                       isEvil = null;
                       type = "none";
-                      pushPlayer(toSend, seenDay, userID, userName, type, isEvil);
+                      pushPlayer(
+                        toSend,
+                        seenDay,
+                        userID,
+                        userName,
+                        type,
+                        isEvil
+                      );
                     }
                   }
                   // if socket is lawyer
@@ -1528,11 +1714,25 @@ io.on("connection", async (socket) => {
                     if (user == socketRole.client) {
                       isEvil = null;
                       type = "client";
-                      pushPlayer(toSend, seenDay, userID, userName, type, isEvil);
+                      pushPlayer(
+                        toSend,
+                        seenDay,
+                        userID,
+                        userName,
+                        type,
+                        isEvil
+                      );
                     } else {
                       isEvil = null;
                       type = "none";
-                      pushPlayer(toSend, seenDay, userID, userName, type, isEvil);
+                      pushPlayer(
+                        toSend,
+                        seenDay,
+                        userID,
+                        userName,
+                        type,
+                        isEvil
+                      );
                     }
                   } else {
                     isEvil = null;
@@ -1542,7 +1742,13 @@ io.on("connection", async (socket) => {
                 }
               }
             }
-            console.log(socketUser.getName(), socketRole.team, socketRole.type, "sees", toSend)
+            console.log(
+              socketUser.getName(),
+              socketRole.team,
+              socketRole.type,
+              "sees",
+              toSend
+            );
             socket.emit(emitTo, toSend, game.getCycle(), socketRole);
           }
         }
@@ -1614,12 +1820,10 @@ io.on("connection", async (socket) => {
           "The moon glows. The night has begun",
           "important"
         );
-        
       } else if (game.getCycle().includes("Day")) {
         sendMessage(playerID, true, "========================", "day");
         sendMessage(playerID, true, "The day has begun", "important");
       }
-      
     }
     emitCycleOnce = false;
   }
@@ -1714,7 +1918,9 @@ io.on("connection", async (socket) => {
             // Prevent from spamming message
             emitCycleOnce = true;
             setPlayers(playerID, "clock");
-            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("clearCurrentTarget");
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+              "clearCurrentTarget"
+            );
           }
           initClock(
             game.getTimer(),
@@ -1744,7 +1950,9 @@ io.on("connection", async (socket) => {
             // Increment cycle count
             game.setCycleCount(game.getCycleCount() + 1);
             setPlayers(playerID, "clock");
-            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit("clearCurrentTarget");
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+              "clearCurrentTarget"
+            );
           }
 
           initClock(
