@@ -16,6 +16,8 @@ socket.on("connect", () => {
   });
 });
 
+
+
 animateEyes();
 function animateEyes() {
   var eyes = document.getElementsByClassName("animated-eye");
@@ -23,24 +25,24 @@ function animateEyes() {
     let rand = random(250, 1000);
     let eye = eyes[i];
     setInterval(() => {
-      if (eye.id == "rotate1") {
+      if (eye.id == "eye-frame1") {
         eye.src = "/assets/icons/eye2.svg";
-        eye.id = "rotate2";
-      } else if (eye.id == "rotate2") {
+        eye.id = "eye-frame2";
+      } else if (eye.id == "eye-frame2") {
         eye.src = "/assets/icons/eye3.svg";
-        eye.id = "rotate3";
-      } else if (eye.id == "rotate3") {
+        eye.id = "eye-frame3";
+      } else if (eye.id == "eye-frame3") {
         eye.src = "/assets/icons/eye4.svg";
-        eye.id = "rotate4";
-      } else if (eye.id == "rotate4") {
+        eye.id = "eye-frame4";
+      } else if (eye.id == "eye-frame4") {
         eye.src = "/assets/icons/eye5.svg";
-        eye.id = "rotate5";
-      } else if (eye.id == "rotate5") {
+        eye.id = "eye-frame5";
+      } else if (eye.id == "eye-frame5") {
         eye.src = "/assets/icons/eye6.svg";
-        eye.id = "rotate6";
-      } else if (eye.id == "rotate6") {
+        eye.id = "eye-frame6";
+      } else if (eye.id == "eye-frame6") {
         eye.src = "/assets/icons/eye1.svg";
-        eye.id = "rotate1";
+        eye.id = "eye-frame1";
       }
     }, rand);
   }

@@ -38,6 +38,19 @@ class Player {
     this.abilityTarget = null;
     this.voteTarget = null;
   }
+
+  reset() {
+    // RESET AFTER EVERY NIGHT HAS ENDED
+    this.isProtected = false;
+    this.isTargeted = false;
+    this.isBlocked = false;
+    this.isDisguised = false;
+    this.fakeTeam = "";
+    // RESET AFTER EVERY TIME PLAYER HAS TO TARGET SOME PLAYER (DAY/NIGHT VOTING AND ABILITY)
+    this.abilityTarget = null;
+    this.voteTarget = null;
+  }
+
   getPlayerName() {
     return this.playerName;
   }

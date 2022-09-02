@@ -154,6 +154,34 @@ p {
   flex-direction: column;
 }
 
+.gelatine-light {
+  animation: gelatine-light 0.5s 1;
+}
+@keyframes gelatine-light {
+  from, to { transform: scale(1, 1); }
+  25% { transform: scale(0.95, 1.05); }
+  50% { transform: scale(1.05, 0.95); }
+  75% { transform: scale(0.98, 1.02); }
+}
+.gelatine-medium {
+  animation: gelatine-medium 0.5s 1;
+}
+@keyframes gelatine-medium {
+  from, to { transform: scale(1, 1); }
+  25% { transform: scale(0.9, 1.1); }
+  50% { transform: scale(1.1, 0.9); }
+  75% { transform: scale(0.95, 1.05); }
+}
+.gelatine-hard {
+  animation: gelatine-hard 0.5s 1;
+}
+@keyframes gelatine-hard {
+  from, to { transform: scale(1, 1); }
+  25% { transform: scale(0.75, 1.15); }
+  50% { transform: scale(1.15, 0.75); }
+  75% { transform: scale(0.85, 1.15); }
+}
+
 .title-eyesopen {
   display: flex;
   justify-content: center;
