@@ -98,13 +98,10 @@ app.get("/lobby/:id/join", (req, res) => {
   }
 });
 
-
 // Catch all
 app.get("*", (req, res) => {
   res.sendFile(__dirname + "404.html");
 });
-
-
 
 var jsonData = require("./roles.json");
 
@@ -167,13 +164,28 @@ io.on("connection", async (socket) => {
         if (room.getGame().getUsers().includes(connectedUsers.get(playerID))) {
           if (state.includes("index")) {
             console.log(playerID, "(index) is apart of room", roomCode);
-            socket.emit("apartOfGameIndex", true, room.getGame().getProgress(), roomCode);
+            socket.emit(
+              "apartOfGameIndex",
+              true,
+              room.getGame().getProgress(),
+              roomCode
+            );
           } else if (state.includes("join")) {
             console.log(playerID, "(join) is apart of room", roomCode);
-            socket.emit("apartOfGameJoin", true, room.getGame().getProgress(), roomCode);
+            socket.emit(
+              "apartOfGameJoin",
+              true,
+              room.getGame().getProgress(),
+              roomCode
+            );
           } else if (state.includes("app")) {
             console.log(playerID, "(app) is apart of room", roomCode);
-            socket.emit("apartOfGameApp", true, room.getGame().getProgress(), roomCode);
+            socket.emit(
+              "apartOfGameApp",
+              true,
+              room.getGame().getProgress(),
+              roomCode
+            );
           }
         } else {
           if (state.includes("index")) {
@@ -185,10 +197,20 @@ io.on("connection", async (socket) => {
             );
           } else if (state.includes("join")) {
             console.log(playerID, "(join) is NOT APART of room", roomCode);
-            socket.emit("apartOfGameJoin", false, room.getGame().getProgress(), roomCode);
+            socket.emit(
+              "apartOfGameJoin",
+              false,
+              room.getGame().getProgress(),
+              roomCode
+            );
           } else if (state.includes("app")) {
             console.log(playerID, "(app) is NOT APART of room", roomCode);
-            socket.emit("apartOfGameApp", false, room.getGame().getProgress(), roomCode);
+            socket.emit(
+              "apartOfGameApp",
+              false,
+              room.getGame().getProgress(),
+              roomCode
+            );
           }
         }
         // }
@@ -1045,12 +1067,11 @@ io.on("connection", async (socket) => {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         if (!checkUserInGame(roomCode, playerID)) {
-            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-              "currentRoleCount",
-              rooms.get(roomCode).getRoles().length,
-              rooms.get(roomCode).getUsers().length
-            );
-          
+          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+            "currentRoleCount",
+            rooms.get(roomCode).getRoles().length,
+            rooms.get(roomCode).getUsers().length
+          );
         }
       }
     }
@@ -1232,10 +1253,7 @@ io.on("connection", async (socket) => {
         if (game.getProgress()) {
           if (game.getUsers().includes(connectedUsers.get(playerID))) {
             var player = connectedUsers.get(playerID).getPlayer();
-            socket.emit(
-              "currentPlayerTargets",
-              player
-            );
+            socket.emit("currentPlayerTargets", player);
           }
         }
       }
@@ -1789,7 +1807,7 @@ io.on("connection", async (socket) => {
   var emitPhaseOnce = true;
 
   function messageHandlerForPhases(playerID, game) {
-    var lineSeperator = "--------------------------------"
+    var lineSeperator = "--------------------------------";
     if (emitPhaseOnce) {
       if (game.getPhase().includes("actions")) {
         sendMessage(playerID, true, lineSeperator, "lineSeperator");
@@ -1823,15 +1841,25 @@ io.on("connection", async (socket) => {
   function messageHandlerForCycles(playerID, game) {
     if (emitCycleOnce) {
       if (game.getCycle().includes("Night")) {
-        sendMessage(playerID, true, game.getCycle() + " " + game.getCycleCount(), "timestamp");
+        sendMessage(
+          playerID,
+          true,
+          game.getCycle() + " " + game.getCycleCount(),
+          "timestamp"
+        );
         sendMessage(
           playerID,
           true,
           "The moon glows. The night has begun",
           "important"
-          );
-        } else if (game.getCycle().includes("Day")) {
-          sendMessage(playerID, true, game.getCycle() + " " + game.getCycleCount(), "timestamp");
+        );
+      } else if (game.getCycle().includes("Day")) {
+        sendMessage(
+          playerID,
+          true,
+          game.getCycle() + " " + game.getCycleCount(),
+          "timestamp"
+        );
         sendMessage(playerID, true, "The day has begun", "important");
       }
     }

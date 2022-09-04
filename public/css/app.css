@@ -414,7 +414,7 @@
   color: var(--dark-fg);
   /* top-left | top-right | bottom-right | bottom-left */
   border-radius: 0.75rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
   min-width: 8.5rem;
   max-width: 8.5rem;
 }
