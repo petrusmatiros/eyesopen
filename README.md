@@ -87,8 +87,6 @@ npm build
 
 **Code & Design** <br> Petrus Matiros
 
-**Game UI** <br> Petrus Matiros
-
 **Emojis** <br> <a href="https://openmoji.org/library/" target="_blank">Openmoji</a>
 
 **Icons** <br> <a href="https://www.untitledui.com/icons" target="_blank">Untitled UI</a>

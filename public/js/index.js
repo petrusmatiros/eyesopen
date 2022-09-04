@@ -16,13 +16,29 @@ socket.on("connect", () => {
   });
 });
 
+function animateTitle() {
+  var title = document.getElementsByClassName("title-eyesopen")[0];
 
+  setInterval(() => {
+    if (title.id == "title-frame1") {
+      title.src = "/assets/icons/eyesopen_title2.svg";
+      title.id = "title-frame2";
+    } else if (title.id == "title-frame2") {
+      title.src = "/assets/icons/eyesopen_title3.svg";
+      title.id = "title-frame3";
+    } else if (title.id == "title-frame3") {
+      title.src = "/assets/icons/eyesopen_title1.svg";
+      title.id = "title-frame1";
+    }
+  }, 200);
+}
 
 animateEyes();
 function animateEyes() {
+  animateTitle();
   var eyes = document.getElementsByClassName("animated-eye");
   for (let i = 0; i < eyes.length; i++) {
-    let rand = random(250, 1000);
+    let rand = random(250, 750);
     let eye = eyes[i];
     setInterval(() => {
       if (eye.id == "eye-frame1") {

@@ -154,6 +154,29 @@ p {
   flex-direction: column;
 }
 
+/* Animations  */
+.pop-light1 {
+  animation: pop-light 0.5s 1;
+}
+.pop-light2 {
+  animation: pop-light 1s 1;
+}
+.pop-light3 {
+  animation: pop-light 1.5s 1;
+}
+.pop-light4 {
+  animation: pop-light 2s 1;
+}
+.pop-light5 {
+  animation: pop-light 2.5s 1;
+}
+@keyframes pop-light {
+  from, to { transform: scale(1); }
+  25% { transform: scale(0.98); }
+  50% { transform: scale(1.03); }
+  75% { transform: scale(1.01); }
+}
+
 .gelatine-light {
   animation: gelatine-light 0.5s 1;
 }
@@ -188,6 +211,8 @@ p {
   align-items: center;
   width: 21.875rem;
   margin: 1rem 0 1rem 0;
+  min-height: 7.75rem;
+  max-height: 7.75rem;
 }
 
 .title-dark {
