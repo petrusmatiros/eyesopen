@@ -37,6 +37,7 @@
   /* Player colors */
   --evilteam: hsl(360, 100%, 50%);
   --dead: hsl(0, 0%, 50%);
+  --unselectable: hsl(0, 0%, 80%);
   --ability-target-bg: hsl(360, 100%, 80%);
   --vote-target-bg: hsl(100, 100%, 80%);
   --double-target-bg: linear-gradient(
@@ -46,9 +47,9 @@
   );
   /* In game buttons */
   --ability-button-bg--notused: hsl(360, 100%, 60%);
-  --ability-button-bg--used: hsl(360, 98%, 95%);
+  --ability-button-bg--used: hsl(360, 98%, 80%);
   --vote-button-bg--notused: hsl(100, 100%, 40%);
-  --vote-button-bg--used: hsl(100, 100%, 90%);
+  --vote-button-bg--used: hsl(100, 100%, 70%);
 }
 
 /* Game backgrounds */
@@ -84,7 +85,28 @@
 }
 
 
-
+/* Animations  */
+.pop-light1 {
+  animation: pop-light 0.5s 1;
+}
+.pop-light2 {
+  animation: pop-light 1s 1;
+}
+.pop-light3 {
+  animation: pop-light 1.5s 1;
+}
+.pop-light4 {
+  animation: pop-light 2s 1;
+}
+.pop-light5 {
+  animation: pop-light 2.5s 1;
+}
+@keyframes pop-light {
+  from, to { transform: scale(1); }
+  25% { transform: scale(0.98); }
+  50% { transform: scale(1.03); }
+  75% { transform: scale(1.01); }
+}
 
 /* Day and Night */
 .game-day-bg {
@@ -385,26 +407,87 @@
 .game-player {
   display: flex;
   justify-content: center;
-  align-items: center;
-  flex-direction: row;
+  align-items: stretch;
+  flex-direction: column;
   user-select: none;
   cursor: pointer;
-  background-color: var(--light-bg);
   color: var(--dark-fg);
-  padding: 0.6em;
+  /* top-left | top-right | bottom-right | bottom-left */
   border-radius: 0.75rem;
   margin-bottom: 0.75rem;
-  max-width: 7.5rem;
-  min-width: 7.5rem;
-  max-height: 1rem;
-  min-height: 1rem;
+  min-width: 8.5rem;
+  max-width: 8.5rem;
 }
 
-.game-player:focus {
-  transform: scale(0.90);
-  background-color: hsl(194, 94%, 97%);
-  outline: 4px solid var(--dark-fg);
+/* Game buttons */
+.game-player-buttons-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  font-size: 1rem;
+  font-weight: 400;
 }
+
+.game-button {
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  cursor: pointer;
+  vertical-align: center;
+  text-align: center;
+  color: var(--dark-fg);
+  width: 100%;
+  border-radius: 0rem 0rem 0.75rem 0.75rem;
+  padding: 0.35em 0.55em 0.35em 0.55em;
+}
+
+.game-button-ability {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  background-color: var(--ability-button-bg--used);
+}
+
+.game-button-vote {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  background-color: var(--vote-button-bg--used);
+}
+
+.game-button-state {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.game-button-unselectable {
+  background-color: var(--unselectable);
+}
+
+.game-button-dead {
+  background-color: var(--dead);
+
+}
+
+.game-player-name-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  background-color: var(--light-fg);
+  padding: 0.35em;
+  /* top-left | top-right | bottom-right | bottom-left */
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+
 
 .game-player-hidden {
   display: none !important;
@@ -416,10 +499,11 @@
 .game-player-dead {
   cursor: not-allowed;
   background-color: var(--dead);
+  opacity: 30%;
 }
 .game-player-unselectable {
   cursor: not-allowed;
-  opacity: 30%;
+  background-color: var(--unselectable);
 }
 
 #game-show-mark {
@@ -441,55 +525,7 @@
   margin-left: 0.25rem;
 }
 
-.game-buttons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  font-weight: 700;
-  font-size: 1.15rem;
-  /* margin: 0 0.5rem 0 0.5rem; */
-}
 
-.game-button-state {
-}
-.game-button-text {
-  margin-left: 0.35rem;
-}
-
-/* Game buttons */
-
-
-.game-button {
-  user-select: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  cursor: pointer;
-  vertical-align: center;
-  text-align: center;
-  color: var(--dark-fg);
-  padding: 0.5em 1em 0.5em 1em;
-  border-radius: 0.65rem;
-}
-
-.game-button-ability {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  background-color: var(--ability-button-bg--notused);
-}
-
-.game-button-vote {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  background-color: var(--vote-button-bg--notused);
-  margin-left: 1.5rem;
-}
 
 /* Cemetery */
 .game-cemetery {

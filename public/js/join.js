@@ -175,6 +175,7 @@ function checkDirectName() {
           roomFull();
           full = true;
         } else if (status == "inProgress") {
+          // ! FIX THIS
           // socket.emit("checkUserApartOfGame", getPlayerID(), "join");
           // socket.on("apartOfGameJoin", (apartOfGame) => {
           //   if (apartOfGame) {
@@ -185,7 +186,6 @@ function checkDirectName() {
           inProgress = true;
         }
       });
-      console.log("WHAT IS INPROGRESS ", inProgress)
       if (full == false && inProgress == false) {
         join(room);
       }

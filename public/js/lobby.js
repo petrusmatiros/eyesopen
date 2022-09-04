@@ -38,7 +38,7 @@ socket.on("connect", () => {
     } else {
       socket.emit("checkUserApartOfGame", getPlayerID(), "app");
 
-      socket.on("apartOfGameApp", (apartOfGame, inProgress) => {
+      socket.on("apartOfGameApp", (apartOfGame, inProgress, code) => {
         if (
           (!apartOfGame && inProgress == false) ||
           (apartOfGame && inProgress == true)
@@ -48,8 +48,7 @@ socket.on("connect", () => {
               window.location.href += "/game";
             }
           } else if (apartOfGame == false && inProgress == true) {
-            var URL = window.location.href.replace("/game", "");
-            window.location.href = URL;
+            window.location.href = lobby + code + "/inProgress";
           }
 
           if (window.location.href !== lobby) {
@@ -260,6 +259,8 @@ function startGame() {
 }
 
 socket.on("ready-status-lobby", (users) => {
+  var lobbyButtons = document.getElementsByClassName("lobby-button-container")[0];
+  lobbyButtons.style.display = "flex";
   for (var i = 0; i < users.length; i++) {
     if (users[i].readyLobby) {
       var status = document.getElementById(users[i].playerID).parentElement

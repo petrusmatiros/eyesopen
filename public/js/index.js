@@ -248,7 +248,7 @@ function checkRoomCode() {
     roomCodeError();
   } else {
     socket.emit("checkUserApartOfGame", getPlayerID(), "index");
-    socket.on("apartOfGameIndex", (apartOfGame, inProgress) => {
+    socket.on("apartOfGameIndex", (apartOfGame, inProgress, code) => {
       if (apartOfGame) {
         roomCodeCorrect();
         join(inputVal);

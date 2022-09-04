@@ -57,7 +57,7 @@ socket.on("connect", () => {
       }
       socket.emit("checkUserApartOfGame", getPlayerID(), "app");
 
-      socket.on("apartOfGameApp", (apartOfGame, inProgress) => {
+      socket.on("apartOfGameApp", (apartOfGame, inProgress, code) => {
         console.log("apartOfGame:" + apartOfGame);
         console.log("inProgress:" + inProgress);
         if (apartOfGame && inProgress == true) {
@@ -71,14 +71,11 @@ socket.on("connect", () => {
             loadSavedMessages(messages, cycle);
           });
         } else if (apartOfGame == false) {
-          var URL = window.location.href.replace("/game", "");
-          window.location.href = URL;
-          console.log("URL:" + URL);
+          window.location.href = lobby + code + "/";
         }
       });
       socket.on("resetURL", () => {
-        var URL = window.location.href.replace("/game", "");
-        window.location.href = URL;
+        window.location.href = lobby + code + "/";
       });
     }
   });
@@ -152,13 +149,27 @@ socket.on("recieveMessage", (message, type, cycle) => {
   } else if (type.includes("extra")) {
     messageType += "extra";
     newMessage.classList.add(messageType);
-  }
-
-  if (cycle.includes("day")) {
-    messageType += "day";
-    newMessage.classList.add(messageType);
-  } else if (cycle.includes("night")) {
-    newMessage.classList.add(messageType);
+  } else if (type.includes("timestamp")) {
+    if (cycle.includes("day")) {
+      messageType += "day";
+      newMessage.classList.add(messageType);
+    } else if (cycle.includes("night")) {
+      messageType += "night";
+      newMessage.classList.add(messageType);
+    }
+    newMessage.style.justifyContent = "center";
+    newMessage.style.alignItems = "center";
+    newMessage.style.fontWeight = "600";
+  } else if (type.includes("lineSeperator")) {
+    if (cycle.includes("day")) {
+      messageType += "day";
+      newMessage.classList.add(messageType);
+    } else if (cycle.includes("night")) {
+      messageType += "night";
+      newMessage.classList.add(messageType);
+    }
+    newMessage.style.justifyContent = "center";
+    newMessage.style.alignItems = "center";
   }
 
   newMessage.innerText = message;
@@ -213,151 +224,34 @@ function loadSavedMessages(messages, cycle) {
   }
 }
 
-// TARGET values
-var abilityTarget = null;
-var voteTarget = null;
-var currentTarget = null;
-
-socket.on("clearCurrentTarget", () => {
-  if (currentTarget !== null) {
-    currentTarget.blur();
-    currentTarget = null;
-    console.log("currentTarget cleared, cycle has passed", currentTarget);
-  }
-});
-
-function selectPlayer(element, canPress = false) {
-  if (canPress) {
-    document.getElementById("game-players-container").blur();
-    element.focus();
-    currentTarget = element;
-    console.log("currentTarget:", currentTarget);
-  }
-}
-
-function validSelection(element, cycle, socketRole) {
-    var playersContainer = document.getElementById("game-players-container");
-    var panelButtons = document.getElementById("game-buttons");
-    var abilityButton = panelButtons.children[0];
-    var voteButton = panelButtons.children[1];
-    if (element.id.includes("game-button-ability")) {
-      element.classList.add();
-    } else if (element.id.includes("game-button-vote")) {
-    }
-  
-
-  if (cycle.includes("Night")) {
-    if (socketRole.hasNightAbility) {
-      if (socketRole.team.includes("evil")) {
-      } else {
-      }
-      if (socketRole.hasOwnProperty("selfUsage")) {
-        if (socketRole.selfUsage > 0) {
-        } else {
-        }
-      } else {
-      }
-    } else {
-    }
-  } else if (cycle.includes("Day")) {
-  }
-}
-
 // ! FIX THIS
-// // Clear current target when not in focus
-// if (currentTarget !== null) {
-//   if ($(`#${currentTarget.id}`).is(":focus") == false) {
-//     currentTarget = null;
-//     console.log("cleared:", currentTarget);
-//   }
-// }
 
-// currentTarget begins as null
-// focusing a game-player -> currentTarget = that element id (playerID)
-
-// unfocusing makes action buttons unavilable (but currentTarget remains);
-// if one of the respective targets are set, then the respective button is available
-// focusing another game-player or the same one, just sets it to that element
-// if action is taken, and if one of either targets are not null (server side)
-// then keep the focus of that player, and do NOT clear the currentTarget
+// press respective button to set player target
+// click at the same area, remove it, click on new, set new target
+// display green ,red or gradient depending on choice
 function actionHandler(element) {
+  var button = element;
+  var buttonsContainer = element.parentElement;
+  var playerElement = buttonsContainer.parentElement;
+  var playerNameContainer = playerElement.children[0];
+  var playerName = playerNameContainer.children[1];
+  console.log("action", button.innerText, "taken on", playerName.innerText);
 
-  // ? Sustain focus
-  if (currentTarget != null) {
-    currentTarget.focus();
-  }
-
-  console.log("action taken");
-
-  // Could be problem with setPanelButtons being called every second
   socket.emit("requestActionData", getPlayerID());
   socket.on("fetchedActionData", (cycle, socketRole) => {
-    
-
-    // pressed action button
-    validSelection(element, cycle, socketRole);
     // socket.emit("checkValidSelectedPlayer", getPlayerID());
     // socket.on("isValidSelectedPlayer", (isValid) => {
     // });
 
     socket.emit("checkPlayerTargets", getPlayerID());
-    socket.on("currentPlayerTargets",(abilityTarget, voteTarget, socketPlayer) => {
-        if (socketPlayer.role.hasNightAbility) {
-        }
-        if (abilityTarget == socketPlayer.abilityTarget) {
-          // clear ability button
-          if (socketPlayer.role.hasOwnProperty(selfUsage)) {
-          }
-        }
-      }
-    );
+    // socket.on("currentPlayerTargets", (socketPlayer) => {
+    //   // has ability target
   });
 }
 
 socket.on("setPlayersClock", (players, cycle, socketRole) => {
   setPlayers(players, cycle, socketRole);
-  setPanelButtons(cycle, socketRole);
 });
-
-function setPanelButtons(cycle, socketRole) {
-  var panelButtons = document.getElementById("game-buttons");
-  var abilityButton = panelButtons.children[0];
-  var voteButton = panelButtons.children[1];
-
-  if (cycle.includes("Night")) {
-    if (socketRole.hasNightAbility) {
-      abilityButton.style.display = "flex";
-      abilityButton.setAttribute("onclick", "actionHandler(this)");
-      if (socketRole.team.includes("evil")) {
-        voteButton.style.display = "flex";
-        voteButton.setAttribute("onclick", "actionHandler(this)");
-        voteButton.style.marginLeft = "1.5rem";
-      } else {
-        voteButton.style.display = "none";
-        voteButton.setAttribute("onclick", "");
-        voteButton.style.marginLeft = "0";
-      }
-    } else {
-      abilityButton.style.display = "none";
-      abilityButton.setAttribute("onclick", "");
-      if (socketRole.team.includes("evil")) {
-        voteButton.style.display = "flex";
-        voteButton.setAttribute("onclick", "actionHandler(this)");
-        voteButton.style.marginLeft = "1.5rem";
-      } else {
-        voteButton.style.display = "none";
-        voteButton.setAttribute("onclick", "");
-        voteButton.style.marginLeft = "0";
-      }
-    }
-  } else if (cycle.includes("Day")) {
-    abilityButton.style.display = "none";
-    abilityButton.setAttribute("onclick", "");
-    voteButton.style.display = "flex";
-    voteButton.setAttribute("onclick", "actionHandler(this)");
-    voteButton.style.marginLeft = "1.5rem";
-  }
-}
 
 function setPlayers(players, cycle, socketRole) {
   var playersContainer = document.getElementById("game-players-container");
@@ -378,31 +272,44 @@ function setPlayers(players, cycle, socketRole) {
     }
 
     currentElement.classList.remove("game-player-hidden");
+    // ID
     currentElement.id = players[i].userID;
-    currentElement.children[1].innerText = players[i].userName;
+    // NAME
+    var element = currentElement.children[0];
+    var buttons = currentElement.children[1];
+    var abilityButton = buttons.children[0];
+    var stateButton = buttons.children[1];
+    var voteButton = buttons.children[2];
+    element.children[1].innerText = players[i].userName;
 
     if (players[i].userID == getPlayerID()) {
       currentElement.style.fontWeight = 700;
       if (cycle.includes("Night")) {
         // Dead
         if (players[i].type.includes("dead")) {
-          currentElement.setAttribute("onclick", "selectPlayer(this, false)");
-          currentElement.removeAttribute("tabIndex");
+          abilityButton.setAttribute("onclick", "");
+          voteButton.setAttribute("onclick", "");
+          abilityButton.style.display = "none";
+          voteButton.style.display = "none";
+          stateButton.style.display = "flex";
+          stateButton.classList.add("game-button-dead");
+          stateButton.classList.remove("game-button-unselectable");
+          stateButton.innerText = "dead";
           // if dead
-          if (players[i].type.includes("evil")) {
+          if (players[i].type == "evil") {
             // dead evil
             currentElement.classList.add(
               "game-player-evil",
               "game-player-dead"
             );
-            currentElement.classList.remove("game-player-unselectable");
+            element.classList.remove("game-player-unselectable");
           } else {
             // dead everyone else
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove(
               "game-player-evil",
-              "game-player-unselectable"
             );
+            element.classList.remove("game-player-unselectable");
           }
         } else {
           // not dead
@@ -411,118 +318,151 @@ function setPlayers(players, cycle, socketRole) {
           currentElement.classList.remove("game-player-dead");
 
           if (socketRole.type.includes("surgeon")) {
-            if (players[i].type.includes("evil+unselectable")) {
+            if (players[i].type == "evil+unselectable") {
               currentElement.classList.add(
                 "game-player-evil",
-                "game-player-unselectable"
               );
-              currentElement.setAttribute(
-                "onclick",
-                "selectPlayer(this, false)"
-              );
-              currentElement.removeAttribute("tabIndex");
-            } else if (players[i].type.includes("evil")) {
+              element.classList.add("game-player-unselectable");
+              abilityButton.setAttribute("onclick", "");
+              voteButton.setAttribute("onclick", "");
+              abilityButton.style.display = "none";
+              voteButton.style.display = "none";
+              stateButton.style.display = "flex";
+              stateButton.classList.remove("game-button-dead");
+              stateButton.classList.add("game-button-unselectable");
+              stateButton.innerText = "unselectable";
+            } else if (players[i].type == "evil") {
               currentElement.classList.add("game-player-evil");
-              currentElement.classList.remove("game-player-unselectable");
-              currentElement.setAttribute(
-                "onclick",
-                "selectPlayer(this, true)"
-              );
-              currentElement.setAttribute("tabIndex", "0");
+              element.classList.remove("game-player-unselectable");
+              abilityButton.setAttribute("onclick", "actionHandler(this)");
+              voteButton.setAttribute("onclick", "");
+              abilityButton.style.display = "flex";
+              voteButton.style.display = "none";
+              stateButton.style.display = "none";
+              stateButton.classList.remove("game-button-dead");
+              stateButton.classList.remove("game-button-unselectable");
             }
           } else if (socketRole.type.includes("doctor")) {
-            if (players[i].type.includes("unselectable")) {
-              currentElement.classList.add("game-player-unselectable");
-              currentElement.setAttribute(
-                "onclick",
-                "selectPlayer(this, false)"
-              );
-              currentElement.removeAttribute("tabIndex");
-            } else if (players[i].type.includes("none")) {
-              currentElement.classList.remove("game-player-unselectable");
-              currentElement.setAttribute(
-                "onclick",
-                "selectPlayer(this, true)"
-              );
-              currentElement.setAttribute("tabIndex", "0");
+            if (players[i].type == "unselectable") {
+              element.classList.add("game-player-unselectable");
+              abilityButton.setAttribute("onclick", "");
+              voteButton.setAttribute("onclick", "");
+              abilityButton.style.display = "none";
+              voteButton.style.display = "none";
+              stateButton.style.display = "flex";
+              stateButton.classList.remove("game-button-dead");
+              stateButton.classList.add("game-button-unselectable");
+              stateButton.innerText = "unselectable";
+            } else if (players[i].type == "none") {
+              element.classList.remove("game-player-unselectable");
+              abilityButton.setAttribute("onclick", "actionHandler(this)");
+              voteButton.setAttribute("onclick", "");
+              abilityButton.style.display = "flex";
+              voteButton.style.display = "none";
+              stateButton.style.display = "none";
+              stateButton.classList.remove("game-button-dead");
+              stateButton.classList.remove("game-button-unselectable");
             }
           } else {
             // NOT SPECIAL roles
             // Evil, None
-            if (players[i].type.includes("evil+unselectable")) {
+            if (players[i].type == "evil+unselectable") {
               currentElement.classList.add(
                 "game-player-evil",
-                "game-player-unselectable"
               );
-              currentElement.setAttribute(
-                "onclick",
-                "selectPlayer(this, false)"
-              );
-              currentElement.removeAttribute("tabIndex");
-            } else if (players[i].type.includes("evil")) {
+              element.classList.add("game-player-unselectable");
+              abilityButton.setAttribute("onclick", "");
+              voteButton.setAttribute("onclick", "");
+              abilityButton.style.display = "none";
+              voteButton.style.display = "none";
+              stateButton.style.display = "flex";
+              stateButton.classList.remove("game-button-dead");
+              stateButton.classList.add("game-button-unselectable");
+              stateButton.innerText = "unselectable";
+            } else if (players[i].type == "evil") {
               currentElement.classList.add("game-player-evil");
-              currentElement.classList.remove("game-player-unselectable");
-              currentElement.setAttribute(
-                "onclick",
-                "selectPlayer(this, false)"
-              );
-              currentElement.removeAttribute("tabIndex");
-            } else if (players[i].type.includes("unselectable")) {
+              element.classList.remove("game-player-unselectable");
+              abilityButton.setAttribute("onclick", "");
+              voteButton.setAttribute("onclick", "");
+              abilityButton.style.display = "none";
+              voteButton.style.display = "none";
+              stateButton.style.display = "flex";
+              stateButton.classList.remove("game-button-dead");
+              stateButton.classList.add("game-button-unselectable");
+              stateButton.innerText = "unselectable";
+            } else if (players[i].type == "unselectable") {
               currentElement.classList.remove("game-player-evil");
-              currentElement.classList.add("game-player-unselectable");
-              currentElement.setAttribute(
-                "onclick",
-                "selectPlayer(this, false)"
-              );
-              currentElement.removeAttribute("tabIndex");
-            } else if (players[i].type.includes("none")) {
+              element.classList.add("game-player-unselectable");
+              abilityButton.setAttribute("onclick", "");
+              voteButton.setAttribute("onclick", "");
+              abilityButton.style.display = "none";
+              voteButton.style.display = "none";
+              stateButton.style.display = "flex";
+              stateButton.classList.remove("game-button-dead");
+              stateButton.classList.add("game-button-unselectable");
+              stateButton.innerText = "unselectable";
+            } else if (players[i].type == "none") {
               currentElement.classList.remove(
                 "game-player-evil",
-                "game-player-unselectable"
               );
-              currentElement.setAttribute(
-                "onclick",
-                "selectPlayer(this, false)"
-              );
-              currentElement.removeAttribute("tabIndex");
+              element.classList.remove("game-player-unselectable");
+              abilityButton.setAttribute("onclick", "");
+              voteButton.setAttribute("onclick", "");
+              abilityButton.style.display = "none";
+              voteButton.style.display = "none";
+              stateButton.style.display = "flex";
+              stateButton.classList.remove("game-button-dead");
+              stateButton.classList.add("game-button-unselectable");
+              stateButton.innerText = "unselectable";
             }
           }
         }
       } else if (cycle.includes("Day")) {
         // Dead
         if (players[i].type.includes("dead")) {
-          currentElement.setAttribute("onclick", "selectPlayer(this, false)");
-          currentElement.removeAttribute("tabIndex");
+          abilityButton.setAttribute("onclick", "");
+          voteButton.setAttribute("onclick", "");
+          abilityButton.style.display = "none";
+          voteButton.style.display = "none";
+          stateButton.style.display = "flex";
+          stateButton.classList.add("game-button-dead");
+          stateButton.classList.remove("game-button-unselectable");
+          stateButton.innerText = "dead";
           // if dead
-          if (players[i].type.includes("evil")) {
+          if (players[i].type == "evil") {
             // dead evil
             currentElement.classList.add(
               "game-player-evil",
               "game-player-dead"
             );
-            currentElement.classList.remove("game-player-unselectable");
+            element.classList.remove("game-player-unselectable");
           } else {
             // dead everyone else
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove(
               "game-player-evil",
-              "game-player-unselectable"
             );
+            element.classList.remove("game-player-unselectable");
           }
         } else {
-          currentElement.setAttribute("onclick", "selectPlayer(this, true)");
-          currentElement.setAttribute("tabIndex", "0");
+          abilityButton.setAttribute("onclick", "");
+          voteButton.setAttribute("onclick", "actionHandler(this)");
+          abilityButton.style.display = "none";
+          voteButton.style.display = "flex";
+          stateButton.style.display = "none";
+          stateButton.classList.remove("game-button-dead");
+          stateButton.classList.remove("game-button-unselectable");
           // not dead
           currentElement.classList.remove("game-player-dead");
           // Evil (variations), None
-          if (players[i].type.includes("evil")) {
+          if (players[i].type == "evil") {
             currentElement.classList.add("game-player-evil");
-            currentElement.classList.remove("game-player-unselectable");
-          } else if (players[i].type.includes("none")) {
+            element.classList.remove("game-player-unselectable");
+          } else if (players[i].type == "none") {
             currentElement.classList.remove(
               "game-player-evil",
-              "game-player-unselectable"
             );
+            element.classList.remove("game-player-unselectable");
           }
         }
       }
@@ -532,158 +472,197 @@ function setPlayers(players, cycle, socketRole) {
       if (cycle.includes("Night")) {
         // Dead
         if (players[i].type.includes("dead")) {
-          currentElement.setAttribute("onclick", "selectPlayer(this, false)");
-          currentElement.removeAttribute("tabIndex");
+          abilityButton.setAttribute("onclick", "");
+          voteButton.setAttribute("onclick", "");
+          abilityButton.style.display = "none";
+          voteButton.style.display = "none";
+          stateButton.style.display = "flex";
+          stateButton.classList.add("game-button-dead");
+          stateButton.classList.remove("game-button-unselectable");
+          stateButton.innerText = "dead";
           // if dead
-          if (players[i].type.includes("evil")) {
+          if (players[i].type == "evil") {
             // dead evil
             currentElement.classList.add(
               "game-player-evil",
               "game-player-dead"
             );
-            currentElement.classList.remove("game-player-unselectable");
+            element.classList.remove("game-player-unselectable");
           } else {
             // dead everyone else
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove(
               "game-player-evil",
-              "game-player-unselectable"
             );
+            element.classList.remove("game-player-unselectable");
           }
         } else {
           // ! FIX THIS (everyone, night)
 
           if (socketRole.hasNightAbility) {
-            if (socketRole.team.includes("evil")) {
+            if (socketRole.team == "evil") {
               if (socketRole.type.includes("surgeon")) {
-                if (players[i].type.includes("evil")) {
+                if (players[i].type == "evil") {
                   currentElement.classList.add("game-player-evil");
-                  currentElement.classList.remove("game-player-unselectable");
-                  currentElement.setAttribute(
-                    "onclick",
-                    "selectPlayer(this, true)"
-                  );
-                  currentElement.setAttribute("tabIndex", "0");
-                } else if (players[i].type.includes("evil+unselectable")) {
+                  element.classList.remove("game-player-unselectable");
+                  abilityButton.setAttribute("onclick", "actionHandler(this)");
+                  voteButton.setAttribute("onclick", "");
+                  abilityButton.style.display = "flex";
+                  voteButton.style.display = "none";
+                  stateButton.style.display = "none";
+                  stateButton.classList.remove("game-button-dead");
+                  stateButton.classList.remove("game-button-unselectable");
+                } else if (players[i].type == "evil+unselectable") {
                   currentElement.classList.add(
                     "game-player-evil",
-                    "game-player-unselectable"
                   );
-                  currentElement.setAttribute(
-                    "onclick",
-                    "selectPlayer(this, false)"
-                  );
-                  currentElement.removeAttribute("tabIndex");
+                  element.classList.remove("game-player-unselectable");
+                  abilityButton.setAttribute("onclick", "");
+                  voteButton.setAttribute("onclick", "");
+                  abilityButton.style.display = "none";
+                  voteButton.style.display = "none";
+                  stateButton.style.display = "flex";
+                  stateButton.classList.remove("game-button-dead");
+                  stateButton.classList.add("game-button-unselectable");
+                  stateButton.innerText = "unselectable";
                 } else {
                   currentElement.classList.remove(
                     "game-player-evil",
-                    "game-player-unselectable"
                   );
-                  currentElement.setAttribute(
-                    "onclick",
-                    "selectPlayer(this, true)"
-                  );
-                  currentElement.setAttribute("tabIndex", "0");
+                  element.classList.remove("game-player-unselectable");
+                  abilityButton.setAttribute("onclick", "");
+                  voteButton.setAttribute("onclick", "actionHandler(this)");
+                  abilityButton.style.display = "none";
+                  voteButton.style.display = "flex";
+                  stateButton.style.display = "none";
+                  stateButton.classList.remove("game-button-dead");
+                  stateButton.classList.remove("game-button-unselectable");
                 }
               }
               if (socketRole.type.includes("witch")) {
-                if (players[i].type.includes("evil")) {
+                if (players[i].type == "evil") {
                   currentElement.classList.add("game-player-evil");
-                  currentElement.classList.remove("game-player-unselectable");
-                  currentElement.setAttribute(
-                    "onclick",
-                    "selectPlayer(this, false)"
-                  );
-                  currentElement.removeAttribute("tabIndex");
-                } else if (players[i].type.includes("evil+unselectable")) {
+                  element.classList.remove("game-player-unselectable");
+                  abilityButton.setAttribute("onclick", "");
+                  voteButton.setAttribute("onclick", "");
+                  abilityButton.style.display = "none";
+                  voteButton.style.display = "none";
+                  stateButton.style.display = "flex";
+                  stateButton.classList.remove("game-button-dead");
+                  stateButton.classList.add("game-button-unselectable");
+                  stateButton.innerText = "unselectable";
+                } else if (players[i].type == "evil+unselectable") {
                   currentElement.classList.add(
                     "game-player-evil",
-                    "game-player-unselectable"
                   );
-                  currentElement.setAttribute(
-                    "onclick",
-                    "selectPlayer(this, false)"
-                  );
-                  currentElement.removeAttribute("tabIndex");
+                  element.classList.add("game-player-unselectable");
+                  abilityButton.setAttribute("onclick", "");
+                  voteButton.setAttribute("onclick", "");
+                  abilityButton.style.display = "none";
+                  voteButton.style.display = "none";
+                  stateButton.style.display = "flex";
+                  stateButton.classList.remove("game-button-dead");
+                  stateButton.classList.add("game-button-unselectable");
+                  stateButton.innerText = "unselectable";
                 } else {
                   currentElement.classList.remove(
                     "game-player-evil",
-                    "game-player-unselectable"
                   );
-                  currentElement.setAttribute(
-                    "onclick",
-                    "selectPlayer(this, true)"
-                  );
-                  currentElement.setAttribute("tabIndex", "0");
+                  element.classList.remove("game-player-unselectable");
+                  abilityButton.setAttribute("onclick", "actionHandler(this)");
+                  voteButton.setAttribute("onclick", "actionHandler(this)");
+                  abilityButton.style.display = "flex";
+                  voteButton.style.display = "flex";
+                  stateButton.style.display = "none";
+                  stateButton.classList.remove("game-button-dead");
+                  stateButton.classList.remove("game-button-unselectable");
                 }
               }
               if (socketRole.type.includes("framer")) {
-                if (players[i].type.includes("evil")) {
+                if (players[i].type == "evil") {
                   currentElement.classList.add("game-player-evil");
-                  currentElement.classList.remove("game-player-unselectable");
-                  currentElement.setAttribute(
-                    "onclick",
-                    "selectPlayer(this, false)"
-                  );
-                  currentElement.removeAttribute("tabIndex");
-                } else if (players[i].type.includes("evil+unselectable")) {
+                  element.classList.remove("game-player-unselectable");
+                  abilityButton.setAttribute("onclick", "");
+                  voteButton.setAttribute("onclick", "");
+                  abilityButton.style.display = "none";
+                  voteButton.style.display = "none";
+                  stateButton.style.display = "flex";
+                  stateButton.classList.remove("game-button-dead");
+                  stateButton.classList.add("game-button-unselectable");
+                  stateButton.innerText = "unselectable";
+                } else if (players[i].type == "evil+unselectable") {
                   currentElement.classList.add(
                     "game-player-evil",
-                    "game-player-unselectable"
                   );
-                  currentElement.setAttribute(
-                    "onclick",
-                    "selectPlayer(this, false)"
-                  );
-                  currentElement.removeAttribute("tabIndex");
+                  element.classList.add("game-player-unselectable");
+                  abilityButton.setAttribute("onclick", "");
+                  voteButton.setAttribute("onclick", "");
+                  abilityButton.style.display = "none";
+                  voteButton.style.display = "none";
+                  stateButton.style.display = "flex";
+                  stateButton.classList.remove("game-button-dead");
+                  stateButton.classList.add("game-button-unselectable");
+                  stateButton.innerText = "unselectable";
                 } else {
                   currentElement.classList.remove(
                     "game-player-evil",
-                    "game-player-unselectable"
                   );
-                  currentElement.setAttribute(
-                    "onclick",
-                    "selectPlayer(this, true)"
-                  );
-                  currentElement.setAttribute("tabIndex", "0");
+                  element.classList.remove("game-player-unselectable");
+                  abilityButton.setAttribute("onclick", "actionHandler(this)");
+                  voteButton.setAttribute("onclick", "actionHandler(this)");
+                  abilityButton.style.display = "flex";
+                  voteButton.style.display = "flex";
+                  stateButton.style.display = "none";
+                  stateButton.classList.remove("game-button-dead");
+                  stateButton.classList.remove("game-button-unselectable");
                 }
               }
             } else {
-              currentElement.setAttribute(
-                "onclick",
-                "selectPlayer(this, true)"
-              );
-              currentElement.setAttribute("tabIndex", "0");
+              abilityButton.setAttribute("onclick", "actionHandler(this)");
+              voteButton.setAttribute("onclick", "");
+              abilityButton.style.display = "flex";
+              voteButton.style.display = "none";
+              stateButton.style.display = "none";
+              stateButton.classList.remove("game-button-dead");
+              stateButton.classList.remove("game-button-unselectable");
             }
           } else {
-            if (socketRole.team.includes("evil")) {
-              if (players[i].type.includes("evil+unselectable")) {
+            if (socketRole.team == "evil") {
+              if (players[i].type == "evil+unselectable") {
                 currentElement.classList.add(
                   "game-player-evil",
-                  "game-player-unselectable"
                 );
-                currentElement.setAttribute(
-                  "onclick",
-                  "selectPlayer(this, false)"
-                );
-                currentElement.removeAttribute("tabIndex");
-              } else if (players[i].type.includes("none")) {
+                element.classList.add("game-player-unselectable");
+                abilityButton.setAttribute("onclick", "");
+                voteButton.setAttribute("onclick", "");
+                abilityButton.style.display = "none";
+                voteButton.style.display = "none";
+                stateButton.style.display = "flex";
+                stateButton.classList.remove("game-button-dead");
+                stateButton.classList.add("game-button-unselectable");
+                stateButton.innerText = "unselectable";
+              } else if (players[i].type == "none") {
                 currentElement.classList.remove(
                   "game-player-evil",
-                  "game-player-unselectable"
                 );
-                currentElement.setAttribute(
-                  "onclick",
-                  "selectPlayer(this, true)"
-                );
-                currentElement.setAttribute("tabIndex", "0");
+                element.classList.remove("game-player-unselectable");
+                abilityButton.setAttribute("onclick", "");
+                voteButton.setAttribute("onclick", "actionHandler(this)");
+                abilityButton.style.display = "none";
+                voteButton.style.display = "flex";
+                stateButton.style.display = "none";
+                stateButton.classList.remove("game-button-dead");
+                stateButton.classList.remove("game-button-unselectable");
               }
             } else {
-              currentElement.setAttribute(
-                "onclick",
-                "selectPlayer(this, false)"
-              );
-              currentElement.removeAttribute("tabIndex");
+              abilityButton.setAttribute("onclick", "");
+              voteButton.setAttribute("onclick", "");
+              abilityButton.style.display = "none";
+              voteButton.style.display = "none";
+              stateButton.style.display = "flex";
+              stateButton.classList.remove("game-button-dead");
+              stateButton.classList.add("game-button-unselectable");
+              stateButton.innerText = "unselectable";
             }
           }
 
@@ -692,63 +671,73 @@ function setPlayers(players, cycle, socketRole) {
           currentElement.classList.remove("game-player-dead");
           // Client, Target, Evil (variations), None
           if (players[i].type.includes("client")) {
-            currentElement.children[0].id = "game-show-mark";
-            currentElement.children[0].src = "/assets/icons/briefcase.svg";
+            element.children[0].id = "game-show-mark";
+            element.children[0].src = "/assets/icons/briefcase.svg";
           } else if (players[i].type.includes("target")) {
-            currentElement.children[0].id = "game-show-mark";
-            currentElement.children[0].src = "/assets/icons/target.svg";
-          }
-          else if (players[i].type.includes("unselectable")) {
+            element.children[0].id = "game-show-mark";
+            element.children[0].src = "/assets/icons/target.svg";
+          } else if (players[i].type == "unselectable") {
             currentElement.classList.remove("game-player-evil");
-            currentElement.classList.add("game-player-unselectable");
-          } else if (players[i].type.includes("none")) {
+            element.classList.add("game-player-unselectable");
+          } else if (players[i].type == "none") {
             currentElement.classList.remove(
               "game-player-evil",
-              "game-player-unselectable"
             );
+            element.classList.remove("game-player-unselectable");
           }
         }
       } else if (cycle.includes("Day")) {
         // Dead
         if (players[i].type.includes("dead")) {
-          currentElement.setAttribute("onclick", "selectPlayer(this, false)");
-          currentElement.removeAttribute("tabIndex");
+          abilityButton.setAttribute("onclick", "");
+          voteButton.setAttribute("onclick", "");
+          abilityButton.style.display = "none";
+          voteButton.style.display = "none";
+          stateButton.style.display = "flex";
+          stateButton.classList.add("game-button-dead");
+          stateButton.classList.remove("game-button-unselectable");
+          stateButton.innerText = "dead";
           // if dead
-          if (players[i].type.includes("evil")) {
+          if (players[i].type == "evil") {
             // dead evil
             currentElement.classList.add(
               "game-player-evil",
               "game-player-dead"
             );
-            currentElement.classList.remove("game-player-unselectable");
+            element.classList.remove("game-player-unselectable");
           } else {
             // dead everyone else
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove(
               "game-player-evil",
-              "game-player-unselectable"
             );
+            element.classList.remove("game-player-unselectable");
           }
         } else {
-          currentElement.setAttribute("onclick", "selectPlayer(this, true)");
-          currentElement.setAttribute("tabIndex", "0");
+          abilityButton.setAttribute("onclick", "");
+          voteButton.setAttribute("onclick", "actionHandler(this)");
+          abilityButton.style.display = "none";
+          voteButton.style.display = "flex";
+          stateButton.style.display = "none";
+          stateButton.classList.remove("game-button-dead");
+          stateButton.classList.remove("game-button-unselectable");
           // not dead
           currentElement.classList.remove("game-player-dead");
           // Client, Target, Evil (variations), None
           if (players[i].type.includes("client")) {
-            currentElement.children[0].id = "game-show-mark";
-            currentElement.children[0].src = "/assets/icons/briefcase.svg";
+            element.children[0].id = "game-show-mark";
+            element.children[0].src = "/assets/icons/briefcase.svg";
           } else if (players[i].type.includes("target")) {
-            currentElement.children[0].id = "game-show-mark";
-            currentElement.children[0].src = "/assets/icons/target.svg";
-          } else if (players[i].type.includes("evil")) {
+            element.children[0].id = "game-show-mark";
+            element.children[0].src = "/assets/icons/target.svg";
+          } else if (players[i].type == "evil") {
             currentElement.classList.add("game-player-evil");
-            currentElement.classList.remove("game-player-unselectable");
-          } else if (players[i].type.includes("none")) {
+            element.classList.remove("game-player-unselectable");
+          } else if (players[i].type == "none") {
             currentElement.classList.remove(
               "game-player-evil",
-              "game-player-unselectable"
             );
+            element.classList.remove("game-player-unselectable");
           }
         }
       }
@@ -832,7 +821,7 @@ function showRoleCard(
       roleCardTitle.classList.add("game-rolecard-good-fg");
       roleCardMission.classList.add("game-rolecard-good-fg");
       readyButton.classList.add("game-rolecard-good-bg");
-    } else if (team.includes("evil")) {
+    } else if (team == "evil") {
       roleCardTitle.classList.add("game-rolecard-evil-fg");
       roleCardMission.classList.add("game-rolecard-evil-fg");
       readyButton.classList.add("game-rolecard-evil-bg");

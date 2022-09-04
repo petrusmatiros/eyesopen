@@ -1,224 +1,382 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Eyes Open</title>
-    <meta
-      name="description"
-      content="Lobby for Mafia/Werewolf/ToS inspired web based game"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="author" href="petrus.matiros@gmail.com" />
-    <!-- Favicon -->
-    <!-- <link rel="icon" href="img/favicon.ico" type="image/x-icon"> -->
-    <link
-      rel="icon"
-      type="image/svg"
-      sizes="32x32"
-      href="/assets/icons/favicon.svg"
-    />
-    <!-- <link rel="stylesheet" href="/css/app.css" /> -->
-    <link rel="stylesheet" href="/css/lobby.css" />
-    <link rel="stylesheet" href="/css/index.css" />
-    <link rel="stylesheet" href="/css/app.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      defer
-      src="https://unpkg.com/socket.io-client@4.5.0/dist/socket.io.min.js"
-    ></script>
-    <script
-      async
-      defer
-      src="https://code.iconify.design/2/2.2.1/iconify.min.js"
-    ></script>
-    <script
-      src="https://code.jquery.com/jquery-3.6.0.min.js"
-      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-      crossorigin="anonymous"
-    ></script>
-    <script defer src="/js/app.js"></script>
-  </head>
-  <body class="body-light game-background-night" id="game-body">
-    <nav class="navbar-dark" id="game-navbar">
-      <div class="navbar-container">
-        <div class="logo-link-container">
-          <a href="/" class="logo-link"
-            ><img class="logo" src="/assets/icons/eyesopen.svg"
-          /></a>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Eyes Open</title>
+  <meta name="description" content="Lobby for Mafia/Werewolf/ToS inspired web based game" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="author" href="petrus.matiros@gmail.com" />
+  <!-- Favicon -->
+  <!-- <link rel="icon" href="img/favicon.ico" type="image/x-icon"> -->
+  <link rel="icon" type="image/svg" sizes="32x32" href="/assets/icons/favicon.svg" />
+  <!-- <link rel="stylesheet" href="/css/app.css" /> -->
+  <link rel="stylesheet" href="/css/lobby.css" />
+  <link rel="stylesheet" href="/css/index.css" />
+  <link rel="stylesheet" href="/css/app.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <script defer src="https://unpkg.com/socket.io-client@4.5.0/dist/socket.io.min.js"></script>
+  <script async defer src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script defer src="/js/app.js"></script>
+</head>
+
+<body class="body-light game-background-night" id="game-body">
+  <nav class="navbar-dark" id="game-navbar">
+    <div class="navbar-container">
+      <div class="logo-link-container">
+        <a href="/" class="logo-link"><img class="logo" src="/assets/icons/eyesopen.svg" /></a>
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    
 
-    <div class="menu" id="without-eyes">
-      <div class="game-rolecard-container">
-        <div class="game-title">Your role:</div>
-        <div class="game-rolecard gelatine-light">
-          <div class="game-rolecard-wrapper">
-            <div class="game-rolecard-title"></div>
-            <div class="game-rolecard-description"></div>
-          </div>
+
+  <div class="menu" id="without-eyes">
+    <div class="game-rolecard-container">
+      <div class="game-title">Your role:</div>
+      <div class="game-rolecard gelatine-light">
+        <div class="game-rolecard-wrapper">
+          <div class="game-rolecard-title"></div>
+          <div class="game-rolecard-description"></div>
+        </div>
         <img class="game-rolecard-icon" alt="role" src=""></img>
-          <div class="game-rolecard-mission"></div>
-          <div class="game-button-container">
-            <div class="game-ready-button" onclick="readyCardButton()">
-              Ready
-            </div>
+        <div class="game-rolecard-mission"></div>
+        <div class="game-button-container">
+          <div class="game-ready-button" onclick="readyCardButton()">
+            Ready
           </div>
         </div>
       </div>
-      
-      <div class="game-waiting-container gelatine-light">
-        <div class="game-title" id="waiting">Waiting for players...</div>
-      </div>
-
     </div>
 
-    <div class="game">
-      
+    <div class="game-waiting-container gelatine-light">
+      <div class="game-title" id="waiting">Waiting for players...</div>
+    </div>
 
-      <!-- Player card -->
-      <div class="game-player-card game-night-bg game-night-fg pop-light1"  id="game-player-card" onclick="togglePlayerCard(this)">
-        <div class="game-player-card-questionmark game-night-bg game-night-fg" id="game-player-card-questionmark">?</div>
-        <div class="game-row">
-          <img class="game-player-card-icon" id="game-player-card-icon" alt="icon" src=""></img>
-          <div class="game-player-card-divider game-night-border" id="game-player-card-divider"></div>
-          <div class="game-player-card-wrapper">
-            <div class="game-player-card-role" id="game-player-card-role">Role</div>
-            <div class="game-player-card-mission" id="game-player-card-mission">---</div>
-            <div class="game-player-card-button game-night-secondary" id="game-player-card-button">Tap to hide</div>
-          </div>
+  </div>
+
+  <div class="game" id="game">
+
+
+    <!-- Player card -->
+    <div class="game-player-card game-night-bg game-night-fg pop-light1" id="game-player-card"
+      onclick="togglePlayerCard(this)">
+      <div class="game-player-card-questionmark game-night-bg game-night-fg" id="game-player-card-questionmark">?</div>
+      <div class="game-row">
+        <img class="game-player-card-icon" id="game-player-card-icon" alt="icon" src=""></img>
+        <div class="game-player-card-divider game-night-border" id="game-player-card-divider"></div>
+        <div class="game-player-card-wrapper">
+          <div class="game-player-card-role" id="game-player-card-role">Role</div>
+          <div class="game-player-card-mission" id="game-player-card-mission">---</div>
+          <div class="game-player-card-button game-night-secondary" id="game-player-card-button">Tap to hide</div>
         </div>
       </div>
+    </div>
 
-      <!-- Message box -->
-      <div class="game-messagebox game-night-bg game-night-fg pop-light2" id="game-messagebox">
-        <div class="game-message-scroller" id="game-message-scroller" ontouchstart="overrideSroll()" onmousedown="overrideSroll()">
-        </div>
-        <div class="game-row">
-          <div class="game-messagebox-scrolldown game-night-fg" id="game-messagebox-scrolldown" onclick="autoScroll()">Scroll for me</div>
-        </div>
+    <!-- Message box -->
+    <div class="game-messagebox game-night-bg game-night-fg pop-light2" id="game-messagebox">
+      <div class="game-message-scroller" id="game-message-scroller" ontouchstart="overrideSroll()"
+        onmousedown="overrideSroll()">
       </div>
+      <div class="game-row">
+        <div class="game-messagebox-scrolldown game-night-fg" id="game-messagebox-scrolldown" onclick="autoScroll()">
+          Scroll for me</div>
+      </div>
+    </div>
 
-      <!-- Panel -->
-      <div class="game-panel game-panel-night pop-light3" id="game-panel">
-        <div class="game-clock game-night-bg game-night-fg" id="game-clock">
-          <div class="game-cycle">
-            <!-- E.g. Night 1 -->
-            <div class="game-cycle-wrapper">
-              <!-- Icon for the cycle -->
-              <img class="game-cycle-icon" id="game-cycle-icon" alt="game cycle" src="/assets/icons/night.svg"></img>
-              <div class="game-cycle-text" id="game-cycle-text">--- -</div>
-            </div>
+    <!-- Panel -->
+    <div class="game-panel game-panel-night pop-light3" id="game-panel">
+      <div class="game-clock game-night-bg game-night-fg" id="game-clock">
+        <div class="game-cycle">
+          <!-- E.g. Night 1 -->
+          <div class="game-cycle-wrapper">
+            <!-- Icon for the cycle -->
+            <img class="game-cycle-icon" id="game-cycle-icon" alt="game cycle" src="/assets/icons/night.svg"></img>
+            <div class="game-cycle-text" id="game-cycle-text">--- -</div>
           </div>
-          <div class="game-clock-divider game-night-border" id="game-clock-divider"></div>
-          <!-- Clock time -->
-          <div class="game-time" id="game-time">--:--
-            <!-- Time -->
-            <!-- <div class="clock-container">
+        </div>
+        <div class="game-clock-divider game-night-border" id="game-clock-divider"></div>
+        <!-- Clock time -->
+        <div class="game-time" id="game-time">--:--
+          <!-- Time -->
+          <!-- <div class="clock-container">
               <p class="clock" id="time">0</p>
             </div> -->
-          </div>
         </div>
-        <!-- Players -->
-        <div class="game-players-container" id="game-players-container">
-          <div class="game-players-col1">
-            <div class="game-player game-player-hidden" tabindex="0">
-              <img class="game-player-mark" alt="player mark"></img>
-              <div class="game-player-name"></div>
-            </div>
-            <div class="game-player game-player-hidden" tabindex="0">
-              <img class="game-player-mark" alt="player mark"></img>
-              <div class="game-player-name"></div>
-            </div>
-            <div class="game-player game-player-hidden" tabindex="0">
-              <img class="game-player-mark" alt="player mark"></img>
-              <div class="game-player-name"></div>
-            </div>
-            <div class="game-player game-player-hidden" tabindex="0">
-              <img class="game-player-mark" alt="player mark"></img>
-              <div class="game-player-name"></div>
-            </div>
-            <div class="game-player game-player-hidden" tabindex="0">
-              <img class="game-player-mark" alt="player mark"></img>
-              <div class="game-player-name"></div>
-            </div>
-            <div class="game-player game-player-hidden" tabindex="0">
-              <img class="game-player-mark" alt="player mark"></img>
-              <div class="game-player-name"></div>
-            </div>
-            <div class="game-player game-player-hidden" tabindex="0">
-              <img class="game-player-mark" alt="player mark"></img>
-              <div class="game-player-name"></div>
-            </div>
+      </div>
+      <!-- Players -->
+      <div class="game-players-container" id="game-players-container">
+        <div class="game-players-col1">
 
-          </div>
+          <div class="game-player game-player-hidden" tabindex="0">
+            <div class="game-player-name-container">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name"></div>
+            </div>
+            <div class="game-player-buttons-container" id="game-player-buttons-container">
 
-          <div class="game-players-col2">
-            <div class="game-player game-player-hidden" tabindex="0">
-              <img class="game-player-mark" alt="player mark"></img>
-              <div class="game-player-name"></div>
-            </div>
-            <div class="game-player game-player-hidden" tabindex="0">
-              <img class="game-player-mark" alt="player mark"></img>
-              <div class="game-player-name"></div>
-            </div>
-            <div class="game-player game-player-hidden" tabindex="0">
-              <img class="game-player-mark" alt="player mark"></img>
-              <div class="game-player-name"></div>
-            </div>
-            <div class="game-player game-player-hidden" tabindex="0">
-              <img class="game-player-mark" alt="player mark"></img>
-              <div class="game-player-name"></div>
-            </div>
-            <div class="game-player game-player-hidden" tabindex="0">
-              <img class="game-player-mark" alt="player mark"></img>
-              <div class="game-player-name"></div>
-            </div>
-            <div class="game-player game-player-hidden" tabindex="0">
-              <img class="game-player-mark" alt="player mark"></img>
-              <div class="game-player-name"></div>
-            </div>
-            <div class="game-player game-player-hidden" tabindex="0">
-              <img class="game-player-mark" alt="player mark"></img>
-              <div class="game-player-name"></div>
+              <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
+                ability
+              </div>
+              <div class="game-button-state game-button" id="game-button-state"></div>
+              <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
+                vote
+              </div>
+
             </div>
           </div>
+          <div class="game-player game-player-hidden" tabindex="0">
+            <div class="game-player-name-container">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name"></div>
+            </div>
+            <div class="game-player-buttons-container" id="game-player-buttons-container">
+
+              <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
+                ability
+              </div>
+              <div class="game-button-state game-button" id="game-button-state"></div>
+              <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
+                vote
+              </div>
+
+            </div>
+          </div>
+          <div class="game-player game-player-hidden" tabindex="0">
+            <div class="game-player-name-container">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name"></div>
+            </div>
+            <div class="game-player-buttons-container" id="game-player-buttons-container">
+
+              <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
+                ability
+              </div>
+              <div class="game-button-state game-button" id="game-button-state"></div>
+              <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
+                vote
+              </div>
+
+            </div>
+          </div>
+          <div class="game-player game-player-hidden" tabindex="0">
+            <div class="game-player-name-container">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name"></div>
+            </div>
+            <div class="game-player-buttons-container" id="game-player-buttons-container">
+
+              <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
+                ability
+              </div>
+              <div class="game-button-state game-button" id="game-button-state"></div>
+              <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
+                vote
+              </div>
+
+            </div>
+          </div>
+          <div class="game-player game-player-hidden" tabindex="0">
+            <div class="game-player-name-container">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name"></div>
+            </div>
+            <div class="game-player-buttons-container" id="game-player-buttons-container">
+
+              <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
+                ability
+              </div>
+              <div class="game-button-state game-button" id="game-button-state"></div>
+              <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
+                vote
+              </div>
+
+            </div>
+          </div>
+          <div class="game-player game-player-hidden" tabindex="0">
+            <div class="game-player-name-container">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name"></div>
+            </div>
+            <div class="game-player-buttons-container" id="game-player-buttons-container">
+
+              <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
+                ability
+              </div>
+              <div class="game-button-state game-button" id="game-button-state"></div>
+              <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
+                vote
+              </div>
+
+            </div>
+          </div>
+          <div class="game-player game-player-hidden" tabindex="0">
+            <div class="game-player-name-container">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name"></div>
+            </div>
+            <div class="game-player-buttons-container" id="game-player-buttons-container">
+
+              <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
+                ability
+              </div>
+              <div class="game-button-state game-button" id="game-button-state"></div>
+              <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
+                vote
+              </div>
+
+            </div>
+          </div>
+         
+
+
+
         </div>
 
-        <!-- Action buttons -->
-        <div class="game-buttons" id="game-buttons">
-          <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
-            <div class="game-button-state">Undo</div>
-            <div class="game-button-text">Ability</div>
+        <div class="game-players-col2">
+          <div class="game-player game-player-hidden" tabindex="0">
+            <div class="game-player-name-container">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name"></div>
+            </div>
+            <div class="game-player-buttons-container" id="game-player-buttons-container">
+
+              <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
+                ability
+              </div>
+              <div class="game-button-state game-button" id="game-button-state"></div>
+              <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
+                vote
+              </div>
+
+            </div>
           </div>
-          <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
-            <div class="game-button-state">Undo</div>
-            <div class="game-button-text">Vote</div>
+          <div class="game-player game-player-hidden" tabindex="0">
+            <div class="game-player-name-container">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name"></div>
+            </div>
+            <div class="game-player-buttons-container" id="game-player-buttons-container">
+
+              <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
+                ability
+              </div>
+              <div class="game-button-state game-button" id="game-button-state"></div>
+              <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
+                vote
+              </div>
+
+            </div>
+          </div>
+          <div class="game-player game-player-hidden" tabindex="0">
+            <div class="game-player-name-container">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name"></div>
+            </div>
+            <div class="game-player-buttons-container" id="game-player-buttons-container">
+
+              <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
+                ability
+              </div>
+              <div class="game-button-state game-button" id="game-button-state"></div>
+              <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
+                vote
+              </div>
+
+            </div>
+          </div>
+          <div class="game-player game-player-hidden" tabindex="0">
+            <div class="game-player-name-container">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name"></div>
+            </div>
+            <div class="game-player-buttons-container" id="game-player-buttons-container">
+
+              <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
+                ability
+              </div>
+              <div class="game-button-state game-button" id="game-button-state"></div>
+              <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
+                vote
+              </div>
+
+            </div>
+          </div>
+          <div class="game-player game-player-hidden" tabindex="0">
+            <div class="game-player-name-container">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name"></div>
+            </div>
+            <div class="game-player-buttons-container" id="game-player-buttons-container">
+
+              <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
+                ability
+              </div>
+              <div class="game-button-state game-button" id="game-button-state"></div>
+              <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
+                vote
+              </div>
+
+            </div>
+          </div>
+          <div class="game-player game-player-hidden" tabindex="0">
+            <div class="game-player-name-container">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name"></div>
+            </div>
+            <div class="game-player-buttons-container" id="game-player-buttons-container">
+
+              <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
+                ability
+              </div>
+              <div class="game-button-state game-button" id="game-button-state"></div>
+              <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
+                vote
+              </div>
+
+            </div>
+          </div>
+          <div class="game-player game-player-hidden" tabindex="0">
+            <div class="game-player-name-container">
+              <img class="game-player-mark" alt="player mark"></img>
+              <div class="game-player-name"></div>
+            </div>
+            <div class="game-player-buttons-container" id="game-player-buttons-container">
+
+              <div class="game-button-ability game-button" id="game-button-ability" onclick="actionHandler(this)">
+                ability
+              </div>
+              <div class="game-button-state game-button" id="game-button-state"></div>
+              <div class="game-button-vote game-button" id="game-button-vote" onclick="actionHandler(this)">
+                vote
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Cemetery -->
-      <div class="game-cemetery pop-light4">
-        <div class="game-cemetery-wrapper">
-          <div class="game-cemetery-title">CEMETERY</div>
-          <div class="game-deceased">
-            <div class="game-deadplayer">temporaryyup (Investigator)</div>
-            <div class="game-deadplayer">temporaryyup (Serial Killer)</div>
-            <div class="game-deadplayer">temporaryyup (Executioner)</div>
-            <div class="game-deadplayer">temporaryyup (Investigator)</div>
-            <div class="game-deadplayer">temporaryyup (Serial Killer)</div>
-            <div class="game-deadplayer">temporaryyup (Executioner)</div>
-            <!-- <div class="game-deadplayer">temporaryyup (Investigator)</div>
+    <!-- Cemetery -->
+    <div class="game-cemetery pop-light4">
+      <div class="game-cemetery-wrapper">
+        <div class="game-cemetery-title">CEMETERY</div>
+        <div class="game-deceased">
+          <div class="game-deadplayer">temporaryyup (Investigator)</div>
+          <div class="game-deadplayer">temporaryyup (Serial Killer)</div>
+          <div class="game-deadplayer">temporaryyup (Executioner)</div>
+          <div class="game-deadplayer">temporaryyup (Investigator)</div>
+          <div class="game-deadplayer">temporaryyup (Serial Killer)</div>
+          <div class="game-deadplayer">temporaryyup (Executioner)</div>
+          <!-- <div class="game-deadplayer">temporaryyup (Investigator)</div>
             <div class="game-deadplayer">temporaryyup (Serial Killer)</div>
             <div class="game-deadplayer">temporaryyup (Executioner)</div>
             <div class="game-deadplayer">temporaryyup (Investigator)</div>
@@ -226,30 +384,31 @@
             <div class="game-deadplayer">temporaryyup (Executioner)</div>
             <div class="game-deadplayer">temporaryyup (Serial Killer)</div>
             <div class="game-deadplayer">temporaryyup (Executioner)</div> -->
-          </div>
-
         </div>
+
       </div>
-
-      <!-- Leave button -->
-      <div class="game-leavebutton pop-light5">Leave</div>
-
-      <!-- Leave popup -->
-      <!-- Leave popup overlay -->
-      <div class="game-popup" id="leave">
-        <div class="game-popup-text">Leave game?</div>
-        <img class="game-popup-icon" alt="thinking emomji" src="/assets/icons/think.svg"></img>
-        <div class="game-popup-buttons">
-          <div class="game-popup-cancelbutton">Cancel</div>
-          <div class="game-popup-leavebutton">Yup</div>
-        </div>
-      </div>
-      
-      <!-- Death popup -->
-      <!-- Death popup overlay -->
-      <!-- <lottie-player src="https://assets6.lottiefiles.com/packages/lf20_eo1xhbox.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player> -->
-
     </div>
 
-  </body>
+    <!-- Leave button -->
+    <div class="game-leavebutton pop-light5">Leave</div>
+
+    <!-- Leave popup -->
+    <!-- Leave popup overlay -->
+    <div class="game-popup" id="leave">
+      <div class="game-popup-text">Leave game?</div>
+      <img class="game-popup-icon" alt="thinking emomji" src="/assets/icons/think.svg"></img>
+      <div class="game-popup-buttons">
+        <div class="game-popup-cancelbutton">Cancel</div>
+        <div class="game-popup-leavebutton">Yup</div>
+      </div>
+    </div>
+
+    <!-- Death popup -->
+    <!-- Death popup overlay -->
+    <!-- <lottie-player src="https://assets6.lottiefiles.com/packages/lf20_eo1xhbox.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player> -->
+
+  </div>
+
+</body>
+
 </html>

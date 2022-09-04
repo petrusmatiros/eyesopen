@@ -52,12 +52,12 @@
   margin-left: -0.75rem;
 }
 
-#no-margin {
-  margin: 0;
-  margin-top: 0;
-  margin-bottom: 0;
-  margin-right: 0;
-  margin-left: 0;
+.no-margin {
+  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
 }
 
 .lobby-rolecard-container-title {
@@ -358,8 +358,8 @@
   justify-content: center;
   align-items: center;
   margin-top: 0.25rem;
-  min-height: 11.9rem;
-  max-height: 11.9rem;
+  min-height: 13rem;
+  max-height: 13rem;
 }
 
 .lobby-player-col {
@@ -379,24 +379,25 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
   border-radius: 0.5em;
   background-color: var(--slot-empty);
-  min-width: 8.5rem;
-  max-width: 8.5rem;
+  min-width: 9rem;
+  max-width: 9rem;
   min-height: 1.25rem;
   max-height: 1.25rem;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.35rem;
   border: 2px solid var(--slot-empty);
 }
+
 
 .lobby-player-id {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 5rem;
-  max-width: 5rem;
+  min-width: 6rem;
+  max-width: 6rem;
   min-height: 0.35rem;
   max-height: 0.35rem;
 }
@@ -412,8 +413,8 @@
   font-weight: 500;
   text-align: center;
   padding: 0.15rem;
-  min-width: 5rem;
-  max-width: 5rem;
+  min-width: 6rem;
+  max-width: 6rem;
   min-height: 0.35rem;
   max-height: 0.35rem;
 }
@@ -421,7 +422,6 @@
 #status-ready {
   visibility: visible;
   background-color: var(--ready-bg);
-  min-width: 2.16rem;
 }
 #status-notready {
   visibility: visible;
@@ -437,10 +437,10 @@
   padding: 0.175rem 0.25rem 0.175rem 0.25rem;
   border-radius: 0.45em;
   font-size: 0.55rem;
-  margin-left: 0.35rem;
-  width: 2.208rem;
-  min-width: 2.208rem;
-  max-width: 2.208rem;
+  margin-left: 0.25rem;
+  width: 2.3rem;
+  min-width: 2.3rem;
+  max-width: 2.3rem;
 }
 
 .lobby-role-wrapper {
@@ -539,7 +539,7 @@
 }
 
 .lobby-button-container {
-  display: flex;
+  display: none;
   justify-content: space-evenly;
   align-items: center;
   flex-direction: row;
@@ -587,7 +587,7 @@
     background-color: var(--dark-fg);
     padding: 0.9em 1em 0.9em 1em;
     margin-top: 0.25rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
     border-radius: 0.5em;
     min-width: 19.5rem;
     max-width: 19.5rem;
@@ -604,13 +604,12 @@
     min-width: 4.5rem;
   }
   .lobby-button-container {
-    display: flex;
+    display: none;
     justify-content: space-evenly;
     align-items: center;
     flex-direction: row;
     width: 75%;
     max-width: 19rem;
-    margin-top: 0.5rem;
   }
 }
 
