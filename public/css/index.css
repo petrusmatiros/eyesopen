@@ -258,6 +258,7 @@ p {
 
 .title-button {
   user-select: none;
+  cursor: pointer;
   display: inline-block;
   justify-content: center;
   align-items: center;
@@ -375,6 +376,7 @@ p {
 
   .title-button {
     user-select: none;
+    cursor: pointer;
     display: inline-block;
     justify-content: center;
     align-items: center;

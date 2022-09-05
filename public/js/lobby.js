@@ -1,7 +1,7 @@
 // const domain = "https://84.216.161.205/";
 const domain = "https://eyesopen.ml/";
-// const socket = io(domain, {secure: true});
-const socket = io(domain);
+const socket = io(domain, {secure: true});
+// const socket = io(domain);
 
 const lobby = domain + "lobby/";
 
@@ -36,6 +36,7 @@ socket.on("connect", () => {
         window.location.href = window.location.href + "/join";
       }
     } else {
+
       socket.emit("checkUserApartOfGame", getPlayerID(), "app");
 
       socket.on("apartOfGameApp", (apartOfGame, inProgress, code) => {
@@ -214,15 +215,7 @@ socket.on("connect", () => {
             socket.emit("refreshReady", getPlayerID());
           }, 300);
 
-          // // Copy link to clipboard
-          // navigator.clipboard
-          //   .readText()
-          //   .then((clipText) => {
-          //     if (!clipText.includes(window.location.href)) {
-          //       navigator.clipboard.writeText(window.location.href);
-          //     }
-          //   })
-          //   .catch("Cannot copy shareable room link into clipboard (>_<)");
+          
         }
       });
     }

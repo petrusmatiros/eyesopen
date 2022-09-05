@@ -47,9 +47,9 @@
   );
   /* In game buttons */
   --ability-button-bg--active: hsl(360, 100%, 60%);
-  --ability-button-bg: hsl(360, 98%, 80%);
+  --ability-button-bg: hsl(360, 65%, 70%);
   --vote-button-bg--active: hsl(100, 100%, 40%);
-  --vote-button-bg: hsl(100, 100%, 70%);
+  --vote-button-bg: hsl(100, 65%, 60%);
 }
 
 /* Game backgrounds */
@@ -488,12 +488,16 @@
 }
 
 .game-player-selection-both {
-  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#fe9a9a+0,99ff66+100 */
-background: #fe9a9a; /* Old browsers */
-background: -moz-linear-gradient(left,  #fe9a9a 0%, #99ff66 100%); /* FF3.6-15 */
-background: -webkit-linear-gradient(left,  #fe9a9a 0%,#99ff66 100%); /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(to right,  #fe9a9a 0%,#99ff66 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fe9a9a', endColorstr='#99ff66',GradientType=1 ); /* IE6-9 */
+/* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#83db57+50,e48181+50 */
+background: #83db57; /* Old browsers */
+background: -moz-linear-gradient(left,  #83db57 50%, #e48181 50%); /* FF3.6-15 */
+background: -webkit-gradient(linear, left top, right top, color-stop(50%,#83db57), color-stop(50%,#e48181)); /* Chrome4-9,Safari4-5 */
+background: -webkit-linear-gradient(left,  #83db57 50%,#e48181 50%); /* Chrome10-25,Safari5.1-6 */
+background: -o-linear-gradient(left,  #83db57 50%,#e48181 50%); /* Opera 11.10-11.50 */
+background: -ms-linear-gradient(left,  #83db57 50%,#e48181 50%); /* IE10 preview */
+background: linear-gradient(to right,  #83db57 50%,#e48181 50%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#83db57', endColorstr='#e48181',GradientType=1 ); /* IE6-9 */
+
 
 }
 

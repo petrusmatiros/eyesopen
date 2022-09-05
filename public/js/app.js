@@ -1,7 +1,7 @@
 // const domain = "https://84.216.161.205/";
 const domain = "https://eyesopen.ml/";
-// const socket = io(domain, {secure: true});
-const socket = io(domain);
+const socket = io(domain, {secure: true});
+// const socket = io(domain);
 
 const lobby = domain + "lobby/";
 
@@ -269,15 +269,21 @@ function playerTargetHandler(players, socketPlayer) {
       );
       abilityButton.innerText = "ability";
       voteButton.innerText = "vote";
+      abilityButton.style.fontWeight = "400";
+      voteButton.style.fontWeight = "400";
     } else if (players[i].playerID !== socketPlayer.abilityTarget) {
       nameContainer.classList.remove("game-player-selection-ability");
       nameContainer.classList.remove("game-player-selection-both");
       abilityButton.innerText = "ability";
+      abilityButton.style.fontWeight = "400";
+      voteButton.style.fontWeight = "700";
       voteButton.innerText = "undo";
     } else if (players[i].playerID !== socketPlayer.voteTarget) {
       nameContainer.classList.remove("game-player-selection-vote");
       nameContainer.classList.remove("game-player-selection-both");
       abilityButton.innerText = "undo";
+      abilityButton.style.fontWeight = "700";
+      voteButton.style.fontWeight = "400";
       voteButton.innerText = "vote";
     }
   
@@ -288,18 +294,24 @@ function playerTargetHandler(players, socketPlayer) {
       nameContainer.classList.add("game-player-selection-both");
       abilityButton.innerText = "undo";
       voteButton.innerText = "undo";
+      abilityButton.style.fontWeight = "700";
+      voteButton.style.fontWeight = "700";
     } else if (
       players[i].playerID == socketPlayer.abilityTarget &&
       players[i].playerID !== socketPlayer.voteTarget
     ) {
       nameContainer.classList.add("game-player-selection-ability");
       abilityButton.innerText = "undo";
+      abilityButton.style.fontWeight = "700";
+      voteButton.style.fontWeight = "400";
     } else if (
       players[i].playerID !== socketPlayer.abilityTarget &&
       players[i].playerID == socketPlayer.voteTarget
     ) {
       nameContainer.classList.add("game-player-selection-vote");
       voteButton.innerText = "undo";
+      abilityButton.style.fontWeight = "400";
+      voteButton.style.fontWeight = "700";
     }
   }
   

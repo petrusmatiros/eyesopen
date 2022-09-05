@@ -89,10 +89,10 @@
   border-radius: 1rem;
   display: flex;
   flex-direction: row;
+  padding: 1rem;
   overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
-  padding: 1rem;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-x;
   scroll-behavior: smooth;
@@ -136,6 +136,7 @@
   align-items: center;
   flex-direction: row;
   margin-right: 1rem;
+  
 }
 
 .lobby-rolecard-info {
