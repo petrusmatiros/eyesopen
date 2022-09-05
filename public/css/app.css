@@ -468,6 +468,24 @@
   font-size: 0.95rem;
 }
 
+.game-player-selection-ability {
+  background-color: var(--ability-button-bg--used);
+}
+
+.game-player-selection-vote {
+  background-color: var(--vote-button-bg--used);
+}
+
+.game-player-selection-both {
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#fe9a9a+0,99ff66+100 */
+background: #fe9a9a; /* Old browsers */
+background: -moz-linear-gradient(left,  #fe9a9a 0%, #99ff66 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(left,  #fe9a9a 0%,#99ff66 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right,  #fe9a9a 0%,#99ff66 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fe9a9a', endColorstr='#99ff66',GradientType=1 ); /* IE6-9 */
+
+}
+
 
 
 .game-player-hidden {
@@ -808,28 +826,4 @@
     border-radius: 0.35rem;
   }
 }
-.game-button-selection-both {
-  display: inline;
-  padding: 0.3em;
-  border-radius: 0.6em;
-  text-align: center;
-  font-size: 1rem;
-  color: var(--dark-fg);
-  background: rgb(255, 51, 51);
-  background: -moz-linear-gradient(
-    90deg,
-    rgba(255, 51, 51, 1) 0%,
-    rgba(68, 204, 0, 1) 100%
-  );
-  background: -webkit-linear-gradient(
-    90deg,
-    rgba(255, 51, 51, 1) 0%,
-    rgba(68, 204, 0, 1) 100%
-  );
-  background: linear-gradient(
-    90deg,
-    rgba(255, 51, 51, 1) 0%,
-    rgba(68, 204, 0, 1) 100%
-  );
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ff3333",endColorstr="#44cc00",GradientType=1);
-}
+

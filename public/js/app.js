@@ -210,7 +210,7 @@ function loadSavedMessages(messages, cycle) {
     } else if (messages[i].type.includes("extra")) {
       messageType += "extra";
       newMessage.classList.add(messageType);
-    }else if (type.includes("timestamp")) {
+    }else if (messages[i].type.includes("timestamp")) {
       if (cycle.includes("day")) {
         messageType += "day";
         newMessage.classList.add(messageType);
@@ -221,7 +221,7 @@ function loadSavedMessages(messages, cycle) {
       newMessage.style.justifyContent = "center";
       newMessage.style.alignItems = "center";
       newMessage.style.fontWeight = "600";
-    } else if (type.includes("lineSeperator")) {
+    } else if (messages[i].type.includes("lineSeperator")) {
       if (cycle.includes("day")) {
         messageType += "day";
         newMessage.classList.add(messageType);
@@ -241,6 +241,30 @@ function loadSavedMessages(messages, cycle) {
 
 // ! FIX THIS
 
+socket.on("currentPlayerTargets", (socketPlayer, targetID) => {
+  var playerElement = document.getElementById(targetID);
+  var nameContainer = playerElement.children[0];
+  // If the ability target and the vote target are the same player
+  if (socketPlayer.abilityTarget !== null && socketPlayer.voteTarget !== null) {
+    if (socketPlayer.abilityTarget == socketPlayer.voteTarget) {
+      nameContainer.classList.add("game-player-selection-both");
+      nameContainer.classList.remove("game-player-selection-ability");
+      nameContainer.classList.remove("game-player-selection-vote");
+    } else {
+      if (socketPlayer.abilityTarget !== null) { // only ability
+        nameContainer.classList.remove("game-player-selection-both");
+        nameContainer.classList.add("game-player-selection-ability");
+        nameContainer.classList.remove("game-player-selection-vote");
+      }
+      else if (socketPlayer.voteTarget !== null) { // only vote
+        nameContainer.classList.remove("game-player-selection-both");
+        nameContainer.classList.remove("game-player-selection-ability");
+        nameContainer.classList.add("game-player-selection-vote");
+      }
+    }
+  } 
+})
+
 // press respective button to set player target
 // click at the same area, remove it, click on new, set new target
 // display green ,red or gradient depending on choice
@@ -251,17 +275,9 @@ function actionHandler(element) {
   var playerNameContainer = playerElement.children[0];
   var playerName = playerNameContainer.children[1];
   console.log("action", button.innerText, "taken on", playerName.innerText);
-
-  socket.emit("requestActionData", getPlayerID());
-  socket.on("fetchedActionData", (cycle, socketRole) => {
-    // socket.emit("checkValidSelectedPlayer", getPlayerID());
-    // socket.on("isValidSelectedPlayer", (isValid) => {
-    // });
-
-    socket.emit("checkPlayerTargets", getPlayerID());
-    // socket.on("currentPlayerTargets", (socketPlayer) => {
-    //   // has ability target
-  });
+  if (!button.id.includes("game-button-state")) {
+    socket.emit("playerAction", getPlayerID(), element.id, playerElement.id);
+  }
 }
 
 socket.on("setPlayersClock", (players, cycle, socketRole) => {
