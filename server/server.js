@@ -5,12 +5,12 @@ const app = express();
 // const port = 3000;
 // const port = process.env.PORT | 15000;
 const port = 15000;
-var privateKey = fs.readFileSync("sslcert/origin.key", "utf8");
-var certificate = fs.readFileSync("sslcert/previous/origin.crt", "utf8");
-// var ca = fs.readFileSync('sslcert/ca_bundle.crt', 'utf8');
+var privateKey = fs.readFileSync("sslcert/private.key", "utf8");
+var certificate = fs.readFileSync("sslcert/certificate.crt", "utf8");
+var ca = fs.readFileSync('sslcert/ca_bundle.crt', 'utf8');
 
-// var credentials = {key: privateKey, cert: certificate, ca: ca};
-var credentials = { key: privateKey, cert: certificate };
+var credentials = {key: privateKey, cert: certificate, ca: ca};
+// var credentials = { key: privateKey, cert: certificate };
 const server = require("https").createServer(credentials, app);
 // const server = require("https").createServer(app);
 

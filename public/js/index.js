@@ -1,6 +1,6 @@
 // const domain = "https://84.216.161.205/";
+const domain = "https://eyesopen.ml/";
 // const socket = io(domain, {secure: true});
-const domain = "https://84.216.161.205/";
 const socket = io(domain);
 
 const lobby = domain + "lobby/";
