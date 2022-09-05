@@ -174,7 +174,7 @@ p {
   from, to { transform: scale(1); }
   25% { transform: scale(0.98); }
   50% { transform: scale(1.03); }
-  75% { transform: scale(1.01); }
+  75% { transform: scale(1); }
 }
 
 .gelatine-light {

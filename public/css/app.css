@@ -85,28 +85,6 @@
 }
 
 
-/* Animations  */
-.pop-light1 {
-  animation: pop-light 0.5s 1;
-}
-.pop-light2 {
-  animation: pop-light 1s 1;
-}
-.pop-light3 {
-  animation: pop-light 1.5s 1;
-}
-.pop-light4 {
-  animation: pop-light 2s 1;
-}
-.pop-light5 {
-  animation: pop-light 2.5s 1;
-}
-@keyframes pop-light {
-  from, to { transform: scale(1); }
-  25% { transform: scale(0.98); }
-  50% { transform: scale(1.03); }
-  75% { transform: scale(1.01); }
-}
 
 /* Day and Night */
 .game-day-bg {
@@ -485,6 +463,9 @@
   padding: 0.35em;
   /* top-left | top-right | bottom-right | bottom-left */
   border-radius: 0.75rem 0.75rem 0 0;
+  min-height: 1.25rem;
+  max-height: 1.25rem;
+  font-size: 0.95rem;
 }
 
 
