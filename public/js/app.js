@@ -210,7 +210,7 @@ function loadSavedMessages(messages, cycle) {
     } else if (messages[i].type.includes("extra")) {
       messageType += "extra";
       newMessage.classList.add(messageType);
-    }else if (messages[i].type.includes("timestamp")) {
+    } else if (messages[i].type.includes("timestamp")) {
       if (cycle.includes("day")) {
         messageType += "day";
         newMessage.classList.add(messageType);
@@ -241,29 +241,69 @@ function loadSavedMessages(messages, cycle) {
 
 // ! FIX THIS
 
-socket.on("currentPlayerTargets", (socketPlayer, targetID) => {
-  var playerElement = document.getElementById(targetID);
-  var nameContainer = playerElement.children[0];
-  // If the ability target and the vote target are the same player
-  if (socketPlayer.abilityTarget !== null && socketPlayer.voteTarget !== null) {
-    if (socketPlayer.abilityTarget == socketPlayer.voteTarget) {
-      nameContainer.classList.add("game-player-selection-both");
-      nameContainer.classList.remove("game-player-selection-ability");
-      nameContainer.classList.remove("game-player-selection-vote");
-    } else {
-      if (socketPlayer.abilityTarget !== null) { // only ability
-        nameContainer.classList.remove("game-player-selection-both");
-        nameContainer.classList.add("game-player-selection-ability");
-        nameContainer.classList.remove("game-player-selection-vote");
-      }
-      else if (socketPlayer.voteTarget !== null) { // only vote
-        nameContainer.classList.remove("game-player-selection-both");
-        nameContainer.classList.remove("game-player-selection-ability");
-        nameContainer.classList.add("game-player-selection-vote");
-      }
-    }
-  } 
+socket.on("playerTargetButtonsReset", (players, socketPlayer) => {
+  playerTargetHandler(players, socketPlayer);
+
 })
+
+socket.on("currentPlayerTargets", (players, socketPlayer) => {
+  playerTargetHandler(players, socketPlayer);
+});
+
+function playerTargetHandler(players, socketPlayer) {
+  for (var i = 0; i < players.length; i++) {
+    var playerElement = document.getElementById(players[i].playerID);
+    var nameContainer = playerElement.children[0];
+    var buttons = playerElement.children[1];
+    var abilityButton = buttons.children[0];
+    var voteButton = buttons.children[2];
+  
+    if (
+      players[i].playerID !== socketPlayer.abilityTarget &&
+      players[i].playerID !== socketPlayer.voteTarget
+    ) {
+      nameContainer.classList.remove(
+        "game-player-selection-both",
+        "game-player-selection-ability",
+        "game-player-selection-vote"
+      );
+      abilityButton.innerText = "ability";
+      voteButton.innerText = "vote";
+    } else if (players[i].playerID !== socketPlayer.abilityTarget) {
+      nameContainer.classList.remove("game-player-selection-ability");
+      nameContainer.classList.remove("game-player-selection-both");
+      abilityButton.innerText = "ability";
+      voteButton.innerText = "undo";
+    } else if (players[i].playerID !== socketPlayer.voteTarget) {
+      nameContainer.classList.remove("game-player-selection-vote");
+      nameContainer.classList.remove("game-player-selection-both");
+      abilityButton.innerText = "undo";
+      voteButton.innerText = "vote";
+    }
+  
+    if (
+      players[i].playerID == socketPlayer.abilityTarget &&
+      players[i].playerID == socketPlayer.voteTarget
+    ) {
+      nameContainer.classList.add("game-player-selection-both");
+      abilityButton.innerText = "undo";
+      voteButton.innerText = "undo";
+    } else if (
+      players[i].playerID == socketPlayer.abilityTarget &&
+      players[i].playerID !== socketPlayer.voteTarget
+    ) {
+      nameContainer.classList.add("game-player-selection-ability");
+      abilityButton.innerText = "undo";
+    } else if (
+      players[i].playerID !== socketPlayer.abilityTarget &&
+      players[i].playerID == socketPlayer.voteTarget
+    ) {
+      nameContainer.classList.add("game-player-selection-vote");
+      voteButton.innerText = "undo";
+    }
+  }
+  
+}
 
 // press respective button to set player target
 // click at the same area, remove it, click on new, set new target
@@ -275,6 +315,7 @@ function actionHandler(element) {
   var playerNameContainer = playerElement.children[0];
   var playerName = playerNameContainer.children[1];
   console.log("action", button.innerText, "taken on", playerName.innerText);
+
   if (!button.id.includes("game-button-state")) {
     socket.emit("playerAction", getPlayerID(), element.id, playerElement.id);
   }
@@ -312,6 +353,12 @@ function setPlayers(players, cycle, socketRole) {
     var stateButton = buttons.children[1];
     var voteButton = buttons.children[2];
     element.children[1].innerText = players[i].userName;
+
+    element.classList.remove(
+      "game-player-selection-ability",
+      "game-player-selection-vote",
+      "game-player-selection-both"
+    );
 
     if (players[i].userID == getPlayerID()) {
       currentElement.style.fontWeight = 700;

@@ -46,10 +46,10 @@
     rgba(187, 255, 153, 1) 100%
   );
   /* In game buttons */
-  --ability-button-bg--notused: hsl(360, 100%, 60%);
-  --ability-button-bg--used: hsl(360, 98%, 80%);
-  --vote-button-bg--notused: hsl(100, 100%, 40%);
-  --vote-button-bg--used: hsl(100, 100%, 70%);
+  --ability-button-bg--active: hsl(360, 100%, 60%);
+  --ability-button-bg: hsl(360, 98%, 80%);
+  --vote-button-bg--active: hsl(100, 100%, 40%);
+  --vote-button-bg: hsl(100, 100%, 70%);
 }
 
 /* Game backgrounds */
@@ -404,6 +404,9 @@
   align-items: center;
   flex-direction: row;
   font-size: 1rem;
+  height: 1.25rem;
+  min-height: 1.25rem;
+  max-height: 1.25rem;
   font-weight: 400;
 }
 
@@ -427,7 +430,10 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  background-color: var(--ability-button-bg--used);
+  background-color: var(--ability-button-bg);
+}
+.game-button-ability:active {
+  /* font-weight: 700; */
 }
 
 .game-button-vote {
@@ -435,7 +441,10 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  background-color: var(--vote-button-bg--used);
+  background-color: var(--vote-button-bg);
+}
+.game-button-vote:active {
+  /* font-weight: 700; */
 }
 
 .game-button-state {
@@ -463,17 +472,19 @@
   padding: 0.35em;
   /* top-left | top-right | bottom-right | bottom-left */
   border-radius: 0.75rem 0.75rem 0 0;
+  height: 1.25rem;
   min-height: 1.25rem;
   max-height: 1.25rem;
   font-size: 0.95rem;
 }
 
+
 .game-player-selection-ability {
-  background-color: var(--ability-button-bg--used);
+  background-color: var(--ability-button-bg);
 }
 
 .game-player-selection-vote {
-  background-color: var(--vote-button-bg--used);
+  background-color: var(--vote-button-bg);
 }
 
 .game-player-selection-both {
@@ -485,8 +496,6 @@ background: linear-gradient(to right,  #fe9a9a 0%,#99ff66 100%); /* W3C, IE10+, 
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fe9a9a', endColorstr='#99ff66',GradientType=1 ); /* IE6-9 */
 
 }
-
-
 
 .game-player-hidden {
   display: none !important;

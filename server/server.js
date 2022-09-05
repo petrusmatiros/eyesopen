@@ -1144,7 +1144,7 @@ io.on("connection", async (socket) => {
   // ! DEBUG
   var durations = {
     night: {
-      actions: 15,
+      actions: 30,
       messages: 3,
     },
     day: {
@@ -1263,7 +1263,6 @@ io.on("connection", async (socket) => {
                   validTargets[i].type !== "evil+unselectable")
               ) {
                 isValidTarget = true;
-                console.log("valid target selected");
               }
             }
             if (isValidTarget) {
@@ -1282,9 +1281,20 @@ io.on("connection", async (socket) => {
                   player.voteTarget = null;
                 }
               }
-              socket.emit("currentPlayerTargets", player, targetID);
+              console.log(
+                "valid target selected",
+                connectedUsers.get(targetID).getName(),
+                "abilityTarget:",
+                player.abilityTarget,
+                "voteTarget:",
+                player.voteTarget
+              );
+              socket.emit("currentPlayerTargets", game.getUsers(), player);
             } else {
-              console.log("unvalid target");
+              console.log(
+                "unvalid target",
+                connectedUsers.get(targetID).getName()
+              );
             }
           }
         }
@@ -1708,7 +1718,28 @@ io.on("connection", async (socket) => {
     }
   }
 
-  function gameHandler(playerID, roomCode, room, game) {
+  // TODO: need to do this
+  // ! FIX THIS
+  function gameHandler(playerID) {
+    var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+    var room = rooms.get(roomCode);
+    var game = room.getGame();
+    voteHandler(playerID, room, roomCode, game);
+    executeActions(playerID, room, roomCode, game);
+    resetActions(playerID, room, roomCode, game);
+    deathHandler(playerID, room, roomCode, game);
+  }
+
+  function voteHandler(playerID, room, roomCode, game) {}
+  function executeActions(playerID, room, roomCode, game) {}
+  function resetActions(playerID, room, roomCode, game) {
+    game.getUsers().forEach((user) => user.getPlayer().reset());
+    var player = connectedUsers.get(playerID).getPlayer();
+    io.to(roomCode).emit("playerTargetButtonsReset", game.getUsers(), player);
+  }
+  function deathHandler(playerID, room, roomCode, game) {}
+
+  function clockHandler(playerID, roomCode, room, game) {
     // Night and Day
     var currentCycle = 0;
     // Actions, discussion
@@ -1775,6 +1806,7 @@ io.on("connection", async (socket) => {
             game.setCycle("Day");
             // Prevent from spamming message
             emitCycleOnce = true;
+            gameHandler(playerID);
             io.to(roomCode).emit("changeUI", game.getCycle());
           }
           initClock(
@@ -1804,6 +1836,7 @@ io.on("connection", async (socket) => {
             emitCycleOnce = true;
             // Increment cycle count
             game.setCycleCount(game.getCycleCount() + 1);
+            gameHandler(playerID);
             io.to(roomCode).emit("changeUI", game.getCycle());
           }
 
@@ -1833,7 +1866,7 @@ io.on("connection", async (socket) => {
             if (game.getUsers().includes(connectedUsers.get(playerID))) {
               if (room.getHost() == playerID) {
                 if (game.getTimer().getRunning() == false) {
-                  gameHandler(playerID, roomCode, room, game);
+                  clockHandler(playerID, roomCode, room, game);
                 }
               }
             }
