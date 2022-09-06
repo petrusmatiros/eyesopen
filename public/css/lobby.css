@@ -14,7 +14,7 @@
   --slot-empty: hsl(0, 0%, 15%);
   /* --slot-joined: hsl(0, 0%, 82%); */
   --slot-joined: hsl(0, 0%, 35%);
-  --slot-border: hsl(0, 0%, 55%);
+  --slot-border: hsl(0, 0%, 60%);
   /* Not ready and ready */
   --ready-fg: hsl(100, 100%, 100%);
   --ready-bg: hsl(150, 50%, 35%);
