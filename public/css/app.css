@@ -74,17 +74,15 @@
 }
 .game-background-dead {
   background: radial-gradient(
-    50% 50% at 50% 50%,
-    rgba(255, 2, 2, 0) 0%,
-    rgba(255, 13, 13, 0.2) 100%
-  ),
+      50% 50% at 50% 50%,
+      rgba(255, 2, 2, 0) 0%,
+      rgba(255, 13, 13, 0.2) 100%
+    ),
     linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url(/assets/images/game_background.jpg);
 
   background-attachment: fixed;
 }
-
-
 
 /* Day and Night */
 .game-day-bg {
@@ -460,7 +458,6 @@
 
 .game-button-dead {
   background-color: var(--dead);
-
 }
 
 .game-player-name-container {
@@ -478,7 +475,6 @@
   font-size: 0.95rem;
 }
 
-
 .game-player-selection-ability {
   background-color: var(--ability-button-bg);
 }
@@ -488,17 +484,41 @@
 }
 
 .game-player-selection-both {
-/* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#83db57+50,e48181+50 */
-background: #83db57; /* Old browsers */
-background: -moz-linear-gradient(left,  #83db57 50%, #e48181 50%); /* FF3.6-15 */
-background: -webkit-gradient(linear, left top, right top, color-stop(50%,#83db57), color-stop(50%,#e48181)); /* Chrome4-9,Safari4-5 */
-background: -webkit-linear-gradient(left,  #83db57 50%,#e48181 50%); /* Chrome10-25,Safari5.1-6 */
-background: -o-linear-gradient(left,  #83db57 50%,#e48181 50%); /* Opera 11.10-11.50 */
-background: -ms-linear-gradient(left,  #83db57 50%,#e48181 50%); /* IE10 preview */
-background: linear-gradient(to right,  #83db57 50%,#e48181 50%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#83db57', endColorstr='#e48181',GradientType=1 ); /* IE6-9 */
-
-
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#83db57+50,e48181+50 */
+  background: #83db57; /* Old browsers */
+  background: -moz-linear-gradient(
+    left,
+    #83db57 50%,
+    #e48181 50%
+  ); /* FF3.6-15 */
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    color-stop(50%, #83db57),
+    color-stop(50%, #e48181)
+  ); /* Chrome4-9,Safari4-5 */
+  background: -webkit-linear-gradient(
+    left,
+    #83db57 50%,
+    #e48181 50%
+  ); /* Chrome10-25,Safari5.1-6 */
+  background: -o-linear-gradient(
+    left,
+    #83db57 50%,
+    #e48181 50%
+  ); /* Opera 11.10-11.50 */
+  background: -ms-linear-gradient(
+    left,
+    #83db57 50%,
+    #e48181 50%
+  ); /* IE10 preview */
+  background: linear-gradient(
+    to right,
+    #83db57 50%,
+    #e48181 50%
+  ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#83db57', endColorstr='#e48181',GradientType=1 ); /* IE6-9 */
 }
 
 .game-player-hidden {
@@ -536,8 +556,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#83db57', end
   user-select: none;
   margin-left: 0.25rem;
 }
-
-
 
 /* Cemetery */
 .game-cemetery {
@@ -839,4 +857,3 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#83db57', end
     border-radius: 0.35rem;
   }
 }
-

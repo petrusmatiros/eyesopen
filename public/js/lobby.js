@@ -419,10 +419,10 @@ function updatePlayerSlots(host, slots) {
       var status = slot.parentElement.parentElement.children[1];
       if (value.userID == host) {
         slot.parentElement.parentElement.style.border =
-          "2px solid var(--light-fg)";
+          "2px solid var(--slot-border)";
       } else if (value.userID == getPlayerID()) {
         slot.parentElement.parentElement.style.border =
-          "2px dashed var(--light-fg)";
+          "2px dashed var(--slot-border)";
       } else {
         slot.parentElement.parentElement.style.border =
           "2px dashed var(--slot-joined)";
