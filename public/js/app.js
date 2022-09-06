@@ -1,6 +1,6 @@
 // const domain = "https://84.216.161.205/";
 const domain = "https://eyesopen.ml/";
-const socket = io(domain, {secure: true});
+const socket = io(domain, { secure: true });
 // const socket = io(domain);
 
 const lobby = domain + "lobby/";
@@ -128,10 +128,10 @@ socket.on("recieveMessage", (message, type, cycle) => {
   var newMessage = document.createElement("div");
   newMessage.classList.add("game-message");
 
-  if (type.includes("day")) {
+  if (type.includes("Day")) {
     messageType += "day";
     newMessage.classList.add(messageType);
-  } else if (type.includes("night")) {
+  } else if (type.includes("Night")) {
     messageType += "night";
     newMessage.classList.add(messageType);
   } else if (type.includes("confirm")) {
@@ -150,10 +150,10 @@ socket.on("recieveMessage", (message, type, cycle) => {
     messageType += "extra";
     newMessage.classList.add(messageType);
   } else if (type.includes("timestamp")) {
-    if (cycle.includes("day")) {
+    if (cycle.includes("Day")) {
       messageType += "day";
       newMessage.classList.add(messageType);
-    } else if (cycle.includes("night")) {
+    } else if (cycle.includes("Night")) {
       messageType += "night";
       newMessage.classList.add(messageType);
     }
@@ -161,10 +161,10 @@ socket.on("recieveMessage", (message, type, cycle) => {
     newMessage.style.alignItems = "center";
     newMessage.style.fontWeight = "600";
   } else if (type.includes("lineSeperator")) {
-    if (cycle.includes("day")) {
+    if (cycle.includes("Day")) {
       messageType += "day";
       newMessage.classList.add(messageType);
-    } else if (cycle.includes("night")) {
+    } else if (cycle.includes("Night")) {
       messageType += "night";
       newMessage.classList.add(messageType);
     }
@@ -189,10 +189,10 @@ function loadSavedMessages(messages, cycle) {
     var messageType = "game-message-";
     var newMessage = document.createElement("div");
     newMessage.classList.add("game-message");
-    if (messages[i].type.includes("day")) {
+    if (messages[i].type.includes("Day")) {
       messageType += "day";
       newMessage.classList.add(messageType);
-    } else if (messages[i].type.includes("night")) {
+    } else if (messages[i].type.includes("Night")) {
       messageType += "night";
       newMessage.classList.add(messageType);
     } else if (messages[i].type.includes("confirm")) {
@@ -211,10 +211,10 @@ function loadSavedMessages(messages, cycle) {
       messageType += "extra";
       newMessage.classList.add(messageType);
     } else if (messages[i].type.includes("timestamp")) {
-      if (cycle.includes("day")) {
+      if (cycle.includes("Day")) {
         messageType += "day";
         newMessage.classList.add(messageType);
-      } else if (cycle.includes("night")) {
+      } else if (cycle.includes("Night")) {
         messageType += "night";
         newMessage.classList.add(messageType);
       }
@@ -222,10 +222,10 @@ function loadSavedMessages(messages, cycle) {
       newMessage.style.alignItems = "center";
       newMessage.style.fontWeight = "600";
     } else if (messages[i].type.includes("lineSeperator")) {
-      if (cycle.includes("day")) {
+      if (cycle.includes("Day")) {
         messageType += "day";
         newMessage.classList.add(messageType);
-      } else if (cycle.includes("night")) {
+      } else if (cycle.includes("Night")) {
         messageType += "night";
         newMessage.classList.add(messageType);
       }
@@ -235,7 +235,7 @@ function loadSavedMessages(messages, cycle) {
 
     newMessage.innerText = messages[i].message;
     messageScroller.appendChild(newMessage);
-    messages.scrollTop = messages.scrollHeight;
+    messageScroller.scrollTop = messageScroller.scrollHeight;
   }
 }
 
@@ -243,8 +243,7 @@ function loadSavedMessages(messages, cycle) {
 
 socket.on("playerTargetButtonsReset", (players, socketPlayer) => {
   playerTargetHandler(players, socketPlayer);
-
-})
+});
 
 socket.on("currentPlayerTargets", (players, socketPlayer) => {
   playerTargetHandler(players, socketPlayer);
@@ -257,41 +256,44 @@ function playerTargetHandler(players, socketPlayer) {
     var buttons = playerElement.children[1];
     var abilityButton = buttons.children[0];
     var voteButton = buttons.children[2];
-  
+
     if (
       players[i].playerID !== socketPlayer.abilityTarget &&
       players[i].playerID !== socketPlayer.voteTarget
     ) {
-      nameContainer.classList.remove(
-        "game-player-selection-both",
-        "game-player-selection-ability",
-        "game-player-selection-vote"
-      );
+      nameContainer.classList.remove("game-player-selection-vote");
+      playerElement.classList.remove("game-player-selection-ability");
       abilityButton.innerText = "ability";
       voteButton.innerText = "vote";
       abilityButton.style.fontWeight = "400";
       voteButton.style.fontWeight = "400";
     } else if (players[i].playerID !== socketPlayer.abilityTarget) {
-      nameContainer.classList.remove("game-player-selection-ability");
-      nameContainer.classList.remove("game-player-selection-both");
+      // nameContainer.classList.remove("game-player-selection-ability");
+      playerElement.classList.remove("game-player-selection-ability");
+      nameContainer.classList.remove("game-player-selection-vote");
+
+      // nameContainer.classList.remove("game-player-selection-both");
       abilityButton.innerText = "ability";
       abilityButton.style.fontWeight = "400";
       voteButton.style.fontWeight = "700";
       voteButton.innerText = "undo";
     } else if (players[i].playerID !== socketPlayer.voteTarget) {
       nameContainer.classList.remove("game-player-selection-vote");
-      nameContainer.classList.remove("game-player-selection-both");
+      playerElement.classList.remove("game-player-selection-ability");
+      // nameContainer.classList.remove("game-player-selection-both");
       abilityButton.innerText = "undo";
       abilityButton.style.fontWeight = "700";
       voteButton.style.fontWeight = "400";
       voteButton.innerText = "vote";
     }
-  
+
     if (
       players[i].playerID == socketPlayer.abilityTarget &&
       players[i].playerID == socketPlayer.voteTarget
     ) {
-      nameContainer.classList.add("game-player-selection-both");
+      // nameContainer.classList.add("game-player-selection-both");
+      nameContainer.classList.add("game-player-selection-vote");
+      playerElement.classList.add("game-player-selection-ability");
       abilityButton.innerText = "undo";
       voteButton.innerText = "undo";
       abilityButton.style.fontWeight = "700";
@@ -300,7 +302,8 @@ function playerTargetHandler(players, socketPlayer) {
       players[i].playerID == socketPlayer.abilityTarget &&
       players[i].playerID !== socketPlayer.voteTarget
     ) {
-      nameContainer.classList.add("game-player-selection-ability");
+      // nameContainer.classList.add("game-player-selection-ability");
+      playerElement.classList.add("game-player-selection-ability");
       abilityButton.innerText = "undo";
       abilityButton.style.fontWeight = "700";
       voteButton.style.fontWeight = "400";
@@ -314,7 +317,6 @@ function playerTargetHandler(players, socketPlayer) {
       voteButton.style.fontWeight = "700";
     }
   }
-  
 }
 
 // press respective button to set player target
@@ -371,6 +373,8 @@ function setPlayers(players, cycle, socketRole) {
       "game-player-selection-vote",
       "game-player-selection-both"
     );
+    abilityButton.classList.remove("game-button-ability-norounding");
+    voteButton.classList.remove("game-button-vote-norounding");
 
     if (players[i].userID == getPlayerID()) {
       currentElement.style.fontWeight = 700;
@@ -630,6 +634,8 @@ function setPlayers(players, cycle, socketRole) {
                   voteButton.setAttribute("onclick", "actionHandler(this)");
                   abilityButton.style.display = "flex";
                   voteButton.style.display = "flex";
+                  abilityButton.classList.add("game-button-ability-norounding");
+                  voteButton.classList.add("game-button-vote-norounding");
                   stateButton.style.display = "none";
                   stateButton.classList.remove("game-button-dead");
                   stateButton.classList.remove("game-button-unselectable");
@@ -654,6 +660,8 @@ function setPlayers(players, cycle, socketRole) {
                   voteButton.setAttribute("onclick", "actionHandler(this)");
                   abilityButton.style.display = "flex";
                   voteButton.style.display = "flex";
+                  abilityButton.classList.add("game-button-ability-norounding");
+                  voteButton.classList.add("game-button-vote-norounding");
                   stateButton.style.display = "none";
                   stateButton.classList.remove("game-button-dead");
                   stateButton.classList.remove("game-button-unselectable");

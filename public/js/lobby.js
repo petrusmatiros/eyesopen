@@ -36,9 +36,7 @@ socket.on("connect", () => {
         window.location.href = window.location.href + "/join";
       }
     } else {
-
       socket.emit("checkUserApartOfGame", getPlayerID(), "app");
-
       socket.on("apartOfGameApp", (apartOfGame, inProgress, code) => {
         if (
           (!apartOfGame && inProgress == false) ||
@@ -66,7 +64,7 @@ socket.on("connect", () => {
           // socket.on("isInGame", (inGame) => {
 
           // })
-
+          navigator.clipboard.writeText(window.location.href);
           socket.on("viewRoom", (roomCode) => {
             document.getElementById("roomcode-copy").innerText = roomCode;
           });
