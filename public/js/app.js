@@ -63,7 +63,7 @@ socket.on("connect", () => {
         if (apartOfGame && inProgress == true) {
           console.log("checking for role card availability");
           socket.emit("checkForRoleCard", getPlayerID());
-
+          resetActionsOnRefresh();
           socket.emit("setEvilRoom");
 
           socket.emit("fetchMessages", getPlayerID());
@@ -240,6 +240,10 @@ function loadSavedMessages(messages, cycle) {
 }
 
 // ! FIX THIS
+
+function resetActionsOnRefresh() {
+  socket.emit("resetSocketActions", getPlayerID());
+}
 
 socket.on("playerTargetButtonsReset", (players, socketPlayer) => {
   playerTargetHandler(players, socketPlayer);

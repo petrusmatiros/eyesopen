@@ -7,9 +7,9 @@ const app = express();
 const port = 15000;
 var privateKey = fs.readFileSync("sslcert/private.key", "utf8");
 var certificate = fs.readFileSync("sslcert/certificate.crt", "utf8");
-var ca = fs.readFileSync('sslcert/ca_bundle.crt', 'utf8');
+var ca = fs.readFileSync("sslcert/ca_bundle.crt", "utf8");
 
-var credentials = {key: privateKey, cert: certificate, ca: ca};
+var credentials = { key: privateKey, cert: certificate, ca: ca };
 // var credentials = { key: privateKey, cert: certificate };
 const server = require("https").createServer(credentials, app);
 // const server = require("https").createServer(app);
@@ -637,7 +637,7 @@ io.on("connection", async (socket) => {
             count++;
           }
         }
-        if (count == rooms.get(roomCode).getUsers().length && count >= 3) {
+        if (count == rooms.get(roomCode).getUsers().length) {
           return true;
         } else {
           return false;
@@ -1255,47 +1255,54 @@ io.on("connection", async (socket) => {
             var player = connectedUsers.get(playerID).getPlayer();
             var isValidTarget = false;
             var validTargets = generateValidPlayerList(playerID);
-            for (var i = 0; i < validTargets.length; i++) {
-              if (
-                validTargets[i].userID == targetID &&
-                (validTargets[i].type !== "unselectable" ||
-                  validTargets[i].type !== "dead" ||
-                  validTargets[i].type !== "evil+unselectable")
-              ) {
-                isValidTarget = true;
-              }
-            }
-            if (isValidTarget) {
-              if (elementID == "game-button-ability") {
-                // New target
-                if (player.abilityTarget !== targetID) {
-                  player.abilityTarget = targetID;
-                } else if (player.abilityTarget == targetID) {
-                  player.abilityTarget = null;
-                }
-              } else if (elementID == "game-button-vote") {
-                // New target
-                if (player.voteTarget !== targetID) {
-                  player.voteTarget = targetID;
-                } else if (player.voteTarget == targetID) {
-                  player.voteTarget = null;
+            if (game.getTimer().getCounter() > 0) {
+              for (var i = 0; i < validTargets.length; i++) {
+                if (
+                  validTargets[i].userID == targetID &&
+                  (validTargets[i].type !== "unselectable" ||
+                    validTargets[i].type !== "dead" ||
+                    validTargets[i].type !== "evil+unselectable")
+                ) {
+                  isValidTarget = true;
                 }
               }
-              console.log(
-                "valid target selected",
-                connectedUsers.get(targetID).getName(),
-                "abilityTarget:",
-                player.abilityTarget,
-                "voteTarget:",
-                player.voteTarget
-              );
-              socket.emit("currentPlayerTargets", game.getUsers(), player);
-            } else {
-              console.log(
-                "unvalid target",
-                connectedUsers.get(targetID).getName()
-              );
+              if (isValidTarget) {
+                if (elementID == "game-button-ability") {
+                  // New target
+                  if (player.abilityTarget !== targetID) {
+                    player.abilityTarget = targetID;
+                  } else if (player.abilityTarget == targetID) {
+                    player.abilityTarget = null;
+                  }
+                } else if (elementID == "game-button-vote") {
+                  // New target
+                  if (player.voteTarget !== targetID) {
+                    player.voteTarget = targetID;
+                  } else if (player.voteTarget == targetID) {
+                    player.voteTarget = null;
+                  }
+                }
+                console.log(
+                  "valid target selected",
+                  connectedUsers.get(targetID).getName(),
+                  "abilityTarget:",
+                  player.abilityTarget,
+                  "voteTarget:",
+                  player.voteTarget
+                );
+              } else {
+                console.log(
+                  "--INVALID target selected",
+                  connectedUsers.get(targetID).getName(),
+                  "abilityTarget:",
+                  player.abilityTarget,
+                  "voteTarget:",
+                  player.voteTarget,
+                  "--"
+                );
+              }
             }
+            socket.emit("currentPlayerTargets", game.getUsers(), player);
           }
         }
       }
@@ -1732,6 +1739,20 @@ io.on("connection", async (socket) => {
 
   function voteHandler(playerID, room, roomCode, game) {}
   function executeActions(playerID, room, roomCode, game) {}
+
+  socket.on("resetSocketActions", (playerID) => {
+    resetSocketActions(playerID);
+  });
+
+  function resetSocketActions(playerID) {
+    var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+    var room = rooms.get(roomCode);
+    var game = room.getGame();
+    var player = connectedUsers.get(playerID).getPlayer();
+    player.reset();
+    socket.emit("playerTargetButtonsReset", game.getUsers(), player);
+  }
+
   function resetActions(playerID, room, roomCode, game) {
     game.getUsers().forEach((user) => user.getPlayer().reset());
     var player = connectedUsers.get(playerID).getPlayer();
@@ -1806,8 +1827,8 @@ io.on("connection", async (socket) => {
             game.setCycle("Day");
             // Prevent from spamming message
             emitCycleOnce = true;
-            gameHandler(playerID);
             io.to(roomCode).emit("changeUI", game.getCycle());
+            gameHandler(playerID);
           }
           initClock(
             game.getTimer(),
@@ -1836,8 +1857,8 @@ io.on("connection", async (socket) => {
             emitCycleOnce = true;
             // Increment cycle count
             game.setCycleCount(game.getCycleCount() + 1);
-            gameHandler(playerID);
             io.to(roomCode).emit("changeUI", game.getCycle());
+            gameHandler(playerID);
           }
 
           initClock(

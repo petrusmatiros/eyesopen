@@ -1,18 +1,16 @@
 // const domain = "https://84.216.161.205/";
 const domain = "https://eyesopen.ml/";
-const socket = io(domain, {secure: true});
+const socket = io(domain, { secure: true });
 // const socket = io(domain);
 
 const lobby = domain + "lobby/";
 
-
 socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
   socket.on("userExists", (userExists) => {
+    setFocus();
     if (!userExists) {
       resetCookie();
-      var notSet = true;
-      setFocus(notSet);
     } else {
       socket.emit("setRoom", getPlayerID());
       var URL = window.location.href.replace("http://", "");
@@ -21,6 +19,10 @@ socket.on("connect", () => {
     }
   });
 });
+
+function setFocus() {
+  document.getElementById("inputUser").focus();
+}
 
 /**
  * [resetCookie resets the playerID cookie to null]
@@ -96,19 +98,6 @@ function checkIfSessionExists() {
   });
 }
 
-function setFocus(notSet) {
-  if (notSet) {
-    document.getElementById("inputUser").focus();
-  }
-}
-
-// function displayUser() {
-//   if (!checkIfSessionExists()) {
-//     document.getElementById("overlay").style.display = "block";
-//     document.getElementById("user").style.display = "flex";
-//     document.getElementById("inputUser").focus();
-//   }
-// }
 function hideUser() {
   document.getElementById("overlay").style.display = "none";
   document.getElementById("user").style.display = "none";
@@ -131,7 +120,8 @@ function roomInProgress() {
   document.getElementById("join-help").style.display = "flex";
   document.getElementById("inputUser").style.border =
     "2px solid hsl(0, 100%, 45%)";
-  document.getElementById("user-help").innerText = "The room is currently in progress";
+  document.getElementById("user-help").innerText =
+    "The room is currently in progress";
 }
 
 function userNameShortError() {
@@ -165,30 +155,29 @@ function checkDirectName() {
     var URL = window.location.href.replace("http://", "");
     var room = URL.split("/")[URL.split("/").length - 2];
     setTimeout(() => {
-        socket.emit("createUser", inputVal, getPlayerID());
-        socket.emit("checkRoomCode", room, getPlayerID());
+      socket.emit("createUser", inputVal, getPlayerID());
+      socket.emit("checkRoomCode", room, getPlayerID());
     }, 500);
-    
-      socket.on("roomCodeResponse", (status) => {
-        if (status == "full") {
-          roomFull();
-          full = true;
-        } else if (status == "inProgress") {
-          // ! FIX THIS
-          // socket.emit("checkUserApartOfGame", getPlayerID(), "join");
-          // socket.on("apartOfGameJoin", (apartOfGame) => {
-          //   if (apartOfGame) {
-          //     join(room);
-          //   }
-          // })
-          roomInProgress();
-          inProgress = true;
-        }
-      });
-      if (full == false && inProgress == false) {
-        join(room);
+
+    socket.on("roomCodeResponse", (status) => {
+      if (status == "full") {
+        roomFull();
+        full = true;
+      } else if (status == "inProgress") {
+        // ! FIX THIS
+        // socket.emit("checkUserApartOfGame", getPlayerID(), "join");
+        // socket.on("apartOfGameJoin", (apartOfGame) => {
+        //   if (apartOfGame) {
+        //     join(room);
+        //   }
+        // })
+        roomInProgress();
+        inProgress = true;
       }
-    
+    });
+    if (full == false && inProgress == false) {
+      join(room);
+    }
   }
   // check if room exists (has been created)
 }

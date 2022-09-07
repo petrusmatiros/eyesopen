@@ -99,6 +99,7 @@ function setLocation(URL, reset = false) {
   if (reset) {
     resetCookie();
   }
+  navigator.clipboard.writeText(domain + URL);
   setTimeout(() => {
     window.location.href = URL;
   }, 500);
@@ -168,7 +169,7 @@ function displayHost() {
     socket.emit("fetchHostRoom", getPlayerID());
     socket.on("hostRoom", (roomCode) => {
       console.log(roomCode);
-      setLocation(`/lobby/${roomCode}`, false);
+      setLocation(`lobby/${roomCode}`, false);
     });
   }
 }
@@ -188,7 +189,7 @@ function UserInputDone() {
 function UserInputDoneHost(roomCode) {
   hideHost();
   // to a new room
-  setLocation(`/lobby/${roomCode}`, false);
+  setLocation(`lobby/${roomCode}`, false);
 }
 
 function displayJoin() {
@@ -237,7 +238,7 @@ function roomInProgress() {
 }
 
 function join(inputVal) {
-  setLocation(`/lobby/${inputVal}`, false);
+  setLocation(`lobby/${inputVal}`, false);
 }
 
 function checkRoomCode() {

@@ -64,7 +64,8 @@ socket.on("connect", () => {
           // socket.on("isInGame", (inGame) => {
 
           // })
-          navigator.clipboard.writeText(window.location.href);
+          // Copy URL to clipboard
+          
           socket.on("viewRoom", (roomCode) => {
             document.getElementById("roomcode-copy").innerText = roomCode;
           });
