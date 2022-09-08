@@ -245,25 +245,35 @@ function resetActionsOnRefresh() {
   socket.emit("resetSocketActions", getPlayerID());
 }
 
-socket.on("playerTargetButtonsReset", (players, socketPlayer) => {
-  playerTargetHandler(players, socketPlayer);
-});
+socket.on(
+  "playerTargetButtonsReset",
+  (theAbilityTarget, theVoteTarget, socketPlayer) => {
+    playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer);
+  }
+);
 
-socket.on("currentPlayerTargets", (players, socketPlayer) => {
-  playerTargetHandler(players, socketPlayer);
-});
+socket.on(
+  "currentPlayerTargets",
+  (theAbilityTarget, theVoteTarget, socketPlayer) => {
+    playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer);
+  }
+);
 
-function playerTargetHandler(players, socketPlayer) {
+function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
+  var allPlayers = document.getElementById("game-players-container").children;
+  
+  var players = Array.from(allPlayers[0].children).concat(Array.from(allPlayers[1].children));
   for (var i = 0; i < players.length; i++) {
-    var playerElement = document.getElementById(players[i].playerID);
+    // var playerElement = document.getElementById(players[i].id);
+    var playerElement = players[i];
     var nameContainer = playerElement.children[0];
     var buttons = playerElement.children[1];
     var abilityButton = buttons.children[0];
     var voteButton = buttons.children[2];
 
     if (
-      players[i].playerID !== socketPlayer.abilityTarget &&
-      players[i].playerID !== socketPlayer.voteTarget
+      players[i].id !== socketPlayer.abilityTarget &&
+      players[i].id !== socketPlayer.voteTarget
     ) {
       nameContainer.classList.remove("game-player-selection-vote");
       playerElement.classList.remove("game-player-selection-ability");
@@ -271,7 +281,7 @@ function playerTargetHandler(players, socketPlayer) {
       voteButton.innerText = "vote";
       abilityButton.style.fontWeight = "400";
       voteButton.style.fontWeight = "400";
-    } else if (players[i].playerID !== socketPlayer.abilityTarget) {
+    } else if (players[i].id !== socketPlayer.abilityTarget) {
       // nameContainer.classList.remove("game-player-selection-ability");
       playerElement.classList.remove("game-player-selection-ability");
       nameContainer.classList.remove("game-player-selection-vote");
@@ -281,7 +291,7 @@ function playerTargetHandler(players, socketPlayer) {
       abilityButton.style.fontWeight = "400";
       voteButton.style.fontWeight = "700";
       voteButton.innerText = "undo";
-    } else if (players[i].playerID !== socketPlayer.voteTarget) {
+    } else if (players[i].id !== socketPlayer.voteTarget) {
       nameContainer.classList.remove("game-player-selection-vote");
       playerElement.classList.remove("game-player-selection-ability");
       // nameContainer.classList.remove("game-player-selection-both");
@@ -292,8 +302,8 @@ function playerTargetHandler(players, socketPlayer) {
     }
 
     if (
-      players[i].playerID == socketPlayer.abilityTarget &&
-      players[i].playerID == socketPlayer.voteTarget
+      players[i].id == socketPlayer.abilityTarget &&
+      players[i].id == socketPlayer.voteTarget
     ) {
       // nameContainer.classList.add("game-player-selection-both");
       nameContainer.classList.add("game-player-selection-vote");
@@ -303,8 +313,8 @@ function playerTargetHandler(players, socketPlayer) {
       abilityButton.style.fontWeight = "700";
       voteButton.style.fontWeight = "700";
     } else if (
-      players[i].playerID == socketPlayer.abilityTarget &&
-      players[i].playerID !== socketPlayer.voteTarget
+      players[i].id == socketPlayer.abilityTarget &&
+      players[i].id !== socketPlayer.voteTarget
     ) {
       // nameContainer.classList.add("game-player-selection-ability");
       playerElement.classList.add("game-player-selection-ability");
@@ -312,8 +322,8 @@ function playerTargetHandler(players, socketPlayer) {
       abilityButton.style.fontWeight = "700";
       voteButton.style.fontWeight = "400";
     } else if (
-      players[i].playerID !== socketPlayer.abilityTarget &&
-      players[i].playerID == socketPlayer.voteTarget
+      players[i].id !== socketPlayer.abilityTarget &&
+      players[i].id == socketPlayer.voteTarget
     ) {
       nameContainer.classList.add("game-player-selection-vote");
       voteButton.innerText = "undo";
@@ -339,11 +349,11 @@ function actionHandler(element) {
   }
 }
 
-socket.on("setPlayersClock", (players, cycle, socketRole) => {
-  setPlayers(players, cycle, socketRole);
+socket.on("setPlayersClock", (players, cycle, socketRole, proxyID) => {
+  setPlayers(players, cycle, socketRole, proxyID);
 });
 
-function setPlayers(players, cycle, socketRole) {
+function setPlayers(players, cycle, socketRole, proxyID) {
   var playersContainer = document.getElementById("game-players-container");
   var colOne = playersContainer.children[0];
   var colOneSlots = colOne.children;
@@ -380,7 +390,7 @@ function setPlayers(players, cycle, socketRole) {
     abilityButton.classList.remove("game-button-ability-norounding");
     voteButton.classList.remove("game-button-vote-norounding");
 
-    if (players[i].userID == getPlayerID()) {
+    if (players[i].userID == proxyID) {
       currentElement.style.fontWeight = 700;
       if (cycle.includes("Night")) {
         // Dead
@@ -987,8 +997,8 @@ socket.on("showGame", (allReady) => {
     socket.emit("setEvilRoom");
     socket.emit("updateUI", getPlayerID());
     socket.emit("setPlayers", getPlayerID(), "first");
-    socket.on("setPlayersFirst", (players, cycle, socketRole) => {
-      setPlayers(players, cycle, socketRole);
+    socket.on("setPlayersFirst", (players, cycle, socketRole, proxyID) => {
+      setPlayers(players, cycle, socketRole, proxyID);
     });
   }
 });

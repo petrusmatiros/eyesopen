@@ -131,22 +131,26 @@ io.on("connection", async (socket) => {
       console.log("targetroom", targetRoom);
       if (targetRoom !== null) {
         connectedUsers.get(playerID).setReadyLobby(false);
-        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-          "ready-status-lobby",
-          rooms.get(targetRoom).getUsers()
-        );
-        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-          "rolePickConditionDisconnect",
-          false
-        );
-        clearPlayerSlot(playerID);
-        // reqHandler(playerID);
-        // remove user from room
-        rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
-        updatePlayerCount(playerID);
-        // TODO: check for requirement instead???
-        updateRoles();
-        reqHandler(playerID);
+        if (!rooms.get(targetRoom).getGame().getProgress()) {
+          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+            "ready-status-lobby",
+            generateProxyReadyLobby(playerID)
+          );
+          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+            "rolePickConditionDisconnect",
+            false
+          );
+          clearPlayerSlot(playerID);
+          // reqHandler(playerID);
+          // remove user from room
+          rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
+          updatePlayerCount(playerID);
+          // TODO: check for requirement instead???
+          updateRoles();
+          reqHandler(playerID);
+        } else {
+          rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
+        }
         // socket leaves room
         // connectedUsers.get(playerID).setCurrentRoom(null);
         socket.leave(targetRoom);
@@ -515,8 +519,10 @@ io.on("connection", async (socket) => {
       var playerID = randomstring.generate(6);
       var proxyID = randomstring.generate(6);
       if (!checkProxyExist(proxyID)) {
-        proxyIdenfication.set(playerID, proxyID);
-        socket.emit("playerID", playerID);
+        if (!checkProxyEqual(playerID, proxyID)) {
+          proxyIdenfication.set(playerID, proxyID);
+          socket.emit("playerID", playerID);
+        }
       }
     }
   });
@@ -526,6 +532,14 @@ io.on("connection", async (socket) => {
     console.log("player", playerID, "has created an ID");
   });
 
+
+  function checkProxyEqual(playerID, proxyID) {
+    if (playerID !== proxyID) {
+      return false;
+    } else if (playerID == proxyID) {
+      return true;
+    }
+  }
 
   function checkProxyExist(proxyID) {
     if (Array.from(proxyIdenfication.values()).includes(proxyID)) {
@@ -606,7 +620,7 @@ io.on("connection", async (socket) => {
           connectedUsers.get(playerID).setReadyLobby(notReady);
           io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
             "ready-status-lobby",
-            rooms.get(roomCode).getUsers()
+            generateProxyReadyLobby(playerID)
           );
         }
       }
@@ -626,7 +640,7 @@ io.on("connection", async (socket) => {
             updatePlayerCount(playerID);
             io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
               emitTo,
-              rooms.get(roomCode).getUsers()
+              generateProxyReadyLobby(playerID)
             );
           }
         } else if (state.includes("game")) {
@@ -678,6 +692,23 @@ io.on("connection", async (socket) => {
     }
   }
 
+  function generateProxyReadyLobby(playerID) {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var proxyUsers = [];
+        for (var i = 0; i < room.getUsers().length; i++) {
+          let playerID = proxyIdenfication.get(room.getUsers()[i].playerID);
+          let readyLobby = room.getUsers()[i].readyLobby;
+          var proxyUser = {playerID, readyLobby};
+          proxyUsers.push(proxyUser);
+        }
+        return proxyUsers;
+      }
+    }
+  }
+
   socket.on("player-ready", (playerID, state) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
@@ -691,7 +722,7 @@ io.on("connection", async (socket) => {
             updatePlayerCount(playerID);
             io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
               emitTo,
-              rooms.get(roomCode).getUsers()
+              generateProxyReadyLobby(playerID)
             );
           }
         } else if (state.includes("game")) {
@@ -736,10 +767,10 @@ io.on("connection", async (socket) => {
           console.log(socket.rooms);
           console.log(connectedUsers.get(playerID));
           socket.emit("joinPlayerSlot");
-          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-            emitTo,
-            rooms.get(roomCode).getUsers()
-          );
+          // io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+          //   emitTo,
+          //   rooms.get(roomCode).getUsers()
+          // );
         }
       }
     }
@@ -810,7 +841,8 @@ io.on("connection", async (socket) => {
           var room = rooms.get(roomCode);
           var slotAlreadyExist = false;
           for (var [key, value] of Object.entries(room.slots)) {
-            if (value.userID == playerID) {
+
+            if (value.userID == proxyIdenfication.get(playerID)) {
               slotAlreadyExist = true;
             }
           }
@@ -818,7 +850,7 @@ io.on("connection", async (socket) => {
             for (var [key, value] of Object.entries(room.slots)) {
               if (value.taken == false) {
                 room.slots[key]["taken"] = true;
-                room.slots[key]["userID"] = playerID;
+                room.slots[key]["userID"] = proxyIdenfication.get(playerID);
                 room.slots[key]["userName"] = connectedUsers
                   .get(playerID)
                   .getName();
@@ -842,7 +874,7 @@ io.on("connection", async (socket) => {
       if (!checkUserInGame(roomCode, playerID)) {
         var room = rooms.get(roomCode);
         for (var [key, value] of Object.entries(room.slots)) {
-          if (value.userID == playerID) {
+          if (value.userID == proxyIdenfication.get(playerID)) {
             room.slots[key]["taken"] = false;
             room.slots[key]["userID"] = undefined;
             room.slots[key]["userName"] = "";
@@ -1298,7 +1330,6 @@ io.on("connection", async (socket) => {
                 }
                 console.log(
                   "valid target selected",
-                  connectedUsers.get(targetID).getName(),
                   "abilityTarget:",
                   player.abilityTarget,
                   "voteTarget:",
@@ -1307,7 +1338,6 @@ io.on("connection", async (socket) => {
               } else {
                 console.log(
                   "--INVALID target selected",
-                  connectedUsers.get(targetID).getName(),
                   "abilityTarget:",
                   player.abilityTarget,
                   "voteTarget:",
@@ -1316,7 +1346,7 @@ io.on("connection", async (socket) => {
                 );
               }
             }
-            socket.emit("currentPlayerTargets", game.getUsers(), player);
+            socket.emit("currentPlayerTargets", player.abilityTarget, player.voteTarget, player);
           }
         }
       }
@@ -1381,7 +1411,9 @@ io.on("connection", async (socket) => {
 
       var user = game.getUsers()[i];
       // TOOD: Change it so the USER ID, is not the same as the user id for the cookie
-      var userID = game.getUsers()[i].getPlayerID();
+      // var userID = game.getUsers()[i].getPlayerID();
+      // ? PROXY
+      var userID = proxyIdenfication.get(game.getUsers()[i].getPlayerID());
       var userName = game.getUsers()[i].getName();
       var userRole = game.getUsers()[i].getPlayer().getRole();
 
@@ -1628,7 +1660,8 @@ io.on("connection", async (socket) => {
               emitTo,
               generateValidPlayerList(playerID),
               game.getCycle(),
-              socketRole
+              socketRole,
+              proxyIdenfication.get(playerID)
             );
           }
         }
@@ -1743,6 +1776,7 @@ io.on("connection", async (socket) => {
   // TODO: need to do this
   // ! FIX THIS
   function gameHandler(playerID) {
+    // ? PROXY HANDLING
     var roomCode = connectedUsers.get(playerID).getCurrentRoom();
     var room = rooms.get(roomCode);
     var game = room.getGame();
@@ -1765,13 +1799,13 @@ io.on("connection", async (socket) => {
     var game = room.getGame();
     var player = connectedUsers.get(playerID).getPlayer();
     player.reset();
-    socket.emit("playerTargetButtonsReset", game.getUsers(), player);
+    socket.emit("playerTargetButtonsReset", player.abilityTarget, player.voteTarget, player);
   }
 
   function resetActions(playerID, room, roomCode, game) {
     game.getUsers().forEach((user) => user.getPlayer().reset());
     var player = connectedUsers.get(playerID).getPlayer();
-    io.to(roomCode).emit("playerTargetButtonsReset", game.getUsers(), player);
+    io.to(roomCode).emit("playerTargetButtonsReset", player.abilityTarget, player.voteTarget, player);
   }
   function deathHandler(playerID, room, roomCode, game) {}
 
