@@ -39,6 +39,7 @@ const maxPlayers = 14;
 
 var rooms = new Map();
 var connectedUsers = new Map();
+var proxyIdenfication = new Map();
 
 // Clear data every day at 05:00:00
 function checkClearData() {
@@ -512,7 +513,11 @@ io.on("connection", async (socket) => {
     if (!checkUserExist(playerID)) {
       console.log(socketID, "requesting player ID");
       var playerID = randomstring.generate(6);
-      socket.emit("playerID", playerID);
+      var proxyID = randomstring.generate(6);
+      if (!checkProxyExist(proxyID)) {
+        proxyIdenfication.set(playerID, proxyID);
+        socket.emit("playerID", playerID);
+      }
     }
   });
 
@@ -520,6 +525,15 @@ io.on("connection", async (socket) => {
   socket.on("completedID", (playerID) => {
     console.log("player", playerID, "has created an ID");
   });
+
+
+  function checkProxyExist(proxyID) {
+    if (Array.from(proxyIdenfication.values()).includes(proxyID)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   function checkUserExist(playerID) {
     if (connectedUsers.has(playerID)) {
@@ -1366,6 +1380,7 @@ io.on("connection", async (socket) => {
       var isEvil = null;
 
       var user = game.getUsers()[i];
+      // TOOD: Change it so the USER ID, is not the same as the user id for the cookie
       var userID = game.getUsers()[i].getPlayerID();
       var userName = game.getUsers()[i].getName();
       var userRole = game.getUsers()[i].getPlayer().getRole();
