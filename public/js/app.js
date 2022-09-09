@@ -70,6 +70,11 @@ socket.on("connect", () => {
           socket.on("savedMessages", (messages, cycle) => {
             loadSavedMessages(messages, cycle);
           });
+          socket.emit("fetchCemetery", getPlayerID());
+          socket.on("savedCemetery", (burried) => {
+            loadCemetery(burried);
+          });
+          
         } else if (apartOfGame == false) {
           window.location.href = lobby + code + "/";
         }
@@ -181,6 +186,19 @@ socket.on("recieveMessage", (message, type, cycle) => {
 
 function messageBoxHandler() {
   // used for action messages
+}
+
+socket.on("cemetery", (burried) => {
+  loadCemetery(burried);
+})
+
+function loadCemetery(burried) {
+  var deceasedElement = document.getElementById("game-deceased");
+  var deceasedList = deceasedElement.children;
+
+  for (var i = 0; i < burried.length; i++) {
+    deceasedList[i].innerText = `${burried[i].burriedPlayerName} (${burried[i].burriedPlayerRole})`
+  }
 }
 
 function loadSavedMessages(messages, cycle) {
