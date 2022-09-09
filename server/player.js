@@ -140,19 +140,8 @@ class Player {
     }
   }
 
-  vote(player, target) {}
-
-  kill(player, target) {
-    if (player.isBlocked == false) {
-      if (target.isProtected == false) {
-        if (player.role.type == roleTypes.SerialKiller) {
-          console.log("You kill", target.playerName);
-          target.isKilled = true;
-          console.log(target.isKilled);
-        }
-      }
-    }
-  }
+  
+  
 }
 
 module.exports = {

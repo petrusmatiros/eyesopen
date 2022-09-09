@@ -1780,14 +1780,236 @@ io.on("connection", async (socket) => {
     var roomCode = connectedUsers.get(playerID).getCurrentRoom();
     var room = rooms.get(roomCode);
     var game = room.getGame();
-    voteHandler(playerID, room, roomCode, game);
-    executeActions(playerID, room, roomCode, game);
-    resetActions(playerID, room, roomCode, game);
+    if (game.getCycle() == "Night") {
+      executeNightActions(playerID, room, roomCode, game);
+      voteHandlerEvil(playerID, room, roomCode, game);
+    }
+    else if (game.getCycle() == "Day") {
+      voteHandlerGlobal(playerID, room, roomCode, game);
+    }
+    resetAllActions(playerID, room, roomCode, game);
     deathHandler(playerID, room, roomCode, game);
   }
 
-  function voteHandler(playerID, room, roomCode, game) {}
-  function executeActions(playerID, room, roomCode, game) {}
+  function getKeyFromValue(map, searchValue) {
+    for (let [key, value] of map.entries()) {
+      if (value === searchValue) {
+        return key;
+      }
+    }
+  }
+
+  function evilVote(playerID, room, roomCode, game, target) {
+    var targetPlayer = connectedUsers.get(target).getPlayer();
+    if (!targetPlayer.isProtected) {
+      targetPlayer.setIsKilled(true);
+      targetPlayer.addKiller("Evil");
+      // send message to evil people that it worked
+    } else {
+      
+      // send message to evil people that it  DID not work
+    }
+  }
+
+  function voteHandlerEvil(playerID, room, roomCode, game) {
+    if (game.getCycle() == "Night") {
+      var evilUsers = game.getEvil();
+      var evilRoom = game.getEvilRoom();
+     
+      var targets = new Map();
+       for (var i = 0; i < evilUsers.length; i++) {
+         var theVoteTarget = getKeyFromValue(proxyIdenfication, evilUsers[i].getPlayer().voteTarget);
+         if (targets.has(theVoteTarget)) {
+           targets.get(theVoteTarget) += evilUsers[i].getPlayer().getRole().killVoteCount;
+         } else if (!targets.has(theVoteTarget)) {
+           targets.set(theVoteTarget, evilUsers[i].getPlayer().getRole().killVoteCount)
+         }
+       }
+       var targetCount = Array.from(targets.values());
+       var mostVotedIndex = targetCount.indexOf(Math.max(...targetCount));
+       var mostVoted = Array.from(targets.keys())[mostVotedIndex];
+       evilVote(playerID, room, roomCode, game, mostVoted);
+ 
+     }
+  }
+
+  function checkIfExecutionerAlive(playerID, room, roomCode, game) {
+    for (var i = 0; i < game.getAlive().length; i++) {
+      if (game.getAlive()[i].getPlayer().getRole().type.includes("executioner")) {
+        if (game.getAlive()[i].getPlayer().isKilled == false && game.getAlive()[i].getPlayer().isLynched == false) {
+          var executioner = game.getAlive()[i];
+          var isTrue = true;
+          return {isTrue, executioner};
+        }
+      }
+    }
+    var executioner = null;
+    var isTrue = false;
+    return {isTrue, executioner};
+  }
+
+  function checkIfLawyerAlive(playerID, room, roomCode, game) {
+    for (var i = 0; i < game.getAlive().length; i++) {
+      var player = game.getAlive()[i].getPlayer();
+      if (player.getRole().type.includes("lawyer")) {
+        if (player.getIsKilled() == false && player.getIsLynched() == false) {
+          var lawyer = game.getAlive()[i];
+          var isTrue = true;
+          return {isTrue, lawyer};
+        }
+      }
+    }
+    var lawyer = null;
+    var isTrue = false;
+    return {isTrue, lawyer};
+  }
+
+
+  function globalVote(playerID, room, roomCode, game, target) {
+    var targetPlayer = connectedUsers.get(target).getPlayer();
+    targetPlayer.setIsLynched(true);
+
+    // SEND LYNCHED MESSAGE
+
+    var executionerObject = Object.values(checkIfExecutionerAlive(playerID, room, roomCode, game));
+    var lawyerObject = Object.values(checkIfLawyerAlive(playerID, room, roomCode, game));
+    if (targetPlayer.getRole().type.includes("jester")) {
+      // JESTER WINS
+      if (lawyerObject[0] == true) {
+        var lawyer = lawyerObject[1];
+
+        if (lawyer.getPlayer().getRole().client == targetPlayer) {
+          // LAYWER WINS ALSO
+        }
+      }
+
+
+    } else if (executionerObject[0] == true) {
+      var executioner = executionerObject[1];
+      
+      if (executioner.getPlayer().getRole().target == targetPlayer) {
+        // executioner COMPLETES MISSION
+        // MAKE EXECUTIONER TO JESTER
+        executioner.getPlayer().setRole(new Role("jester"));
+      }
+     
+    }
+    
+  }
+
+  function voteHandlerGlobal(playerID, room, roomCode, game) {
+    if (game.getCycle() == "Day") {
+      var users = game.getUsers();
+    
+     var targets = new Map();
+      for (var i = 0; i < users.length; i++) {
+        var theVoteTarget = getKeyFromValue(proxyIdenfication, users[i].getPlayer().voteTarget);
+        var voteTargetPlayer = connectedUsers.get(theVoteTarget).getPlayer();
+        if (voteTargetPlayer.getIsKilled() == false && voteTargetPlayer.getIsLynched() == false) {}
+        if (targets.has(theVoteTarget)) {
+          targets.get(theVoteTarget) += users[i].getPlayer().getRole().voteCount;
+        } else if (!targets.has(theVoteTarget)) {
+          targets.set(theVoteTarget, users[i].getPlayer().getRole().voteCount)
+        }
+      }
+      var aliveUsersCount = game.getAlive().length;
+      var targetCount = Array.from(targets.values());
+      for (var i = 0; i < targetCount.length; i++) {
+        var majority = (aliveUsersCount.length / 2);
+        if (targetCount[i] > majority) {
+          var mostVotedIndex = targetCount.indexOf(targetCount[i]);
+          var mostVoted = Array.from(targets.keys())[mostVotedIndex];
+          globalVote(playerID, room, roomCode, game, mostVoted);
+        }
+      }
+    }
+  }
+  function executeNightActions(playerID, room, roomCode, game) {
+    // Ability order:
+    // Blocks
+    // Disguising
+    // Framing
+    // Investigation
+    // Protection
+    // Killing (SK)
+
+    for (var i = 0; i < game.getAlive().length; i++) {
+      var user = game.getAlive()[i];
+      var player = user.getPlayer();
+      var role = player.getRole();
+      var abilityTarget = connectedUsers.get(getKeyFromValue(proxyIdenfication.get, player.abilityTarget));
+      var abilityTargetPlayer = connectedUsers.get(getKeyFromValue(proxyIdenfication.get, player.abilityTarget)).getPlayer();
+
+      if (role.hasNightAbility) {
+        if (role.type.includes("trapper") || role.type.includes("witch")) {
+            // ? CANNOT BE BLOCKED BY EACH OTHER
+            if (role.type.inclues("trapper")) {
+              // CAN BLOCK ANYONE
+              abilityTargetPlayer.isBlocked = true;
+            }
+            else if (role.type.inclues("witch")) {
+              if (!abilityTargetPlayer.getRole().team.includes("evil")) {
+                // CAN BLOCK EVERYONE EXCEPT EVIL
+                abilityTargetPlayer.isBlocked = true
+              }
+            }
+        }
+        else if (role.type.includes("surgeon") || role.type.includes("framer")) {
+          if (!player.isBlocked) {
+            if (role.type.inclues("surgeon")) {
+              if (abilityTargetPlayer.getRole().team.includes("evil")) {
+                // CAN DISGUISE EVIL TO LOOK GOOD
+                abilityTargetPlayer.fakeTeam = "good"
+              }
+            }
+            else if (role.type.inclues("surgeon")) {
+              if (!abilityTargetPlayer.getRole().team.includes("evil")) {
+                // CAN DISGUISE ANYBODY ELSE (NOT EVIL) TO LOOK EVIL
+                abilityTargetPlayer.fakeTeam = "evil"
+              }
+            }
+          }
+        }
+        else if (role.type.includes("investigator")) {
+          if (!player.isBlocked) {
+            // ACTION WORKED
+            if (abilityTargetPlayer.isDisguised) {
+              // READ FROM FAKE TEAM
+              // abilityTargetPlayer.fakeTeam
+            } else {
+              // READ FROM role.team
+              // abilityTargetPlayer.getRole().team
+            }
+          } else {
+            // DIDNT WORK
+          }
+        }
+        else if (role.type.includes("doctor")) {
+          if (!player.isBlocked) {
+            if (abilityTarget == user) {
+              if (user.getPlayer().getRole().selfUsage > 0) {
+                user.getPlayer().getRole().selfUsage -= 1;
+                abilityTargetPlayer.isProtected = true;
+              }
+            } else {
+              abilityTargetPlayer.isProtected = true;
+            }
+          } else {
+            // DIDNT WORK
+          }
+        }
+        else if (role.type.includes("serial killer")) {
+          if (!abilityTargetPlayer.isProtected || !player.isBlocked) {
+            // SERIAL KILLER KILL WORK
+            abilityTargetPlayer.setIsKilled(true);
+            abilityTargetPlayer.addKiller("Serial Killer");
+          } else {
+            // DIDNT WORK
+          }
+        }
+      }
+    }
+  }
 
   socket.on("resetSocketActions", (playerID) => {
     resetSocketActions(playerID);
@@ -1802,12 +2024,19 @@ io.on("connection", async (socket) => {
     socket.emit("playerTargetButtonsReset", player.abilityTarget, player.voteTarget, player);
   }
 
-  function resetActions(playerID, room, roomCode, game) {
+  function resetAllActions(playerID, room, roomCode, game) {
     game.getUsers().forEach((user) => user.getPlayer().reset());
     var player = connectedUsers.get(playerID).getPlayer();
     io.to(roomCode).emit("playerTargetButtonsReset", player.abilityTarget, player.voteTarget, player);
   }
-  function deathHandler(playerID, room, roomCode, game) {}
+  function deathHandler(playerID, room, roomCode, game) {
+
+
+    // SEND MESSAGE WHO DIED
+    // SEND MESSAGE WHO DIED FROM WHOM (killedBY)
+    // AFTER THAT, ADD THEM TO CEMETERY
+    // REMOVE FROM DEAD ARRAY
+  }
 
   function clockHandler(playerID, roomCode, room, game) {
     // Night and Day
