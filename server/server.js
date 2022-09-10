@@ -1336,22 +1336,15 @@ io.on("connection", async (socket) => {
                       .getPlayer();
                     // New target
                     if (player.getRole().team.includes("evil")) {
-                      if (
-                        player.abilityTarget !== targetID ||
-                        player.abilityTarget == null
-                      ) {
+                      if (player.abilityTarget == null) {
                         var abilityMessage = "";
                         if (player.getRole().type.includes("surgeon")) {
                           if (
-                            player.getRole().selfUsage > 0 &&
-                            player.abilityTarget !== null
+                            player.getRole().selfUsage > 0 && player == theAbilityTargetPlayer
                           ) {
-                            if (player == theAbilityTargetPlayer) {
-                              abilityMessage = `${player.getPlayerName()} is going to disguise themselves`;
-                            } else {
-                              abilityMessage = `${player.getPlayerName()} is going to disguise ${theAbilityTargetPlayer.getPlayerName()}`;
-                              player.abilityTarget = targetID;
-                            }
+                            abilityMessage = `${player.getPlayerName()} is going to disguise themselves`;
+                            player.abilityTarget = targetID;
+                            
                           } else {
                             player.abilityTarget = targetID;
                             abilityMessage = `${player.getPlayerName()} is going to disguise ${theAbilityTargetPlayer.getPlayerName()}`;
@@ -1363,7 +1356,31 @@ io.on("connection", async (socket) => {
                           player.abilityTarget = targetID;
                           abilityMessage = `${player.getPlayerName()} is going to frame ${theAbilityTargetPlayer.getPlayerName()}`;
                         }
-                      } else if (player.abilityTarget == targetID) {
+                      }
+                      else if (
+                        player.abilityTarget !== targetID && player.abilityTarget !== null
+                        
+                      ) {
+                        var abilityMessage = "";
+                        if (player.getRole().type.includes("surgeon")) {
+                          if (
+                            player.getRole().selfUsage > 0 && player == theAbilityTargetPlayer
+                          ) {
+                            abilityMessage = `${player.getPlayerName()} is going to disguise themselves`;
+                            player.abilityTarget = targetID;
+                           
+                          } else {
+                            player.abilityTarget = targetID;
+                            abilityMessage = `${player.getPlayerName()} is going to disguise ${theAbilityTargetPlayer.getPlayerName()}`;
+                          }
+                        } else if (player.getRole().type.includes("witch")) {
+                          player.abilityTarget = targetID;
+                          abilityMessage = `${player.getPlayerName()} is going to cast a freeze spell on ${theAbilityTargetPlayer.getPlayerName()}`;
+                        } else if (player.getRole().type.includes("framer")) {
+                          player.abilityTarget = targetID;
+                          abilityMessage = `${player.getPlayerName()} is going to frame ${theAbilityTargetPlayer.getPlayerName()}`;
+                        }
+                      } else if (player.abilityTarget == targetID && player.abilityTarget !== null) {
                         player.abilityTarget = null;
                         var abilityMessage = "";
                         if (player.getRole().type.includes("surgeon")) {
@@ -1377,21 +1394,15 @@ io.on("connection", async (socket) => {
                       sendMessage(playerID, "evil", abilityMessage, "Night");
                     } else {
                       var abilityMessage = "";
-                      if (
-                        player.abilityTarget !== targetID ||
-                        player.abilityTarget == null
-                      ) {
+                      if (player.abilityTarget == null) {
                         if (player.getRole().type.includes("doctor")) {
                           if (
-                            player.getRole().selfUsage > 0 &&
-                            player.abilityTarget !== null
+                            player.getRole().selfUsage > 0 && player == theAbilityTargetPlayer
+                            
                           ) {
-                            if (player == theAbilityTargetPlayer) {
-                              abilityMessage = `You are targeting yourself`;
-                            } else {
-                              abilityMessage = `You are targeting ${theAbilityTargetPlayer.getPlayerName()}`;
-                            }
+                            abilityMessage = `You are targeting yourself`;
                             player.abilityTarget = targetID;
+                            
                           } else {
                             abilityMessage = `You are targeting ${theAbilityTargetPlayer.getPlayerName()}`;
                             player.abilityTarget = targetID;
@@ -1400,7 +1411,28 @@ io.on("connection", async (socket) => {
                           player.abilityTarget = targetID;
                           abilityMessage = `You are targeting ${theAbilityTargetPlayer.getPlayerName()}`;
                         }
-                      } else if (player.abilityTarget == targetID) {
+                      }
+                      else if (
+                        player.abilityTarget !== targetID && player.abilityTarget !== null
+                        
+                      ) {
+                        if (player.getRole().type.includes("doctor")) {
+                          if (
+                            player.getRole().selfUsage > 0 && player == theAbilityTargetPlayer
+                            
+                          ) {
+                            abilityMessage = `You are targeting yourself`;
+                            player.abilityTarget = targetID;
+                            
+                          } else {
+                            abilityMessage = `You are targeting ${theAbilityTargetPlayer.getPlayerName()}`;
+                            player.abilityTarget = targetID;
+                          }
+                        } else {
+                          player.abilityTarget = targetID;
+                          abilityMessage = `You are targeting ${theAbilityTargetPlayer.getPlayerName()}`;
+                        }
+                      } else if (player.abilityTarget == targetID && player.abilityTarget !== null) {
                         player.abilityTarget = null;
                         abilityMessage = `You are not targeting anyone`;
                       }
@@ -2421,26 +2453,26 @@ io.on("connection", async (socket) => {
                 if (role.type.includes("surgeon")) {
                   if (abilityTargetPlayer.getRole().team.includes("evil")) {
                     if (abilityTarget == user) {
-                      var selfUses = user.getPlayer().getRole().selfUsage;
-                      if (selfUses > 0) {
-                        selfUses -= 1;
+                      
+                      if (user.getPlayer().getRole().selfUsage > 0) {
+                        user.getPlayer().getRole().selfUsage -= 1;
                         // CAN DISGUISE EVIL TO LOOK GOOD
                         abilityTargetPlayer.fakeTeam = "good";
                         abilityTargetPlayer.isDisguised = true;
                         sendMessage(
                           user.playerID,
                           "socket",
-                          `You disguised yourself. Self uses left: ${selfUses}`,
+                          `You disguised yourself. Self uses left: ${user.getPlayer().getRole().selfUsage}`,
                           "confirm"
                         );
-                      } else if (selfUses == 0) {
+                      } else if (user.getPlayer().getRole().selfUsage == 0) {
                         // CAN DISGUISE EVIL TO LOOK GOOD
                         abilityTargetPlayer.fakeTeam = "good";
                         abilityTargetPlayer.isDisguised = true;
                         sendMessage(
                           user.playerID,
                           "socket",
-                          `You don't have any self uses left. Self uses left: ${selfUses}`,
+                          `You don't have any self uses left. Self uses left: ${user.getPlayer().getRole().selfUsage}`,
                           "confirm"
                         );
                       }
@@ -2507,21 +2539,20 @@ io.on("connection", async (socket) => {
             } else if (role.type.includes("doctor")) {
               if (!player.isBlocked) {
                 if (abilityTarget == user) {
-                  var selfUses = user.getPlayer().getRole().selfUsage;
-                  if (selfUses > 0) {
-                    selfUses -= 1;
+                  if (user.getPlayer().getRole().selfUsage > 0) {
+                    user.getPlayer().getRole().selfUsage -= 1;
                     abilityTargetPlayer.isProtected = true;
                     sendMessage(
                       user.playerID,
                       "socket",
-                      `You protected yourself. Self uses left: ${selfUses}`,
+                      `You protected yourself. Self uses left: ${user.getPlayer().getRole().selfUsage}`,
                       "confirm"
                     );
-                  } else if (selfUses == 0) {
+                  } else if (user.getPlayer().getRole().selfUsage == 0) {
                     sendMessage(
                       user.playerID,
                       "socket",
-                      `You don't have any self uses left. Self uses left: ${selfUses}`,
+                      `You don't have any self uses left. Self uses left: ${user.getPlayer().getRole().selfUsage}`,
                       "confirm"
                     );
                   }
