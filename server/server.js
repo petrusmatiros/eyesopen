@@ -275,6 +275,7 @@ io.on("connection", async (socket) => {
             room.getGame().addEvil(users[i]);
             // if there is atleast one evil role, create evil room code
             game.setEvilRoom("evil-" + roomCode);
+            console.log("evil room created", game.getEvilRoom());
           }
 
           // assign which user is which neutral role
@@ -1276,6 +1277,7 @@ io.on("connection", async (socket) => {
                   game.getEvilRoom()
               );
               socket.join(game.getEvilRoom());
+              console.log("with evil room", socket.rooms);
             }
           }
         }
@@ -1305,125 +1307,228 @@ io.on("connection", async (socket) => {
             var isValidTarget = false;
             var validTargets = generateValidPlayerList(playerID);
 
-            if (game.getTimer().getCounter() > 0) {
-              for (var i = 0; i < validTargets.length; i++) {
-                if (
-                  validTargets[i].userID == targetID &&
-                  (validTargets[i].type !== "unselectable" ||
-                    validTargets[i].type !== "dead" ||
-                    validTargets[i].type !== "evil+unselectable")
-                ) {
-                  isValidTarget = true;
-                }
-              }
-              if (isValidTarget) {
-                if (elementID == "game-button-ability") {
-                  var theAbilityTargetPlayer = connectedUsers
-                    .get(getKeyFromValue(proxyIdenfication, targetID))
-                    .getPlayer();
-                  // New target
-                  if (player.getRole().team.includes("evil")) {
-                    if (player.abilityTarget !== targetID) {
-                      player.abilityTarget = targetID;
-                      var abilityMessage = "";
-                      if (player.getRole().type.includes("surgeon")) {
-                        abilityMessage = `${player.getPlayerName()} is going to disguise ${theVoteTargetPlayer.getPlayerName()}`;
-                      } else if (player.getRole().type.includes("witch")) {
-                        abilityMessage = `${player.getPlayerName()} is going to cast a freeze spell on ${theVoteTargetPlayer.getPlayerName()}`;
-                      } else if (player.getRole().type.includes("framer")) {
-                        abilityMessage = `${player.getPlayerName()} is going to frame ${theVoteTargetPlayer.getPlayerName()}`;
-                      }
-                      sendMessage(
-                        playerID,
-                        "evil",
-                        abilityMessage,
-                        "important"
-                      );
-                    } else if (player.abilityTarget == targetID) {
-                      player.abilityTarget = null;
-                      var abilityMessage = "";
-                      if (player.getRole().type.includes("surgeon")) {
-                        abilityMessage = `${player.getPlayerName()} is not going to disguise anyone`;
-                      } else if (player.getRole().type.includes("witch")) {
-                        abilityMessage = `${player.getPlayerName()} is not going to cast magic`;
-                      } else if (player.getRole().type.includes("framer")) {
-                        abilityMessage = `${player.getPlayerName()} is not going to frame anyone`;
-                      }
-                      sendMessage(
-                        playerID,
-                        "evil",
-                        abilityMessage,
-                        "Night"
-                      );
-                    }
-                  } else {
-                    if (player.abilityTarget !== targetID) {
-                      player.abilityTarget = targetID;
-                    } else if (player.abilityTarget == targetID) {
-                      player.abilityTarget = null;
-                    }
-                  }
-                } else if (elementID == "game-button-vote") {
-                  var theVoteTargetPlayer = connectedUsers
-                    .get(getKeyFromValue(proxyIdenfication, targetID))
-                    .getPlayer();
-                  // New target
-                  if (player.getRole().team.includes("evil")) {
-                    if (player.voteTarget !== targetID) {
-                      player.voteTarget = targetID;
-                      sendMessage(
-                        playerID,
-                        "evil",
-                        `${player.getPlayerName()} is voting to kill ${theVoteTargetPlayer.getPlayerName()}`,
-                        "important"
-                      );
-                    } else if (player.voteTarget == targetID) {
-                      player.voteTarget = null;
-                      sendMessage(
-                        playerID,
-                        "evil",
-                        `${player.getPlayerName()} removed their vote from ${theVoteTargetPlayer.getPlayerName()}`,
-                        "important"
-                      );
-                    }
-                  } else {
-                    if (player.voteTarget !== targetID) {
-                      player.voteTarget = targetID;
-                      sendMessage(
-                        playerID,
-                        "all",
-                        `${player.getPlayerName()} is voting to lynch ${theVoteTargetPlayer.getPlayerName()}`,
-                        "Day"
-                      );
-                    } else if (player.voteTarget == targetID) {
-                      player.voteTarget = null;
-                      sendMessage(
-                        playerID,
-                        "all",
-                        `${player.getPlayerName()} removed their vote from ${theVoteTargetPlayer.getPlayerName()}`,
-                        "Day"
-                      );
-                    }
-                  }
-                }
-                console.log(
-                  "valid target selected",
-                  "abilityTarget:",
-                  player.abilityTarget,
-                  "voteTarget:",
-                  player.voteTarget
-                );
-              } else {
-                console.log(
-                  "--INVALID target selected",
-                  "abilityTarget:",
-                  player.abilityTarget,
-                  "voteTarget:",
-                  player.voteTarget,
-                  "--"
-                );
+            for (var i = 0; i < validTargets.length; i++) {
+              if (
+                validTargets[i].userID == targetID &&
+                (validTargets[i].type !== "unselectable" ||
+                  validTargets[i].type !== "dead" ||
+                  validTargets[i].type !== "evil+unselectable")
+              ) {
+                isValidTarget = true;
               }
             }
+            if (isValidTarget) {
+              if (elementID == "game-button-ability") {
+                if (game.getPhase() == "actions") {
+                  if (game.getTimer().getCounter() >= 0) {
+                    if (player.abilityTarget !== null) {
+                      var previousAbilityTargetPlayer = connectedUsers
+                        .get(
+                          getKeyFromValue(
+                            proxyIdenfication,
+                            player.abilityTarget
+                          )
+                        )
+                        .getPlayer();
+                    }
+                    var theAbilityTargetPlayer = connectedUsers
+                      .get(getKeyFromValue(proxyIdenfication, targetID))
+                      .getPlayer();
+                    // New target
+                    if (player.getRole().team.includes("evil")) {
+                      if (
+                        player.abilityTarget !== targetID ||
+                        player.abilityTarget == null
+                      ) {
+                        var abilityMessage = "";
+                        if (player.getRole().type.includes("surgeon")) {
+                          if (
+                            player.getRole().selfUsage > 0 &&
+                            player.abilityTarget !== null
+                          ) {
+                            if (player == theAbilityTargetPlayer) {
+                              abilityMessage = `${player.getPlayerName()} is going to disguise themselves`;
+                            } else {
+                              abilityMessage = `${player.getPlayerName()} is going to disguise ${theAbilityTargetPlayer.getPlayerName()}`;
+                              player.abilityTarget = targetID;
+                            }
+                          } else {
+                            player.abilityTarget = targetID;
+                            abilityMessage = `${player.getPlayerName()} is going to disguise ${theAbilityTargetPlayer.getPlayerName()}`;
+                          }
+                        } else if (player.getRole().type.includes("witch")) {
+                          player.abilityTarget = targetID;
+                          abilityMessage = `${player.getPlayerName()} is going to cast a freeze spell on ${theAbilityTargetPlayer.getPlayerName()}`;
+                        } else if (player.getRole().type.includes("framer")) {
+                          player.abilityTarget = targetID;
+                          abilityMessage = `${player.getPlayerName()} is going to frame ${theAbilityTargetPlayer.getPlayerName()}`;
+                        }
+                      } else if (player.abilityTarget == targetID) {
+                        player.abilityTarget = null;
+                        var abilityMessage = "";
+                        if (player.getRole().type.includes("surgeon")) {
+                          abilityMessage = `${player.getPlayerName()} is not going to disguise anyone`;
+                        } else if (player.getRole().type.includes("witch")) {
+                          abilityMessage = `${player.getPlayerName()} is not going to cast magic`;
+                        } else if (player.getRole().type.includes("framer")) {
+                          abilityMessage = `${player.getPlayerName()} is not going to frame anyone`;
+                        }
+                      }
+                      sendMessage(playerID, "evil", abilityMessage, "Night");
+                    } else {
+                      var abilityMessage = "";
+                      if (
+                        player.abilityTarget !== targetID ||
+                        player.abilityTarget == null
+                      ) {
+                        if (player.getRole().type.includes("doctor")) {
+                          if (
+                            player.getRole().selfUsage > 0 &&
+                            player.abilityTarget !== null
+                          ) {
+                            if (player == theAbilityTargetPlayer) {
+                              abilityMessage = `You are targeting yourself`;
+                            } else {
+                              abilityMessage = `You are targeting ${theAbilityTargetPlayer.getPlayerName()}`;
+                            }
+                            player.abilityTarget = targetID;
+                          } else {
+                            abilityMessage = `You are targeting ${theAbilityTargetPlayer.getPlayerName()}`;
+                            player.abilityTarget = targetID;
+                          }
+                        } else {
+                          player.abilityTarget = targetID;
+                          abilityMessage = `You are targeting ${theAbilityTargetPlayer.getPlayerName()}`;
+                        }
+                      } else if (player.abilityTarget == targetID) {
+                        player.abilityTarget = null;
+                        abilityMessage = `You are not targeting anyone`;
+                      }
+                      sendMessage(playerID, "socket", abilityMessage, "Night");
+                    }
+                  }
+                }
+              } else if (elementID == "game-button-vote") {
+                if (player.voteTarget !== null) {
+                  var previousVoteTargetPlayer = connectedUsers
+                    .get(getKeyFromValue(proxyIdenfication, player.voteTarget))
+                    .getPlayer();
+                }
+                var theVoteTargetPlayer = connectedUsers
+                  .get(getKeyFromValue(proxyIdenfication, targetID))
+                  .getPlayer();
+                // New target
+
+                if (game.getCycle() == "Night") {
+                  if (game.getPhase() == "actions") {
+                    if (game.getTimer().getCounter() >= 0) {
+                      if (player.getRole().team.includes("evil")) {
+                        if (player.voteTarget == null) {
+                          player.voteTarget = targetID;
+                          theVoteTargetPlayer.nightVotes += player.getRole().killVoteCount;
+                          sendMessage(
+                            playerID,
+                            "evil",
+                            `${player.getPlayerName()} is voting to kill ${theVoteTargetPlayer.getPlayerName()} (${
+                              theVoteTargetPlayer.nightVotes
+                            })`,
+                            "Night"
+                          );
+                        } else if (
+                          player.voteTarget !== targetID &&
+                          player.voteTarget !== null
+                        ) {
+                          player.voteTarget = targetID;
+                          previousVoteTargetPlayer.nightVotes -= player.getRole().killVoteCount;
+                          theVoteTargetPlayer.nightVotes += player.getRole().killVoteCount;
+                          sendMessage(
+                            playerID,
+                            "evil",
+                            `${player.getPlayerName()} is voting to kill ${theVoteTargetPlayer.getPlayerName()} (${
+                              theVoteTargetPlayer.nightVotes
+                            })`,
+                            "Night"
+                          );
+                        } else if (
+                          player.voteTarget == targetID &&
+                          player.voteTarget !== null
+                        ) {
+                          player.voteTarget = null;
+                          theVoteTargetPlayer.nightVotes -= player.getRole().killVoteCount;
+                          sendMessage(
+                            playerID,
+                            "evil",
+                            `${player.getPlayerName()} removed their vote from ${theVoteTargetPlayer.getPlayerName()} (${
+                              theVoteTargetPlayer.nightVotes
+                            })`,
+                            "Night"
+                          );
+                        }
+                      }
+                    }
+                  }
+                } else if (game.getCycle() == "Day") {
+                  if (game.getPhase() == "voting") {
+                    if (game.getTimer().getCounter() >= 0) {
+                      if (player.voteTarget == null) {
+                        player.voteTarget = targetID;
+                        theVoteTargetPlayer.dayVotes += player.getRole().voteCount;
+                        
+                        sendMessage(
+                          playerID,
+                          "all",
+                          `${player.getPlayerName()} is voting to lynch ${theVoteTargetPlayer.getPlayerName()}`,
+                          "Day"
+                        );
+                      } else if (
+                        player.voteTarget !== targetID &&
+                        player.voteTarget !== null
+                      ) {
+                        previousVoteTargetPlayer.dayVotes -= player.getRole().voteCount;
+                        
+                        player.voteTarget = targetID;
+                        theVoteTargetPlayer.dayVotes += player.getRole().voteCount;
+                        sendMessage(
+                          playerID,
+                          "all",
+                          `${player.getPlayerName()} is voting to lynch ${theVoteTargetPlayer.getPlayerName()}`,
+                          "Day"
+                        );
+                      } else if (
+                        player.voteTarget == targetID &&
+                        player.voteTarget !== null
+                      ) {
+                        player.voteTarget = null;
+                        theVoteTargetPlayer.dayVotes -= player.getRole().voteCount;
+                        sendMessage(
+                          playerID,
+                          "all",
+                          `${player.getPlayerName()} removed their vote from ${theVoteTargetPlayer.getPlayerName()}`,
+                          "Day"
+                        );
+                      }
+                    }
+                  }
+                }
+              }
+              console.log(
+                "valid target selected",
+                "abilityTarget:",
+                player.abilityTarget,
+                "voteTarget:",
+                player.voteTarget
+              );
+            } else {
+              console.log(
+                "--INVALID target selected",
+                "abilityTarget:",
+                player.abilityTarget,
+                "voteTarget:",
+                player.voteTarget,
+                "--"
+              );
+            }
+
             socket.emit(
               "currentPlayerTargets",
               player.abilityTarget,
@@ -1528,7 +1633,7 @@ io.on("connection", async (socket) => {
                   type = "evil";
                   isEvil = true;
                   pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
-                } else {
+                } else if (userRole.selfUsage == 0) {
                   type = "evil+unselectable";
                   isEvil = true;
                   pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
@@ -1544,7 +1649,7 @@ io.on("connection", async (socket) => {
                   type = "none";
                   isEvil = null;
                   pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
-                } else {
+                } else if (userRole.selfUsage == 0) {
                   type = "unselectable";
                   isEvil = null;
                   pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
@@ -1749,6 +1854,7 @@ io.on("connection", async (socket) => {
               emitTo,
               generateValidPlayerList(playerID),
               game.getCycle(),
+              game.getPhase(),
               isDead,
               socketRole,
               proxyIdenfication.get(playerID)
@@ -1791,7 +1897,7 @@ io.on("connection", async (socket) => {
           playerID,
           "all",
           "It's time to act. The action phase has begun",
-          "extra"
+          "important"
         );
       }
       if (game.getPhase().includes("message")) {
@@ -1808,7 +1914,12 @@ io.on("connection", async (socket) => {
       }
       if (game.getPhase().includes("voting")) {
         sendMessage(playerID, "all", lineSeperator, "lineSeperator");
-        sendMessage(playerID, "all", "It's time to cast your votes", "extra");
+        sendMessage(
+          playerID,
+          "all",
+          "It's time to cast your votes",
+          "important"
+        );
       }
       emitPhaseOnce = false;
     }
@@ -1871,16 +1982,64 @@ io.on("connection", async (socket) => {
       if (connectedUsers.get(playerID).getInGame()) {
         connectedUsers.get(playerID).addMessage({ message, type });
       }
-      socket
-        .to(playerID)
-        .emit("recieveMessage", message, type, game.getCycle());
+      io.to(playerID).emit("recieveMessage", message, type, game.getCycle());
     } else if (sendTo == "target") {
       if (connectedUsers.get(playerID).getInGame()) {
         connectedUsers.get(playerID).addMessage({ message, type });
       }
-      socket
-        .to(playerID)
-        .emit("recieveMessage", message, type, game.getCycle());
+      io.to(playerID).emit("recieveMessage", message, type, game.getCycle());
+    }
+  }
+
+  var nightMessagesOnce = 0;
+  var recapOnce = 0;
+  var dayMessagesOnce = 0;
+
+  function resetPhaseConditions() {
+    nightMessagesOnce = 0;
+    recapOnce = 0;
+    dayMessagesOnce = 0;
+  }
+
+  socket.on("setActionsOnPhase", (playerID, state) => {
+    console.log("Setting actions on phase");
+    setActionsOnPhase(playerID, state);
+  });
+
+  function setActionsOnPhase(playerID, state) {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (game.getProgress()) {
+          if (game.getUsers().includes(connectedUsers.get(playerID))) {
+            var emitTo = "";
+            if (state.includes("first")) {
+              emitTo = "removeActionsOnPhaseFirst";
+            } else if (state.includes("clock")) {
+              emitTo = "removeActionsOnPhaseClock";
+            }
+            var socketPlayer = connectedUsers.get(playerID).getPlayer();
+            var socketRole = connectedUsers.get(playerID).getPlayer().getRole();
+            var isDead = false;
+
+            if (socketPlayer.getIsKilled() || socketPlayer.getIsLynched()) {
+              isDead = true;
+            }
+            var proxyID = proxyIdenfication.get(playerID);
+            io.to(roomCode).emit(
+              emitTo,
+              generateValidPlayerList(playerID),
+              game.getCycle(),
+              game.getPhase(),
+              isDead,
+              socketRole,
+              proxyID
+            );
+          }
+        }
+      }
     }
   }
 
@@ -1892,13 +2051,36 @@ io.on("connection", async (socket) => {
     var room = rooms.get(roomCode);
     var game = room.getGame();
     if (game.getCycle() == "Night") {
-      executeNightActions(playerID, room, roomCode, game);
-      voteHandlerEvil(playerID, room, roomCode, game);
+      if (game.getPhase() == "nightMessages") {
+        if (nightMessagesOnce == 0) {
+          console.log("EXECUTING NIGHT ACTIONS");
+          executeNightActions(playerID, room, roomCode, game);
+          voteHandlerEvil(playerID, room, roomCode, game);
+          nightMessagesOnce = 1;
+          resetAllActions(playerID, room, roomCode, game);
+        }
+      }
     } else if (game.getCycle() == "Day") {
-      voteHandlerGlobal(playerID, room, roomCode, game);
+      if (game.getPhase() == "dayMessages") {
+        if (dayMessagesOnce == 0) {
+          console.log("VOTE GLOBAL");
+          voteHandlerGlobal(playerID, room, roomCode, game);
+          console.log("DEATH HANDLER VOTE");
+          deathHandler(playerID, room, roomCode, game);
+          dayMessagesOnce = 1;
+          resetAllActions(playerID, room, roomCode, game);
+        }
+      } else if (game.getPhase() == "discussion") {
+        resetAllActions(playerID, room, roomCode, game);
+      } else if (game.getPhase() == "recap") {
+        if (recapOnce == 0) {
+          console.log("DEATH HANDLER RECAP");
+          deathHandler(playerID, room, roomCode, game);
+          recapOnce = 1;
+          resetAllActions(playerID, room, roomCode, game);
+        }
+      }
     }
-    resetAllActions(playerID, room, roomCode, game);
-    deathHandler(playerID, room, roomCode, game);
   }
 
   function getKeyFromValue(map, searchValue) {
@@ -1928,6 +2110,14 @@ io.on("connection", async (socket) => {
       targetPlayer.setIsKilled(true);
       targetPlayer.addKiller("Evil");
       // send message to evil people that it worked
+      sendMessage(
+        playerID,
+        "evil",
+        `You all have decided to  murder ${targetPlayer.getPlayerName()} (${
+          targetPlayer.nightVotes
+        })`,
+        "confirm"
+      );
       sendMessage(
         playerID,
         "evil",
@@ -2057,7 +2247,13 @@ io.on("connection", async (socket) => {
     sendMessage(
       playerID,
       "all",
-      `${targetPlayer.getPlayerName()} has been lynched`,
+      `The town has voted to lynch ${targetPlayer.getPlayerName()}`,
+      "info"
+    );
+    sendMessage(
+      playerID,
+      "all",
+      `${targetPlayer.getPlayerName()} has been lynched. Justice!`,
       "info"
     );
 
@@ -2090,6 +2286,7 @@ io.on("connection", async (socket) => {
   function voteHandlerGlobal(playerID, room, roomCode, game) {
     if (game.getCycle() == "Day") {
       var users = game.getUsers();
+      console.log("COUNTING VOTES GLOBAL");
 
       var targets = new Map();
       for (var i = 0; i < users.length; i++) {
@@ -2123,7 +2320,7 @@ io.on("connection", async (socket) => {
       var gotLynched = false;
       for (var i = 0; i < targetCount.length; i++) {
         var majority = aliveUsersCount.length / 2;
-        if (targetCount[i] > majority) {
+        if (targetCount[i][1] > majority) {
           var mostVotedIndex = targetCount.indexOf(targetCount[i]);
           var mostVoted = Array.from(targets.keys())[mostVotedIndex];
           gotLynched = true;
@@ -2131,6 +2328,12 @@ io.on("connection", async (socket) => {
         }
       }
       if (!gotLynched) {
+        sendMessage(
+          playerID,
+          "all",
+          `There was no majority to lynch anyone`,
+          "Day"
+        );
         sendMessage(
           playerID,
           "all",
@@ -2217,15 +2420,41 @@ io.on("connection", async (socket) => {
               if (!player.isBlocked) {
                 if (role.type.includes("surgeon")) {
                   if (abilityTargetPlayer.getRole().team.includes("evil")) {
-                    // CAN DISGUISE EVIL TO LOOK GOOD
-                    abilityTargetPlayer.fakeTeam = "good";
-                    abilityTargetPlayer.isDisguised = true;
-                    sendMessage(
-                      user.playerID,
-                      "socket",
-                      `You disguise ${abilityTargetPlayer.getPlayerName()}. The will appear to with the good team this night`,
-                      "confirm"
-                    );
+                    if (abilityTarget == user) {
+                      var selfUses = user.getPlayer().getRole().selfUsage;
+                      if (selfUses > 0) {
+                        selfUses -= 1;
+                        // CAN DISGUISE EVIL TO LOOK GOOD
+                        abilityTargetPlayer.fakeTeam = "good";
+                        abilityTargetPlayer.isDisguised = true;
+                        sendMessage(
+                          user.playerID,
+                          "socket",
+                          `You disguised yourself. Self uses left: ${selfUses}`,
+                          "confirm"
+                        );
+                      } else if (selfUses == 0) {
+                        // CAN DISGUISE EVIL TO LOOK GOOD
+                        abilityTargetPlayer.fakeTeam = "good";
+                        abilityTargetPlayer.isDisguised = true;
+                        sendMessage(
+                          user.playerID,
+                          "socket",
+                          `You don't have any self uses left. Self uses left: ${selfUses}`,
+                          "confirm"
+                        );
+                      }
+                    } else {
+                      // CAN DISGUISE EVIL TO LOOK GOOD
+                      abilityTargetPlayer.fakeTeam = "good";
+                      abilityTargetPlayer.isDisguised = true;
+                      sendMessage(
+                        user.playerID,
+                        "socket",
+                        `You disguise ${abilityTargetPlayer.getPlayerName()}. The will appear to with the good team this night`,
+                        "confirm"
+                      );
+                    }
                   }
                 } else if (role.type.includes("framer")) {
                   if (!abilityTargetPlayer.getRole().team.includes("evil")) {
@@ -2286,6 +2515,13 @@ io.on("connection", async (socket) => {
                       user.playerID,
                       "socket",
                       `You protected yourself. Self uses left: ${selfUses}`,
+                      "confirm"
+                    );
+                  } else if (selfUses == 0) {
+                    sendMessage(
+                      user.playerID,
+                      "socket",
+                      `You don't have any self uses left. Self uses left: ${selfUses}`,
                       "confirm"
                     );
                   }
@@ -2371,6 +2607,7 @@ io.on("connection", async (socket) => {
   }
 
   function resetAllActions(playerID, room, roomCode, game) {
+    console.log("RESET ALL ACTIONS");
     game.getUsers().forEach((user) => user.getPlayer().reset());
     var player = connectedUsers.get(playerID).getPlayer();
     io.to(roomCode).emit(
@@ -2416,51 +2653,72 @@ io.on("connection", async (socket) => {
 
   function deathHandler(playerID, room, roomCode, game) {
     // SEND MESSAGE WHO DIED FROM WHOM (killedBY)
-    for (var i = 0; i < game.getDead().length; i++) {
-      if (game.getDead()[i].getIsKilled()) {
+    for (var i = 0; i < game.getAlive().length; i++) {
+      var player = game.getAlive()[i].getPlayer();
+      if (player.getIsKilled()) {
         sendMessage(
           playerID,
           "all",
-          `${targetPlayer.getPlayerName()} died during the night`,
+          `${player.getPlayerName()} died during the night`,
           "Day"
         );
-        if (game.getDead()[i].killedBy.length > 0) {
-          for (var i = 0; i < game.getDead()[i].killedBy.length; i++) {
-            var killer = game.getDead()[i].killedBy[i];
+        if (player.killedBy.length > 0) {
+          // killed
+          for (
+            var killCount = 0;
+            killCount < player.killedBy.length;
+            killCount++
+          ) {
+            var killer = player.killedBy[killCount];
             if (killer.includes("evil")) {
               sendMessage(
                 playerID,
                 "all",
-                `${targetPlayer.getPlayerName()} was killed by member of the ${killer} team`,
+                `${player.getPlayerName()} was killed by member of the ${killer} team`,
                 "Day"
               );
             } else if (killer.includes("Serial Killer")) {
               sendMessage(
                 playerID,
                 "all",
-                `${targetPlayer.getPlayerName()} was murdered by the ${killer}`,
+                `${player.getPlayerName()} was murdered by the ${killer}`,
                 "Day"
               );
             }
           }
         }
-      }
-      // WHAT WAS THEIR ROLE
-      sendMessage(
-        playerID,
-        "all",
-        `${targetPlayer.getPlayerName()} role was: ${
-          targetPlayer.getRole().name
-        }`,
-        "important"
-      );
+        // WHAT WAS THEIR ROLE
+        sendMessage(
+          playerID,
+          "all",
+          `${player.getPlayerName()} role was: ${player.getRole().name}`,
+          "important"
+        );
 
-      // REMOVE FROM DEAD ARRAY
-      game.removeDead(game.getDead()[i]);
-      // AFTER THAT, ADD THEM TO CEMETERY
-      if (!game.getCemetery().includes(game.getDead()[i])) {
-        game.addCemetery(game.getDead()[i]);
-        io.to(roomCode).emit("cemetery", generateCemeteryList(playerID));
+        // AFTER THAT, ADD THEM TO CEMETERY
+        if (!game.getCemetery().includes(game.getAlive()[i])) {
+          game.addCemetery(game.getAlive()[i]);
+          // REMOVE FROM ALIVE ARRAY
+          game.removeAlive(game.getAlive()[i]);
+          io.to(roomCode).emit("cemetery", generateCemeteryList(playerID));
+        }
+      } else if (player.getIsLynched()) {
+        // lynched
+        // WHAT WAS THEIR ROLE
+        sendMessage(
+          playerID,
+          "all",
+          `${player.getPlayerName()} role was: ${player.getRole().name}`,
+          "important"
+        );
+
+        // AFTER THAT, ADD THEM TO CEMETERY
+        if (!game.getCemetery().includes(game.getAlive()[i])) {
+          game.addCemetery(game.getAlive()[i]);
+          // REMOVE FROM ALIVE ARRAY
+          game.removeAlive(game.getAlive()[i]);
+          io.to(roomCode).emit("cemetery", generateCemeteryList(playerID));
+        }
       }
     }
   }
@@ -2523,7 +2781,6 @@ io.on("connection", async (socket) => {
             console.log("night less");
           }
           if (currentPhase >= nightLength) {
-            gameHandler(playerID);
             currentPhase = 0;
             currentCycle = 1;
             game.setPhase(
@@ -2551,7 +2808,8 @@ io.on("connection", async (socket) => {
             console.log("day less");
           }
           if (currentPhase >= dayLength) {
-            gameHandler(playerID);
+            resetAllActions(playerID, room, roomCode, game);
+            resetPhaseConditions();
             currentPhase = 0;
             currentCycle = 0;
             game.setPhase(
@@ -2573,6 +2831,8 @@ io.on("connection", async (socket) => {
         }
       } else {
         game.getTimer().tick();
+        gameHandler(playerID);
+        setActionsOnPhase(playerID, "clock");
       }
     }, 1000);
   }

@@ -34,6 +34,9 @@ class Player {
     this.isBlocked = false;
     this.isDisguised = false;
     this.fakeTeam = "";
+    // Voting count
+    this.dayVotes = 0;
+    this.nightVotes = 0;
     // RESET AFTER EVERY TIME PLAYER HAS TO TARGET SOME PLAYER (DAY/NIGHT VOTING AND ABILITY)
     this.abilityTarget = null;
     this.voteTarget = null;
@@ -46,6 +49,9 @@ class Player {
     this.isBlocked = false;
     this.isDisguised = false;
     this.fakeTeam = "";
+    // Voting count
+    this.dayVotes = 0;
+    this.nightVotes = 0;
     // RESET AFTER EVERY TIME PLAYER HAS TO TARGET SOME PLAYER (DAY/NIGHT VOTING AND ABILITY)
     this.abilityTarget = null;
     this.voteTarget = null;
@@ -58,7 +64,7 @@ class Player {
   setPlayerName(playerName) {
     this.playerName = playerName;
   }
-  
+
   getRole() {
     return this.role;
   }

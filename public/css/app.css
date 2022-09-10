@@ -240,6 +240,7 @@
   flex-direction: column;
   min-width: 16rem;
   max-width: 16rem;
+  font-size: 0.75rem;
   padding: 0.25rem 0.5rem 0.25rem 0.5rem;
   margin-bottom: 0.5rem;
   border-radius: 0.35rem;
@@ -826,6 +827,7 @@
     flex-direction: column;
     min-width: 17rem;
     max-width: 17rem;
+    font-size: 0.75rem;
     padding: 0.25rem 0.5rem 0.25rem 0.5rem;
     margin-bottom: 0.5rem;
     border-radius: 0.35rem;

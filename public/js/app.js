@@ -64,7 +64,12 @@ socket.on("connect", () => {
           console.log("checking for role card availability");
           socket.emit("checkForRoleCard", getPlayerID());
           resetActionsOnRefresh();
-          socket.emit("setEvilRoom");
+          socket.emit("setEvilRoom", getPlayerID());
+
+          socket.emit("setActionsOnPhase", getPlayerID(), "first");
+          socket.on("removeActionsOnPhaseFirst", (players, cycle, phase, isDead, socketRole, proxyID) => {
+            removeActionsOnPhase(players, cycle, phase, isDead, socketRole, proxyID);
+          })
 
           socket.emit("fetchMessages", getPlayerID());
           socket.on("savedMessages", (messages, cycle) => {
@@ -370,11 +375,70 @@ function actionHandler(element) {
   }
 }
 
-socket.on("setPlayersClock", (players, cycle, isDead, socketRole, proxyID) => {
-  setPlayers(players, cycle, isDead, socketRole, proxyID);
+socket.on("setPlayersClock", (players, cycle, phase, isDead, socketRole, proxyID) => {
+  setPlayers(players, cycle, phase, isDead, socketRole, proxyID);
 });
 
-function setPlayers(players, cycle, isDead, socketRole, proxyID) {
+socket.on("removeActionsOnPhaseClock", (players, cycle, phase, isDead, socketRole, proxyID) => {
+  removeActionsOnPhase(players, cycle, phase, isDead, socketRole, proxyID);
+}) 
+
+function removeActionsOnPhase(players, cycle, phase, isDead, socketRole, proxyID) {
+  var playersContainer = document.getElementById("game-players-container");
+  var slots = playersContainer.children;
+  var colCount = 0;
+  var playerSlot = 0;
+  var checkCount = 0;
+  
+  if (phase == "nightMessages" || phase == "recap" || phase == "dayMessages") {
+    playersContainer.style.opacity = "35%";
+    for (var i = 0; i < players.length; i++) {
+      if (checkCount == 2) {
+        playerSlot++;
+        checkCount = 0;
+      }
+      
+      var currentElement = slots[colCount].children[playerSlot];
+      var buttons = currentElement.children[1];
+      var abilityButton = buttons.children[0];
+      var voteButton = buttons.children[2];
+      abilityButton.setAttribute("onclick", "");
+      voteButton.setAttribute("onclick", "");
+  
+      if (colCount == 0) {
+        checkCount++;
+        colCount = 1;
+      } else if (colCount == 1) {
+        checkCount++;
+        colCount = 0;
+      }
+    }
+  } else if (phase == "voting") {
+    playersContainer.style.opacity = "100%";
+    for (var i = 0; i < players.length; i++) {
+      if (checkCount == 2) {
+        playerSlot++;
+        checkCount = 0;
+      }
+      
+      var currentElement = slots[colCount].children[playerSlot];
+      var buttons = currentElement.children[1];
+      var abilityButton = buttons.children[0];
+      var voteButton = buttons.children[2];
+      voteButton.setAttribute("onclick", "actionHandler(this)");
+  
+      if (colCount == 0) {
+        checkCount++;
+        colCount = 1;
+      } else if (colCount == 1) {
+        checkCount++;
+        colCount = 0;
+      }
+    }
+  }
+}
+
+function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
   var playersContainer = document.getElementById("game-players-container");
   var slots = playersContainer.children;
   var colCount = 0;
@@ -406,11 +470,11 @@ function setPlayers(players, cycle, isDead, socketRole, proxyID) {
     );
     abilityButton.classList.remove("game-button-ability-norounding");
     voteButton.classList.remove("game-button-vote-norounding");
-
     if (players[i].userID == proxyID) {
       if (isDead) {
         playersContainer.style.opacity = "35%";
-      } else {
+      }
+      else {
         playersContainer.style.opacity = "100%";
       }
       currentElement.style.fontWeight = 700;
@@ -1068,13 +1132,13 @@ socket.on("showGame", (allReady) => {
       playerRole.innerText = name + ` (${playerTeam})`;
       playerMission.innerText = mission;
     });
-    socket.emit("setEvilRoom");
+    socket.emit("setEvilRoom", getPlayerID());
     socket.emit("updateUI", getPlayerID());
     socket.emit("setPlayers", getPlayerID(), "first");
     socket.on(
       "setPlayersFirst",
-      (players, cycle, isDead, socketRole, proxyID) => {
-        setPlayers(players, cycle, isDead, socketRole, proxyID);
+      (players, cycle, phase, isDead, socketRole, proxyID) => {
+        setPlayers(players, cycle, phase, isDead, socketRole, proxyID);
       }
     );
   }
