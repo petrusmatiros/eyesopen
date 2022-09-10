@@ -74,7 +74,7 @@
       rgba(255, 13, 13, 0.2) 100%
     ),
     linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url(/assets/images/game_background.jpg);
+    url(/assets/images/game_background.jpg) !important;
 
   background-attachment: fixed;
 }

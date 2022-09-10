@@ -63,8 +63,8 @@ socket.on("connect", () => {
         if (apartOfGame && inProgress == true) {
           resetActionsOnRefresh();
           socket.emit("setActionsOnPhase", getPlayerID(), "first");
-          socket.on("removeActionsOnPhaseFirst", (phase) => {
-            removeActionsOnPhase(phase);
+          socket.on("removeActionsOnPhaseFirst", (phase, isDead) => {
+            removeActionsOnPhase(phase, isDead);
           });
           console.log("checking for role card availability");
           socket.emit("checkForRoleCard", getPlayerID());
@@ -396,16 +396,20 @@ socket.on(
   }
 );
 
-socket.on("removeActionsOnPhaseClock", (phase) => {
-  removeActionsOnPhase(phase);
+socket.on("removeActionsOnPhaseClock", (phase, isDead) => {
+  removeActionsOnPhase(phase, isDead);
 });
 
-function removeActionsOnPhase(phase) {
+function removeActionsOnPhase(phase, isDead) {
   var playersContainer = document.getElementById("game-players-container");
   var slots = playersContainer.children;
 
   if (phase == "voting" || phase == "actions") {
-    playersContainer.style.opacity = "100%";
+    if (isDead) {
+      playersContainer.style.opacity = "35%";
+    } else {
+      playersContainer.style.opacity = "100%";
+    }
   } else if (
     phase == "nightMessages" ||
     phase == "discussion" ||
@@ -436,6 +440,7 @@ function removeActionsOnPhase(phase) {
 }
 
 function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
+  console.log("Setting players");
   var playersContainer = document.getElementById("game-players-container");
   var slots = playersContainer.children;
   var colCount = 0;
@@ -468,7 +473,11 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
     abilityButton.classList.remove("game-button-ability-norounding");
     voteButton.classList.remove("game-button-vote-norounding");
     if (phase == "voting" || phase == "actions") {
-      playersContainer.style.opacity = "100%";
+      if (isDead) {
+        playersContainer.style.opacity = "35%";
+      } else {
+        playersContainer.style.opacity = "100%";
+      }
     } else if (
       phase == "nightMessages" ||
       phase == "discussion" ||
@@ -479,9 +488,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
     }
     if (players[i].userID == proxyID) {
       if (isDead) {
+        var body = document.getElementById("game-body");
+        body.classList.add("game-background-dead");
         playersContainer.style.opacity = "35%";
       } else {
         playersContainer.style.opacity = "100%";
+        var body = document.getElementById("game-body");
+        body.classList.remove("game-background-dead");
       }
       currentElement.style.fontWeight = 700;
       if (cycle.includes("Night")) {
@@ -1147,8 +1160,8 @@ socket.on("showGame", (allReady) => {
       }
     );
     socket.emit("setActionsOnPhase", getPlayerID(), "first");
-    socket.on("removeActionsOnPhaseFirst", (phase) => {
-      removeActionsOnPhase(phase);
+    socket.on("removeActionsOnPhaseFirst", (phase, isDead) => {
+      removeActionsOnPhase(phase, isDead);
     });
   }
 });

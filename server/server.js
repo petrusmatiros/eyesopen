@@ -1860,7 +1860,7 @@ io.on("connection", async (socket) => {
   }
 
   function setPlayers(playerID, state) {
-    console.log("SETTINGS PLAYERS");
+    console.log("SETTING PLAYERS");
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
@@ -2055,9 +2055,18 @@ io.on("connection", async (socket) => {
               emitTo = "removeActionsOnPhaseClock";
             }
 
+            var socketPlayer = connectedUsers.get(playerID).getPlayer();
+            var socketRole = connectedUsers.get(playerID).getPlayer().getRole();
+            var isDead = false;
+
+            if (socketPlayer.getIsKilled() || socketPlayer.getIsLynched()) {
+              isDead = true;
+            }
+
             io.to(roomCode).emit(
               emitTo,
               game.getPhase(),
+              isDead,
             );
           }
         }
@@ -2089,6 +2098,7 @@ io.on("connection", async (socket) => {
           voteHandlerGlobal(playerID, room, roomCode, game);
           console.log("DEATH HANDLER VOTE");
           deathHandler(playerID, room, roomCode, game);
+          io.to(roomCode).emit("updateSetPlayers"); 
           checkForWin(playerID, room, roomCode, game);
           dayMessagesOnce = 1;
           resetAllActions(playerID, room, roomCode, game);
@@ -2099,6 +2109,7 @@ io.on("connection", async (socket) => {
         if (recapOnce == 0) {
           console.log("DEATH HANDLER RECAP");
           deathHandler(playerID, room, roomCode, game);
+          io.to(roomCode).emit("updateSetPlayers"); 
           checkForWin(playerID, room, roomCode, game);
           recapOnce = 1;
           resetAllActions(playerID, room, roomCode, game);
@@ -2318,6 +2329,7 @@ io.on("connection", async (socket) => {
 
       var targets = new Map();
       for (var i = 0; i < users.length; i++) {
+        
         if (users[i].getPlayer().voteTarget !== null) {
           var theVoteTarget = getKeyFromValue(
             proxyIdenfication,
@@ -2328,6 +2340,7 @@ io.on("connection", async (socket) => {
             voteTargetPlayer.getIsKilled() == false &&
             voteTargetPlayer.getIsLynched() == false
           ) {
+            console.log(users[i].getPlayer().voteTarget)
             if (targets.has(theVoteTarget)) {
               targets.set(
                 theVoteTarget,
@@ -2343,12 +2356,17 @@ io.on("connection", async (socket) => {
           }
         }
       }
+      console.log(targets)
       var aliveUsersCount = game.getAlive().length;
       var targetCount = Array.from(targets.values());
+      console.log(targetCount)
+      console.log(targetCount.length)
       var gotLynched = false;
       for (var i = 0; i < targetCount.length; i++) {
-        var majority = aliveUsersCount.length / 2;
+        var majority = aliveUsersCount / 2;
+        console.log(targetCount[i])
         if (targetCount[i] > majority) {
+          console.log("majority: " + targetCount[i])
           var mostVotedIndex = targetCount.indexOf(targetCount[i]);
           var mostVoted = Array.from(targets.keys())[mostVotedIndex];
           gotLynched = true;
