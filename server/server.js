@@ -1873,6 +1873,8 @@ io.on("connection", async (socket) => {
               emitTo = "setPlayersFirst";
             } else if (state.includes("clock")) {
               emitTo = "setPlayersClock";
+            } else if (state.includes("refresh")) {
+              emitTo = "setPlayersRefresh";
             }
             var socketPlayer = connectedUsers.get(playerID).getPlayer();
             var socketRole = connectedUsers.get(playerID).getPlayer().getRole();
@@ -2052,22 +2054,10 @@ io.on("connection", async (socket) => {
             } else if (state.includes("clock")) {
               emitTo = "removeActionsOnPhaseClock";
             }
-            var socketPlayer = connectedUsers.get(playerID).getPlayer();
-            var socketRole = connectedUsers.get(playerID).getPlayer().getRole();
-            var isDead = false;
 
-            if (socketPlayer.getIsKilled() || socketPlayer.getIsLynched()) {
-              isDead = true;
-            }
-            var proxyID = proxyIdenfication.get(playerID);
             io.to(roomCode).emit(
               emitTo,
-              generateValidPlayerList(playerID),
-              game.getCycle(),
               game.getPhase(),
-              isDead,
-              socketRole,
-              proxyID
             );
           }
         }
@@ -2099,6 +2089,7 @@ io.on("connection", async (socket) => {
           voteHandlerGlobal(playerID, room, roomCode, game);
           console.log("DEATH HANDLER VOTE");
           deathHandler(playerID, room, roomCode, game);
+          checkForWin(playerID, room, roomCode, game);
           dayMessagesOnce = 1;
           resetAllActions(playerID, room, roomCode, game);
         }
@@ -2108,11 +2099,16 @@ io.on("connection", async (socket) => {
         if (recapOnce == 0) {
           console.log("DEATH HANDLER RECAP");
           deathHandler(playerID, room, roomCode, game);
+          checkForWin(playerID, room, roomCode, game);
           recapOnce = 1;
           resetAllActions(playerID, room, roomCode, game);
         }
       }
     }
+  }
+
+  function checkForWin (playerID, room, roomCode, game) {
+
   }
 
   function getKeyFromValue(map, searchValue) {
@@ -2352,7 +2348,7 @@ io.on("connection", async (socket) => {
       var gotLynched = false;
       for (var i = 0; i < targetCount.length; i++) {
         var majority = aliveUsersCount.length / 2;
-        if (targetCount[i][1] > majority) {
+        if (targetCount[i] > majority) {
           var mostVotedIndex = targetCount.indexOf(targetCount[i]);
           var mostVoted = Array.from(targets.keys())[mostVotedIndex];
           gotLynched = true;
@@ -2364,13 +2360,13 @@ io.on("connection", async (socket) => {
           playerID,
           "all",
           `There was no majority to lynch anyone`,
-          "Day"
+          "info"
         );
         sendMessage(
           playerID,
           "all",
           `No one was lynched - hope it was the right decision`,
-          "Day"
+          "info"
         );
       }
     }
@@ -2784,9 +2780,8 @@ io.on("connection", async (socket) => {
         game.getCycleCount()
       );
 
-      // set night, night 1, change ui
-      // init clock, send clock to clients
-      io.to(roomCode).emit(
+       // send clock to clients
+       io.to(roomCode).emit(
         "clock",
         game.getTimer().getCounter(),
         game.getPhase(),
@@ -2796,6 +2791,12 @@ io.on("connection", async (socket) => {
       messageHandlerForCycles(playerID, game, emitCycleOnce);
       messageHandlerForPhases(playerID, game, emitPhaseOnce);
 
+      gameHandler(playerID);
+      io.to(roomCode).emit("changeUI", game.getCycle());
+      setActionsOnPhase(playerID, "clock");
+      
+
+      
       // ! DEBUG TIME
       // console.log("counter from server:", counter);
       if (game.getTimer().getCounter() <= 0) {
@@ -2821,7 +2822,8 @@ io.on("connection", async (socket) => {
             game.setCycle("Day");
             // Prevent from spamming message
             emitCycleOnce = true;
-            io.to(roomCode).emit("changeUI", game.getCycle());
+            // io.to(roomCode).emit("changeUI", game.getCycle());
+            io.to(roomCode).emit("updateSetPlayers");
           }
           initClock(
             game.getTimer(),
@@ -2852,7 +2854,8 @@ io.on("connection", async (socket) => {
             emitCycleOnce = true;
             // Increment cycle count
             game.setCycleCount(game.getCycleCount() + 1);
-            io.to(roomCode).emit("changeUI", game.getCycle());
+            io.to(roomCode).emit("updateSetPlayers");
+            // io.to(roomCode).emit("changeUI", game.getCycle());
           }
 
           initClock(
@@ -2862,8 +2865,6 @@ io.on("connection", async (socket) => {
         }
       } else {
         game.getTimer().tick();
-        gameHandler(playerID);
-        setActionsOnPhase(playerID, "clock");
       }
     }, 1000);
   }

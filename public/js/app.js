@@ -61,15 +61,22 @@ socket.on("connect", () => {
         console.log("apartOfGame:" + apartOfGame);
         console.log("inProgress:" + inProgress);
         if (apartOfGame && inProgress == true) {
+          resetActionsOnRefresh();
+          socket.emit("setActionsOnPhase", getPlayerID(), "first");
+          socket.on("removeActionsOnPhaseFirst", (phase) => {
+            removeActionsOnPhase(phase);
+          });
           console.log("checking for role card availability");
           socket.emit("checkForRoleCard", getPlayerID());
-          resetActionsOnRefresh();
           socket.emit("setEvilRoom", getPlayerID());
 
-          socket.emit("setActionsOnPhase", getPlayerID(), "first");
-          socket.on("removeActionsOnPhaseFirst", (players, cycle, phase, isDead, socketRole, proxyID) => {
-            removeActionsOnPhase(players, cycle, phase, isDead, socketRole, proxyID);
-          })
+          socket.emit("setPlayers", getPlayerID(), "refresh");
+          socket.on(
+            "setPlayersRefresh",
+            (players, cycle, phase, isDead, socketRole, proxyID) => {
+              setPlayers(players, cycle, phase, isDead, socketRole, proxyID);
+            }
+          );
 
           socket.emit("fetchMessages", getPlayerID());
           socket.on("savedMessages", (messages, cycle) => {
@@ -375,64 +382,54 @@ function actionHandler(element) {
   }
 }
 
-socket.on("setPlayersClock", (players, cycle, phase, isDead, socketRole, proxyID) => {
-  setPlayers(players, cycle, phase, isDead, socketRole, proxyID);
+socket.on("updateSetPlayers", () => {
+  updateSetPlayers();
+});
+function updateSetPlayers() {
+  socket.emit("setPlayers", getPlayerID(), "clock");
+}
+
+socket.on(
+  "setPlayersClock",
+  (players, cycle, phase, isDead, socketRole, proxyID) => {
+    setPlayers(players, cycle, phase, isDead, socketRole, proxyID);
+  }
+);
+
+socket.on("removeActionsOnPhaseClock", (phase) => {
+  removeActionsOnPhase(phase);
 });
 
-socket.on("removeActionsOnPhaseClock", (players, cycle, phase, isDead, socketRole, proxyID) => {
-  removeActionsOnPhase(players, cycle, phase, isDead, socketRole, proxyID);
-}) 
-
-function removeActionsOnPhase(players, cycle, phase, isDead, socketRole, proxyID) {
+function removeActionsOnPhase(phase) {
   var playersContainer = document.getElementById("game-players-container");
   var slots = playersContainer.children;
-  var colCount = 0;
-  var playerSlot = 0;
-  var checkCount = 0;
-  
-  if (phase == "nightMessages" || phase == "recap" || phase == "dayMessages") {
+
+  if (phase == "voting" || phase == "actions") {
+    playersContainer.style.opacity = "100%";
+  } else if (
+    phase == "nightMessages" ||
+    phase == "discussion" ||
+    phase == "recap" ||
+    phase == "dayMessages"
+  ) {
     playersContainer.style.opacity = "35%";
-    for (var i = 0; i < players.length; i++) {
-      if (checkCount == 2) {
-        playerSlot++;
-        checkCount = 0;
-      }
-      
-      var currentElement = slots[colCount].children[playerSlot];
+  }
+  for (var i = 0; i < slots.length; i++) {
+    for (var j = 0; j < slots[i].length; j++) {
+      var currentElement = slots[i].children[j];
       var buttons = currentElement.children[1];
       var abilityButton = buttons.children[0];
       var voteButton = buttons.children[2];
       abilityButton.setAttribute("onclick", "");
-      voteButton.setAttribute("onclick", "");
-  
-      if (colCount == 0) {
-        checkCount++;
-        colCount = 1;
-      } else if (colCount == 1) {
-        checkCount++;
-        colCount = 0;
-      }
-    }
-  } else if (phase == "voting") {
-    playersContainer.style.opacity = "100%";
-    for (var i = 0; i < players.length; i++) {
-      if (checkCount == 2) {
-        playerSlot++;
-        checkCount = 0;
-      }
-      
-      var currentElement = slots[colCount].children[playerSlot];
-      var buttons = currentElement.children[1];
-      var abilityButton = buttons.children[0];
-      var voteButton = buttons.children[2];
-      voteButton.setAttribute("onclick", "actionHandler(this)");
-  
-      if (colCount == 0) {
-        checkCount++;
-        colCount = 1;
-      } else if (colCount == 1) {
-        checkCount++;
-        colCount = 0;
+      if (phase == "voting") {
+        voteButton.setAttribute("onclick", "actionHandler(this)");
+      } else if (
+        phase == "nightMessages" ||
+        phase == "recap" ||
+        phase == "discussion" ||
+        phase == "dayMessages"
+      ) {
+        voteButton.setAttribute("onclick", "");
       }
     }
   }
@@ -449,7 +446,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
       playerSlot++;
       checkCount = 0;
     }
-    
+
     var currentElement = slots[colCount].children[playerSlot];
 
     currentElement.classList.remove("game-player-hidden");
@@ -470,11 +467,20 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
     );
     abilityButton.classList.remove("game-button-ability-norounding");
     voteButton.classList.remove("game-button-vote-norounding");
+    if (phase == "voting" || phase == "actions") {
+      playersContainer.style.opacity = "100%";
+    } else if (
+      phase == "nightMessages" ||
+      phase == "discussion" ||
+      phase == "recap" ||
+      phase == "dayMessages"
+    ) {
+      playersContainer.style.opacity = "35%";
+    }
     if (players[i].userID == proxyID) {
       if (isDead) {
         playersContainer.style.opacity = "35%";
-      }
-      else {
+      } else {
         playersContainer.style.opacity = "100%";
       }
       currentElement.style.fontWeight = 700;
@@ -1108,7 +1114,6 @@ function changeUI(theme) {
     scrollDown.classList.add("game-day-fg");
     scrollDown.classList.remove("game-night-fg");
   }
-  socket.emit("setPlayers", getPlayerID(), "clock");
 }
 
 socket.on("changeUI", (theme) => {
@@ -1141,6 +1146,10 @@ socket.on("showGame", (allReady) => {
         setPlayers(players, cycle, phase, isDead, socketRole, proxyID);
       }
     );
+    socket.emit("setActionsOnPhase", getPlayerID(), "first");
+    socket.on("removeActionsOnPhaseFirst", (phase) => {
+      removeActionsOnPhase(phase);
+    });
   }
 });
 
