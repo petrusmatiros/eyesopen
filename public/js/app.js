@@ -407,7 +407,7 @@ function removeActionsOnPhase(phase, isDead) {
   if (phase == "voting" || phase == "actions") {
     if (isDead) {
       playersContainer.style.opacity = "35%";
-    } else {
+    } else if (!isDead) {
       playersContainer.style.opacity = "100%";
     }
   } else if (
@@ -475,7 +475,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
     if (phase == "voting" || phase == "actions") {
       if (isDead) {
         playersContainer.style.opacity = "35%";
-      } else {
+      } else if (!isDead) {
         playersContainer.style.opacity = "100%";
       }
     } else if (
@@ -491,7 +491,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
         var body = document.getElementById("game-body");
         body.classList.add("game-background-dead");
         playersContainer.style.opacity = "35%";
-      } else {
+      } else if (!isDead) {
         playersContainer.style.opacity = "100%";
         var body = document.getElementById("game-body");
         body.classList.remove("game-background-dead");
@@ -515,17 +515,20 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
               "game-player-evil",
               "game-player-dead"
             );
+            element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
           } else {
             // dead everyone else
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove("game-player-evil");
+            element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
           }
         } else {
           // not dead
 
           // ! FIX THIS (self, surgeon, doctor)
+          element.classList.remove("game-player-dead");
           currentElement.classList.remove("game-player-dead");
 
           if (socketRole.type.includes("surgeon")) {
@@ -640,11 +643,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
               "game-player-evil",
               "game-player-dead"
             );
+            element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
           } else {
             // dead everyone else
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove("game-player-evil");
+            element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
           }
         } else {
@@ -656,6 +661,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
           stateButton.classList.remove("game-button-dead");
           stateButton.classList.remove("game-button-unselectable");
           // not dead
+          element.classList.remove("game-player-dead");
           currentElement.classList.remove("game-player-dead");
           // Evil (variations), None
           if (players[i].type == "evil") {
@@ -688,11 +694,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
                 "game-player-evil",
                 "game-player-dead"
               );
+              element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
             } else {
               // dead everyone else
               currentElement.classList.add("game-player-dead");
               currentElement.classList.remove("game-player-evil");
+              element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
             }
           }
@@ -726,11 +734,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
                 "game-player-evil",
                 "game-player-dead"
               );
+              element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
             } else {
               // dead everyone else
               currentElement.classList.add("game-player-dead");
               currentElement.classList.remove("game-player-evil");
+              element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
             }
           } else {
@@ -885,6 +895,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
 
             // not dead
             // ! THIS MAY NEED A FIX
+            element.classList.remove("game-player-dead");
             currentElement.classList.remove("game-player-dead");
             // Client, Target, Evil (variations), None
             if (players[i].type.includes("client")) {
@@ -913,11 +924,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
                 "game-player-evil",
                 "game-player-dead"
               );
+              element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
             } else {
               // dead everyone else
               currentElement.classList.add("game-player-dead");
               currentElement.classList.remove("game-player-evil");
+              element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
             }
           } else {
@@ -929,6 +942,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             stateButton.classList.remove("game-button-dead");
             stateButton.classList.remove("game-button-unselectable");
             // not dead
+            element.classList.remove("game-player-dead");
             currentElement.classList.remove("game-player-dead");
             element.classList.remove("game-player-unselectable");
             // Client, Target, Evil (variations), None

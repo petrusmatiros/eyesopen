@@ -2152,7 +2152,7 @@ io.on("connection", async (socket) => {
       sendMessage(
         playerID,
         "evil",
-        `You all have decided to  murder ${targetPlayer.getPlayerName()} (${
+        `You all have decided to murder ${targetPlayer.getPlayerName()} (${
           targetPlayer.nightVotes
         })`,
         "confirm"
@@ -2288,6 +2288,12 @@ io.on("connection", async (socket) => {
       "all",
       `The town has voted to lynch ${targetPlayer.getPlayerName()}`,
       "info"
+    );
+    sendMessage(
+      target,
+      "target",
+      `You died! You were lynched by members of the town`,
+      "alert"
     );
     sendMessage(
       playerID,
@@ -2698,14 +2704,16 @@ io.on("connection", async (socket) => {
 
   function deathHandler(playerID, room, roomCode, game) {
     // SEND MESSAGE WHO DIED FROM WHOM (killedBY)
+    var noneDead = true;
     for (var i = 0; i < game.getAlive().length; i++) {
       var player = game.getAlive()[i].getPlayer();
       if (player.getIsKilled()) {
+        noneDead = false;
         sendMessage(
           playerID,
           "all",
           `${player.getPlayerName()} died during the night`,
-          "Day"
+          "alert"
         );
         if (player.killedBy.length > 0) {
           // killed
@@ -2720,14 +2728,14 @@ io.on("connection", async (socket) => {
                 playerID,
                 "all",
                 `${player.getPlayerName()} was killed by member of the ${killer} team`,
-                "Day"
+                "alert"
               );
             } else if (killer.includes("Serial Killer")) {
               sendMessage(
                 playerID,
                 "all",
                 `${player.getPlayerName()} was murdered by the ${killer}`,
-                "Day"
+                "alert"
               );
             }
           }
@@ -2748,6 +2756,7 @@ io.on("connection", async (socket) => {
           io.to(roomCode).emit("cemetery", generateCemeteryList(playerID));
         }
       } else if (player.getIsLynched()) {
+        noneDead = false;
         // lynched
         // WHAT WAS THEIR ROLE
         sendMessage(
@@ -2765,6 +2774,10 @@ io.on("connection", async (socket) => {
           io.to(roomCode).emit("cemetery", generateCemeteryList(playerID));
         }
       }
+    }
+
+    if (noneDead) {
+      sendMessage(playerID, "all", "Nothing seems to have happened. That probably means something good...right?", "info")
     }
   }
 
