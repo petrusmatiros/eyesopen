@@ -2703,19 +2703,32 @@ io.on("connection", async (socket) => {
                   "alert"
                 );
               } else {
+
                 // DIDNT WORK
-                sendMessage(
-                  user.playerID,
-                  "socket",
-                  `Your killing spree has been halted to a stop. Someone blocked you`,
-                  "info"
-                );
-                sendMessage(
-                  abilityTarget.playerID,
-                  "target",
-                  `Someone tried to kill you, but you were protected`,
-                  "info"
-                );
+                if (abilityTargetPlayer.isProtected) {
+                  sendMessage(
+                    user.playerID,
+                    "socket",
+                    `Your lust for blood has been contained. Someone protected ${abilityTargetPlayer.getPlayerName()}`,
+                    "info"
+                  );
+                  sendMessage(
+                    abilityTarget.playerID,
+                    "target",
+                    `Someone tried to kill you, but you were protected`,
+                    "info"
+                  );
+                }
+
+                if (player.isBlocked) {
+                  sendMessage(
+                    user.playerID,
+                    "socket",
+                    `Your killing spree has been halted to a stop. Someone blocked you`,
+                    "info"
+                  );
+
+                }
               }
             }
           }
