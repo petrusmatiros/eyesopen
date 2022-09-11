@@ -659,7 +659,6 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
       // EVERYONE
       currentElement.style.fontWeight = 400;
       if (isDead) {
-        if (players[i].userID == proxyID) {
           if (players[i].type.includes("dead")) {
             abilityButton.setAttribute("onclick", "");
             voteButton.setAttribute("onclick", "");
@@ -685,18 +684,17 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
             }
+          } else {
+            abilityButton.setAttribute("onclick", "");
+            voteButton.setAttribute("onclick", "");
+            abilityButton.style.display = "none";
+            voteButton.style.display = "none";
+            stateButton.style.display = "flex";
+            stateButton.classList.remove("game-button-dead");
+            stateButton.classList.add("game-button-unselectable");
+            stateButton.innerText = "unselectable";
+            element.classList.add("game-player-unselectable");
           }
-        } else {
-          abilityButton.setAttribute("onclick", "");
-          voteButton.setAttribute("onclick", "");
-          abilityButton.style.display = "none";
-          voteButton.style.display = "none";
-          stateButton.style.display = "flex";
-          stateButton.classList.remove("game-button-dead");
-          stateButton.classList.add("game-button-unselectable");
-          stateButton.innerText = "unselectable";
-          element.classList.add("game-player-unselectable");
-        }
       } else {
         if (cycle.includes("Night")) {
           // Dead
