@@ -108,7 +108,7 @@
             "name": "Executioner",
             "description": "hiding in the shadows - waiting to strike",
             "team": "neutral",
-            "mission": "Get your target voted out. You become the jester if you succeed",
+            "mission": "Get your target voted out to win. You become the jester if your target dies at night",
             "hasNightAbility": false,
             "voteCount": 1,
             "target": null

@@ -2389,6 +2389,8 @@ io.on("connection", async (socket) => {
       if (lawyerObject[0] == true) {
         var lawyer = lawyerObject[1];
 
+        // if the target (jester) gets lynched
+        // if the lawyer's client is the jester
         if (lawyer.getPlayer().getRole().client == targetPlayer) {
           // LAYWER WINS ALSO
         }
@@ -2396,13 +2398,18 @@ io.on("connection", async (socket) => {
     } else if (executionerObject[0] == true) {
       var executioner = executionerObject[1];
 
+      // if the executioner's target is lynched
       if (executioner.getPlayer().getRole().target == targetPlayer) {
         // executioner COMPLETES MISSION
-        // MAKE EXECUTIONER TO JESTER
-        executioner.getPlayer().setRole(new Role("jester"));
-        //  update set players only for executioner
-        io.to(executioner.getPlayerID()).emit("updateSetPlayers");
-        updateRoleCard(playerID, "socket", executioner.getPlayerID());
+        // EXECUTIONER WINS
+        if (lawyerObject[0] == true) {
+          var lawyer = lawyerObject[1];
+  
+          // if the lawyer's client is the excecutioner
+          if (lawyer.getPlayer().getRole().client == executioner) {
+            // LAYWER WINS ALSO
+          }
+        }
       }
     }
   }
@@ -2846,6 +2853,32 @@ io.on("connection", async (socket) => {
           `${player.getPlayerName()} role was: ${player.getRole().name}`,
           "important"
         );
+
+        var executionerObject = Object.values(
+          checkIfExecutionerAlive(playerID, room, roomCode, game)
+        );
+
+        if (executionerObject[0] == true) {
+          var executioner = executionerObject[1];
+    
+          // if the executioner's target gets KILLED during night
+          if (executioner.getPlayer().getRole().target == game.getAlive()[i]) {
+            // executioner targets gets killed
+            // executioner becomes JESTER
+            // MAKE EXECUTIONER TO JESTER
+            executioner.getPlayer().setRole(new Role("jester"));
+            //  update set players only for executioner
+            io.to(executioner.getPlayerID()).emit("updateSetPlayers");
+            updateRoleCard(playerID, "socket", executioner.getPlayerID());
+            sendMessage(
+              executioner.getPlayerID(),
+              "target",
+              `Your target ${player.getPlayerName()} has died. You have become a Jester!`,
+              "important"
+            );
+
+          }
+        }
 
         // AFTER THAT, ADD THEM TO CEMETERY
         if (!game.getCemetery().includes(game.getAlive()[i])) {
