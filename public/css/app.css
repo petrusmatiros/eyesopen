@@ -506,7 +506,6 @@
 .game-player-dead {
   cursor: not-allowed;
   background-color: var(--dead);
-  opacity: 30%;
 }
 .game-player-unselectable {
   cursor: not-allowed;

@@ -62,12 +62,15 @@ socket.on("connect", () => {
         console.log("inProgress:" + inProgress);
         if (apartOfGame && inProgress == true) {
           resetActionsOnRefresh();
-          socket.emit("setActionsOnPhase", getPlayerID(), "first");
-          socket.on("removeActionsOnPhaseFirst", (phase, isDead) => {
-            removeActionsOnPhase(phase, isDead);
+          socket.emit("setActionsOnPhase", getPlayerID(), "refresh");
+          socket.on("removeActionsOnPhaseRefresh", (phase) => {
+            removeActionsOnPhase(phase);
           });
           console.log("checking for role card availability");
-          socket.emit("checkForRoleCard", getPlayerID());
+          socket.emit("checkForRoleCard", getPlayerID(), "refresh");
+          socket.on("showGameRefresh", (allReady) => {
+            showGame(allReady);
+          });
           socket.emit("setEvilRoom", getPlayerID());
 
           socket.emit("setPlayers", getPlayerID(), "refresh");
@@ -77,6 +80,10 @@ socket.on("connect", () => {
               setPlayers(players, cycle, phase, isDead, socketRole, proxyID);
             }
           );
+          socket.emit("checkIfDead", getPlayerID(), "refresh");
+          socket.on("isPlayerDeadRefresh", (phase, isDead) => {
+            checkIfDead(phase, isDead);
+          });
 
           socket.emit("fetchMessages", getPlayerID());
           socket.on("savedMessages", (messages, cycle) => {
@@ -99,8 +106,16 @@ socket.on("connect", () => {
 
 function readyCardButton() {
   socket.emit("player-ready", getPlayerID(), "game");
-  socket.emit("checkForRoleCard", getPlayerID());
+  socket.emit("checkForRoleCard", getPlayerID(), "press");
 }
+
+socket.on("showGamePress", (allReady) => {
+  showGame(allReady);
+});
+
+socket.on("showGameUpdate", (allReady) => {
+  showGame(allReady);
+});
 
 function endGame() {
   // show win screen
@@ -396,28 +411,14 @@ socket.on(
   }
 );
 
-socket.on("removeActionsOnPhaseClock", (phase, isDead) => {
-  removeActionsOnPhase(phase, isDead);
+socket.on("removeActionsOnPhaseClock", (phase) => {
+  removeActionsOnPhase(phase);
 });
 
-function removeActionsOnPhase(phase, isDead) {
+function removeActionsOnPhase(phase) {
   var playersContainer = document.getElementById("game-players-container");
   var slots = playersContainer.children;
 
-  if (phase == "voting" || phase == "actions") {
-    if (isDead) {
-      playersContainer.style.opacity = "35%";
-    } else if (!isDead) {
-      playersContainer.style.opacity = "100%";
-    }
-  } else if (
-    phase == "nightMessages" ||
-    phase == "discussion" ||
-    phase == "recap" ||
-    phase == "dayMessages"
-  ) {
-    playersContainer.style.opacity = "35%";
-  }
   for (var i = 0; i < slots.length; i++) {
     for (var j = 0; j < slots[i].length; j++) {
       var currentElement = slots[i].children[j];
@@ -472,30 +473,8 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
     );
     abilityButton.classList.remove("game-button-ability-norounding");
     voteButton.classList.remove("game-button-vote-norounding");
-    if (phase == "voting" || phase == "actions") {
-      if (isDead) {
-        playersContainer.style.opacity = "35%";
-      } else if (!isDead) {
-        playersContainer.style.opacity = "100%";
-      }
-    } else if (
-      phase == "nightMessages" ||
-      phase == "discussion" ||
-      phase == "recap" ||
-      phase == "dayMessages"
-    ) {
-      playersContainer.style.opacity = "35%";
-    }
+
     if (players[i].userID == proxyID) {
-      if (isDead) {
-        var body = document.getElementById("game-body");
-        body.classList.add("game-background-dead");
-        playersContainer.style.opacity = "35%";
-      } else if (!isDead) {
-        playersContainer.style.opacity = "100%";
-        var body = document.getElementById("game-body");
-        body.classList.remove("game-background-dead");
-      }
       currentElement.style.fontWeight = 700;
       if (cycle.includes("Night")) {
         // Dead
@@ -1143,11 +1122,37 @@ function changeUI(theme) {
   }
 }
 
+function checkIfDead(phase, isDead) {
+  var playersContainer = document.getElementById("game-players-container");
+  if (isDead) {
+    var body = document.getElementById("game-body");
+    body.classList.add("game-background-dead");
+    playersContainer.style.opacity = "35%";
+  } else if (!isDead) {
+    if (phase == "voting" || phase == "actions") {
+      playersContainer.style.opacity = "100%";
+    } else if (
+      phase == "nightMessages" ||
+      phase == "discussion" ||
+      phase == "recap" ||
+      phase == "dayMessages"
+    ) {
+      playersContainer.style.opacity = "35%";
+    }
+    var body = document.getElementById("game-body");
+    body.classList.remove("game-background-dead");
+  }
+}
+
 socket.on("changeUI", (theme) => {
   changeUI(theme);
+  socket.emit("checkIfDead", getPlayerID(), "clock");
+  socket.on("isPlayerDeadClock", (phase, isDead) => {
+    checkIfDead(phase, isDead);
+  });
 });
 
-socket.on("showGame", (allReady) => {
+function showGame(allReady) {
   if (allReady) {
     showGameUI(true);
     showRoleCard(false);
@@ -1166,6 +1171,7 @@ socket.on("showGame", (allReady) => {
     });
     socket.emit("setEvilRoom", getPlayerID());
     socket.emit("updateUI", getPlayerID());
+
     socket.emit("setPlayers", getPlayerID(), "first");
     socket.on(
       "setPlayersFirst",
@@ -1173,11 +1179,16 @@ socket.on("showGame", (allReady) => {
         setPlayers(players, cycle, phase, isDead, socketRole, proxyID);
       }
     );
+
     socket.emit("setActionsOnPhase", getPlayerID(), "first");
-    socket.on("removeActionsOnPhaseFirst", (phase, isDead) => {
-      removeActionsOnPhase(phase, isDead);
+    socket.on("removeActionsOnPhaseFirst", (phase) => {
+      removeActionsOnPhase(phase);
     });
   }
+}
+
+socket.on("showGameFirst", (allReady) => {
+  showGame(allReady);
 });
 
 socket.on("clock", (counter, phase, cycle, cycleCount) => {
@@ -1196,7 +1207,6 @@ socket.on("clock", (counter, phase, cycle, cycleCount) => {
   gameCycle.innerText = cycle + " " + cycleCount;
 });
 
-// socket.emit("checkForRoleCard", getPlayerID());
 socket.on(
   "displayRoleCard",
   (playerIsReady, allReady, role, name, team, description, mission) => {

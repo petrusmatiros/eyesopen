@@ -349,7 +349,7 @@ io.on("connection", async (socket) => {
     }
   }
 
-  socket.on("checkForRoleCard", (playerID) => {
+  function updateRoleCard(playerID, sendTo, target) {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
@@ -374,10 +374,59 @@ io.on("connection", async (socket) => {
             connectedUsers.get(playerID).getPlayer().getRole().description,
             connectedUsers.get(playerID).getPlayer().getRole().mission
           );
-          io.to(roomCode).emit("showGame", allReady);
+          if (sendTo == "all") {
+            io.to(roomCode).emit("showGameUpdate", allReady);
+          } else if (sendTo == "socket") {
+            io.to(target).emit("showGameUpdate", allReady);
+          }
         }
       }
     }
+  }
+
+  function checkForRoleCard(playerID, state) {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        if (room.getGame().getProgress()) {
+          var allReady = false;
+          playerIsReady = false;
+          if (connectedUsers.get(playerID).getReadyGame()) {
+            playerIsReady = true;
+          }
+          if (checkAllReadyGame(roomCode, playerID)) {
+            console.log("ALL PLAYERS READY in GAME");
+            var allReady = true;
+          }
+          socket.emit(
+            "displayRoleCard",
+            playerIsReady,
+            allReady,
+            connectedUsers.get(playerID).getPlayer().getRole().type,
+            connectedUsers.get(playerID).getPlayer().getRole().name,
+            connectedUsers.get(playerID).getPlayer().getRole().team,
+            connectedUsers.get(playerID).getPlayer().getRole().description,
+            connectedUsers.get(playerID).getPlayer().getRole().mission
+          );
+          var emitTo = "";
+          if (state.includes("refresh")) {
+            emitTo = "showGameRefresh";
+            socket.emit(emitTo, allReady);
+          } else if (state.includes("first")) {
+            emitTo = "showGameFirst";
+            io.to(roomCode).emit(emitTo, allReady);
+          } else if (state.includes("press")) {
+            emitTo = "showGamePress";
+            io.to(roomCode).emit(emitTo, allReady);
+          }
+        }
+      }
+    }
+  }
+
+  socket.on("checkForRoleCard", (playerID, state) => {
+    checkForRoleCard(playerID, state);
   });
 
   // set all users to inGame
@@ -730,6 +779,7 @@ io.on("connection", async (socket) => {
           if (rooms.get(roomCode).getGame().getProgress() == true) {
             // emitTo = "ready-status-game";
             connectedUsers.get(playerID).setReadyGame(ready);
+
             // var playerIsReady = connectedUsers.get(playerID).getReadyGame();
             // socket.to(connectedUsers.get(playerID), playerIsReady, checkAllReadyGame(roomCode, playerID)).emit(emitTo);
           }
@@ -1340,11 +1390,11 @@ io.on("connection", async (socket) => {
                         var abilityMessage = "";
                         if (player.getRole().type.includes("surgeon")) {
                           if (
-                            player.getRole().selfUsage > 0 && player == theAbilityTargetPlayer
+                            player.getRole().selfUsage > 0 &&
+                            player == theAbilityTargetPlayer
                           ) {
                             abilityMessage = `${player.getPlayerName()} is going to disguise themselves`;
                             player.abilityTarget = targetID;
-                            
                           } else {
                             player.abilityTarget = targetID;
                             abilityMessage = `${player.getPlayerName()} is going to disguise ${theAbilityTargetPlayer.getPlayerName()}`;
@@ -1356,19 +1406,18 @@ io.on("connection", async (socket) => {
                           player.abilityTarget = targetID;
                           abilityMessage = `${player.getPlayerName()} is going to frame ${theAbilityTargetPlayer.getPlayerName()}`;
                         }
-                      }
-                      else if (
-                        player.abilityTarget !== targetID && player.abilityTarget !== null
-                        
+                      } else if (
+                        player.abilityTarget !== targetID &&
+                        player.abilityTarget !== null
                       ) {
                         var abilityMessage = "";
                         if (player.getRole().type.includes("surgeon")) {
                           if (
-                            player.getRole().selfUsage > 0 && player == theAbilityTargetPlayer
+                            player.getRole().selfUsage > 0 &&
+                            player == theAbilityTargetPlayer
                           ) {
                             abilityMessage = `${player.getPlayerName()} is going to disguise themselves`;
                             player.abilityTarget = targetID;
-                           
                           } else {
                             player.abilityTarget = targetID;
                             abilityMessage = `${player.getPlayerName()} is going to disguise ${theAbilityTargetPlayer.getPlayerName()}`;
@@ -1380,7 +1429,10 @@ io.on("connection", async (socket) => {
                           player.abilityTarget = targetID;
                           abilityMessage = `${player.getPlayerName()} is going to frame ${theAbilityTargetPlayer.getPlayerName()}`;
                         }
-                      } else if (player.abilityTarget == targetID && player.abilityTarget !== null) {
+                      } else if (
+                        player.abilityTarget == targetID &&
+                        player.abilityTarget !== null
+                      ) {
                         player.abilityTarget = null;
                         var abilityMessage = "";
                         if (player.getRole().type.includes("surgeon")) {
@@ -1397,12 +1449,11 @@ io.on("connection", async (socket) => {
                       if (player.abilityTarget == null) {
                         if (player.getRole().type.includes("doctor")) {
                           if (
-                            player.getRole().selfUsage > 0 && player == theAbilityTargetPlayer
-                            
+                            player.getRole().selfUsage > 0 &&
+                            player == theAbilityTargetPlayer
                           ) {
                             abilityMessage = `You are targeting yourself`;
                             player.abilityTarget = targetID;
-                            
                           } else {
                             abilityMessage = `You are targeting ${theAbilityTargetPlayer.getPlayerName()}`;
                             player.abilityTarget = targetID;
@@ -1411,19 +1462,17 @@ io.on("connection", async (socket) => {
                           player.abilityTarget = targetID;
                           abilityMessage = `You are targeting ${theAbilityTargetPlayer.getPlayerName()}`;
                         }
-                      }
-                      else if (
-                        player.abilityTarget !== targetID && player.abilityTarget !== null
-                        
+                      } else if (
+                        player.abilityTarget !== targetID &&
+                        player.abilityTarget !== null
                       ) {
                         if (player.getRole().type.includes("doctor")) {
                           if (
-                            player.getRole().selfUsage > 0 && player == theAbilityTargetPlayer
-                            
+                            player.getRole().selfUsage > 0 &&
+                            player == theAbilityTargetPlayer
                           ) {
                             abilityMessage = `You are targeting yourself`;
                             player.abilityTarget = targetID;
-                            
                           } else {
                             abilityMessage = `You are targeting ${theAbilityTargetPlayer.getPlayerName()}`;
                             player.abilityTarget = targetID;
@@ -1432,7 +1481,10 @@ io.on("connection", async (socket) => {
                           player.abilityTarget = targetID;
                           abilityMessage = `You are targeting ${theAbilityTargetPlayer.getPlayerName()}`;
                         }
-                      } else if (player.abilityTarget == targetID && player.abilityTarget !== null) {
+                      } else if (
+                        player.abilityTarget == targetID &&
+                        player.abilityTarget !== null
+                      ) {
                         player.abilityTarget = null;
                         abilityMessage = `You are not targeting anyone`;
                       }
@@ -1457,7 +1509,8 @@ io.on("connection", async (socket) => {
                       if (player.getRole().team.includes("evil")) {
                         if (player.voteTarget == null) {
                           player.voteTarget = targetID;
-                          theVoteTargetPlayer.nightVotes += player.getRole().killVoteCount;
+                          theVoteTargetPlayer.nightVotes +=
+                            player.getRole().killVoteCount;
                           sendMessage(
                             playerID,
                             "evil",
@@ -1471,8 +1524,10 @@ io.on("connection", async (socket) => {
                           player.voteTarget !== null
                         ) {
                           player.voteTarget = targetID;
-                          previousVoteTargetPlayer.nightVotes -= player.getRole().killVoteCount;
-                          theVoteTargetPlayer.nightVotes += player.getRole().killVoteCount;
+                          previousVoteTargetPlayer.nightVotes -=
+                            player.getRole().killVoteCount;
+                          theVoteTargetPlayer.nightVotes +=
+                            player.getRole().killVoteCount;
                           sendMessage(
                             playerID,
                             "evil",
@@ -1486,7 +1541,8 @@ io.on("connection", async (socket) => {
                           player.voteTarget !== null
                         ) {
                           player.voteTarget = null;
-                          theVoteTargetPlayer.nightVotes -= player.getRole().killVoteCount;
+                          theVoteTargetPlayer.nightVotes -=
+                            player.getRole().killVoteCount;
                           sendMessage(
                             playerID,
                             "evil",
@@ -1504,8 +1560,9 @@ io.on("connection", async (socket) => {
                     if (game.getTimer().getCounter() >= 0) {
                       if (player.voteTarget == null) {
                         player.voteTarget = targetID;
-                        theVoteTargetPlayer.dayVotes += player.getRole().voteCount;
-                        
+                        theVoteTargetPlayer.dayVotes +=
+                          player.getRole().voteCount;
+
                         sendMessage(
                           playerID,
                           "all",
@@ -1516,10 +1573,12 @@ io.on("connection", async (socket) => {
                         player.voteTarget !== targetID &&
                         player.voteTarget !== null
                       ) {
-                        previousVoteTargetPlayer.dayVotes -= player.getRole().voteCount;
-                        
+                        previousVoteTargetPlayer.dayVotes -=
+                          player.getRole().voteCount;
+
                         player.voteTarget = targetID;
-                        theVoteTargetPlayer.dayVotes += player.getRole().voteCount;
+                        theVoteTargetPlayer.dayVotes +=
+                          player.getRole().voteCount;
                         sendMessage(
                           playerID,
                           "all",
@@ -1531,7 +1590,8 @@ io.on("connection", async (socket) => {
                         player.voteTarget !== null
                       ) {
                         player.voteTarget = null;
-                        theVoteTargetPlayer.dayVotes -= player.getRole().voteCount;
+                        theVoteTargetPlayer.dayVotes -=
+                          player.getRole().voteCount;
                         sendMessage(
                           playerID,
                           "all",
@@ -1868,6 +1928,13 @@ io.on("connection", async (socket) => {
         var game = room.getGame();
         if (game.getProgress()) {
           if (game.getUsers().includes(connectedUsers.get(playerID))) {
+            var socketPlayer = connectedUsers.get(playerID).getPlayer();
+            var socketRole = connectedUsers.get(playerID).getPlayer().getRole();
+            var isDead = false;
+
+            if (socketPlayer.getIsKilled() || socketPlayer.getIsLynched()) {
+              isDead = true;
+            }
             var emitTo = "";
             if (state.includes("first")) {
               emitTo = "setPlayersFirst";
@@ -1875,13 +1942,6 @@ io.on("connection", async (socket) => {
               emitTo = "setPlayersClock";
             } else if (state.includes("refresh")) {
               emitTo = "setPlayersRefresh";
-            }
-            var socketPlayer = connectedUsers.get(playerID).getPlayer();
-            var socketRole = connectedUsers.get(playerID).getPlayer().getRole();
-            var isDead = false;
-
-            if (socketPlayer.getIsKilled() || socketPlayer.getIsLynched()) {
-              isDead = true;
             }
 
             socket.emit(
@@ -1898,6 +1958,35 @@ io.on("connection", async (socket) => {
       }
     }
   }
+
+  socket.on("checkIfDead", (playerID, state) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (game.getProgress()) {
+          if (game.getUsers().includes(connectedUsers.get(playerID))) {
+            var player = connectedUsers.get(playerID).getPlayer();
+            var isDead = false;
+            if (player.getIsKilled() || player.getIsLynched()) {
+              isDead = true;
+            } else if (!player.getIsKilled() && !player.getIsLynched()) {
+              isDead = false;
+            }
+
+            var emitTo = "";
+            if (state.includes("refresh")) {
+              emitTo = "isPlayerDeadRefresh";
+            } else if (state.includes("clock")) {
+              emitTo = "isPlayerDeadClock";
+            }
+            socket.emit(emitTo, game.getPhase(), isDead);
+          }
+        }
+      }
+    }
+  });
 
   socket.on("fetchMessages", (playerID) => {
     if (checkUserExist(playerID)) {
@@ -2051,23 +2140,14 @@ io.on("connection", async (socket) => {
             var emitTo = "";
             if (state.includes("first")) {
               emitTo = "removeActionsOnPhaseFirst";
+              socket.emit(emitTo, game.getPhase());
             } else if (state.includes("clock")) {
               emitTo = "removeActionsOnPhaseClock";
+              io.to(roomCode).emit(emitTo, game.getPhase());
+            } else if (state.includes("refresh")) {
+              emitTo = "removeActionsOnPhaseRefresh";
+              socket.emit(emitTo, game.getPhase());
             }
-
-            var socketPlayer = connectedUsers.get(playerID).getPlayer();
-            var socketRole = connectedUsers.get(playerID).getPlayer().getRole();
-            var isDead = false;
-
-            if (socketPlayer.getIsKilled() || socketPlayer.getIsLynched()) {
-              isDead = true;
-            }
-
-            io.to(roomCode).emit(
-              emitTo,
-              game.getPhase(),
-              isDead,
-            );
           }
         }
       }
@@ -2087,6 +2167,7 @@ io.on("connection", async (socket) => {
           console.log("EXECUTING NIGHT ACTIONS");
           executeNightActions(playerID, room, roomCode, game);
           voteHandlerEvil(playerID, room, roomCode, game);
+          io.to(roomCode).emit("updateSetPlayers");
           nightMessagesOnce = 1;
           resetAllActions(playerID, room, roomCode, game);
         }
@@ -2098,7 +2179,7 @@ io.on("connection", async (socket) => {
           voteHandlerGlobal(playerID, room, roomCode, game);
           console.log("DEATH HANDLER VOTE");
           deathHandler(playerID, room, roomCode, game);
-          io.to(roomCode).emit("updateSetPlayers"); 
+          io.to(roomCode).emit("updateSetPlayers");
           checkForWin(playerID, room, roomCode, game);
           dayMessagesOnce = 1;
           resetAllActions(playerID, room, roomCode, game);
@@ -2109,7 +2190,7 @@ io.on("connection", async (socket) => {
         if (recapOnce == 0) {
           console.log("DEATH HANDLER RECAP");
           deathHandler(playerID, room, roomCode, game);
-          io.to(roomCode).emit("updateSetPlayers"); 
+          io.to(roomCode).emit("updateSetPlayers");
           checkForWin(playerID, room, roomCode, game);
           recapOnce = 1;
           resetAllActions(playerID, room, roomCode, game);
@@ -2118,9 +2199,7 @@ io.on("connection", async (socket) => {
     }
   }
 
-  function checkForWin (playerID, room, roomCode, game) {
-
-  }
+  function checkForWin(playerID, room, roomCode, game) {}
 
   function getKeyFromValue(map, searchValue) {
     for (let [key, value] of map.entries()) {
@@ -2198,10 +2277,7 @@ io.on("connection", async (socket) => {
             evilUsers[i].getPlayer().voteTarget
           );
           var voteTargetPlayer = connectedUsers.get(theVoteTarget).getPlayer();
-          if (
-            voteTargetPlayer.getIsKilled() == false &&
-            voteTargetPlayer.getIsLynched() == false
-          ) {
+          if (!game.getCemetery().includes(connectedUsers.get(theVoteTarget))) {
             if (targets.has(theVoteTarget)) {
               targets.set(
                 theVoteTarget,
@@ -2324,6 +2400,9 @@ io.on("connection", async (socket) => {
         // executioner COMPLETES MISSION
         // MAKE EXECUTIONER TO JESTER
         executioner.getPlayer().setRole(new Role("jester"));
+        //  update set players only for executioner
+        io.to(executioner.getPlayerID()).emit("updateSetPlayers");
+        updateRoleCard(playerID, "socket", executioner.getPlayerID());
       }
     }
   }
@@ -2335,7 +2414,6 @@ io.on("connection", async (socket) => {
 
       var targets = new Map();
       for (var i = 0; i < users.length; i++) {
-        
         if (users[i].getPlayer().voteTarget !== null) {
           var theVoteTarget = getKeyFromValue(
             proxyIdenfication,
@@ -2346,7 +2424,7 @@ io.on("connection", async (socket) => {
             voteTargetPlayer.getIsKilled() == false &&
             voteTargetPlayer.getIsLynched() == false
           ) {
-            console.log(users[i].getPlayer().voteTarget)
+            console.log(users[i].getPlayer().voteTarget);
             if (targets.has(theVoteTarget)) {
               targets.set(
                 theVoteTarget,
@@ -2362,17 +2440,17 @@ io.on("connection", async (socket) => {
           }
         }
       }
-      console.log(targets)
+      console.log(targets);
       var aliveUsersCount = game.getAlive().length;
       var targetCount = Array.from(targets.values());
-      console.log(targetCount)
-      console.log(targetCount.length)
+      console.log(targetCount);
+      console.log(targetCount.length);
       var gotLynched = false;
       for (var i = 0; i < targetCount.length; i++) {
         var majority = aliveUsersCount / 2;
-        console.log(targetCount[i])
+        console.log(targetCount[i]);
         if (targetCount[i] > majority) {
-          console.log("majority: " + targetCount[i])
+          console.log("majority: " + targetCount[i]);
           var mostVotedIndex = targetCount.indexOf(targetCount[i]);
           var mostVoted = Array.from(targets.keys())[mostVotedIndex];
           gotLynched = true;
@@ -2473,7 +2551,6 @@ io.on("connection", async (socket) => {
                 if (role.type.includes("surgeon")) {
                   if (abilityTargetPlayer.getRole().team.includes("evil")) {
                     if (abilityTarget == user) {
-                      
                       if (user.getPlayer().getRole().selfUsage > 0) {
                         user.getPlayer().getRole().selfUsage -= 1;
                         // CAN DISGUISE EVIL TO LOOK GOOD
@@ -2482,7 +2559,9 @@ io.on("connection", async (socket) => {
                         sendMessage(
                           user.playerID,
                           "socket",
-                          `You disguised yourself. Self uses left: ${user.getPlayer().getRole().selfUsage}`,
+                          `You disguised yourself. Self uses left: ${
+                            user.getPlayer().getRole().selfUsage
+                          }`,
                           "confirm"
                         );
                       } else if (user.getPlayer().getRole().selfUsage == 0) {
@@ -2492,7 +2571,9 @@ io.on("connection", async (socket) => {
                         sendMessage(
                           user.playerID,
                           "socket",
-                          `You don't have any self uses left. Self uses left: ${user.getPlayer().getRole().selfUsage}`,
+                          `You don't have any self uses left. Self uses left: ${
+                            user.getPlayer().getRole().selfUsage
+                          }`,
                           "confirm"
                         );
                       }
@@ -2565,14 +2646,18 @@ io.on("connection", async (socket) => {
                     sendMessage(
                       user.playerID,
                       "socket",
-                      `You protected yourself. Self uses left: ${user.getPlayer().getRole().selfUsage}`,
+                      `You protected yourself. Self uses left: ${
+                        user.getPlayer().getRole().selfUsage
+                      }`,
                       "confirm"
                     );
                   } else if (user.getPlayer().getRole().selfUsage == 0) {
                     sendMessage(
                       user.playerID,
                       "socket",
-                      `You don't have any self uses left. Self uses left: ${user.getPlayer().getRole().selfUsage}`,
+                      `You don't have any self uses left. Self uses left: ${
+                        user.getPlayer().getRole().selfUsage
+                      }`,
                       "confirm"
                     );
                   }
@@ -2705,6 +2790,7 @@ io.on("connection", async (socket) => {
   function deathHandler(playerID, room, roomCode, game) {
     // SEND MESSAGE WHO DIED FROM WHOM (killedBY)
     var noneDead = true;
+    var noneLynched = true;
     for (var i = 0; i < game.getAlive().length; i++) {
       var player = game.getAlive()[i].getPlayer();
       if (player.getIsKilled()) {
@@ -2723,7 +2809,7 @@ io.on("connection", async (socket) => {
             killCount++
           ) {
             var killer = player.killedBy[killCount];
-            if (killer.includes("evil")) {
+            if (killer.includes("Evil")) {
               sendMessage(
                 playerID,
                 "all",
@@ -2756,7 +2842,7 @@ io.on("connection", async (socket) => {
           io.to(roomCode).emit("cemetery", generateCemeteryList(playerID));
         }
       } else if (player.getIsLynched()) {
-        noneDead = false;
+        noneLynched = false;
         // lynched
         // WHAT WAS THEIR ROLE
         sendMessage(
@@ -2776,8 +2862,13 @@ io.on("connection", async (socket) => {
       }
     }
 
-    if (noneDead) {
-      sendMessage(playerID, "all", "Nothing seems to have happened. That probably means something good...right?", "info")
+    if (noneDead && game.getPhase() == "recap") {
+      sendMessage(
+        playerID,
+        "all",
+        "Nothing seems to have happened. That probably means something good...right?",
+        "info"
+      );
     }
   }
 
@@ -2811,8 +2902,8 @@ io.on("connection", async (socket) => {
         game.getCycleCount()
       );
 
-       // send clock to clients
-       io.to(roomCode).emit(
+      // send clock to clients
+      io.to(roomCode).emit(
         "clock",
         game.getTimer().getCounter(),
         game.getPhase(),
@@ -2824,10 +2915,7 @@ io.on("connection", async (socket) => {
 
       gameHandler(playerID);
       io.to(roomCode).emit("changeUI", game.getCycle());
-      setActionsOnPhase(playerID, "clock");
-      
 
-      
       // ! DEBUG TIME
       // console.log("counter from server:", counter);
       if (game.getTimer().getCounter() <= 0) {
@@ -2842,6 +2930,8 @@ io.on("connection", async (socket) => {
             );
             emitPhaseOnce = true;
             console.log("night less");
+            io.to(roomCode).emit("updateSetPlayers");
+            setActionsOnPhase(playerID, "clock");
           }
           if (currentPhase >= nightLength) {
             currentPhase = 0;
@@ -2854,7 +2944,7 @@ io.on("connection", async (socket) => {
             // Prevent from spamming message
             emitCycleOnce = true;
             // io.to(roomCode).emit("changeUI", game.getCycle());
-            io.to(roomCode).emit("updateSetPlayers");
+            // io.to(roomCode).emit("updateSetPlayers");
           }
           initClock(
             game.getTimer(),
@@ -2870,6 +2960,8 @@ io.on("connection", async (socket) => {
             );
             emitPhaseOnce = true;
             console.log("day less");
+            io.to(roomCode).emit("updateSetPlayers");
+            setActionsOnPhase(playerID, "clock");
           }
           if (currentPhase >= dayLength) {
             resetAllActions(playerID, room, roomCode, game);
@@ -2885,7 +2977,6 @@ io.on("connection", async (socket) => {
             emitCycleOnce = true;
             // Increment cycle count
             game.setCycleCount(game.getCycleCount() + 1);
-            io.to(roomCode).emit("updateSetPlayers");
             // io.to(roomCode).emit("changeUI", game.getCycle());
           }
 
