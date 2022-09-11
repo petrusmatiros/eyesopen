@@ -159,12 +159,12 @@
 
 .game-player-card-wrapper {
   margin: 1rem;
-  min-width: 10;
-  max-width: 10;
+  min-width: 10rem;
+  max-width: 10rem;
 }
 .game-player-card-divider {
   height: 5.25rem;
-  border-radius: 50;
+  border-radius: 50rem;
   width: 0.5rem;
 }
 .game-player-card-role {
@@ -172,16 +172,16 @@
   font-size: 1rem;
   margin-left: 0.25rem;
   margin-bottom: 0.5rem;
-  min-width: 10;
-  max-width: 10;
+  min-width: 10rem;
+  max-width: 10rem;
 }
 .game-player-card-mission {
   font-weight: 400;
   font-size: 0.75rem;
   margin-left: 0.25rem;
   margin-bottom: 0.75rem;
-  min-width: 10;
-  max-width: 10;
+  min-width: 10rem;
+  max-width: 10rem;
 }
 
 .game-player-card-button {

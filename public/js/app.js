@@ -48,6 +48,9 @@ socket.on("connect", () => {
       if (window.location.href !== lobby) {
         var URL = window.location.href.replace("http://", "");
         var room = URL.split("/")[URL.split("/").length - 2];
+        console.log("app")
+            console.log(URL)
+            console.log(room)
         socket.emit("setRoom", getPlayerID());
         socket.emit("directJoin", getPlayerID(), room);
       } else {

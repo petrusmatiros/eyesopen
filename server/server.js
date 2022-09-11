@@ -849,8 +849,8 @@ io.on("connection", async (socket) => {
   // !!This needs to be taken care of
   socket.on("directJoin", (playerID, directRoom) => {
     if (checkUserExist(playerID)) {
+      connectedUsers.get(playerID).setCurrentRoom(directRoom);
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-        connectedUsers.get(playerID).setCurrentRoom(directRoom);
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         console.log("THIS " + roomCode);
         if (
@@ -2199,7 +2199,43 @@ io.on("connection", async (socket) => {
     }
   }
 
-  function checkForWin(playerID, room, roomCode, game) {}
+  function checkForWin(playerID, room, roomCode, game) {
+
+
+    // This is after voteHandlerGlobal and deathHandler (dayMessages)
+    // This is also after deatHandler (recap)
+
+
+    // CHECK FOR WIN HANDLE THESE SITUATIONS
+    // ONE MAFIA AND SERIAL KILLER KILL EACH OTHER, NO ONE LEFT
+    // ONLY ONE PERSON LEFT, EITHER MAYOR THAT VOTES OUT SOMEONE, SERIAL KILLER KILLS LAST PERSON, ONE MAFIA KILLS LAST PERSON
+
+    // PRESSING LEAVE, WHICH REMOVES PERSON FROM GAME ENTIRELY (FROM ALIVE, USERS, DEAD, ROLES??), RESETS PLAYER
+
+    // Iterate over alive players, check which ones are left
+    for (var i = 0; i < game.getAlive().length; i++) {
+
+    }
+
+    // Which message to show
+    if (game.getGoodWin()) {}
+    else if (game.getEvilWin()) {}
+    else if (game.getJesterWin()) {
+      if (game.getLawyerWin()) {}
+    }
+    else if (game.getExecutionerWin()) {
+      if (game.getLawyerWin()) {}
+    }
+    else if (game.getSerialKillerWin()) {
+      if (game.getLawyerWin()) {}
+    }
+
+    // CLEAR INTERVAL
+    // Reset players, reset game
+    // ReadyGame set to false, inProgress set to false,
+    // player inGame set to false
+    // Send players back to lobby after 5 seconds
+  }
 
   function getKeyFromValue(map, searchValue) {
     for (let [key, value] of map.entries()) {
@@ -2386,6 +2422,8 @@ io.on("connection", async (socket) => {
     );
     if (targetPlayer.getRole().type.includes("jester")) {
       // JESTER WINS
+      game.setJesterWin(true);
+      game.addWinner(targetPlayer.getPlayerName());
       if (lawyerObject[0] == true) {
         var lawyer = lawyerObject[1];
 
@@ -2393,6 +2431,8 @@ io.on("connection", async (socket) => {
         // if the lawyer's client is the jester
         if (lawyer.getPlayer().getRole().client == targetPlayer) {
           // LAYWER WINS ALSO
+          game.setLawyerWin(true);
+          game.addWinner(lawyer.getPlayer().getPlayerName());
         }
       }
     } else if (executionerObject[0] == true) {
@@ -2402,12 +2442,16 @@ io.on("connection", async (socket) => {
       if (executioner.getPlayer().getRole().target == targetPlayer) {
         // executioner COMPLETES MISSION
         // EXECUTIONER WINS
+        game.setExecutionerWin(true);
+        game.addWinner(executioner.getPlayerName());
         if (lawyerObject[0] == true) {
           var lawyer = lawyerObject[1];
-  
+
           // if the lawyer's client is the excecutioner
           if (lawyer.getPlayer().getRole().client == executioner) {
             // LAYWER WINS ALSO
+            game.setLawyerWin(true);
+            game.addWinner(lawyer.getPlayer().getPlayerName());
           }
         }
       }
@@ -2710,7 +2754,6 @@ io.on("connection", async (socket) => {
                   "alert"
                 );
               } else {
-
                 // DIDNT WORK
                 if (abilityTargetPlayer.isProtected) {
                   sendMessage(
@@ -2734,7 +2777,6 @@ io.on("connection", async (socket) => {
                     `Your killing spree has been halted to a stop. Someone blocked you`,
                     "info"
                   );
-
                 }
               }
             }
@@ -2860,12 +2902,11 @@ io.on("connection", async (socket) => {
 
         if (executionerObject[0] == true) {
           var executioner = executionerObject[1];
-    
+
           // if the executioner's target gets KILLED during night
           if (executioner.getPlayer().getRole().target == game.getAlive()[i]) {
             // executioner targets gets killed
             // executioner becomes JESTER
-            // MAKE EXECUTIONER TO JESTER
             executioner.getPlayer().setRole(new Role("jester"));
             //  update set players only for executioner
             io.to(executioner.getPlayerID()).emit("updateSetPlayers");
@@ -2876,7 +2917,6 @@ io.on("connection", async (socket) => {
               `Your target ${player.getPlayerName()} has died. You have become a Jester!`,
               "important"
             );
-
           }
         }
 

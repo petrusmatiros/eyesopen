@@ -21,6 +21,14 @@ class Game {
     this.dead = [];
     // Array for cemetery
     this.cemetery = [];
+    // Win information
+    this.jesterWin = false;
+    this.executionerWin = false;
+    this.goodWin = false;
+    this.evilWin = false;
+    this.serialKillerWin = false;
+    this.lawyerWin = false;
+    this.winners = [];
     // Booleans for inProgress and finished
     this.inProgress = false;
     this.isDone = false;
@@ -47,6 +55,14 @@ class Game {
     this.dead = [];
     // Array for cemetery
     this.cemetery = [];
+    // Win information
+    this.jesterWin = false;
+    this.executionerWin = false;
+    this.goodWin = false;
+    this.evilWin = false;
+    this.serialKillerWin = false;
+    this.lawyerWin = false;
+    this.winners = [];
     // Booleans for inProgress and finished
     this.inProgress = false;
     this.isDone = false;
@@ -149,6 +165,62 @@ class Game {
 
   removeCemetery(player) {
     this.cemetery.splice(this.cemetery.indexOf(player), 1);
+  }
+
+  getJesterWin() {
+    return this.jesterWin;
+  }
+  getExecutionerWin() {
+    return this.executionerWin;
+  }
+  getSerialKillerWin() {
+    return this.serialKillerWin;
+  }
+
+  getLawyerWin() {
+    return this.lawyerWin;
+  }
+
+  getGoodWin() {
+    return this.goodWin;
+  }
+
+  getEvilWin() {
+    return this.evilWin;
+  }
+
+  setJesterWin(jesterWin) {
+    this.jesterWin = jesterWin;
+  }
+  setExecutionerWin(executionerWin) {
+    this.executionerWin = executionerWin;
+  }
+  setSerialKillerWin(serialKillerWin) {
+    this.serialKillerWin = serialKillerWin;
+  }
+
+  setLawyerWin(lawyerWin) {
+    this.lawyerWin = lawyerWin;
+  }
+
+  setGoodWin(goodWin) {
+    this.goodWin = goodWin;
+  }
+
+  setEvilWin(evilWin) {
+    this.evilWin = evilWin;
+  }
+
+  setWinners(winners) {
+    this.winners = winners;
+  }
+
+  addWinners(winner) {
+    this.winners.push(winner);
+  }
+
+  removeWinners(winner) {
+    this.winners.splice(this.winners.indexOf(winner), 1);
   }
 
   getProgress() {
