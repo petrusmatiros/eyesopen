@@ -53,7 +53,7 @@ socket.on("connect", () => {
         console.log("apartOfGame:" + apartOfGame);
         console.log("inProgress:" + inProgress);
         if (apartOfGame && inProgress == true) {
-          socket.emit("directJoin", getPlayerID(), code);
+          socket.emit("directJoin", getPlayerID(), code, "app");
           resetActionsOnRefresh();
           socket.emit("setActionsOnPhase", getPlayerID(), "refresh");
           socket.on("removeActionsOnPhaseRefresh", (phase) => {
@@ -86,18 +86,14 @@ socket.on("connect", () => {
           socket.on("savedCemetery", (burried) => {
             loadCemetery(burried);
           });
-        } else if (apartOfGame && inProgress == false) {
-          socket.emit("directJoin", getPlayerID(), code);
+        } else if (apartOfGame == false && inProgress == true || apartOfGame == false && inProgress == false) {
           if (window.location.href.endsWith("/game")) {
-            window.location.href -= "/game";
+            var URL = window.location.href.replace("http://", "");
+            var room = URL.split("/")[URL.split("/").length - 2];
+            socket.emit("directJoin", getPlayerID(), code, "app");
+            window.location.href = lobby + room;
           }
         }
-        else if (apartOfGame == false) {
-          window.location.href = lobby + code;
-        }
-      });
-      socket.on("resetURL", () => {
-        window.location.href = lobby + code;
       });
     }
   });
@@ -1184,9 +1180,6 @@ function showGame(allReady) {
       playerRole.innerText = name + ` (${playerTeam})`;
       playerMission.innerText = mission;
     });
-    socket.emit("setEvilRoom", getPlayerID());
-    socket.emit("updateUI", getPlayerID());
-
     socket.emit("setPlayers", getPlayerID(), "first");
     socket.on(
       "setPlayersFirst",
@@ -1199,6 +1192,9 @@ function showGame(allReady) {
     socket.on("removeActionsOnPhaseFirst", (phase) => {
       removeActionsOnPhase(phase);
     });
+    socket.emit("setEvilRoom", getPlayerID());
+    socket.emit("updateUI", getPlayerID());
+
   }
 }
 

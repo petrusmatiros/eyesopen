@@ -131,7 +131,7 @@ io.on("connection", async (socket) => {
       console.log("targetroom", targetRoom);
       if (targetRoom !== null) {
         connectedUsers.get(playerID).setReadyLobby(false);
-        if (!rooms.get(targetRoom).getGame().getProgress()) {
+        
           io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
             "ready-status-lobby",
             generateProxyReadyLobby(playerID)
@@ -140,22 +140,20 @@ io.on("connection", async (socket) => {
             "rolePickConditionDisconnect",
             false
           );
-          clearPlayerSlot(playerID);
           // reqHandler(playerID);
           // remove user from room
           rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
+          clearPlayerSlot(playerID);
           updatePlayerCount(playerID);
           // TODO: check for requirement instead???
           updateRoles();
           reqHandler(playerID);
-        } else {
-          rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
-        }
-        // socket leaves room
-        // connectedUsers.get(playerID).setCurrentRoom(null);
-        socket.leave(targetRoom);
-        console.log("leaving room", targetRoom);
-        console.log(socket.rooms);
+          // socket leaves room
+          // connectedUsers.get(playerID).setCurrentRoom(null);
+          socket.leave(targetRoom);
+          console.log("leaving room", targetRoom);
+          console.log(socket.rooms);
+        
       }
     }
   });
@@ -219,9 +217,7 @@ io.on("connection", async (socket) => {
           }
         }
         // }
-      } else {
-        socket.emit("resetURL");
-      }
+      } 
     }
   });
 
@@ -535,7 +531,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (!checkUserInGame(roomCode, playerID)) {
+        
           var emitTo = "";
           if (state.includes("connect")) {
             emitTo = "fetchedRolesConnect";
@@ -549,7 +545,7 @@ io.on("connection", async (socket) => {
             rooms.get(roomCode).getRoles()
           );
           reqHandler(playerID);
-        }
+        
       }
     }
   });
@@ -665,14 +661,14 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (!checkUserInGame(roomCode, playerID)) {
+        
           var notReady = false;
           connectedUsers.get(playerID).setReadyLobby(notReady);
           io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
             "ready-status-lobby",
             generateProxyReadyLobby(playerID)
           );
-        }
+        
       }
     }
   });
@@ -684,7 +680,7 @@ io.on("connection", async (socket) => {
         var emitTo = "";
         var notReady = false;
         if (state.includes("lobby")) {
-          if (rooms.get(roomCode).getGame().getProgress() == false) {
+          
             emitTo = "ready-status-lobby";
             connectedUsers.get(playerID).setReadyLobby(notReady);
             updatePlayerCount(playerID);
@@ -692,16 +688,16 @@ io.on("connection", async (socket) => {
               emitTo,
               generateProxyReadyLobby(playerID)
             );
-          }
+          
         } else if (state.includes("game")) {
-          if (rooms.get(roomCode).getGame().getProgress() == true) {
+          
             // emitTo = "ready-status-game";
             connectedUsers.get(playerID).setReadyGame(notReady);
 
             // var playerIsReady = connectedUsers.get(playerID).getReadyGame();
             // socket.to(connectedUsers.get(playerID), playerIsReady, checkAllReadyGame(roomCode, playerID)).emit(emitTo);
           }
-        }
+        
       }
     }
   });
@@ -749,9 +745,9 @@ io.on("connection", async (socket) => {
         var room = rooms.get(roomCode);
         var proxyUsers = [];
         for (var i = 0; i < room.getUsers().length; i++) {
-          let playerID = proxyIdenfication.get(room.getUsers()[i].playerID);
+          let thePlayerID = proxyIdenfication.get(room.getUsers()[i].playerID);
           let readyLobby = room.getUsers()[i].readyLobby;
-          var proxyUser = { playerID, readyLobby };
+          var proxyUser = { thePlayerID, readyLobby };
           proxyUsers.push(proxyUser);
         }
         return proxyUsers;
@@ -766,7 +762,7 @@ io.on("connection", async (socket) => {
         var emitTo = "";
         var ready = true;
         if (state.includes("lobby")) {
-          if (rooms.get(roomCode).getGame().getProgress() == false) {
+          
             emitTo = "ready-status-lobby";
             connectedUsers.get(playerID).setReadyLobby(ready);
             updatePlayerCount(playerID);
@@ -774,15 +770,15 @@ io.on("connection", async (socket) => {
               emitTo,
               generateProxyReadyLobby(playerID)
             );
-          }
+          
         } else if (state.includes("game")) {
-          if (rooms.get(roomCode).getGame().getProgress() == true) {
+          
             // emitTo = "ready-status-game";
             connectedUsers.get(playerID).setReadyGame(ready);
 
             // var playerIsReady = connectedUsers.get(playerID).getReadyGame();
             // socket.to(connectedUsers.get(playerID), playerIsReady, checkAllReadyGame(roomCode, playerID)).emit(emitTo);
-          }
+          
         }
       }
     }
@@ -847,37 +843,71 @@ io.on("connection", async (socket) => {
   }
 
   // !!This needs to be taken care of
-  socket.on("directJoin", (playerID, directRoom) => {
+  socket.on("directJoin", (playerID, directRoom, state) => {
     if (checkUserExist(playerID)) {
       connectedUsers.get(playerID).setCurrentRoom(directRoom);
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         console.log("THIS " + roomCode);
-        if (
-          rooms.get(roomCode).getGame().getProgress() == false ||
-          (rooms.get(roomCode).getGame().getProgress() == true &&
-            rooms
-              .get(roomCode)
-              .getGame()
-              .getUsers()
-              .includes(connectedUsers.get(playerID)))
-        ) {
-          socket.join(connectedUsers.get(playerID).getCurrentRoom());
-          checkForAlreadyExistingUser(roomCode, playerID);
-          socket.emit("viewRoom", roomCode);
-          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-            "viewPlayerCount",
-            amountUnready(roomCode),
-            hostInLobby(roomCode),
-            connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
-            checkAllReadyLobby(roomCode, playerID),
-            rooms.get(roomCode).getUsers().length,
-            rooms.get(roomCode).getRoles().length
-          );
-          reqHandler(playerID);
-          console.log(socket.rooms);
-          console.log(connectedUsers.get(playerID));
-          socket.emit("joinPlayerSlot");
+        if (state.includes("lobby")) {
+          if (
+            rooms.get(roomCode).getGame().getProgress() == false ||
+            (rooms.get(roomCode).getGame().getProgress() == true &&
+              rooms
+                .get(roomCode)
+                .getGame()
+                .getUsers()
+                .includes(connectedUsers.get(playerID))) || (rooms.get(roomCode).getGame().getProgress() == true &&
+                rooms
+                  .get(roomCode)
+                  .getGame()
+                  .getUsers()
+                  .includes(connectedUsers.get(playerID)) == false)
+
+          ) {
+            socket.join(connectedUsers.get(playerID).getCurrentRoom());
+            checkForAlreadyExistingUser(roomCode, playerID);
+            socket.emit("viewRoom", roomCode);
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+              "viewPlayerCount",
+              amountUnready(roomCode),
+              hostInLobby(roomCode),
+              connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
+              checkAllReadyLobby(roomCode, playerID),
+              rooms.get(roomCode).getUsers().length,
+              rooms.get(roomCode).getRoles().length
+            );
+            reqHandler(playerID);
+            console.log(socket.rooms);
+            console.log(connectedUsers.get(playerID));
+            socket.emit("joinPlayerSlot");
+          }
+
+        } else if (state.includes("app")) {
+          if (
+            (rooms.get(roomCode).getGame().getProgress() == true &&
+              rooms
+                .get(roomCode)
+                .getGame()
+                .getUsers()
+                .includes(connectedUsers.get(playerID)))
+          ) {
+            socket.join(connectedUsers.get(playerID).getCurrentRoom());
+            socket.emit("viewRoom", roomCode);
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+              "viewPlayerCount",
+              amountUnready(roomCode),
+              hostInLobby(roomCode),
+              connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
+              checkAllReadyLobby(roomCode, playerID),
+              rooms.get(roomCode).getUsers().length,
+              rooms.get(roomCode).getRoles().length
+            );
+            reqHandler(playerID);
+            console.log(socket.rooms);
+            console.log(connectedUsers.get(playerID));
+          }
+
         }
       }
     }
@@ -888,7 +918,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (!checkUserInGame(roomCode, playerID)) {
+        
           var room = rooms.get(roomCode);
           var slotAlreadyExist = false;
           for (var [key, value] of Object.entries(room.slots)) {
@@ -913,7 +943,7 @@ io.on("connection", async (socket) => {
               }
             }
           }
-        }
+        
       }
     }
   });
@@ -921,7 +951,7 @@ io.on("connection", async (socket) => {
   function clearPlayerSlot(playerID) {
     if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
       var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-      if (!checkUserInGame(roomCode, playerID)) {
+      
         var room = rooms.get(roomCode);
         for (var [key, value] of Object.entries(room.slots)) {
           if (value.userID == proxyIdenfication.get(playerID)) {
@@ -936,7 +966,7 @@ io.on("connection", async (socket) => {
             break;
           }
         }
-      }
+      
     }
   }
 
@@ -944,7 +974,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (!checkUserInGame(roomCode, playerID)) {
+       
           if (rooms.get(roomCode).getHost() == playerID) {
             var emitTo = "";
             if (emission.includes("visibility")) {
@@ -966,7 +996,7 @@ io.on("connection", async (socket) => {
             }
             socket.emit(emitTo, false);
           }
-        }
+        
       }
     }
   });
@@ -1133,7 +1163,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (!checkUserInGame(roomCode, playerID)) {
+        
           var emitTo = "";
           if (state.includes("pick")) {
             emitTo = "rolePickCondition";
@@ -1153,7 +1183,7 @@ io.on("connection", async (socket) => {
             checkRolePick(roomCode, playerID, totalRoles, emitTo);
           }
           reqHandler(playerID);
-        }
+        
       }
     }
   });
@@ -1162,13 +1192,13 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (!checkUserInGame(roomCode, playerID)) {
+        
           io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
             "currentRoleCount",
             rooms.get(roomCode).getRoles().length,
             rooms.get(roomCode).getUsers().length
           );
-        }
+        
       }
     }
   });
@@ -1193,7 +1223,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (!checkUserInGame(roomCode, playerID)) {
+        
           if (rooms.get(roomCode).getGame().getProgress() == false) {
             if (op.includes("add")) {
               if (!rooms.get(roomCode).getRoles().includes(role)) {
@@ -1212,7 +1242,7 @@ io.on("connection", async (socket) => {
               rooms.get(roomCode).getUsers().length
             );
           }
-        }
+        
       }
     }
   });
@@ -3092,6 +3122,7 @@ io.on("connection", async (socket) => {
             if (game.getUsers().includes(connectedUsers.get(playerID))) {
               if (room.getHost() == playerID) {
                 if (game.getTimer().getRunning() == false) {
+                  io.to(roomCode).emit("updateSetPlayers");
                   clockHandler(playerID, roomCode, room, game);
                 }
               }
