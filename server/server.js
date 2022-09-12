@@ -2635,7 +2635,7 @@ io.on("connection", async (socket) => {
                       sendMessage(
                         user.playerID,
                         "socket",
-                        `You disguise ${abilityTargetPlayer.getPlayerName()}. The will appear to with the good team this night`,
+                        `You disguise ${abilityTargetPlayer.getPlayerName()}. They will appear good to the investigator this night`,
                         "confirm"
                       );
                     }
@@ -2648,7 +2648,7 @@ io.on("connection", async (socket) => {
                     sendMessage(
                       user.playerID,
                       "socket",
-                      `You frame ${abilityTargetPlayer.getPlayerName()}. The will appear to with the evil team this night`,
+                      `You frame ${abilityTargetPlayer.getPlayerName()}. They will appear evil to the investigator this night`,
                       "confirm"
                     );
                   }

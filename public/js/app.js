@@ -204,6 +204,15 @@ socket.on("recieveMessage", (message, type, cycle) => {
     }
     newMessage.style.justifyContent = "center";
     newMessage.style.alignItems = "center";
+  } else if (type.includes("bold")) {
+    if (cycle.includes("Day")) {
+      messageType += "day";
+      newMessage.classList.add(messageType);
+    } else if (cycle.includes("Night")) {
+      messageType += "night";
+      newMessage.classList.add(messageType);
+    }
+    newMessage.style.fontWeight = "475";
   }
 
   newMessage.innerText = message;
@@ -280,6 +289,15 @@ function loadSavedMessages(messages, cycle) {
       }
       newMessage.style.justifyContent = "center";
       newMessage.style.alignItems = "center";
+    } else if (messages[i].type.includes("bold")) {
+      if (cycle.includes("Day")) {
+        messageType += "day";
+        newMessage.classList.add(messageType);
+      } else if (cycle.includes("Night")) {
+        messageType += "night";
+        newMessage.classList.add(messageType);
+      }
+      newMessage.style.fontWeight = "475";
     }
 
     newMessage.innerText = messages[i].message;
