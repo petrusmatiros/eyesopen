@@ -32,9 +32,7 @@ socket.on("connect", () => {
   socket.on("userExists", (userExists) => {
     if (!userExists) {
       resetCookie();
-      if (window.location.href !== lobby) {
-        window.location.href = window.location.href + "/join";
-      }
+      window.location.href = window.location.href + "/join";
     } else {
       socket.emit("checkUserApartOfGame", getPlayerID(), "app");
       socket.on("apartOfGameApp", (apartOfGame, inProgress, code) => {
@@ -50,19 +48,11 @@ socket.on("connect", () => {
             window.location.href = lobby + code + "/inProgress";
           }
 
-          if (window.location.href !== lobby) {
-            var URL = window.location.href.replace("http://", "");
-            var room = URL.split("/")[URL.split("/").length - 1];
-            console.log("lobby")
-            console.log(URL)
-            console.log(room)
-            socket.emit("setRoom", getPlayerID());
-            socket.emit("directJoin", getPlayerID(), room);
-          } else {
-            // USER EXISTS
-            socket.emit("setRoom", getPlayerID());
-            socket.emit("joinedLobby", getPlayerID());
-          }
+          var URL = window.location.href.replace("http://", "");
+          var room = URL.split("/")[URL.split("/").length - 1];
+          socket.emit("setRoom", getPlayerID());
+          socket.emit("directJoin", getPlayerID(), room);
+          
           // socket.emit("checkInGame", getPlayerID());
           // socket.on("isInGame", (inGame) => {
 

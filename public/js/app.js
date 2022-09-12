@@ -45,25 +45,15 @@ socket.on("connect", () => {
       resetCookie();
     } else {
       console.log("user exists");
-      if (window.location.href !== lobby) {
-        var URL = window.location.href.replace("http://", "");
-        var room = URL.split("/")[URL.split("/").length - 2];
-        console.log("app")
-            console.log(URL)
-            console.log(room)
-        socket.emit("setRoom", getPlayerID());
-        socket.emit("directJoin", getPlayerID(), room);
-      } else {
-        // USER EXISTS
-        socket.emit("setRoom", getPlayerID());
-        socket.emit("joinedLobby", getPlayerID());
-      }
+
+      socket.emit("setRoom", getPlayerID());
       socket.emit("checkUserApartOfGame", getPlayerID(), "app");
 
       socket.on("apartOfGameApp", (apartOfGame, inProgress, code) => {
         console.log("apartOfGame:" + apartOfGame);
         console.log("inProgress:" + inProgress);
         if (apartOfGame && inProgress == true) {
+          socket.emit("directJoin", getPlayerID(), code);
           resetActionsOnRefresh();
           socket.emit("setActionsOnPhase", getPlayerID(), "refresh");
           socket.on("removeActionsOnPhaseRefresh", (phase) => {
@@ -96,12 +86,18 @@ socket.on("connect", () => {
           socket.on("savedCemetery", (burried) => {
             loadCemetery(burried);
           });
-        } else if (apartOfGame == false) {
-          window.location.href = lobby + code + "/";
+        } else if (apartOfGame && inProgress == false) {
+          socket.emit("directJoin", getPlayerID(), code);
+          if (window.location.href.endsWith("/game")) {
+            window.location.href -= "/game";
+          }
+        }
+        else if (apartOfGame == false) {
+          window.location.href = lobby + code;
         }
       });
       socket.on("resetURL", () => {
-        window.location.href = lobby + code + "/";
+        window.location.href = lobby + code;
       });
     }
   });
