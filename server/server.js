@@ -266,6 +266,8 @@ io.on("connection", async (socket) => {
           // add user to all alive players
           room.getGame().addUser(users[i]);
           room.getGame().addAlive(users[i]);
+          // Add previous game
+          users[i].addPrevious(roomCode);
           // if user has an evil role, add them to evil
           if (users[i].getPlayer().role.team == "evil") {
             room.getGame().addEvil(users[i]);
@@ -424,6 +426,20 @@ io.on("connection", async (socket) => {
   socket.on("checkForRoleCard", (playerID, state) => {
     checkForRoleCard(playerID, state);
   });
+
+  function clearPrevious(playerID) {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        var user = connectedUsers.get(playerID);
+        
+        // RESET PREVIOUS PLAYER
+        
+      }
+    }
+  }
 
   // set all users to inGame
   // set game to inProgress
@@ -2265,6 +2281,7 @@ io.on("connection", async (socket) => {
     // ReadyGame set to false, inProgress set to false,
     // player inGame set to false
     // Send players back to lobby after 5 seconds
+    // users[i].removePrevious();
   }
 
   function getKeyFromValue(map, searchValue) {

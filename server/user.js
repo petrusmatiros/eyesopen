@@ -14,6 +14,8 @@ class User {
     // reset depending on state
     this.readyLobby = false;
     this.readyGame = false;
+    // Previous games
+    this.previous = [];
     // reset every time
     this.inGame = false;
     // depends on room
@@ -46,6 +48,18 @@ class User {
   }
   getInGame() {
     return this.inGame;
+  }
+  getPrevious() {
+    return this.previous;
+  }
+  addPrevious(previous) {
+    this.previous.push(previous)
+  }
+  removePrevious(previous) {
+    this.previous.splice(this.previous.indexOf(previous), 1);
+  }
+  setPrevious(previous) {
+    this.previous = previous;
   }
   getCurrentRoom() {
     return this.currentRoom;
