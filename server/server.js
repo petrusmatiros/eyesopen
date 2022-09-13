@@ -2706,7 +2706,7 @@ io.on("connection", async (socket) => {
         var game = room.getGame();
         if (game.getProgress()) {
           if (game.getUsers().includes(connectedUsers.get(playerID))) {
-            io.to(room).emit("updateSetPlayers");
+            io.to(roomCode).emit("updateSetPlayers");
             socket.emit("returnToLobby");
             clearPrevious(playerID);
           }
