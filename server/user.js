@@ -22,6 +22,12 @@ class User {
     this.currentRoom = null;
   }
 
+  reset() {
+    this.player = null;
+    this.readyGame = false;
+    this.inGame = false;
+  }
+
   getPlayerID() {
     return this.playerID;
   }

@@ -68,6 +68,13 @@ class Game {
     this.isDone = false;
   }
 
+  clearUser(user) {
+    this.users.splice(this.users.indexOf(user), 1);
+    this.alive.splice(this.alive.indexOf(user), 1);
+    this.dead.splice(this.dead.indexOf(user), 1);
+    this.evil.splice(this.evil.indexOf(user), 1);
+  }
+
   getCycleCount() {
     return this.cycleCount;
   }

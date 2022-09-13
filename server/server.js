@@ -435,7 +435,14 @@ io.on("connection", async (socket) => {
         var game = room.getGame();
         var user = connectedUsers.get(playerID);
         
-        // RESET PREVIOUS PLAYER
+        // RESET PREVIOUS USER
+        for (var i = 0; i < user.getPrevious().length; i++) {
+          var previousRoomCode = user.getPrevious()[i];
+          var previousRoom = rooms.get(previousRoomCode);
+          var previousGame = previousRoom.getGame();
+          previousGame.clearUser(user);
+          user.removePrevious(previousRoomCode)
+        }
         
       }
     }
@@ -456,6 +463,8 @@ io.on("connection", async (socket) => {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         var room = rooms.get(roomCode);
         if (room.getGame().getProgress() == false) {
+          // Clear each player before joining another game
+          room.getUsers().forEach(user => clearPrevious(user.getPlayerID()));
           io.to(roomCode).emit("enterGame");
           setUp(roomCode);
           // set game in progress
@@ -722,12 +731,13 @@ io.on("connection", async (socket) => {
     var count = 0;
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-        for (var i = 0; i < rooms.get(roomCode).getUsers().length; i++) {
-          if (rooms.get(roomCode).getUsers()[i].getReadyGame()) {
+        var users = rooms.get(roomCode).getGame().getUsers();
+        for (var i = 0; i < users.length; i++) {
+          if (users[i].getReadyGame()) {
             count++;
           }
         }
-        if (count == rooms.get(roomCode).getUsers().length) {
+        if (count == users.length) {
           return true;
         } else {
           return false;
@@ -2276,12 +2286,23 @@ io.on("connection", async (socket) => {
       if (game.getLawyerWin()) {}
     }
 
-    // CLEAR INTERVAL
-    // Reset players, reset game
-    // ReadyGame set to false, inProgress set to false,
-    // player inGame set to false
-    // Send players back to lobby after 5 seconds
-    // users[i].removePrevious();
+    // ALSO HANDLE CHECK PREVIOUS
+    var won = false;
+    if (won) {
+      // CLEAR INTERVAL (game.setDone(true))
+      game.setDone(true);
+      // Send players back to lobby after 5 seconds
+      setTimeout((roomCode) => {
+        io.to(roomCode).emit("returnToLobby");
+      }, 5000)
+      // Reset players, reset game
+      game.getUsers().forEach((user) => {
+        // player inGame set to false
+        user.reset();
+        user.removePrevious(roomCode);
+      });
+      game.reset();
+    }
   }
 
   function getKeyFromValue(map, searchValue) {
@@ -3049,10 +3070,15 @@ io.on("connection", async (socket) => {
       gameHandler(playerID);
       io.to(roomCode).emit("changeUI", game.getCycle());
 
+
+      if (game.getDone()) {
+        clearInterval(time);
+      }
+
       // ! DEBUG TIME
       // console.log("counter from server:", counter);
       if (game.getTimer().getCounter() <= 0) {
-        // clearInterval(time);
+        
 
         // NIGHT
         if (currentCycle == 0) {
