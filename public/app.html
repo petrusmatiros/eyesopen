@@ -387,16 +387,24 @@
     </div>
 
     <!-- Leave button -->
-    <div class="game-leavebutton pop-light5">Leave</div>
+    <div class="game-leavebutton pop-light5" onclick="showLeave()">Leave</div>
 
     <!-- Leave popup -->
     <!-- Leave popup overlay -->
     <div class="game-popup" id="leave">
+      <div class="close">
+        <img
+          class="close-button"
+          onclick="hideLeave()"
+          src="/assets/icons/close.svg"
+          alt="close x icon"
+        />
+      </div>
       <div class="game-popup-text">Leave game?</div>
-      <img class="game-popup-icon" alt="thinking emomji" src="/assets/icons/think.svg"></img>
+      <img class="game-popup-icon" alt="thinking emoji" src="/assets/icons/think.svg"></img>
       <div class="game-popup-buttons">
-        <div class="game-popup-cancelbutton">Cancel</div>
-        <div class="game-popup-leavebutton">Yup</div>
+        <div class="game-popup-cancelbutton" onclick="hideLeave()">Cancel</div>
+        <div class="game-popup-leavebutton" onclick="leaveGame()">Yup</div>
       </div>
     </div>
 

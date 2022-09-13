@@ -112,6 +112,40 @@ socket.on("showGameUpdate", (allReady) => {
   showGame(allReady);
 });
 
+socket.on("returnToLobby", () => {
+  returnToLobby();
+})
+
+function showLeave() {
+
+}
+
+function hideLeave() {
+
+}
+
+function leaveGame() {
+  socket.emit("leaveGame", getPlayerID());
+}
+
+function returnToLobby() {
+  if (window.location.href.endsWith("/game")) {
+    var URL = window.location.href.replace("http://", "");
+    var room = URL.split("/")[URL.split("/").length - 2];
+    window.location.href = lobby + room;
+  }
+}
+
+socket.on("endGame", (winners) => {
+  // VICTORY! DEFEAT! DRAW!
+// EVIL TEAM WINS, GOOD TEAM WINS, NEUTRAL TEAM WINS, JESTER, EXECUTIONER WINS, SERIAL KILLER WINS;
+// AND LAWYER
+// STATUS
+// TEAM <WINS> or TEAM/ROLE & LAWYER <WINS>
+
+
+})
+
 function endGame() {
   // show win screen
   // change to lobby

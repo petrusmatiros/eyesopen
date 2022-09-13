@@ -26,8 +26,10 @@ class Game {
     this.executionerWin = false;
     this.goodWin = false;
     this.evilWin = false;
+    this.neutralWin = false;
     this.serialKillerWin = false;
     this.lawyerWin = false;
+    this.draw = false;
     this.winners = [];
     // Booleans for inProgress and finished
     this.inProgress = false;
@@ -60,8 +62,10 @@ class Game {
     this.executionerWin = false;
     this.goodWin = false;
     this.evilWin = false;
+    this.neutralWin = false;
     this.serialKillerWin = false;
     this.lawyerWin = false;
+    this.draw = false;
     this.winners = [];
     // Booleans for inProgress and finished
     this.inProgress = false;
@@ -195,6 +199,15 @@ class Game {
   getEvilWin() {
     return this.evilWin;
   }
+  getNeutralWin() {
+    return this.neutralWin;
+  }
+  getDraw() {
+    return this.draw;
+  }
+  setDraw(draw) {
+    this.draw = draw;
+  }
 
   setJesterWin(jesterWin) {
     this.jesterWin = jesterWin;
@@ -216,6 +229,13 @@ class Game {
 
   setEvilWin(evilWin) {
     this.evilWin = evilWin;
+  }
+  setNeutralWin(neutralWin) {
+    this.neutralWin = neutralWin;
+  }
+
+  getWinners() {
+    return this.winners;
   }
 
   setWinners(winners) {
