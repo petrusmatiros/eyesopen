@@ -119,9 +119,19 @@ socket.on("returnToLobby", () => {
   returnToLobby();
 });
 
-function showLeave() {}
+function showLeave() {
+  var leavePopup = document.getElementById("leave");
+  var leaveOverlay = document.getElementById("overlay-leave");
+  leavePopup.style.display = "flex";
+  leaveOverlay.style.display = "flex";
+}
 
-function hideLeave() {}
+function hideLeave() {
+  var leavePopup = document.getElementById("leave");
+  var leaveOverlay = document.getElementById("overlay-leave");
+  leavePopup.style.display = "none";
+  leaveOverlay.style.display = "none";
+}
 
 function leaveGame() {
   socket.emit("leaveGame", getPlayerID());
@@ -136,7 +146,7 @@ function returnToLobby() {
 }
 
 socket.on("endGame", (win, winType, lawyerWin, winners) => {
-  console.log("ending game")
+  console.log("ending game");
   socket.emit("requestProxy", getPlayerID());
   socket.on("fetchedProxy", (proxyID) => {
     endGame(proxyID, win, winType, lawyerWin, winners);
@@ -147,7 +157,6 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
   var victory = false;
   var listOfWinners = "";
   if (win) {
-    
     for (var i = 0; i < winners.length; i++) {
       listOfWinners += winners[i].theName + ", ";
       if (winners[i].theID == proxyID) {
@@ -168,7 +177,7 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
         state = "DEFEAT";
         // display defeat
       }
-  
+
       if (winType == "good") {
         winningMessage = "Good team wins";
       } else if (winType == "evil") {
@@ -201,7 +210,7 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
       // display draw
       state = "DRAW";
     }
-  
+
     var theState = document.getElementById("winState");
     var theWinningMessage = document.getElementById("winningMessage");
     var theWinners = document.getElementById("winners");
@@ -217,15 +226,26 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
     theWinners.innerText = listOfWinners;
     var popupWin = document.getElementById("win");
     var overlayWin = document.getElementById("overlay-win");
+    if (winType == "timeout" || winType == "draw") {
+      theState.style.display = "flex";
+      theWinningMessage.style.display = "none";
+      theWinners.style.display = "none";
+    } else {
+      theState.style.display = "flex";
+      theWinningMessage.style.display = "flex";
+      theWinners.style.display = "flex";
+    }
     popupWin.style.display = "flex";
     overlayWin.style.display = "flex";
   } else {
     var popupWin = document.getElementById("win");
     var overlayWin = document.getElementById("overlay-win");
+    theState.style.display = "none";
+    theWinningMessage.style.display = "none";
+    theWinners.style.display = "none";
     popupWin.style.display = "none";
     overlayWin.style.display = "none";
   }
-
 }
 
 function togglePlayerCard(element) {

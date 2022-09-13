@@ -36,7 +36,7 @@ var { User } = require("./user");
 
 const minPlayers = 3;
 const maxPlayers = 14;
-const maxNoDeaths = 10;
+const maxNoDeaths = 20;
 
 var rooms = new Map();
 var connectedUsers = new Map();
@@ -131,6 +131,9 @@ io.on("connection", async (socket) => {
       var targetRoom = connectedUsers.get(playerID).getCurrentRoom();
       console.log("targetroom", targetRoom);
       if (targetRoom !== null) {
+        if (connectedUsers.get(playerID).getInGame()) {
+          io.to(targetRoom).emit("updateSetPlayers");
+        }
         connectedUsers.get(playerID).setReadyLobby(false);
 
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
@@ -2697,6 +2700,22 @@ io.on("connection", async (socket) => {
     }
   }
   
+  socket.on("leaveGame", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (game.getProgress()) {
+          if (game.getUsers().includes(connectedUsers.get(playerID))) {
+            socket.emit("returnToLobby");
+            clearPrevious(playerID);
+          }
+        }
+      }
+    }
+  })
+
   function endGame(game, roomCode, win, winType, lawyerWin, toSend) {
     io.to(roomCode).emit("endGame", win, winType, lawyerWin, toSend);
     // CLEAR INTERVAL (game.setDone(true))
