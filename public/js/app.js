@@ -136,8 +136,8 @@ function returnToLobby() {
 }
 
 socket.on("endGame", (win, winType, lawyerWin, winners) => {
+  console.log("ending game")
   socket.emit("requestProxy", getPlayerID());
-  theProxyID = "";
   socket.on("fetchedProxy", (proxyID) => {
     endGame(proxyID, win, winType, lawyerWin, winners);
   });
@@ -147,9 +147,10 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
   var victory = false;
   var listOfWinners = "";
   if (win) {
+    
     for (var i = 0; i < winners.length; i++) {
-      listOfWinners += winners.theName + ",";
-      if (winners.theID == proxyID) {
+      listOfWinners += winners[i].theName + ", ";
+      if (winners[i].theID == proxyID) {
         victory = true;
       }
     }

@@ -244,10 +244,12 @@ class Game {
     this.winners = winners;
   }
 
-  addWinners(winner) {
+  addWinner(winner) {
     this.winners.push(winner);
   }
-
+  removeWinner(winner) {
+    this.winners.splice(this.winners.indexOf(winner), 1);
+  }
   getNoDeaths() {
     return this.noDeaths;
   }
@@ -255,9 +257,7 @@ class Game {
     this.noDeaths = noDeaths;
   }
 
-  removeWinners(winner) {
-    this.winners.splice(this.winners.indexOf(winner), 1);
-  }
+  
 
   getProgress() {
     return this.inProgress;

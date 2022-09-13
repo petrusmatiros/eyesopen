@@ -23,6 +23,7 @@ class User {
   }
 
   reset() {
+    this.messages = [];
     this.player = null;
     this.readyGame = false;
     this.inGame = false;

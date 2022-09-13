@@ -909,6 +909,7 @@ io.on("connection", async (socket) => {
             reqHandler(playerID);
             console.log(socket.rooms);
             console.log(connectedUsers.get(playerID));
+            console.log(rooms.get(roomCode).getUsers())
             socket.emit("joinPlayerSlot");
           }
         } else if (state.includes("app")) {
@@ -2212,7 +2213,6 @@ io.on("connection", async (socket) => {
     var roomCode = connectedUsers.get(playerID).getCurrentRoom();
     var room = rooms.get(roomCode);
     var game = room.getGame();
-    console.log(game);
     if (game.getCycle() == "Night") {
       if (game.getPhase() == "nightMessages") {
         if (nightMessagesOnce == 0) {
@@ -2255,12 +2255,6 @@ io.on("connection", async (socket) => {
     // This is after voteHandlerGlobal and deathHandler (dayMessages)
     // This is also after deatHandler (recap)
 
-    // CHECK FOR WIN HANDLE THESE SITUATIONS
-    // ONE MAFIA AND SERIAL KILLER KILL EACH OTHER, NO ONE LEFT
-    // ONLY ONE PERSON LEFT, EITHER MAYOR THAT VOTES OUT SOMEONE, SERIAL KILLER KILLS LAST PERSON, ONE MAFIA KILLS LAST PERSON
-
-    // PRESSING LEAVE, WHICH REMOVES PERSON FROM GAME ENTIRELY (FROM ALIVE, USERS, DEAD, ROLES??), RESETS PLAYER
-
     // Iterate over alive players, check which ones are left
     var goodCount = 0;
     var evilCount = 0;
@@ -2271,6 +2265,7 @@ io.on("connection", async (socket) => {
     var theExecutioner = null;
     var theJester = null;
     var secondJester = null;
+    
     console.log("Checking for win")
     if (game.getNoDeaths() < maxNoDeaths) {
       for (var i = 0; i < game.getUsers().length; i++) {
@@ -2297,7 +2292,7 @@ io.on("connection", async (socket) => {
         }
   
         // Only counts if the person is alive
-        if (thePlayer.getIsKilled() == false && thePlayer.getIsLynched == false) {
+        if (thePlayer.getIsKilled() == false && thePlayer.getIsLynched() == false) {
           if (theRole.team.includes("good")) {
             goodCount++;
           } else if (theRole.team.includes("evil")) {
@@ -2346,15 +2341,17 @@ io.on("connection", async (socket) => {
                 var winner = { winnerID, winnerName };
                 game.addWinner(winner);
               }
-              if (
-                theLawyer
-                  .getPlayer()
-                  .getRole()
-                  .client.getPlayer()
-                  .getRole()
-                  .team.includes("evil")
-              ) {
-                game.setLawyerWin(true);
+              if (theLawyer !== null) {
+                if (
+                  theLawyer
+                    .getPlayer()
+                    .getRole()
+                    .client.getPlayer()
+                    .getRole()
+                    .team.includes("evil")
+                ) {
+                  game.setLawyerWin(true);
+                }
               }
             }
             
@@ -2403,6 +2400,14 @@ io.on("connection", async (socket) => {
                 !theSerialKiller.getIsKilled() &&
                 !theSerialKiller.getIsLynched()
               ) {
+                var serialKillerMessages = ["DIE, DIE, DIE!", "*diabolical screech* WHO'S NEXT?!", "Show me...your FLESH!"]
+                var rand = random(0,  serialKillerMessages.length - 1);
+                sendMessage(
+                  playerID,
+                  "all",
+                  serialKillerMessages[rand],
+                  "info"
+                );
                 game.setSerialKillerWin(true);
                 var winnerID = theSerialKiller.getPlayerID();
                 var winnerName = theSerialKiller.getPlayer().getPlayerName();
@@ -2578,6 +2583,25 @@ io.on("connection", async (socket) => {
           }
         }
       } 
+    } else if (game.getJesterWin() && !game.getExecutionerWin()) {
+      var jesterMessages = ["*maniacal laughter* YOU FOOLS!", "HAhAHA! Who's the fool NOW?!", "the joke's on YOU! ;)"]
+      var rand = random(0,  jesterMessages.length - 1);
+      sendMessage(
+        playerID,
+        "all",
+        jesterMessages[rand],
+        "info"
+      );
+    } else if (!game.getJesterWin() && game.getExecutionerWin()) {
+      var executionerMessages = ["Just doing what has to been done", "The blood they spill is no comparison to the deeds they have done", "*wipes hands* Tango down!"]
+      var rand = random(0,  executionerMessages.length - 1);
+      sendMessage(
+        playerID,
+        "all",
+        executionerMessages[rand],
+        "info"
+      );
+
     }
 
     var win = false;
@@ -2634,7 +2658,17 @@ io.on("connection", async (socket) => {
       lawyerWin = false;
     }
 
-    
+    console.log("good", game.getGoodWin())
+    console.log("evil", game.getEvilWin())
+    console.log("neutral", game.getNeutralWin())
+    console.log("jester", game.getJesterWin())
+    console.log("executioner", game.getExecutionerWin())
+    console.log("serial killer", game.getSerialKillerWin())
+    console.log("lawyer", game.getLawyerWin())
+    console.log("draw", game.getDraw())
+    console.log("winners", game.getWinners())
+    console.log("WIN " + win);
+    console.log("winType", winType);
 
     // IMPORTANT TO JUST SEND WIN TO JUST THAT USER, SINCE THERE CAN BE 2 JESTERS
     // ALSO HANDLE CHECK PREVIOUS
@@ -2647,21 +2681,27 @@ io.on("connection", async (socket) => {
         var winner = {theID, theName};
         toSend.push(winner);
       }
-      io.to(roomCode).emit("endGame", win, winType, lawyerWin, toSend);
-      // CLEAR INTERVAL (game.setDone(true))
-      game.setDone(true);
-      // Send players back to lobby after 5 seconds
-      setTimeout((roomCode) => {
-        io.to(roomCode).emit("returnToLobby");
-      }, 5000);
-      // Reset players, reset game
-      for (var i = 0; i < game.getUsers().length; i++) {
-        let user = game.getUsers()[i];
-        user.reset();
-        user.removePrevious(roomCode);
-      }
-      game.reset();
+      setTimeout(endGame, 2500, game, roomCode, win, winType, lawyerWin, toSend);
     }
+  }
+  
+  function endGame(game, roomCode, win, winType, lawyerWin, toSend) {
+    io.to(roomCode).emit("endGame", win, winType, lawyerWin, toSend);
+    // CLEAR INTERVAL (game.setDone(true))
+    game.setDone(true);
+    // Send players back to lobby after 5 seconds
+      setTimeout(endGameClear, 10000, game, roomCode);
+  }
+
+  function endGameClear(game, roomCode) {
+    // Reset players, reset game
+    for (var i = 0; i < game.getUsers().length; i++) {
+      let user = game.getUsers()[i];
+      user.reset();
+      user.removePrevious(roomCode);
+    }
+    game.reset();
+    io.to(roomCode).emit("returnToLobby"); 
   }
 
   socket.on("requestProxy", (playerID) => {
@@ -2802,8 +2842,8 @@ io.on("connection", async (socket) => {
         game.getAlive()[i].getPlayer().getRole().type.includes("executioner")
       ) {
         if (
-          game.getAlive()[i].getPlayer().isKilled == false &&
-          game.getAlive()[i].getPlayer().isLynched == false
+          game.getAlive()[i].getPlayer().getIsKilled() == false &&
+          game.getAlive()[i].getPlayer().getIsLynched() == false
         ) {
           var executioner = game.getAlive()[i];
           var isTrue = true;
@@ -2864,6 +2904,8 @@ io.on("connection", async (socket) => {
       checkIfLawyerAlive(playerID, room, roomCode, game)
     );
     if (targetPlayer.getRole().type.includes("jester")) {
+      console.log("JESTER LYNCHED")
+      
       // JESTER WINS
       game.setJesterWin(true);
       var winnerID = targetUser.getPlayerID();
@@ -2875,7 +2917,7 @@ io.on("connection", async (socket) => {
 
         // if the target (jester) gets lynched
         // if the lawyer's client is the jester
-        if (lawyer.getPlayer().getRole().client == targetPlayer) {
+        if (lawyer.getPlayer().getRole().client == targetUser) {
           // LAYWER WINS ALSO
           game.setLawyerWin(true);
           var winnerID = lawyer.getPlayerID();
@@ -2886,9 +2928,11 @@ io.on("connection", async (socket) => {
       }
     } else if (executionerObject[0] == true) {
       var executioner = executionerObject[1];
-
+      console.log("EXECUTIONER EXISTS IN GAME")
+      
       // if the executioner's target is lynched
-      if (executioner.getPlayer().getRole().target == targetPlayer) {
+      if (executioner.getPlayer().getRole().target == targetUser) {
+        console.log("EXECUTIONER TARGET LYNCHED")
         // executioner COMPLETES MISSION
         // EXECUTIONER WINS
         game.setExecutionerWin(true);
@@ -3028,7 +3072,7 @@ io.on("connection", async (socket) => {
                 sendMessage(
                   abilityTarget.playerID,
                   "target",
-                  `You have been trapped! Your night ability was blocked`,
+                  `You have been trapped! Your night ability was blocked by the Trapper`,
                   "info"
                 );
               } else if (role.type.includes("witch")) {
@@ -3044,7 +3088,7 @@ io.on("connection", async (socket) => {
                   sendMessage(
                     abilityTarget.playerID,
                     "target",
-                    `You have been frozen! Your night ability was blocked`,
+                    `You have been frozen! Your night ability was blocked by the Witch`,
                     "info"
                   );
                 }
@@ -3090,7 +3134,7 @@ io.on("connection", async (socket) => {
                       sendMessage(
                         user.playerID,
                         "socket",
-                        `You disguise ${abilityTargetPlayer.getPlayerName()}. They will appear good to the investigator this night`,
+                        `You disguise ${abilityTargetPlayer.getPlayerName()}. They will appear good to the Investigator this night`,
                         "confirm"
                       );
                     }
@@ -3103,7 +3147,7 @@ io.on("connection", async (socket) => {
                     sendMessage(
                       user.playerID,
                       "socket",
-                      `You frame ${abilityTargetPlayer.getPlayerName()}. They will appear evil to the investigator this night`,
+                      `You frame ${abilityTargetPlayer.getPlayerName()}. They will appear evil to the Investigator this night`,
                       "confirm"
                     );
                   }
@@ -3139,7 +3183,7 @@ io.on("connection", async (socket) => {
                 sendMessage(
                   user.playerID,
                   "socket",
-                  `Your investigation didn't work. Someone blocked you`,
+                  `Your investigation didn't yield any results. Someone blocked you`,
                   "info"
                 );
               }
@@ -3172,13 +3216,13 @@ io.on("connection", async (socket) => {
                   sendMessage(
                     user.playerID,
                     "socket",
-                    `You protected ${abilityTargetPlayer.getPlayerName()}`,
+                    `You protected ${abilityTargetPlayer.getPlayerName()}. Your patient lives to see the day`,
                     "confirm"
                   );
                   sendMessage(
                     abilityTarget.playerID,
                     "target",
-                    `You were protected`,
+                    `You feel slightly stronger. You were protected by the Doctor`,
                     "info"
                   );
                 }
@@ -3220,7 +3264,7 @@ io.on("connection", async (socket) => {
                   sendMessage(
                     abilityTarget.playerID,
                     "target",
-                    `Someone tried to kill you, but you were protected`,
+                    `Someone tried to kill you, but you were protected by the Doctor`,
                     "info"
                   );
                 }
@@ -3264,7 +3308,7 @@ io.on("connection", async (socket) => {
 
     for (var i = 0; i < game.getUsers().length; i++) {
       let user = game.getUsers()[i];
-      let player = connectedUsers.get(user.getPlayerID()).getPlayer();
+      let player = user.getPlayer();
       player.reset()
       io.to(user.getPlayerID()).emit(
         "playerTargetButtonsReset",

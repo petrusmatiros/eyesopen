@@ -178,11 +178,12 @@
 }
 .game-player-card-mission {
   font-weight: 400;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   margin-left: 0.25rem;
   margin-bottom: 0.75rem;
   min-width: 10rem;
   max-width: 10rem;
+  line-height: 1.15;
 }
 
 .game-player-card-button {
@@ -428,7 +429,6 @@
   background-color: var(--ability-button-bg);
 }
 .game-button-ability:active {
-  
 }
 
 .game-button-vote-norounding {
@@ -439,7 +439,6 @@
   /* top-left | top-right | bottom-right | bottom-left */
   border-radius: 0 0 0 0.75rem;
 }
-
 
 .game-button-vote {
   display: flex;
@@ -663,13 +662,13 @@
 #winningMessage {
   font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 #winners {
   font-size: 1rem;
   font-weight: 400;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .game-popup-return {
@@ -682,7 +681,6 @@
   border-radius: 1rem;
   padding: 0.6em;
 }
-
 
 /* Leave popup */
 
