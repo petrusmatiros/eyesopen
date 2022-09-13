@@ -131,9 +131,7 @@ io.on("connection", async (socket) => {
       var targetRoom = connectedUsers.get(playerID).getCurrentRoom();
       console.log("targetroom", targetRoom);
       if (targetRoom !== null) {
-        if (connectedUsers.get(playerID).getInGame()) {
-          io.to(targetRoom).emit("updateSetPlayers");
-        }
+        
         connectedUsers.get(playerID).setReadyLobby(false);
 
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
@@ -2708,6 +2706,7 @@ io.on("connection", async (socket) => {
         var game = room.getGame();
         if (game.getProgress()) {
           if (game.getUsers().includes(connectedUsers.get(playerID))) {
+            io.to(room).emit("updateSetPlayers");
             socket.emit("returnToLobby");
             clearPrevious(playerID);
           }
