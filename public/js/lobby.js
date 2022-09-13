@@ -233,6 +233,14 @@ function showInfo() {
   // show caroseul with scroll snap of all role cards
 }
 
+socket.on("beginClearEvilRoom", (roomToClear) => {
+  clearEvilRoom(roomToClear);
+})
+
+function clearEvilRoom() {
+  socket.emit("clearEvilRoom", getPlayerID(), roomToClear);
+}
+
 socket.on("enterGame", () => {
   window.location.href += "/game";
 });

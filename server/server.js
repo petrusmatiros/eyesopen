@@ -426,6 +426,16 @@ io.on("connection", async (socket) => {
     checkForRoleCard(playerID, state);
   });
 
+  socket.on("clearEvilRoom", (playerID, roomToClear) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        socket.leave(roomToClear);
+      }
+    }
+  })
+
   function clearPrevious(playerID) {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
@@ -440,6 +450,7 @@ io.on("connection", async (socket) => {
           var previousRoom = rooms.get(previousRoomCode);
           var previousGame = previousRoom.getGame();
           previousGame.clearUser(user);
+          io.to(playerID).emit("beginClearEvilRoom", previousGame.getEvilRoom());
           user.removePrevious(previousRoomCode);
         }
       }
@@ -2249,6 +2260,7 @@ io.on("connection", async (socket) => {
     var goodCount = 0;
     var evilCount = 0;
     var neutralCount = 0;
+    var aliveCount = game.getAlive().length;
     var theLawyer = null;
     var theSerialKiller = null;
     var theExecutioner = null;
@@ -2292,6 +2304,18 @@ io.on("connection", async (socket) => {
     if (!game.getExecutionerWin() && !game.getJesterWin()) {
       if (evilCount == 0 && neutralCount == 0 && goodCount == 0) {
         game.setDraw(true);
+      } else if (aliveCount == 2) {
+        for (var i = 0; i < game.getAlive().length; i++) {
+          let user = game.getAlive()[i];
+          let player = user.getPlayer()
+          let role = player.getRole()
+          // Not evil, 
+          if (role.team.includes("evil") == false || role.type.includes("serial killer") == false || role.type.includes("mayor") == false) {
+            // Executioner alone, Lawyer alone, Jester Alone
+          }
+        }
+        // MAYOR with someone else works, people with killing abilities, and lawyer that is their client, other wise no
+        
       } else if (evilCount == 0 && neutralCount == 0 && goodCount > 0) {
         // GOOD TEAM WINS
         game.setGoodWin(true);
@@ -2394,6 +2418,75 @@ io.on("connection", async (socket) => {
               }
             }
           }
+          else if (theExecutioner !== null) {
+            if (
+              !theExecutioner.getIsKilled() &&
+              !theExecutioner.getIsLynched()
+            ) {
+              game.setExecutionerWin(true);
+              var winnerID = theExecutioner.getPlayerID();
+              var winnerName = theExecutioner.getPlayer().getPlayerName();
+              var winner = { winnerID, winnerName };
+              game.addWinner(winner);
+
+              if (theLawyer !== null) {
+                if (theLawyer.getPlayer().getRole().client == theExecutioner) {
+                  game.setLawyerWin(true);
+                  var winnerID = theLawyer.getPlayerID();
+                  var winnerName = theLawyer.getPlayer().getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
+                  // LAYWER ALSO WINS
+                }
+              }
+            }
+          }
+          else if (theJester !== null || secondJester !== null) {
+            if (
+              (!theJester.getIsKilled() &&
+              !theJester.getIsLynched()) || (!secondJester.getIsKilled() &&
+              !secondJester.getIsLynched())
+            ) {
+              game.setJesterWin(true);
+
+              if (theJester !== null && secondJester == null) {
+                var winnerID = theJester.getPlayerID();
+                var winnerName = theJester.getPlayer().getPlayerName();
+                var winner = { winnerID, winnerName };
+                game.addWinner(winner);
+                if (theLawyer !== null) {
+                  if (theLawyer.getPlayer().getRole().client == theJester) {
+                    game.setLawyerWin(true);
+                    var winnerID = theLawyer.getPlayerID();
+                    var winnerName = theLawyer.getPlayer().getPlayerName();
+                    var winner = { winnerID, winnerName };
+                    game.addWinner(winner);
+                    // LAYWER ALSO WINS
+                  }
+                }
+  
+              }
+              else if (theJester == null && secondJester !== null) {
+                var winnerID = secondJester.getPlayerID();
+                var winnerName = secondJester.getPlayer().getPlayerName();
+                var winner = { winnerID, winnerName };
+                game.addWinner(winner);
+                if (theLawyer !== null) {
+                  if (theLawyer.getPlayer().getRole().client == secondJester) {
+                    game.setLawyerWin(true);
+                    var winnerID = theLawyer.getPlayerID();
+                    var winnerName = theLawyer.getPlayer().getPlayerName();
+                    var winner = { winnerID, winnerName };
+                    game.addWinner(winner);
+                    // LAYWER ALSO WINS
+                  }
+                }
+  
+              }
+              
+              
+            }
+          }
         } else if (neutralCount == 2) {
           if (theSerialKiller !== null) {
             if (
@@ -2406,6 +2499,64 @@ io.on("connection", async (socket) => {
                   game.setSerialKillerWin(true);
                   var winnerID = theSerialKiller.getPlayerID();
                   var winnerName = theSerialKiller.getPlayer().getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
+                  var winnerID = theLawyer.getPlayerID();
+                  var winnerName = theLawyer.getPlayer().getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
+                  // LAYWER ALSO WINS
+                }
+              }
+            }
+          }
+          else if (theExecutioner !== null) {
+            if (
+              !theExecutioner.getIsKilled() &&
+              !theExecutioner.getIsLynched()
+            ) {
+              if (theLawyer !== null) {
+                if (theLawyer.getPlayer().getRole().client == theExecutioner) {
+                  game.setLawyerWin(true);
+                  game.setExecutionerWin(true);
+                  var winnerID = theExecutioner.getPlayerID();
+                  var winnerName = theExecutioner.getPlayer().getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
+                  var winnerID = theLawyer.getPlayerID();
+                  var winnerName = theLawyer.getPlayer().getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
+                  // LAYWER ALSO WINS
+                }
+              }
+            }
+          }
+          else if (theJester !== null && secondJester == null) {
+            if (
+              (!theJester.getIsKilled() &&
+              !theJester.getIsLynched()) || (!secondJester.getIsKilled() &&
+              !secondJester.getIsLynched())
+            ) {
+              if (theLawyer !== null) {
+                if (theLawyer.getPlayer().getRole().client == theJester) {
+                  game.setLawyerWin(true);
+                  game.setJesterWin(true);
+                  var winnerID = theExecutioner.getPlayerID();
+                  var winnerName = theExecutioner.getPlayer().getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
+                  var winnerID = theLawyer.getPlayerID();
+                  var winnerName = theLawyer.getPlayer().getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
+                  // LAYWER ALSO WINS
+                }
+                else if (theLawyer.getPlayer().getRole().client == theJester) {
+                  game.setLawyerWin(true);
+                  game.setJesterWin(true);
+                  var winnerID = theExecutioner.getPlayerID();
+                  var winnerName = theExecutioner.getPlayer().getPlayerName();
                   var winner = { winnerID, winnerName };
                   game.addWinner(winner);
                   var winnerID = theLawyer.getPlayerID();

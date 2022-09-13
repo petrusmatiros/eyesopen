@@ -128,6 +128,8 @@ function getPlayerID() {
   }
 }
 
+
+
 function closeCard() {
   document.getElementById("overlay").style.display = "none";
   hideUser();

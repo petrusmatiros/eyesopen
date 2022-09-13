@@ -24,6 +24,7 @@ function setFocus() {
   document.getElementById("inputUser").focus();
 }
 
+
 /**
  * [resetCookie resets the playerID cookie to null]
  */
