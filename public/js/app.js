@@ -155,8 +155,8 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
       }
     }
 
-    // Remove last comma
-    listOfWinners.substring(0, listOfWinners.length - 1);
+    // Remove last comma with whitespace
+    listOfWinners.substring(0, listOfWinners.length - 2);
     var state = "";
     var winningMessage = "";
     if (winType !== "timeout" && winType !== "draw") {

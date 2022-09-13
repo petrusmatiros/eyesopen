@@ -492,7 +492,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (!connectedUsers.get(playerID).getInGame()) {
+        // if (!connectedUsers.get(playerID).getInGame()) {
           var room = rooms.get(roomCode);
           var totalReq = Object.keys(room.requirements).length;
           // console.log("totalReq", totalReq);
@@ -517,7 +517,7 @@ io.on("connection", async (socket) => {
               false
             );
           }
-        }
+        // }
       }
     }
   }
@@ -526,13 +526,13 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (!connectedUsers.get(playerID).getInGame()) {
+        // if (!connectedUsers.get(playerID).getInGame()) {
           var room = rooms.get(roomCode);
           if (req.includes("rolesEqualUsers")) {
             rooms.get(roomCode).requirements.rolesEqualUsers = isValid;
           }
           checkReq(playerID);
-        }
+        // }
       }
     }
   });
@@ -541,7 +541,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        if (!connectedUsers.get(playerID).getInGame()) {
+        // if (!connectedUsers.get(playerID).getInGame()) {
           var room = rooms.get(roomCode);
 
           if (rooms.get(roomCode).getUsers().length >= minPlayers) {
@@ -560,7 +560,7 @@ io.on("connection", async (socket) => {
             rooms.get(roomCode).requirements.hostExist = false;
           }
           checkReq(playerID);
-        }
+        // }
       }
     }
   }
@@ -2129,6 +2129,7 @@ io.on("connection", async (socket) => {
   }
 
   // be able to send toAll, to player, and to target
+  
   function sendMessage(playerID, sendTo = "", message = "", type = "") {
     var roomCode = connectedUsers.get(playerID).getCurrentRoom();
     var room = rooms.get(roomCode);
@@ -2401,7 +2402,8 @@ io.on("connection", async (socket) => {
                 !theSerialKiller.getIsLynched()
               ) {
                 var serialKillerMessages = ["DIE, DIE, DIE!", "*diabolical screech* WHO'S NEXT?!", "Show me...your FLESH!"]
-                var rand = random(0,  serialKillerMessages.length - 1);
+                var rand = random(0, serialKillerMessages.length - 1);
+                console.log(serialKillerMessages[rand])
                 sendMessage(
                   playerID,
                   "all",
@@ -2505,6 +2507,14 @@ io.on("connection", async (socket) => {
                   if (theLawyer.getPlayer().getRole().client == theSerialKiller) {
                     game.setLawyerWin(true);
                     game.setSerialKillerWin(true);
+                    var serialKillerMessages = ["DIE, DIE, DIE!", "*diabolical screech* WHO'S NEXT?!", "Show me...your FLESH!"]
+                    var rand = random(0,  serialKillerMessages.length - 1);
+                    sendMessage(
+                      playerID,
+                      "all",
+                      serialKillerMessages[rand],
+                      "info"
+                    );
                     var winnerID = theSerialKiller.getPlayerID();
                     var winnerName = theSerialKiller.getPlayer().getPlayerName();
                     var winner = { winnerID, winnerName };
@@ -2582,27 +2592,29 @@ io.on("connection", async (socket) => {
             }
           }
         }
-      } 
-    } else if (game.getJesterWin() && !game.getExecutionerWin()) {
-      var jesterMessages = ["*maniacal laughter* YOU FOOLS!", "HAhAHA! Who's the fool NOW?!", "the joke's on YOU! ;)"]
-      var rand = random(0,  jesterMessages.length - 1);
-      sendMessage(
-        playerID,
-        "all",
-        jesterMessages[rand],
-        "info"
-      );
-    } else if (!game.getJesterWin() && game.getExecutionerWin()) {
-      var executionerMessages = ["Just doing what has to been done", "The blood they spill is no comparison to the deeds they have done", "*wipes hands* Tango down!"]
-      var rand = random(0,  executionerMessages.length - 1);
-      sendMessage(
-        playerID,
-        "all",
-        executionerMessages[rand],
-        "info"
-      );
-
-    }
+      } else if (game.getJesterWin() && !game.getExecutionerWin()) {
+        var jesterMessages = ["*maniacal laughter* YOU FOOLS!", "HAhAHA! Who's the fool NOW?!", "the joke's on YOU! ;)"]
+        var rand = random(0, jesterMessages.length - 1);
+        console.log(jesterMessages[rand])
+        sendMessage(
+          playerID,
+          "all",
+          jesterMessages[rand],
+          "info"
+        );
+      } else if (!game.getJesterWin() && game.getExecutionerWin()) {
+        var executionerMessages = ["Just doing what has to been done", "The blood they spill is no comparison to the deeds they have done", "*wipes hands* Tango down!"]
+        var rand = random(0, executionerMessages.length - 1);
+        console.log(executionerMessages[rand])
+        sendMessage(
+          playerID,
+          "all",
+          executionerMessages[rand],
+          "info"
+        );
+  
+      }
+    } 
 
     var win = false;
     var winType = "";
@@ -2681,7 +2693,7 @@ io.on("connection", async (socket) => {
         var winner = {theID, theName};
         toSend.push(winner);
       }
-      setTimeout(endGame, 2500, game, roomCode, win, winType, lawyerWin, toSend);
+      setTimeout(endGame, 5000, game, roomCode, win, winType, lawyerWin, toSend);
     }
   }
   
@@ -2689,7 +2701,7 @@ io.on("connection", async (socket) => {
     io.to(roomCode).emit("endGame", win, winType, lawyerWin, toSend);
     // CLEAR INTERVAL (game.setDone(true))
     game.setDone(true);
-    // Send players back to lobby after 5 seconds
+    // Send players back to lobby after 10 seconds
       setTimeout(endGameClear, 10000, game, roomCode);
   }
 
@@ -2990,15 +3002,14 @@ io.on("connection", async (socket) => {
           }
         }
       }
-      console.log(targets);
+      
       var aliveUsersCount = game.getAlive().length;
       var targetCount = Array.from(targets.values());
-      console.log(targetCount);
-      console.log(targetCount.length);
+      
       var gotLynched = false;
       for (var i = 0; i < targetCount.length; i++) {
         var majority = aliveUsersCount / 2;
-        console.log(targetCount[i]);
+       
         if (targetCount[i] > majority) {
           console.log("majority: " + targetCount[i]);
           var mostVotedIndex = targetCount.indexOf(targetCount[i]);
@@ -3613,12 +3624,14 @@ io.on("connection", async (socket) => {
         var room = rooms.get(roomCode);
         var game = room.getGame();
         if (game.getProgress()) {
-          if (checkAllReadyGame(roomCode, playerID)) {
-            if (game.getUsers().includes(connectedUsers.get(playerID))) {
-              if (room.getHost() == playerID) {
-                if (game.getTimer().getRunning() == false) {
-                  io.to(roomCode).emit("updateSetPlayers");
-                  clockHandler(playerID, roomCode, room, game);
+          if (game.getDone() == false) {
+            if (checkAllReadyGame(roomCode, playerID)) {
+              if (game.getUsers().includes(connectedUsers.get(playerID))) {
+                if (room.getHost() == playerID) {
+                  if (game.getTimer().getRunning() == false) {
+                    io.to(roomCode).emit("updateSetPlayers");
+                    clockHandler(playerID, roomCode, room, game);
+                  }
                 }
               }
             }
