@@ -86,7 +86,10 @@ socket.on("connect", () => {
           socket.on("savedCemetery", (burried) => {
             loadCemetery(burried);
           });
-        } else if (apartOfGame == false && inProgress == true || apartOfGame == false && inProgress == false) {
+        } else if (
+          (apartOfGame == false && inProgress == true) ||
+          (apartOfGame == false && inProgress == false)
+        ) {
           if (window.location.href.endsWith("/game")) {
             var URL = window.location.href.replace("http://", "");
             var room = URL.split("/")[URL.split("/").length - 2];
@@ -114,15 +117,11 @@ socket.on("showGameUpdate", (allReady) => {
 
 socket.on("returnToLobby", () => {
   returnToLobby();
-})
+});
 
-function showLeave() {
+function showLeave() {}
 
-}
-
-function hideLeave() {
-
-}
+function hideLeave() {}
 
 function leaveGame() {
   socket.emit("leaveGame", getPlayerID());
@@ -136,21 +135,96 @@ function returnToLobby() {
   }
 }
 
-socket.on("endGame", (winners) => {
-  // VICTORY! DEFEAT! DRAW!
-// EVIL TEAM WINS, GOOD TEAM WINS, NEUTRAL TEAM WINS, JESTER, EXECUTIONER WINS, SERIAL KILLER WINS;
-// AND LAWYER
-// STATUS
-// TEAM <WINS> or TEAM/ROLE & LAWYER <WINS>
+socket.on("endGame", (win, winType, lawyerWin, winners) => {
+  socket.emit("requestProxy", getPlayerID());
+  theProxyID = "";
+  socket.on("fetchedProxy", (proxyID) => {
+    endGame(proxyID, win, winType, lawyerWin, winners);
+  });
+});
 
+function endGame(proxyID, win, winType, lawyerWin, winners) {
+  var victory = false;
+  var listOfWinners = "";
+  if (win) {
+    for (var i = 0; i < winners.length; i++) {
+      listOfWinners += winners.theName + ",";
+      if (winners.theID == proxyID) {
+        victory = true;
+      }
+    }
 
-})
+    // Remove last comma
+    listOfWinners.substring(0, listOfWinners.length - 1);
+    var state = "";
+    var winningMessage = "";
+    if (winType !== "timeout" && winType !== "draw") {
+      // VICTORY AND DEFEAT
+      if (victory) {
+        state = "VICTORY";
+        // display victory
+      } else {
+        state = "DEFEAT";
+        // display defeat
+      }
+  
+      if (winType == "good") {
+        winningMessage = "Good team wins";
+      } else if (winType == "evil") {
+        if (lawyerWin) {
+          winningMessage = "Evil team + Lawyer wins";
+        } else {
+          winningMessage = "Evil team wins";
+        }
+      } else if (winType == "neutral") {
+        winningMessage = "Neutral team wins";
+      } else if (winType == "jester") {
+        winningMessage = "Jester wins";
+      } else if (winType == "serial killer") {
+        if (lawyerWin) {
+          winningMessage = "Serial Killer + Lawyer wins";
+        } else {
+          winningMessage = "Serial Killer wins";
+        }
+      } else if (winType == "executioner") {
+        if (lawyerWin) {
+          winningMessage = "Executioner + Lawyer wins";
+        } else {
+          winningMessage = "Executioner wins";
+        }
+      }
+    } else if (winType == "timeout" && winType !== "draw") {
+      // display timeout
+      state = "TIMEOUT";
+    } else if (winType !== "timeout" && winType == "draw") {
+      // display draw
+      state = "DRAW";
+    }
+  
+    var theState = document.getElementById("winState");
+    var theWinningMessage = document.getElementById("winningMessage");
+    var theWinners = document.getElementById("winners");
+    if (winType == "good") {
+      theWinningMessage.style.color = "var(--good-bg-selected)";
+    } else if (winType == "evil") {
+      theWinningMessage.style.color = "var(--evil-bg-selected)";
+    } else {
+      theWinningMessage.style.color = "var(--neutral-bg-selected)";
+    }
+    theState.innerText = state;
+    theWinningMessage.innerText = winningMessage;
+    theWinners.innerText = listOfWinners;
+    var popupWin = document.getElementById("win");
+    var overlayWin = document.getElementById("overlay-win");
+    popupWin.style.display = "flex";
+    overlayWin.style.display = "flex";
+  } else {
+    var popupWin = document.getElementById("win");
+    var overlayWin = document.getElementById("overlay-win");
+    popupWin.style.display = "none";
+    overlayWin.style.display = "none";
+  }
 
-function endGame() {
-  // show win screen
-  // change to lobby
-  // document.getElementById("inGame").id = "inLobby";
-  // document.getElementsByClassName("lobby-code-container")[0].style.display = "flex";
 }
 
 function togglePlayerCard(element) {
@@ -703,42 +777,42 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
       // EVERYONE
       currentElement.style.fontWeight = 400;
       if (isDead) {
-          if (players[i].type.includes("dead")) {
-            abilityButton.setAttribute("onclick", "");
-            voteButton.setAttribute("onclick", "");
-            abilityButton.style.display = "none";
-            voteButton.style.display = "none";
-            stateButton.style.display = "flex";
-            stateButton.classList.add("game-button-dead");
-            stateButton.classList.remove("game-button-unselectable");
-            stateButton.innerText = "dead";
-            // if dead
-            if (players[i].type == "evil") {
-              // dead evil
-              currentElement.classList.add(
-                "game-player-evil",
-                "game-player-dead"
-              );
-              element.classList.add("game-player-dead");
-              element.classList.remove("game-player-unselectable");
-            } else {
-              // dead everyone else
-              currentElement.classList.add("game-player-dead");
-              currentElement.classList.remove("game-player-evil");
-              element.classList.add("game-player-dead");
-              element.classList.remove("game-player-unselectable");
-            }
+        if (players[i].type.includes("dead")) {
+          abilityButton.setAttribute("onclick", "");
+          voteButton.setAttribute("onclick", "");
+          abilityButton.style.display = "none";
+          voteButton.style.display = "none";
+          stateButton.style.display = "flex";
+          stateButton.classList.add("game-button-dead");
+          stateButton.classList.remove("game-button-unselectable");
+          stateButton.innerText = "dead";
+          // if dead
+          if (players[i].type == "evil") {
+            // dead evil
+            currentElement.classList.add(
+              "game-player-evil",
+              "game-player-dead"
+            );
+            element.classList.add("game-player-dead");
+            element.classList.remove("game-player-unselectable");
           } else {
-            abilityButton.setAttribute("onclick", "");
-            voteButton.setAttribute("onclick", "");
-            abilityButton.style.display = "none";
-            voteButton.style.display = "none";
-            stateButton.style.display = "flex";
-            stateButton.classList.remove("game-button-dead");
-            stateButton.classList.add("game-button-unselectable");
-            stateButton.innerText = "unselectable";
-            element.classList.add("game-player-unselectable");
+            // dead everyone else
+            currentElement.classList.add("game-player-dead");
+            currentElement.classList.remove("game-player-evil");
+            element.classList.add("game-player-dead");
+            element.classList.remove("game-player-unselectable");
           }
+        } else {
+          abilityButton.setAttribute("onclick", "");
+          voteButton.setAttribute("onclick", "");
+          abilityButton.style.display = "none";
+          voteButton.style.display = "none";
+          stateButton.style.display = "flex";
+          stateButton.classList.remove("game-button-dead");
+          stateButton.classList.add("game-button-unselectable");
+          stateButton.innerText = "unselectable";
+          element.classList.add("game-player-unselectable");
+        }
       } else {
         if (cycle.includes("Night")) {
           // Dead
@@ -1228,7 +1302,6 @@ function showGame(allReady) {
     });
     socket.emit("setEvilRoom", getPlayerID());
     socket.emit("updateUI", getPlayerID());
-
   }
 }
 

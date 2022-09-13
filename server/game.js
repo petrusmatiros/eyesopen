@@ -67,6 +67,8 @@ class Game {
     this.lawyerWin = false;
     this.draw = false;
     this.winners = [];
+    // Passive game counter
+    this.noDeaths = 0;
     // Booleans for inProgress and finished
     this.inProgress = false;
     this.isDone = false;
@@ -244,6 +246,13 @@ class Game {
 
   addWinners(winner) {
     this.winners.push(winner);
+  }
+
+  getNoDeaths() {
+    return this.noDeaths;
+  }
+  setNoDeaths(noDeaths) {
+    this.noDeaths = noDeaths;
   }
 
   removeWinners(winner) {

@@ -391,6 +391,7 @@
 
     <!-- Leave popup -->
     <!-- Leave popup overlay -->
+    <div class="game-overlay" id="overlay-leave"></div>
     <div class="game-popup" id="leave">
       <div class="close">
         <img
@@ -400,13 +401,26 @@
           alt="close x icon"
         />
       </div>
-      <div class="game-popup-text">Leave game?</div>
+      <div class="game-popup-text" id="leaveText">Leave game?</div>
       <img class="game-popup-icon" alt="thinking emoji" src="/assets/icons/think.svg"></img>
       <div class="game-popup-buttons">
         <div class="game-popup-cancelbutton" onclick="hideLeave()">Cancel</div>
         <div class="game-popup-leavebutton" onclick="leaveGame()">Yup</div>
       </div>
     </div>
+
+    <!-- Win popup -->
+    <div class="game-overlay" id="overlay-win"></div>
+    <div class="game-popup" id="win">
+      <div class="game-popup-text" id="winState">---</div>
+      <div class="game-popup-text" id="winningMessage">---</div>
+      <div class="game-popup-text" id="winners">---</div>
+      <div class="game-popup-buttons">
+        <div class="game-popup-return">Returning to lobby in 5 seconds</div>
+      </div>
+    </div>
+
+    
 
     <!-- Death popup -->
     <!-- Death popup overlay -->
