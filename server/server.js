@@ -3450,6 +3450,16 @@ io.on("connection", async (socket) => {
     var room = rooms.get(roomCode);
     var game = room.getGame();
     var player = connectedUsers.get(playerID).getPlayer(roomCode);
+    if (player.voteTarget !== null) {
+      theVoteTarget = getKeyFromValue(proxyIdenfication, player.voteTarget);
+      theVoteTargetPlayer = connectedUsers.get(theVoteTarget).getPlayer(roomCode);
+      if (game.getCycle() == "Day") {
+        theVoteTargetPlayer.dayVotes -= player.getRole().voteCount;
+      } else if (game.getCycle() == "Night") {
+        theVoteTargetPlayer.nightVotes -= player.getRole().killVoteCount;
+      }
+    }
+
     player.reset();
     socket.emit(
       "playerTargetButtonsReset",

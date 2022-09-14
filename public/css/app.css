@@ -11,8 +11,16 @@
   --light-bg: hsl(0, 0%, 100%);
   --dark-fg: hsl(0, 0%, 0%);
   --mission-grey: hsl(0, 0%, 95%);
+  --popup-button: hsl(0, 0%, 85%);
+  --popup-button--hover: hsl(0, 0%, 80%);
+  --popup-button--active: hsl(0, 0%, 70%);
+  --popup-leave-button: hsl(0, 100%, 80%);
+  --popup-leave-button--hover: hsl(0, 100%, 75%);
+  --popup-leave-button--active: hsl(0, 100%, 65%);
+  --leave-button: hsl(360, 100%, 50%);
+  --leave-button--hover: hsl(360, 100%, 45%);
+  --leave-button--active: hsl(360, 100%, 40%);
   --secondary-day: hsl(0, 0%, 97%);
-  --secondary-day--active: hsl(0, 0%, 86%);
   --secondary-night: hsl(0, 0%, 25%);
   --cemetery: hsl(0, 0%, 20%);
 
@@ -360,7 +368,7 @@
   justify-content: center;
   align-items: flex-start;
   flex-direction: row;
-  margin: 0 0.5rem 1.5rem 0.5rem;
+  margin: 0 0.5rem 0rem 0.5rem;
 }
 
 .game-players-col1 {
@@ -584,7 +592,7 @@
   justify-content: center;
   align-items: center;
   color: var(--light-fg);
-  background-color: var(--evil-bg-selected);
+  background-color: var(--leave-button);
   font-size: 2rem;
   font-weight: 500;
   padding: 1rem;
@@ -593,6 +601,15 @@
   max-width: 12.5rem;
   max-width: 12.5rem;
   margin: 0 0.5rem 1rem 0.5rem;
+}
+
+.game-leavebutton:hover {
+  color: var(--light-fg);
+  background-color: var(--leave-button--hover);
+}
+.game-leavebutton:active {
+  color: var(--light-fg);
+  background-color: var(--leave-button--active);
 }
 
 /* Popup */
@@ -609,16 +626,39 @@
   width: 100%;
   height: 100%;
 }
+/* Animations  */
+.pop-light1 {
+  animation: pop-light 0.5s 1;
+}
+.pop-light2 {
+  animation: pop-light 1s 1;
+}
+.pop-light3 {
+  animation: pop-light 1.5s 1;
+}
+.pop-light4 {
+  animation: pop-light 2s 1;
+}
+.pop-light5 {
+  animation: pop-light 2.5s 1;
+}
 
+@keyframes pop-light {
+  from, to { transform: scale(1); }
+  25% { transform: scale(0.98); }
+  50% { transform: scale(1.03); }
+  75% { transform: scale(1); }
+}
 .game-popup {
   display: none;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   position: fixed;
+  animation: pop-light 1s 1;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  /* transform: translate(-50%, -50%); */
   background-color: var(--light-bg);
   padding: 3rem 1rem 3rem 1rem;
   border-radius: 1rem;
@@ -699,11 +739,15 @@
 
 .game-popup-button {
   color: var(--dark-fg);
-  background-color: var(--secondary-day);
+  background-color: var(--popup-button);
+}
+.game-popup-button:hover {
+  color: var(--dark-fg);
+  background-color: var(--popup-button--hover);
 }
 .game-popup-button:active {
   color: var(--dark-fg);
-  background-color: var(--secondary-day--active);
+  background-color: var(--popup-button--active);
 }
 
 .game-popup-return {
@@ -713,6 +757,7 @@
   font-weight: 500;
   border-radius: 1rem;
   padding: 0.6em;
+  background-color: var(--popup-button);
 }
 
 /* Leave popup */
@@ -748,16 +793,24 @@
   user-select: none;
   cursor: pointer;
   color: var(--dark-fg);
-  background-color: var(--secondary-day);
+  background-color: var(--popup-leave-button);
   border-radius: 1rem;
   padding: 0.6em;
+}
+.game-popup-leavebutton:hover {
+  color: var(--dark-fg);
+  background-color: var(--popup-leave-button--hover);
+}
+.game-popup-leavebutton:active {
+  color: var(--dark-fg);
+  background-color: var(--popup-leave-button--active);
 }
 
 .game-popup-cancelbutton {
   user-select: none;
   cursor: pointer;
   color: var(--dark-fg);
-  background-color: var(--secondary-day);
+  background-color: var(--popup-button);
   border-radius: 1rem;
   padding: 0.6em;
 }

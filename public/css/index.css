@@ -170,12 +170,14 @@ p {
 .pop-light5 {
   animation: pop-light 2.5s 1;
 }
+
 @keyframes pop-light {
   from, to { transform: scale(1); }
   25% { transform: scale(0.98); }
   50% { transform: scale(1.03); }
   75% { transform: scale(1); }
 }
+
 
 .gelatine-light {
   animation: gelatine-light 0.5s 1;
