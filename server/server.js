@@ -129,7 +129,7 @@ io.on("connection", async (socket) => {
     let playerID = socket.data.playerID;
     if (checkUserExist(playerID)) {
       var targetRoom = connectedUsers.get(playerID).getCurrentRoom();
-      console.log("targetroom", targetRoom);
+      console.log("targetroom", targetRoom, connectedUsers.get(playerID).getName());
       if (targetRoom !== null) {
         
         connectedUsers.get(playerID).setReadyLobby(false);
@@ -144,8 +144,9 @@ io.on("connection", async (socket) => {
         );
         // reqHandler(playerID);
         // remove user from room
-        console.log(rooms.get(targetRoom).slots)
-        rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
+        if (rooms.get(targetRoom).getUsers().includes(connectedUsers.get(playerID))) {
+          rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
+        }
         clearPlayerSlot(playerID);
         updatePlayerCount(playerID);
         // TODO: check for requirement instead???
@@ -154,7 +155,7 @@ io.on("connection", async (socket) => {
         // socket leaves room
         // connectedUsers.get(playerID).setCurrentRoom(null);
         socket.leave(targetRoom);
-        console.log("leaving room", targetRoom);
+        console.log("leaving room", targetRoom, connectedUsers.get(playerID).getName());
         console.log(socket.rooms);
       }
     }
@@ -222,7 +223,6 @@ io.on("connection", async (socket) => {
           }
 
         }
-        // }
       }
     }
   });
@@ -456,7 +456,9 @@ io.on("connection", async (socket) => {
         user.getPlayer(previousRoom).setIsKilled(true);
         user.getPlayer(previousRoom).addKiller("Server");
         deathHandler(playerID, rooms.get(previousRoom), previousRoom, gameToLeave);
-        gameToLeave.removeUser(user)
+        if (gameToLeave.getUsers().includes(user)) {
+          gameToLeave.removeUser(user)
+        }
       }
     }
   }
@@ -479,7 +481,9 @@ io.on("connection", async (socket) => {
             "beginClearEvilRoom",
             previousGame.getEvilRoom()
           );
-          user.removePrevious(previousRoomCode);
+          if (user.getPrevious().includes(previousRoomCode)) {
+            user.removePrevious(previousRoomCode);
+          }
         }
       }
     }
@@ -700,13 +704,15 @@ io.on("connection", async (socket) => {
     var room = rooms.get(roomCode);
     var game = room.getGame();
     if (checkUserExist(playerID)) {
+      console.log("User exists", connectedUsers.get(playerID).getName())
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-          if (!room.getUsers().includes(connectedUsers.get(playerID))) {
-            room.addUser(connectedUsers.get(playerID));
-          }
-        
-        
-
+        console.log("Room is not null", connectedUsers.get(playerID).getName())
+        if (room.getUsers().includes(connectedUsers.get(playerID)) == false) {
+          console.log("Room does not include", connectedUsers.get(playerID).getName())
+          console.log("Adding user", connectedUsers.get(playerID).getName())
+          room.addUser(connectedUsers.get(playerID));
+          console.log("users are now", room.getUsers())
+        }
       }
     }
   }
@@ -874,8 +880,9 @@ io.on("connection", async (socket) => {
             reqHandler(playerID);
             console.log(socket.rooms);
             console.log(connectedUsers.get(playerID));
-            console.log(rooms.get(roomCode).getUsers());
             socket.emit("joinPlayerSlot");
+            console.log(rooms.get(roomCode).getUsers())
+            console.log(rooms.get(roomCode).getUsers().length)
           
         } else if (state.includes("app")) {
           if (
@@ -938,7 +945,6 @@ io.on("connection", async (socket) => {
             }
           }
         }
-        console.log("after", room.slots)
       }
     }
   });
@@ -2749,7 +2755,9 @@ io.on("connection", async (socket) => {
               forceKill(playerID, roomCode, game);
               // reset messages, readyGame, readyLobby, and inGame;
               user.reset();
-              user.removePrevious(room);
+              if (user.getPrevious().includes(room)) {
+                user.removePrevious(room);
+              }
               io.to(playerID).emit("beginClearEvilRoom", game.getEvilRoom());
               io.to(roomCode).emit("updateSetPlayers");
               io.to(playerID).emit("returnToLobby");
@@ -2779,7 +2787,10 @@ io.on("connection", async (socket) => {
         user.reset();
         user.getPlayer(roomCode).setReadyGame(false);
       }
-      user.removePrevious(roomCode);
+      if (user.getPrevious().includes(roomCode)) {
+        user.removePrevious(roomCode);
+      }
+      
     }
     game.reset();
   }
@@ -3563,6 +3574,7 @@ io.on("connection", async (socket) => {
         if (!game.getCemetery().includes(game.getAlive()[i])) {
           game.addCemetery(game.getAlive()[i]);
           // REMOVE FROM ALIVE ARRAY
+          
           game.removeAlive(game.getAlive()[i]);
           io.to(roomCode).emit("cemetery", generateCemeteryList(playerID));
         }
