@@ -2296,7 +2296,7 @@ io.on("connection", async (socket) => {
           game.setDraw(true);
         } else if (game.getUsers().length == 0) {
           // Return immediately (this means everybody has LEFT, one by one)
-          game.setDone(true)
+          // game.setDone(true)
           endGameClear(game, roomCode)
         } else if (evilCount == 0 && neutralCount == 0 && goodCount > 0) {
           // GOOD TEAM WINS
@@ -2749,7 +2749,7 @@ io.on("connection", async (socket) => {
         if (game.getProgress()) {
           if (game.getUsers().includes(connectedUsers.get(playerID))) {
             if (room.getHost() == playerID) {
-              game.setDone(true);
+              // game.setDone(true);
               endGameClear(game, roomCode);
             } else {
               forceKill(playerID, roomCode, game);
@@ -2793,6 +2793,7 @@ io.on("connection", async (socket) => {
       
     }
     game.reset();
+    game.setDone(true);
   }
 
   socket.on("requestProxy", (playerID, state) => {
@@ -3623,12 +3624,13 @@ io.on("connection", async (socket) => {
     initClock(
       game.getTimer(),
       Object.values(theDurations[currentCycle])[currentPhase]
-    );
-    game.setCycle("Night");
-    game.setPhase(Object.keys(theDurations[currentCycle])[currentPhase]);
-
-    // time is equal to intervalID
-    GAME_CLOCK_ID = setInterval(function () {
+      );
+      game.setCycle("Night");
+      game.setPhase(Object.keys(theDurations[currentCycle])[currentPhase]);
+      
+      // time is equal to intervalID
+      GAME_CLOCK_ID = setInterval(function () {
+      // console.log("THE CLOCK ID", GAME_CLOCK_ID)
       if (game.getDone()) {
         clearInterval(GAME_CLOCK_ID);
         GAME_CLOCK_ID = null;
@@ -3729,6 +3731,7 @@ io.on("connection", async (socket) => {
         }
       }
     }, 1000);
+
   }
 
   function initClock(timer, duration) {
