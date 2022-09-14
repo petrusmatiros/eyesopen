@@ -10,7 +10,7 @@ class User {
     // clear after every game
     this.messages = [];
     // reset every game
-    this.player = null;
+    this.player = new Map();
     // reset depending on state
     this.readyLobby = false;
     this.readyGame = false;
@@ -22,9 +22,8 @@ class User {
     this.currentRoom = null;
   }
 
-  reset() {
+  reset(previousGame) {
     this.messages = [];
-    this.player = null;
     this.readyGame = false;
     this.inGame = false;
   }
@@ -77,8 +76,14 @@ class User {
   setName(name) {
     this.name = name;
   }
-  setPlayer(player) {
-    this.player = player;
+  setPlayer(room, player) {
+    this.player.set(room, player);
+  }
+  getPlayer(room) {
+    return this.player.get(room);
+  }
+  removePlayer(player) {
+    this.player.delete(player);
   }
   setReadyLobby(readyLobby) {
     this.readyLobby = readyLobby;
