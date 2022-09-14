@@ -2288,6 +2288,10 @@ io.on("connection", async (socket) => {
       if (!game.getExecutionerWin() && !game.getJesterWin()) {
         if (evilCount == 0 && neutralCount == 0 && goodCount == 0) {
           game.setDraw(true);
+        } else if (game.getUsers().length == 0) {
+          // Return immediately (this means everybody has LEFT, one by one)
+          game.setDone(true)
+          endGameClear(game, roomCode)
         } else if (evilCount == 0 && neutralCount == 0 && goodCount > 0) {
           // GOOD TEAM WINS
           game.setGoodWin(true);
@@ -2766,6 +2770,7 @@ io.on("connection", async (socket) => {
   }
 
   function endGameClear(game, roomCode) {
+    console.log("Clearing game for", roomCode);
     io.to(roomCode).emit("returnToLobby");
     // Reset players, reset game
     for (var i = 0; i < game.getUsers().length; i++) {
