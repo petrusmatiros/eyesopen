@@ -151,11 +151,46 @@
   align-items: center;
   /* padding: 0.6em; */
   border-radius: 1rem;
+  animation: pop-light 1s 1;
   margin: 2rem 0.5rem 1rem 0.5rem;
   max-width: 20.5rem;
   min-width: 20.5rem;
   max-height: 6.65rem;
   min-height: 7.75rem;
+}
+
+/* Animations */
+
+@keyframes pop-light {
+  from, to { transform: scale(1); }
+  25% { transform: scale(0.98); }
+  50% { transform: scale(1.03); }
+  75% { transform: scale(1); }
+}
+
+@keyframes gelatine-light {
+  from, to { transform: scale(1, 1); }
+  25% { transform: scale(0.95, 1.05); }
+  50% { transform: scale(1.05, 0.95); }
+  75% { transform: scale(0.98, 1.02); }
+}
+
+@keyframes gelatine-medium {
+  from, to { transform: scale(1, 1); }
+  25% { transform: scale(0.9, 1.1); }
+  50% { transform: scale(1.1, 0.9); }
+  75% { transform: scale(0.95, 1.05); }
+}
+
+@keyframes gelatine-hard {
+  from, to { transform: scale(1, 1); }
+  25% { transform: scale(0.75, 1.15); }
+  50% { transform: scale(1.15, 0.75); }
+  75% { transform: scale(0.85, 1.15); }
+}
+
+.game-player-card:active {
+  
 }
 .game-player-card-icon {
   display: flex;
@@ -627,27 +662,15 @@
   height: 100%;
 }
 /* Animations  */
-.pop-light1 {
-  animation: pop-light 0.5s 1;
-}
-.pop-light2 {
-  animation: pop-light 1s 1;
-}
-.pop-light3 {
-  animation: pop-light 1.5s 1;
-}
-.pop-light4 {
-  animation: pop-light 2s 1;
-}
-.pop-light5 {
-  animation: pop-light 2.5s 1;
+.gelatine-light-fixed {
+  animation: gelatine-light-fixed 0.5s 1;
 }
 
-@keyframes pop-light {
-  from, to { transform: scale(1); }
-  25% { transform: scale(0.98); }
-  50% { transform: scale(1.03); }
-  75% { transform: scale(1); }
+@keyframes gelatine-light-fixed {
+  from, to { transform: scale(1, 1) translate(-50%, -50%); }
+  25% { transform: scale(0.95, 1.05) translate(-50%, -50%); }
+  50% { transform: scale(1.05, 0.95) translate(-50%, -50%); }
+  75% { transform: scale(0.98, 1.02) translate(-50%, -50%); }
 }
 .game-popup {
   display: none;
@@ -655,15 +678,14 @@
   align-items: center;
   flex-direction: column;
   position: fixed;
-  animation: pop-light 1s 1;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: var(--light-bg);
-  padding: 3rem 1rem 3rem 1rem;
   border-radius: 1rem;
-  max-width: 19.5rem;
-  min-width: 19.5rem;
+  padding: 3rem 1.5rem 3rem 1.5rem;
+  max-width: 17.5rem;
+  min-width: 17.5rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
 }
 .game-popup-text {
@@ -769,8 +791,8 @@
 #leave {
   display: none;
   padding: 3rem 1.5rem 3rem 1.5rem;
-  max-width: 18.5rem;
-  min-width: 18.5rem;
+  max-width: 17.5rem;
+  min-width: 17.5rem;
 }
 
 #leave-text {

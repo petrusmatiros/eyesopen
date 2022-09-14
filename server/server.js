@@ -2847,7 +2847,7 @@ io.on("connection", async (socket) => {
       sendMessage(
         playerID,
         "evil",
-        `You all have decided to murder ${targetPlayer.getPlayerName()} (${
+        `You have decided to murder ${targetPlayer.getPlayerName()} (${
           targetPlayer.nightVotes
         })`,
         "confirm"
