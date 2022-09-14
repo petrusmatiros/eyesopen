@@ -22,9 +22,10 @@ class User {
     this.currentRoom = null;
   }
 
-  reset(previousGame) {
+  reset() {
     this.messages = [];
     this.readyGame = false;
+    this.readyLobby = false;
     this.inGame = false;
   }
 

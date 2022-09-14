@@ -71,6 +71,8 @@ class Game {
     this.noDeaths = 0;
     // Booleans for inProgress and finished
     this.inProgress = false;
+  }
+  resetDone() {
     this.isDone = false;
   }
 
