@@ -919,21 +919,7 @@ io.on("connection", async (socket) => {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         console.log("THIS " + roomCode);
         if (state.includes("lobby")) {
-          if (
-            rooms.get(roomCode).getGame().getProgress() == false ||
-            (rooms.get(roomCode).getGame().getProgress() == true &&
-              rooms
-                .get(roomCode)
-                .getGame()
-                .getUsers()
-                .includes(connectedUsers.get(playerID))) ||
-            (rooms.get(roomCode).getGame().getProgress() == true &&
-              rooms
-                .get(roomCode)
-                .getGame()
-                .getUsers()
-                .includes(connectedUsers.get(playerID)) == false)
-          ) {
+          
             socket.join(connectedUsers.get(playerID).getCurrentRoom());
             checkForAlreadyExistingUser(roomCode, playerID);
             socket.emit("viewRoom", roomCode);
@@ -951,7 +937,7 @@ io.on("connection", async (socket) => {
             console.log(connectedUsers.get(playerID));
             console.log(rooms.get(roomCode).getUsers());
             socket.emit("joinPlayerSlot");
-          }
+          
         } else if (state.includes("app")) {
           if (
             rooms.get(roomCode).getGame().getProgress() == true &&
@@ -1004,7 +990,7 @@ io.on("connection", async (socket) => {
                 .getName();
               io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
                 "playerSlots",
-                room.getHost(),
+                proxyIdenfication.get(room.getHost()),
                 room.slots
               );
               break;
@@ -1027,7 +1013,7 @@ io.on("connection", async (socket) => {
           room.slots[key]["userName"] = "";
           io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
             "playerSlots",
-            room.getHost(),
+            proxyIdenfication.get(room.getHost()),
             room.slots
           );
           break;
