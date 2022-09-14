@@ -45,9 +45,14 @@ socket.on("connect", () => {
       resetCookie();
     } else {
       console.log("user exists");
-
+      var URL = "";
+      var room = "";
+      if (window.location.href.endsWith("/game")) {
+        URL = window.location.href.replace("http://", "");
+        room = URL.split("/")[URL.split("/").length - 2];
+      }
       socket.emit("setRoom", getPlayerID());
-      socket.emit("checkUserApartOfGame", getPlayerID(), "app");
+      socket.emit("checkUserApartOfGame", getPlayerID(), room, "app");
 
       socket.on("apartOfGameApp", (apartOfGame, inProgress, code) => {
         console.log("apartOfGame:" + apartOfGame);
@@ -91,8 +96,8 @@ socket.on("connect", () => {
           (apartOfGame == false && inProgress == false)
         ) {
           if (window.location.href.endsWith("/game")) {
-            var URL = window.location.href.replace("http://", "");
-            var room = URL.split("/")[URL.split("/").length - 2];
+            URL = window.location.href.replace("http://", "");
+            room = URL.split("/")[URL.split("/").length - 2];
             socket.emit("directJoin", getPlayerID(), code, "app");
             window.location.href = lobby + room;
           }
@@ -147,8 +152,8 @@ function returnToLobby() {
 
 socket.on("endGame", (win, winType, lawyerWin, winners) => {
   console.log("ending game");
-  socket.emit("requestProxy", getPlayerID());
-  socket.on("fetchedProxy", (proxyID) => {
+  socket.emit("requestProxy", getPlayerID(), "app");
+  socket.on("fetchedProxyApp", (proxyID) => {
     endGame(proxyID, win, winType, lawyerWin, winners);
   });
 });
@@ -165,7 +170,7 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
     }
 
     // Remove last comma with whitespace
-    listOfWinners.substring(0, listOfWinners.length - 2);
+    listOfWinners = listOfWinners.substring(0, listOfWinners.length - 2);
     var state = "";
     var winningMessage = "";
     if (winType !== "timeout" && winType !== "draw") {

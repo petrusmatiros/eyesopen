@@ -151,7 +151,6 @@ function checkDirectName() {
     userNameShortError();
   } else {
     var full = false;
-    var inProgress = false;
     requestID();
     var URL = window.location.href.replace("http://", "");
     var room = URL.split("/")[URL.split("/").length - 2];
@@ -164,19 +163,9 @@ function checkDirectName() {
       if (status == "full") {
         roomFull();
         full = true;
-      } else if (status == "inProgress") {
-        // ! FIX THIS
-        // socket.emit("checkUserApartOfGame", getPlayerID(), "join");
-        // socket.on("apartOfGameJoin", (apartOfGame) => {
-        //   if (apartOfGame) {
-        //     join(room);
-        //   }
-        // })
-        roomInProgress();
-        inProgress = true;
       }
     });
-    if (full == false && inProgress == false) {
+    if (full == false) {
       join(room);
     }
   }

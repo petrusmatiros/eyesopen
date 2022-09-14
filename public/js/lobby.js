@@ -34,35 +34,44 @@ socket.on("connect", () => {
       resetCookie();
       window.location.href = window.location.href + "/join";
     } else {
+      var URL = "";
+      var room = "";
       if (window.location.href.endsWith("/")) {
-        var URL = window.location.href.replace("http://", "");
-        var room = URL.split("/")[URL.split("/").length - 2];
+        URL = window.location.href.replace("http://", "");
+        room = URL.split("/")[URL.split("/").length - 2];
+        console.log("directJoining1", getPlayerID());
         socket.emit("setRoom", getPlayerID());
         socket.emit("directJoin", getPlayerID(), room, "lobby");
       } else if (!window.location.href.endsWith("/")) {
-        var URL = window.location.href.replace("http://", "");
-        var room = URL.split("/")[URL.split("/").length - 1];
+        URL = window.location.href.replace("http://", "");
+        room = URL.split("/")[URL.split("/").length - 1];
+        console.log("directJoining2", getPlayerID());
         socket.emit("setRoom", getPlayerID());
         socket.emit("directJoin", getPlayerID(), room, "lobby");
       }
-      socket.emit("checkUserApartOfGame", getPlayerID(), "app");
+      socket.emit("checkUserApartOfGame", getPlayerID(), room, "app");
       socket.on("apartOfGameApp", (apartOfGame, inProgress, code) => {
-        console.log("test");
 
         if (apartOfGame && inProgress == true) {
           if (window.location.href.includes("/game") == false) {
-            window.location.href += "/game";
+            if (window.location.href.endsWith("/")) {
+              window.location.href += "game";
+            } else if (!window.location.href.endsWith("/")) {
+              window.location.href += "/game";
+            }
           }
         }
 
         if (window.location.href.endsWith("/")) {
-          var URL = window.location.href.replace("http://", "");
-          var room = URL.split("/")[URL.split("/").length - 2];
+          URL = window.location.href.replace("http://", "");
+          room = URL.split("/")[URL.split("/").length - 2];
+          console.log("directJoining3", getPlayerID());
           socket.emit("setRoom", getPlayerID());
           socket.emit("directJoin", getPlayerID(), room, "lobby");
         } else if (!window.location.href.endsWith("/")) {
-          var URL = window.location.href.replace("http://", "");
-          var room = URL.split("/")[URL.split("/").length - 1];
+          URL = window.location.href.replace("http://", "");
+          room = URL.split("/")[URL.split("/").length - 1];
+          console.log("directJoining4", getPlayerID());
           socket.emit("setRoom", getPlayerID());
           socket.emit("directJoin", getPlayerID(), room, "lobby");
         }
@@ -80,9 +89,16 @@ socket.on("connect", () => {
           socket.emit("requestPlayerSlot", getPlayerID());
         });
         socket.on("playerSlots", (host, slots) => {
-          updatePlayerSlots(host, slots);
-          console.log("updated player slots");
+          updatePlayerSlotsWithProxy(host, slots);
         });
+
+        function updatePlayerSlotsWithProxy(host, slots) {
+          socket.emit("requestProxy", getPlayerID(), "lobby");
+          socket.on("fetchedProxyLobby", (proxyID) => {
+            updatePlayerSlots(host, slots, proxyID);
+            console.log("updated player slots");
+          });
+        }
 
         socket.emit("checkIfHost", getPlayerID(), "visibility");
         socket.on("isHost", (isHost) => {
@@ -213,9 +229,14 @@ socket.on("connect", () => {
           updateRoles(roles);
         });
 
-        setTimeout(() => {
-          socket.emit("refreshReady", getPlayerID());
-        }, 300);
+        socket.emit("refreshReady", getPlayerID());
+        socket.on("ready-status-lobby-refresh", (users) => {
+          setTimeout(readyStatusLobby, 300, users);
+        });
+
+        // setTimeout(() => {
+        //   socket.emit("refreshReady", getPlayerID());
+        // }, 300);
       });
     }
   });
@@ -235,7 +256,7 @@ function showInfo() {
 
 socket.on("beginClearEvilRoom", (roomToClear) => {
   clearEvilRoom(roomToClear);
-})
+});
 
 function clearEvilRoom() {
   socket.emit("clearEvilRoom", getPlayerID(), roomToClear);
@@ -259,24 +280,30 @@ function startGame() {
 }
 
 socket.on("ready-status-lobby", (users) => {
+  readyStatusLobby(users);
+});
+
+function readyStatusLobby(users) {
   var lobbyButtons = document.getElementsByClassName(
     "lobby-button-container"
   )[0];
   lobbyButtons.style.display = "flex";
   for (var i = 0; i < users.length; i++) {
-    if (users[i].readyLobby) {
-      var status = document.getElementById(users[i].thePlayerID).parentElement
-        .children[1];
-      status.innerText = "ready";
-      status.id = "status-ready";
-    } else if (!users[i].readyLobby) {
-      var status = document.getElementById(users[i].thePlayerID).parentElement
-        .children[1];
-      status.innerText = "not ready";
-      status.id = "status-notready";
+    if (users[i].thePlayerID !== undefined && users[i].thePlayerID !== null) {
+      if (users[i].readyLobby) {
+        var status = document.getElementById(users[i].thePlayerID).parentElement
+          .children[1];
+        status.innerText = "ready";
+        status.id = "status-ready";
+      } else if (!users[i].readyLobby) {
+        var status = document.getElementById(users[i].thePlayerID).parentElement
+          .children[1];
+        status.innerText = "not ready";
+        status.id = "status-notready";
+      }
     }
   }
-});
+}
 
 socket.on("currentRoleCount", (amountOfRoles, amountOfUsers) => {
   roleCount = amountOfRoles;
@@ -416,7 +443,7 @@ function toggleLobbyButton(element) {
   }
 }
 
-function updatePlayerSlots(host, slots) {
+function updatePlayerSlots(host, slots, proxyID) {
   for (var [key, value] of Object.entries(slots)) {
     if (value.taken == true) {
       var slot = document.getElementById(key);
@@ -429,7 +456,7 @@ function updatePlayerSlots(host, slots) {
       if (value.userID == host) {
         slot.parentElement.parentElement.style.border =
           "2px solid var(--slot-border)";
-      } else if (value.userID == getPlayerID()) {
+      } else if (value.userID == proxyID) {
         slot.parentElement.parentElement.style.border =
           "2px dashed var(--slot-border)";
       } else {

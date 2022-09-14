@@ -658,7 +658,7 @@
   animation: pop-light 1s 1;
   top: 50%;
   left: 50%;
-  /* transform: translate(-50%, -50%); */
+  transform: translate(-50%, -50%);
   background-color: var(--light-bg);
   padding: 3rem 1rem 3rem 1rem;
   border-radius: 1rem;

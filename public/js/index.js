@@ -265,8 +265,6 @@ function checkRoomCode() {
         roomCodeInvalid();
       } else if (status == "full") {
         roomFull();
-      } else if (status == "inProgress") {
-        roomInProgress();
       }
     });
   }

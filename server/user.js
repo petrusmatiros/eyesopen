@@ -13,7 +13,6 @@ class User {
     this.player = new Map();
     // reset depending on state
     this.readyLobby = false;
-    this.readyGame = false;
     // Previous games
     this.previous = [];
     // reset every time
@@ -24,7 +23,6 @@ class User {
 
   reset() {
     this.messages = [];
-    this.readyGame = false;
     this.readyLobby = false;
     this.inGame = false;
   }
@@ -50,9 +48,7 @@ class User {
   getReadyLobby() {
     return this.readyLobby;
   }
-  getReadyGame() {
-    return this.readyGame;
-  }
+  
   getInGame() {
     return this.inGame;
   }
@@ -89,9 +85,7 @@ class User {
   setReadyLobby(readyLobby) {
     this.readyLobby = readyLobby;
   }
-  setReadyGame(readyGame) {
-    this.readyGame = readyGame;
-  }
+
   setInGame(inGame) {
     this.inGame = inGame;
   }

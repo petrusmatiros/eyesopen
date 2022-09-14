@@ -25,6 +25,8 @@ class Player {
     this.playerName = playerName;
     this.role = role;
     this.oldRole = null;
+    // Ready game
+    this.readyGame = false;
     // DO NOT RESET
     this.isKilled = false;
     this.isLynched = false;
@@ -80,6 +82,15 @@ class Player {
   setOldRole(oldRole) {
     this.oldRole = oldRole;
   }
+
+  getReadyGame() {
+    return this.readyGame;
+  }
+
+  setReadyGame(readyGame) {
+    this.readyGame = readyGame;
+  }
+
   getIsKilled() {
     return this.isKilled;
   }
