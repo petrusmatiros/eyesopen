@@ -463,7 +463,7 @@ function updatePlayerSlots(host, slots, proxyID) {
       } else {
         slot.parentElement.parentElement.style.border =
           "2px solid var(--slot-border-other)";
-          
+
         
       }
       // status.innerText = "not ready";
@@ -511,7 +511,7 @@ function showClearCheck(reset = false) {
 function copyButtonAnimate(reset = false) {
   if (reset) {
     document.getElementById("copy-code").style.backgroundColor =
-      "var(--dark-fg)";
+      "var(--dark-fg-opaque)";
     document.getElementById("roomcode-copy").style.color = "var(--light-fg)";
     document.getElementById("copy-code").style.border =
       "2px solid var(--light-fg)";
