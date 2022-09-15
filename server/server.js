@@ -481,10 +481,9 @@ io.on("connection", async (socket) => {
             "beginClearEvilRoom",
             previousGame.getEvilRoom()
           );
-          if (user.getPrevious().includes(previousRoomCode)) {
-            user.removePrevious(previousRoomCode);
-          }
         }
+        // Clear previous array
+        user.setPrevious([])
       }
     }
   }
