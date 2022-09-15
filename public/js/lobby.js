@@ -228,14 +228,13 @@ socket.on("connect", () => {
           updateRoles(roles);
         });
 
-        socket.emit("refreshReady", getPlayerID());
+        setTimeout(() => {
+          socket.emit("refreshReady", getPlayerID());
+        }, 300);
         socket.on("ready-status-lobby-refresh", (users) => {
-          setTimeout(readyStatusLobby, 300, users);
+          readyStatusLobby(users)
         });
 
-        // setTimeout(() => {
-        //   socket.emit("refreshReady", getPlayerID());
-        // }, 300);
       });
     }
   });
