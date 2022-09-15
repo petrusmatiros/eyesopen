@@ -2145,13 +2145,9 @@ io.on("connection", async (socket) => {
     }
   });
 
-  // Prevent message from being spammed
-  var emitCycleOnce = true;
-  var emitPhaseOnce = true;
-
   function messageHandlerForPhases(playerID, game) {
     var lineSeperator = "--------------------------------";
-    if (emitPhaseOnce) {
+    if (game.getEmitPhaseOnce()) {
       if (game.getPhase().includes("actions")) {
         sendMessage(playerID, "all", lineSeperator, "lineSeperator");
         sendMessage(
@@ -2182,12 +2178,12 @@ io.on("connection", async (socket) => {
           "important"
         );
       }
-      emitPhaseOnce = false;
+      game.setEmitPhaseOnce(false);
     }
   }
 
   function messageHandlerForCycles(playerID, game) {
-    if (emitCycleOnce) {
+    if (game.getEmitCycleOnce()) {
       if (game.getCycle().includes("Night")) {
         sendMessage(
           playerID,
@@ -2211,7 +2207,7 @@ io.on("connection", async (socket) => {
         sendMessage(playerID, "all", "The day has begun", "extra");
       }
     }
-    emitCycleOnce = false;
+    game.setEmitCycleOnce(false);
   }
 
   // be able to send toAll, to player, and to target
@@ -2253,14 +2249,10 @@ io.on("connection", async (socket) => {
     }
   }
 
-  var nightMessagesOnce = 0;
-  var recapOnce = 0;
-  var dayMessagesOnce = 0;
-
-  function resetPhaseConditions() {
-    nightMessagesOnce = 0;
-    recapOnce = 0;
-    dayMessagesOnce = 0;
+  function resetPhaseConditions(game) {
+    game.setNightMessagesOnce(0);
+    game.setRecapOnce(0);
+    game.setDayMessagesOnce(0);
   }
 
   socket.on("setActionsOnPhase", (playerID, state) => {
@@ -2303,36 +2295,36 @@ io.on("connection", async (socket) => {
     var game = room.getGame();
     if (game.getCycle() == "Night") {
       if (game.getPhase() == "nightMessages") {
-        if (nightMessagesOnce == 0) {
+        if (game.getNightMessagesOnce() == 0) {
           console.log("EXECUTING NIGHT ACTIONS");
           executeNightActions(playerID, room, roomCode, game);
           voteHandlerEvil(playerID, room, roomCode, game);
           io.to(roomCode).emit("updateSetPlayers");
-          nightMessagesOnce = 1;
+          game.setNightMessagesOnce(1);
           resetAllActions(playerID, room, roomCode, game);
         }
       }
     } else if (game.getCycle() == "Day") {
       if (game.getPhase() == "dayMessages") {
-        if (dayMessagesOnce == 0) {
+        if (game.getDayMessagesOnce() == 0) {
           console.log("VOTE GLOBAL");
           voteHandlerGlobal(playerID, room, roomCode, game);
           console.log("DEATH HANDLER VOTE");
           deathHandler(playerID, room, roomCode, game);
           io.to(roomCode).emit("updateSetPlayers");
           checkForWin(playerID, room, roomCode, game);
-          dayMessagesOnce = 1;
+          game.setDayMessagesOnce(1);
           resetAllActions(playerID, room, roomCode, game);
         }
       } else if (game.getPhase() == "discussion") {
         resetAllActions(playerID, room, roomCode, game);
       } else if (game.getPhase() == "recap") {
-        if (recapOnce == 0) {
+        if (game.getRecapOnce() == 0) {
           console.log("DEATH HANDLER RECAP");
           deathHandler(playerID, room, roomCode, game);
           io.to(roomCode).emit("updateSetPlayers");
           checkForWin(playerID, room, roomCode, game);
-          recapOnce = 1;
+          game.setRecapOnce(1);
           resetAllActions(playerID, room, roomCode, game);
         }
       }
@@ -3725,36 +3717,36 @@ io.on("connection", async (socket) => {
   }
 
   function clockHandler(playerID, roomCode, room, game) {
-    // Night and Day
-    var currentCycle = 0;
-    // Actions, discussion
-    var currentPhase = 0;
-    var theDurations = Object.values(durations);
-    var nightLength = Object.values(theDurations[0]).length;
-    var dayLength = Object.values(theDurations[1]).length;
+
+    game.setCurrentCycle(0);
+    game.setCurrentPhase(0);
+
+    game.setTheDurations(Object.values(durations))
+    game.setNightLength(Object.values(theDurations[0]).length);
+    game.setDayLength(Object.values(theDurations[1]).length);
 
     game.setCycleCount(1);
     // Two objects, Night object, Day object
     // Set duration to night object -> first phase
     initClock(
       game.getTimer(),
-      Object.values(theDurations[currentCycle])[currentPhase]
+      Object.values(game.getTheDurations()[game.getCurrentCycle()])[game.getCurrentPhase()]
       );
       game.setCycle("Night");
-      game.setPhase(Object.keys(theDurations[currentCycle])[currentPhase]);
+      game.setPhase(Object.keys(game.getTheDurations()[game.getCurrentCycle()])[game.getCurrentPhase()]);
       
       // time is equal to intervalID
-      GAME_CLOCK_ID = setInterval(function () {
+      game.setGameInterval(setInterval(function () {
       // console.log("THE CLOCK ID", GAME_CLOCK_ID)
       if (game.getDone()) {
-        clearInterval(GAME_CLOCK_ID);
-        GAME_CLOCK_ID = null;
+        clearInterval(game.getGameInterval());
+        game.setGameInterval(null);
       }
       console.log(
         game.getTimer().getCounter(),
         game.getPhase(),
-        "phase:" + currentPhase,
-        "cycle:" + currentCycle,
+        "phase:" + game.getCurrentPhase(),
+        "cycle:" + game.getCurrentCycle(),
         game.getCycle(),
         game.getCycleCount()
       );
@@ -3767,8 +3759,8 @@ io.on("connection", async (socket) => {
           game.getCycle(),
           game.getCycleCount()
         );
-        messageHandlerForCycles(playerID, game, emitCycleOnce);
-        messageHandlerForPhases(playerID, game, emitPhaseOnce);
+        messageHandlerForCycles(playerID, game, game.getEmitCycleOnce());
+        messageHandlerForPhases(playerID, game, game.getEmitPhaseOnce());
 
         gameHandler(playerID);
         io.to(roomCode).emit("changeUI", game.getCycle());
@@ -3778,59 +3770,59 @@ io.on("connection", async (socket) => {
 
         if (game.getTimer().getCounter() <= 0) {
           // NIGHT
-          if (currentCycle == 0) {
-            if (currentPhase < nightLength) {
-              currentPhase++;
+          if (game.getCurrentCycle() == 0) {
+            if (game.getCurrentPhase() < game.getNightLength()) {
+              game.setCurrentPhase(game.getCurrentPhase() + 1);
               game.setPhase(
-                Object.keys(theDurations[currentCycle])[currentPhase]
+                Object.keys(game.getTheDurations()[game.getCurrentCycle()])[game.getCurrentPhase()]
               );
-              emitPhaseOnce = true;
+              game.setEmitPhaseOnce(true);
               console.log("night less");
               io.to(roomCode).emit("updateSetPlayers");
               setActionsOnPhase(playerID, "clock");
             }
-            if (currentPhase >= nightLength) {
-              currentPhase = 0;
-              currentCycle = 1;
+            if (game.getCurrentPhase() >= game.getNightLength()) {
+              game.setCurrentPhase(0);
+              game.setCurrentCycle(1);
               game.setPhase(
-                Object.keys(theDurations[currentCycle])[currentPhase]
+                Object.keys(game.getTheDurations()[game.getCurrentCycle()])[game.getCurrentPhase()]
               );
-              emitPhaseOnce = true;
+              game.setEmitPhaseOnce(true);
               game.setCycle("Day");
               // Prevent from spamming message
-              emitCycleOnce = true;
+              game.getEmitCycleOnce(true);
               // io.to(roomCode).emit("changeUI", game.getCycle());
               // io.to(roomCode).emit("updateSetPlayers");
             }
             initClock(
               game.getTimer(),
-              Object.values(theDurations[currentCycle])[currentPhase]
+              Object.values(game.getTheDurations()[game.getCurrentCycle()])[game.getCurrentPhase()]
             );
           }
           // DAY
-          else if (currentCycle == 1) {
-            if (currentPhase < dayLength) {
-              currentPhase++;
+          else if (game.getCurrentCycle() == 1) {
+            if (game.getCurrentPhase() < game.getDayLength()) {
+              game.setCurrentPhase(game.getCurrentPhase() + 1);
               game.setPhase(
-                Object.keys(theDurations[currentCycle])[currentPhase]
+                Object.keys(game.getTheDurations()[game.getCurrentCycle()])[game.getCurrentPhase()]
               );
-              emitPhaseOnce = true;
+              game.setEmitPhaseOnce(true);
               console.log("day less");
               io.to(roomCode).emit("updateSetPlayers");
               setActionsOnPhase(playerID, "clock");
             }
-            if (currentPhase >= dayLength) {
+            if (game.getCurrentPhase() >= game.getDayLength()) {
               resetAllActions(playerID, room, roomCode, game);
-              resetPhaseConditions();
-              currentPhase = 0;
-              currentCycle = 0;
+              resetPhaseConditions(game);
+              game.setCurrentPhase(0);
+              game.setCurrentCycle(0);
               game.setPhase(
-                Object.keys(theDurations[currentCycle])[currentPhase]
+                Object.keys(game.getTheDurations()[game.getCurrentCycle()])[game.getCurrentPhase()]
               );
-              emitPhaseOnce = true;
+              game.setEmitPhaseOnce(true);
               game.setCycle("Night");
               // Prevent from spamming message
-              emitCycleOnce = true;
+              game.setEmitCycleOnce(true);
               // Increment cycle count
               game.setCycleCount(game.getCycleCount() + 1);
               // io.to(roomCode).emit("changeUI", game.getCycle());
@@ -3838,14 +3830,14 @@ io.on("connection", async (socket) => {
 
             initClock(
               game.getTimer(),
-              Object.values(theDurations[currentCycle])[currentPhase]
+              Object.values(game.getTheDurations()[game.getCurrentCycle()])[game.getCurrentPhase()]
             );
           }
         } else {
           game.getTimer().tick();
         }
       }
-    }, 1000);
+    }, 1000));
 
   }
 
