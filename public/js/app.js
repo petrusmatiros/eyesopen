@@ -634,7 +634,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
       currentElement.style.fontWeight = 700;
       if (cycle.includes("Night")) {
         // Dead
-        if (players[i].type == "dead") {
+        if (players[i].type.includes("dead")) {
           abilityButton.setAttribute("onclick", "");
           voteButton.setAttribute("onclick", "");
           abilityButton.style.display = "none";
@@ -769,7 +769,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
         }
       } else if (cycle.includes("Day")) {
         // Dead
-        if (players[i].type == "dead") {
+        if (players[i].type.includes("dead")) {
           abilityButton.setAttribute("onclick", "");
           voteButton.setAttribute("onclick", "");
           abilityButton.style.display = "none";
@@ -826,7 +826,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
       // EVERYONE
       currentElement.style.fontWeight = 400;
       if (isDead) {
-        if (players[i].type == "dead") {
+        if (players[i].type.includes("dead")) {
           abilityButton.setAttribute("onclick", "");
           voteButton.setAttribute("onclick", "");
           abilityButton.style.display = "none";
@@ -872,7 +872,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
       } else {
         if (cycle.includes("Night")) {
           // Dead
-          if (players[i].type == "dead") {
+          if (players[i].type.includes("dead")) {
             abilityButton.setAttribute("onclick", "");
             voteButton.setAttribute("onclick", "");
             abilityButton.style.display = "none";
@@ -1069,7 +1069,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
           }
         } else if (cycle.includes("Day")) {
           // Dead
-          if (players[i].type == "dead") {
+          if (players[i].type.includes("dead")) {
             abilityButton.setAttribute("onclick", "");
             voteButton.setAttribute("onclick", "");
             abilityButton.style.display = "none";

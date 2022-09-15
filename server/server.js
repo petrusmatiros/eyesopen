@@ -1716,8 +1716,8 @@ io.on("connection", async (socket) => {
     var seenNight = [];
     var seenDay = [];
 
-    var socketPlayer = connectedUsers.get(playerID).getPlayer(roomCode);
-    var socketRole = connectedUsers.get(playerID).getPlayer(roomCode).getRole();
+    var socketPlayer = socketUser.getPlayer(roomCode);
+    var socketRole = socketPlayer.getRole();
 
     for (var i = 0; i < game.getUsers().length; i++) {
       var type = "none";
@@ -1749,27 +1749,37 @@ io.on("connection", async (socket) => {
               isEvil = false;
             }
           } else {
-            if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") &&socketPlayer.getOldRole() !== null)) {
-              if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") &&socketPlayer.getOldRole().includes("executioner"))) {
+            if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") && socketPlayer.getOldRole() !== null)) {
+              if (socketRole.type.includes("executioner")) {
                 if (user == socketRole.target) {
                   isEvil = null;
                   type = "target+dead";
-                  pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                  
                 } else {
                   isEvil = null;
                   type = "dead";
-                  pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                  
+                }
+              } else if (socketRole.type.includes("jester") && socketPlayer.getOldRole().includes("executioner")) {
+                if (user == socketPlayer.getOldTarget()) {
+                  isEvil = null;
+                  type = "target+dead";
+                  
+                } else {
+                  isEvil = null;
+                  type = "dead";
+                  
                 }
               }
             } else if (socketRole.type.includes("lawyer")) {
               if (user == socketRole.client) {
                 isEvil = null;
                 type = "client+dead";
-                pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                
               } else {
                 isEvil = null;
                 type = "dead";
-                pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                
               }
             } else {
               isEvil = null;
@@ -1880,15 +1890,25 @@ io.on("connection", async (socket) => {
             }
             // if socket is executioner
             else if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") &&socketPlayer.getOldRole() !== null)) {
-              if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") &&socketPlayer.getOldRole().includes("executioner"))) {
+              if (socketRole.type.includes("executioner")) {
                 if (user == socketRole.target) {
                   isEvil = null;
                   type = "target";
-                  pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                  pushPlayer(toSend, seenDay, userID, userName, type, isEvil);
                 } else {
                   isEvil = null;
                   type = "none";
-                  pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                  pushPlayer(toSend, seenDay, userID, userName, type, isEvil);
+                }
+              } else if (socketRole.type.includes("jester") && socketPlayer.getOldRole().includes("executioner")) {
+                if (user == socketPlayer.getOldTarget()) {
+                  isEvil = null;
+                  type = "target";
+                  pushPlayer(toSend, seenDay, userID, userName, type, isEvil);
+                } else {
+                  isEvil = null;
+                  type = "none";
+                  pushPlayer(toSend, seenDay, userID, userName, type, isEvil);
                 }
               }
             }
@@ -1926,27 +1946,37 @@ io.on("connection", async (socket) => {
               isEvil = false;
             }
           } else {
-            if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") &&socketPlayer.getOldRole() !== null)) {
-              if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") &&socketPlayer.getOldRole().includes("executioner"))) {
+            if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") && socketPlayer.getOldRole() !== null)) {
+              if (socketRole.type.includes("executioner")) {
                 if (user == socketRole.target) {
                   isEvil = null;
                   type = "target+dead";
-                  pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                  
                 } else {
                   isEvil = null;
                   type = "dead";
-                  pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                  
+                }
+              } else if (socketRole.type.includes("jester") && socketPlayer.getOldRole().includes("executioner")) {
+                if (user == socketPlayer.getOldTarget()) {
+                  isEvil = null;
+                  type = "target+dead";
+                  
+                } else {
+                  isEvil = null;
+                  type = "dead";
+                  
                 }
               }
             } else if (socketRole.type.includes("lawyer")) {
               if (user == socketRole.client) {
                 isEvil = null;
                 type = "client+dead";
-                pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                
               } else {
                 isEvil = null;
                 type = "dead";
-                pushPlayer(toSend, seenNight, userID, userName, type, isEvil);
+                
               }
             } else {
               isEvil = null;
@@ -1980,9 +2010,19 @@ io.on("connection", async (socket) => {
             }
           }
           // if socket is executioner
-          else if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") &&socketPlayer.getOldRole() !== null)) {
-            if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") &&socketPlayer.getOldRole().includes("executioner"))) {
+          else if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") && socketPlayer.getOldRole() !== null)) {
+            if (socketRole.type.includes("executioner")) {
               if (user == socketRole.target) {
+                isEvil = null;
+                type = "target";
+                pushPlayer(toSend, seenDay, userID, userName, type, isEvil);
+              } else {
+                isEvil = null;
+                type = "none";
+                pushPlayer(toSend, seenDay, userID, userName, type, isEvil);
+              }
+            } else if (socketRole.type.includes("jester") && socketPlayer.getOldRole().includes("executioner")) {
+              if (user == socketPlayer.getOldTarget()) {
                 isEvil = null;
                 type = "target";
                 pushPlayer(toSend, seenDay, userID, userName, type, isEvil);
@@ -3614,8 +3654,9 @@ io.on("connection", async (socket) => {
           ) {
             // executioner targets gets killed
             // executioner becomes JESTER
-            executioner.getPlayer(roomCode).setRole(new Role("jester"));
             executioner.getPlayer(roomCode).setOldRole("executioner");
+            executioner.getPlayer(roomCode).setOldTarget(executioner.getPlayer(roomCode).getRole().target);
+            executioner.getPlayer(roomCode).setRole(new Role("jester"));
             //  update set players only for executioner
             io.to(executioner.getPlayerID()).emit("updateSetPlayers");
             updateRoleCard(playerID, "socket", executioner.getPlayerID());

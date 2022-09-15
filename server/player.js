@@ -25,6 +25,7 @@ class Player {
     this.playerName = playerName;
     this.role = role;
     this.oldRole = null;
+    this.oldTarget = null;
     this.disconnected = false;
     // Ready game
     this.readyGame = false;
@@ -84,6 +85,13 @@ class Player {
 
   setOldRole(oldRole) {
     this.oldRole = oldRole;
+  }
+  getOldTarget() {
+    return this.oldTarget;
+  }
+
+  setOldTarget(oldTarget) {
+    this.oldTarget = oldTarget;
   }
 
   getDisconnected() {
