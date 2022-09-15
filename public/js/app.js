@@ -297,20 +297,60 @@ socket.on("recieveMessage", (message, type, cycle) => {
     messageType += "night";
     newMessage.classList.add(messageType);
   } else if (type.includes("confirm")) {
+
     messageType += "confirm";
     newMessage.classList.add(messageType);
+    if (cycle.includes("Day")) {
+      newMessage.classList.add(messageType + "-day");
+      newMessage.classList.remove(messageType + "-night");
+    } else if (cycle.includes("Night")) {
+      newMessage.classList.remove(messageType + "-day");
+      newMessage.classList.add(messageType + "-night");
+    }
   } else if (type.includes("info")) {
+
     messageType += "info";
     newMessage.classList.add(messageType);
+    if (cycle.includes("Day")) {
+      newMessage.classList.add(messageType + "-day");
+      newMessage.classList.remove(messageType + "-night");
+    } else if (cycle.includes("Night")) {
+      newMessage.classList.remove(messageType + "-day");
+      newMessage.classList.add(messageType + "-night");
+    }
   } else if (type.includes("alert")) {
+
     messageType += "alert";
     newMessage.classList.add(messageType);
+    if (cycle.includes("Day")) {
+      newMessage.classList.add(messageType + "-day");
+      newMessage.classList.remove(messageType + "-night");
+    } else if (cycle.includes("Night")) {
+      newMessage.classList.remove(messageType + "-day");
+      newMessage.classList.add(messageType + "-night");
+    }
   } else if (type.includes("important")) {
+
     messageType += "important";
     newMessage.classList.add(messageType);
+    if (cycle.includes("Day")) {
+      newMessage.classList.add(messageType + "-day");
+      newMessage.classList.remove(messageType + "-night");
+    } else if (cycle.includes("Night")) {
+      newMessage.classList.remove(messageType + "-day");
+      newMessage.classList.add(messageType + "-night");
+    }
   } else if (type.includes("extra")) {
+
     messageType += "extra";
     newMessage.classList.add(messageType);
+    if (cycle.includes("Day")) {
+      newMessage.classList.add(messageType + "-day");
+      newMessage.classList.remove(messageType + "-night");
+    } else if (cycle.includes("Night")) {
+      newMessage.classList.remove(messageType + "-day");
+      newMessage.classList.add(messageType + "-night");
+    }
   } else if (type.includes("timestamp")) {
     if (cycle.includes("Day")) {
       messageType += "day";
@@ -384,18 +424,56 @@ function loadSavedMessages(messages, cycle) {
     } else if (messages[i].type.includes("confirm")) {
       messageType += "confirm";
       newMessage.classList.add(messageType);
+      if (cycle.includes("Day")) {
+      newMessage.classList.add(messageType + "-day");
+      newMessage.classList.remove(messageType + "-night");
+    } else if (cycle.includes("Night")) {
+      newMessage.classList.remove(messageType + "-day");
+      newMessage.classList.add(messageType + "-night");
+    }
     } else if (messages[i].type.includes("info")) {
       messageType += "info";
       newMessage.classList.add(messageType);
+      if (cycle.includes("Day")) {
+      newMessage.classList.add(messageType + "-day");
+      newMessage.classList.remove(messageType + "-night");
+    } else if (cycle.includes("Night")) {
+      newMessage.classList.remove(messageType + "-day");
+      newMessage.classList.add(messageType + "-night");
+    }
     } else if (messages[i].type.includes("alert")) {
+
       messageType += "alert";
       newMessage.classList.add(messageType);
+      if (cycle.includes("Day")) {
+      newMessage.classList.add(messageType + "-day");
+      newMessage.classList.remove(messageType + "-night");
+    } else if (cycle.includes("Night")) {
+      newMessage.classList.remove(messageType + "-day");
+      newMessage.classList.add(messageType + "-night");
+    }
     } else if (messages[i].type.includes("important")) {
+
       messageType += "important";
       newMessage.classList.add(messageType);
+      if (cycle.includes("Day")) {
+      newMessage.classList.add(messageType + "-day");
+      newMessage.classList.remove(messageType + "-night");
+    } else if (cycle.includes("Night")) {
+      newMessage.classList.remove(messageType + "-day");
+      newMessage.classList.add(messageType + "-night");
+    }
     } else if (messages[i].type.includes("extra")) {
+
       messageType += "extra";
       newMessage.classList.add(messageType);
+      if (cycle.includes("Day")) {
+      newMessage.classList.add(messageType + "-day");
+      newMessage.classList.remove(messageType + "-night");
+    } else if (cycle.includes("Night")) {
+      newMessage.classList.remove(messageType + "-day");
+      newMessage.classList.add(messageType + "-night");
+    }
     } else if (messages[i].type.includes("timestamp")) {
       if (cycle.includes("Day")) {
         messageType += "day";
@@ -1301,6 +1379,51 @@ function changeUI(theme) {
     for (var i = 0; i < messages.length; i++) {
       messages[i].classList.add("game-message-night");
       messages[i].classList.remove("game-message-day");
+      if (messages[i].className.includes("alert")) {
+        if (theme.includes("Day")) {
+          messages[i].classList.add("game-message-alert" + "-day");
+          messages[i].classList.remove("game-message-alert" + "-night");
+        } else if (theme.includes("Night")) {
+          messages[i].classList.remove("game-message-alert" + "-day");
+          messages[i].classList.add("game-message-alert" + "-night");
+        }
+      }
+      else if (messages[i].className.includes("info")) {
+        if (theme.includes("Day")) {
+          messages[i].classList.add("game-message-info" + "-day");
+          messages[i].classList.remove("game-message-info" + "-night");
+        } else if (theme.includes("Night")) {
+          messages[i].classList.remove("game-message-info" + "-day");
+          messages[i].classList.add("game-message-info" + "-night");
+        }
+      }
+      else if (messages[i].className.includes("confirm")) {
+        if (theme.includes("Day")) {
+          messages[i].classList.add("game-message-confirm" + "-day");
+          messages[i].classList.remove("game-message-confirm" + "-night");
+        } else if (theme.includes("Night")) {
+          messages[i].classList.remove("game-message-confirm" + "-day");
+          messages[i].classList.add("game-message-confirm" + "-night");
+        }
+      }
+      else if (messages[i].className.includes("important")) {
+        if (theme.includes("Day")) {
+          messages[i].classList.add("game-message-important" + "-day");
+          messages[i].classList.remove("game-message-important" + "-night");
+        } else if (theme.includes("Night")) {
+          messages[i].classList.remove("game-message-important" + "-day");
+          messages[i].classList.add("game-message-important" + "-night");
+        }
+      }
+      else if (messages[i].className.includes("extra")) {
+        if (theme.includes("Day")) {
+          messages[i].classList.add("game-message-extra" + "-day");
+          messages[i].classList.remove("game-message-extra" + "-night");
+        } else if (theme.includes("Night")) {
+          messages[i].classList.remove("game-message-extra" + "-day");
+          messages[i].classList.add("game-message-extra" + "-night");
+        }
+      }
     }
     scrollDown.classList.remove("game-day-fg");
     scrollDown.classList.add("game-night-fg");
@@ -1327,6 +1450,51 @@ function changeUI(theme) {
     for (var i = 0; i < messages.length; i++) {
       messages[i].classList.remove("game-message-night");
       messages[i].classList.add("game-message-day");
+      if (messages[i].className.includes("alert")) {
+        if (theme.includes("Day")) {
+          messages[i].classList.add("game-message-alert" + "-day");
+          messages[i].classList.remove("game-message-alert" + "-night");
+        } else if (theme.includes("Night")) {
+          messages[i].classList.remove("game-message-alert" + "-day");
+          messages[i].classList.add("game-message-alert" + "-night");
+        }
+      }
+      else if (messages[i].className.includes("info")) {
+        if (theme.includes("Day")) {
+          messages[i].classList.add("game-message-info" + "-day");
+          messages[i].classList.remove("game-message-info" + "-night");
+        } else if (theme.includes("Night")) {
+          messages[i].classList.remove("game-message-info" + "-day");
+          messages[i].classList.add("game-message-info" + "-night");
+        }
+      }
+      else if (messages[i].className.includes("confirm")) {
+        if (theme.includes("Day")) {
+          messages[i].classList.add("game-message-confirm" + "-day");
+          messages[i].classList.remove("game-message-confirm" + "-night");
+        } else if (theme.includes("Night")) {
+          messages[i].classList.remove("game-message-confirm" + "-day");
+          messages[i].classList.add("game-message-confirm" + "-night");
+        }
+      }
+      else if (messages[i].className.includes("important")) {
+        if (theme.includes("Day")) {
+          messages[i].classList.add("game-message-important" + "-day");
+          messages[i].classList.remove("game-message-important" + "-night");
+        } else if (theme.includes("Night")) {
+          messages[i].classList.remove("game-message-important" + "-day");
+          messages[i].classList.add("game-message-important" + "-night");
+        }
+      }
+      else if (messages[i].className.includes("extra")) {
+        if (theme.includes("Day")) {
+          messages[i].classList.add("game-message-extra" + "-day");
+          messages[i].classList.remove("game-message-extra" + "-night");
+        } else if (theme.includes("Night")) {
+          messages[i].classList.remove("game-message-extra" + "-day");
+          messages[i].classList.add("game-message-extra" + "-night");
+        }
+      }
     }
     scrollDown.classList.add("game-day-fg");
     scrollDown.classList.remove("game-night-fg");

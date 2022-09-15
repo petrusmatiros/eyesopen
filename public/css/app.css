@@ -290,22 +290,41 @@
   margin-bottom: 0.5rem;
   border-radius: 0.35rem;
 }
+/* Message types */
+/* Day */
+.game-message-alert-day {
+  background-color: hsl(360, 100%, 70%) !important;
+}
+.game-message-info-day {
+  background-color: hsl(43, 100%, 60%) !important;
+}
+.game-message-confirm-day {
+  background-color: hsl(97, 100%, 50%) !important;
+}
+.game-message-important-day {
+  background-color: hsl(280, 100%, 75%) !important;
+}
+.game-message-extra-day {
+  background-color: hsl(197, 100%, 60%) !important;
+}
 
-.game-message-alert {
+/* Night */
+.game-message-alert-night {
   background-color: hsl(360, 100%, 60%) !important;
 }
-.game-message-info {
+.game-message-info-night {
   background-color: hsl(43, 100%, 50%) !important;
 }
-.game-message-confirm {
+.game-message-confirm-night {
   background-color: hsl(97, 100%, 40%) !important;
 }
-.game-message-important {
-  background-color: hsl(280, 100%, 70%) !important;
+.game-message-important-night {
+  background-color: hsl(280, 100%, 60%) !important;
 }
-.game-message-extra {
+.game-message-extra-night {
   background-color: hsl(197, 100%, 50%) !important;
 }
+/* Standard */
 .game-message-day {
   background-color: hsl(0, 0%, 97%);
 }
@@ -331,6 +350,9 @@
   padding: 1.5em 1em 1.5em 1em;
   border-radius: 1rem;
   margin: 0 0.5rem 2rem 0.5rem;
+  backdrop-filter: blur(1rem);
+  -webkit-backdrop-filter: blur(1rem);
+
 }
 
 .game-clock {
