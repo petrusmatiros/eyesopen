@@ -25,6 +25,7 @@ class Player {
     this.playerName = playerName;
     this.role = role;
     this.oldRole = null;
+    this.disconnected = false;
     // Ready game
     this.readyGame = false;
     // clear after every game
@@ -83,6 +84,14 @@ class Player {
 
   setOldRole(oldRole) {
     this.oldRole = oldRole;
+  }
+
+  getDisconnected() {
+    return this.disconnected;
+  }
+
+  setDisconnected(disconnected) {
+    this.disconnected = disconnected;
   }
 
   getReadyGame() {

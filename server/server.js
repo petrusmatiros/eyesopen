@@ -173,7 +173,9 @@ io.on("connection", async (socket) => {
           var apartOfGame = false;
           for (var i = 0; i < users.length; i++) {
             if (users[i].getPlayer(theRoom) == connectedUsers.get(playerID).getPlayer(theRoom)) {
-              apartOfGame = true;
+              if (users[i].getPlayer(theRoom).getDisconnected() == false) {
+                apartOfGame = true;
+              }
             }
           }
           if (apartOfGame) {
@@ -462,6 +464,7 @@ io.on("connection", async (socket) => {
 
         // RESET PREVIOUS USER
         user.getPlayer(previousRoom).setIsKilled(true);
+        user.getPlayer(previousRoom).setDisconnected(true);
         user.getPlayer(previousRoom).addKiller("Server");
         console.log("Calling death handler from force kill")
         deathHandler(playerID, rooms.get(previousRoom), previousRoom, gameToLeave);
@@ -1716,6 +1719,7 @@ io.on("connection", async (socket) => {
     var seenNight = [];
     var seenDay = [];
 
+    var socketPlayer = connectedUsers.get(playerID).getPlayer(roomCode);
     var socketRole = connectedUsers.get(playerID).getPlayer(roomCode).getRole();
 
     for (var i = 0; i < game.getUsers().length; i++) {
@@ -1925,7 +1929,7 @@ io.on("connection", async (socket) => {
             }
           }
           // if socket is executioner
-          else if (socketRole.type.includes("executioner")) {
+          else if (socketRole.type.includes("executioner") || socketPlayer.getOldRole().includes("executioner")) {
             if (user == socketRole.target) {
               isEvil = null;
               type = "target";
@@ -2788,19 +2792,20 @@ io.on("connection", async (socket) => {
 
   function endGameClear(game, roomCode) {
     console.log("Clearing game for", roomCode);
-    io.to(roomCode).emit("returnToLobby");
     // Reset players, reset game
     for (var i = 0; i < game.getUsers().length; i++) {
       let user = game.getUsers()[i];
       if (user.getCurrentRoom() == roomCode) {
         user.reset();
         user.getPlayer(roomCode).setReadyGame(false);
+        user.getPlayer(roomCode).setDisconnected(true);
       }
       if (user.getPrevious().includes(roomCode)) {
         user.removePrevious(roomCode);
       }
       
     }
+    io.to(roomCode).emit("returnToLobby");
     game.reset();
     game.setDone(true);
   }
