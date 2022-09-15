@@ -629,8 +629,6 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
     );
     abilityButton.classList.remove("game-button-ability-norounding");
     voteButton.classList.remove("game-button-vote-norounding");
-    console.log(players[i]);
-    console.log("===========");
     if (players[i].userID == proxyID) {
       currentElement.style.fontWeight = 700;
       if (cycle.includes("Night")) {

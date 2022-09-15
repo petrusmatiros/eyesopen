@@ -472,6 +472,7 @@ io.on("connection", async (socket) => {
         //   gameToLeave.removeUser(user)
         // }
         io.to(previousRoom).emit("updateSetPlayers");
+        checkForWin(playerID, rooms.get(previousRoom), previousRoom, gameToLeave);
       }
     }
   }
@@ -2892,6 +2893,7 @@ io.on("connection", async (socket) => {
     io.to(roomCode).emit("returnToLobby");
     game.reset();
     game.setDone(true);
+    clearClock(game);
   }
 
   socket.on("requestProxy", (playerID, state) => {
@@ -3716,6 +3718,13 @@ io.on("connection", async (socket) => {
     }
   }
 
+  function clearClock(game) {
+    if (game.getDone()) {
+      clearInterval(game.getGameInterval());
+      game.setGameInterval(null);
+    }
+  }
+
   function clockHandler(playerID, roomCode, room, game) {
 
     game.setCurrentCycle(0);
@@ -3738,10 +3747,7 @@ io.on("connection", async (socket) => {
       // time is equal to intervalID
       game.setGameInterval(setInterval(function () {
       // console.log("THE CLOCK ID", GAME_CLOCK_ID)
-      if (game.getDone()) {
-        clearInterval(game.getGameInterval());
-        game.setGameInterval(null);
-      }
+      
       console.log(
         game.getTimer().getCounter(),
         game.getPhase(),
