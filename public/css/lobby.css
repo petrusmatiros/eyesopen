@@ -11,10 +11,15 @@
   --dark-fg: hsl(0, 0%, 0%);
   /* Lobby player slots */
   /* --slot-empty: hsl(0, 0%, 95%); */
-  --slot-empty: hsl(0, 0%, 15%);
+  --dark-fg-opaque: rgba(0, 0 ,0, 0.75);
+  --dark-fg-hidden: rgba(0, 0 ,0, 0);
+  --slot-empty: rgba(38, 38, 38, 1);
   /* --slot-joined: hsl(0, 0%, 82%); */
-  --slot-joined: hsl(0, 0%, 35%);
-  --slot-border: hsl(0, 0%, 60%);
+  --slot-joined: rgba(110, 110, 110, 1);
+  --slot-joined-other: rgba(110, 110, 110, 1);
+  --slot-border-other: rgba(110, 110, 110, 0);
+  --slot-border-joined: rgba(200, 200, 200, 1);
+  --slot-border-empty: rgba(38, 38, 38, 0);
   /* Not ready and ready */
   --ready-fg: hsl(100, 100%, 100%);
   --ready-bg: hsl(150, 50%, 35%);
@@ -69,7 +74,6 @@
   font-family: "League Spartan", sans-serif;
   font-weight: 600;
   color: var(--dark-fg);
-
 }
 
 .lobby-rolecard-container {
@@ -78,7 +82,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 1.8em 0.20em 1.8em 0.20em;
+  padding: 1.8em 0.2em 1.8em 0.2em;
   display: none;
   border-radius: 1rem;
   overflow: hidden;
@@ -113,8 +117,6 @@
   font-weight: 600;
 }
 
-
-
 .lobby-rolecard-divider {
   display: flex;
   justify-content: center;
@@ -137,7 +139,6 @@
   align-items: center;
   flex-direction: row;
   margin-right: 1rem;
-  
 }
 
 .lobby-rolecard-info {
@@ -253,12 +254,14 @@
   align-items: center;
   flex-direction: row;
   color: var(--light-fg);
-  background-color: var(--dark-fg);
+  background-color: var(--dark-fg-opaque);
   padding: 0.35em;
   font-size: 1rem;
   font-weight: 600;
   border-radius: 0.5em;
   border: 2px solid var(--light-fg);
+  backdrop-filter: blur(3rem);
+  -webkit-backdrop-filter: blur(3rem);
 }
 
 #copy-code {
@@ -297,15 +300,17 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color: var(--dark-fg);
+  background-color: var(--dark-fg-opaque);
   padding: 0.9em 1em 0.9em 1em;
   border-radius: 0.5em;
   margin-top: 0.25rem;
   margin-bottom: 0.5rem;
   min-width: 19.5rem;
   max-width: 19.5rem;
-  border: 2px solid var(--dark-fg);
+  border: 2px solid var(--dark-fg-hidden);
   box-shadow: 0 0.5rem 1rem var(--main-shadow);
+  backdrop-filter: blur(3rem);
+  -webkit-backdrop-filter: blur(3rem);
 }
 .lobby-card-title-container {
   display: block;
@@ -373,7 +378,7 @@
   margin-right: 0.15rem;
 }
 #joined {
-  background-color: var(--slot-joined);
+  background-color: var(--slot-joined-other);
 }
 
 .lobby-player-wrapper {
@@ -390,9 +395,10 @@
   min-height: 1.25rem;
   max-height: 1.25rem;
   margin-bottom: 0.35rem;
-  border: 2px solid var(--slot-empty);
+  border: 2px solid var(--slot-border-empty);
+  backdrop-filter: blur(3rem);
+  -webkit-backdrop-filter: blur(3rem);
 }
-
 
 .lobby-player-id {
   display: flex;
@@ -497,7 +503,6 @@
 .unpicked {
 }
 
-
 /* Role colors */
 .good {
   color: var(--good-fg);
@@ -537,7 +542,6 @@
   font-weight: 400;
   margin-top: 0.25rem;
   margin-right: 0.5rem;
-
 }
 
 .lobby-button-container {
@@ -586,14 +590,12 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: var(--dark-fg);
     padding: 0.9em 1em 0.9em 1em;
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
     border-radius: 0.5em;
     min-width: 19.5rem;
     max-width: 19.5rem;
-    border: 2px solid var(--dark-fg);
     box-shadow: 0 0.5rem 1rem var(--main-shadow);
   }
   .lobby-button {
@@ -614,4 +616,3 @@
     max-width: 19rem;
   }
 }
-

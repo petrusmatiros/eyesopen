@@ -51,7 +51,6 @@ socket.on("connect", () => {
       }
       socket.emit("checkUserApartOfGame", getPlayerID(), room, "app");
       socket.on("apartOfGameApp", (apartOfGame, inProgress, code) => {
-
         if (apartOfGame && inProgress == true) {
           if (window.location.href.includes("/game") == false) {
             if (window.location.href.endsWith("/")) {
@@ -229,14 +228,13 @@ socket.on("connect", () => {
           updateRoles(roles);
         });
 
-        socket.emit("refreshReady", getPlayerID());
+        setTimeout(() => {
+          socket.emit("refreshReady", getPlayerID());
+        }, 300);
         socket.on("ready-status-lobby-refresh", (users) => {
-          setTimeout(readyStatusLobby, 300, users);
+          readyStatusLobby(users)
         });
 
-        // setTimeout(() => {
-        //   socket.emit("refreshReady", getPlayerID());
-        // }, 300);
       });
     }
   });
@@ -455,13 +453,17 @@ function updatePlayerSlots(host, slots, proxyID) {
       var status = slot.parentElement.parentElement.children[1];
       if (value.userID == host) {
         slot.parentElement.parentElement.style.border =
-          "2px solid var(--slot-border)";
-      } else if (value.userID == proxyID) {
-        slot.parentElement.parentElement.style.border =
-          "2px dashed var(--slot-border)";
+          "2px solid var(--slot-border-joined)";
+          slot.parentElement.parentElement.style.backgroundColor = "var(--slot-joined)";
+        } else if (value.userID == proxyID) {
+          slot.parentElement.parentElement.style.border =
+          "2px dashed var(--slot-border-joined)";
+          slot.parentElement.parentElement.style.backgroundColor = "var(--slot-joined)";
       } else {
         slot.parentElement.parentElement.style.border =
-          "2px dashed var(--slot-joined)";
+          "2px solid var(--slot-border-other)";
+
+        
       }
       // status.innerText = "not ready";
     } else if (value.taken == false) {
@@ -472,7 +474,7 @@ function updatePlayerSlots(host, slots, proxyID) {
       var status = slot.parentElement.parentElement.children[1];
       status.id = "";
       slot.parentElement.parentElement.style.border =
-        "2px solid var(--slot-empty)";
+        "2px solid var(--slot-border-empty)";
     }
   }
 }
@@ -508,7 +510,7 @@ function showClearCheck(reset = false) {
 function copyButtonAnimate(reset = false) {
   if (reset) {
     document.getElementById("copy-code").style.backgroundColor =
-      "var(--dark-fg)";
+      "var(--dark-fg-opaque)";
     document.getElementById("roomcode-copy").style.color = "var(--light-fg)";
     document.getElementById("copy-code").style.border =
       "2px solid var(--light-fg)";

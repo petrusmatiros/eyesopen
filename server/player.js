@@ -18,11 +18,9 @@ const roleTypes = {
 var { Role } = require("./role");
 
 class Player {
-  constructor(
-    playerName,
-    role,
-  ) {
+  constructor(playerName, role) {
     this.playerName = playerName;
+    this.playerRoom = null;
     this.role = role;
     this.oldRole = null;
     this.oldTarget = null;
@@ -71,6 +69,13 @@ class Player {
   setPlayerName(playerName) {
     this.playerName = playerName;
   }
+  getPlayerRoom() {
+    return this.playerRoom;
+  }
+
+  setPlayerRoom(playerRoom) {
+    this.playerRoom = playerRoom;
+  }
 
   getRole() {
     return this.role;
@@ -114,7 +119,7 @@ class Player {
     return this.messages;
   }
   addMessage(message) {
-    this.messages.push(message)
+    this.messages.push(message);
   }
   removeMessage(message) {
     this.messages.splice(this.messages.indexOf(message), 1);
@@ -138,7 +143,6 @@ class Player {
   addKiller(killer) {
     this.killedBy.push(killer);
   }
-  
 }
 
 module.exports = {

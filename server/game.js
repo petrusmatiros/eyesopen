@@ -5,6 +5,19 @@ class Game {
     this.cycleCount = 0;
     // Name of current cycle
     this.cycle = "";
+    // Interval counts
+    this.currentCycle = 0;
+    this.currentPhase = 0;
+    this.theDurations = null;
+    this.nightLength = 0;
+    this.dayLength = 0;
+    // Emit booleans
+    this.emitPhaseOnce = true;
+    this.emitCycleOnce = true;
+    this.nightMessagesOnce = 0;
+    this.recapOnce = 0;
+    this.dayMessagesOnce = 0;
+
     // Phase
     this.phase = "";
     // Interval
@@ -45,8 +58,6 @@ class Game {
     this.cycle = "";
     // Phase
     this.phase = "";
-    // Interval
-    this.interval = null;
     // Timer
     this.timer = new Timer();
     // Keeping track of evil players
@@ -79,6 +90,22 @@ class Game {
   resetDone() {
     this.isDone = false;
   }
+  resetGameInterval() {
+    // Interval
+    this.interval = null;
+    // Interval counts
+    this.currentCycle = 0;
+    this.currentPhase = 0;
+    this.theDurations = null;
+    this.nightLength = 0;
+    this.dayLength = 0;
+    // Emit booleans
+    this.emitPhaseOnce = true;
+    this.emitCycleOnce = true;
+    this.nightMessagesOnce = 0;
+    this.recapOnce = 0;
+    this.dayMessagesOnce = 0;
+  }
 
   getCycleCount() {
     return this.cycleCount;
@@ -96,6 +123,68 @@ class Game {
     this.cycle = cycle;
   }
 
+  getCurrentCycle() {
+    return this.currentCycle;
+  }
+  setCurrentCycle(currentCycle) {
+    this.currentCycle = currentCycle;
+  }
+  getCurrentPhase() {
+    return this.currentPhase;
+  }
+  setCurrentPhase(currentPhase) {
+    this.currentPhase = currentPhase;
+  }
+  getTheDurations() {
+    return this.theDurations;
+  }
+  setTheDurations(theDurations) {
+    this.theDurations = theDurations;
+  }
+  getNightLength() {
+    return this.nightLength;
+  }
+  setNightLength(nightLength) {
+    this.nightLength = nightLength;
+  }
+  getDayLength() {
+    return this.dayLength;
+  }
+  setDayLength(dayLength) {
+    this.dayLength = dayLength;
+  }
+
+  getEmitPhaseOnce() {
+    return this.emitPhaseOnce;
+  }
+  setEmitPhaseOnce(emitPhaseOnce) {
+    this.emitPhaseOnce = emitPhaseOnce;
+  }
+  getEmitCycleOnce() {
+    return this.emitCycleOnce;
+  }
+  setEmitCycleOnce(emitCycleOnce) {
+    this.emitCycleOnce = emitCycleOnce;
+  }
+  getNightMessagesOnce() {
+    return this.nightMessagesOnce;
+  }
+  setNightMessagesOnce(nightMessagesOnce) {
+    this.nightMessagesOnce = nightMessagesOnce;
+  }
+  getRecapOnce() {
+    return this.recapOnce;
+  }
+  setRecapOnce(recapOnce) {
+    this.recapOnce = recapOnce;
+  }
+  getDayMessagesOnce() {
+    return this.dayMessagesOnce;
+  }
+  setDayMessagesOnce(dayMessagesOnce) {
+    this.dayMessagesOnce = dayMessagesOnce;
+  }
+
   getPhase() {
     return this.phase;
   }
@@ -108,8 +197,8 @@ class Game {
     return this.interval;
   }
 
-  setGameInterval(func) {
-    this.interval = setInterval(func, 1000)
+  setGameInterval(interval) {
+    this.interval = interval;
   }
 
   getTimer() {
@@ -263,8 +352,6 @@ class Game {
   setNoDeaths(noDeaths) {
     this.noDeaths = noDeaths;
   }
-
-  
 
   getProgress() {
     return this.inProgress;

@@ -130,9 +130,12 @@ io.on("connection", async (socket) => {
     let playerID = socket.data.playerID;
     if (checkUserExist(playerID)) {
       var targetRoom = connectedUsers.get(playerID).getCurrentRoom();
-      console.log("targetroom", targetRoom, connectedUsers.get(playerID).getName());
+      console.log(
+        "targetroom",
+        targetRoom,
+        connectedUsers.get(playerID).getName()
+      );
       if (targetRoom !== null) {
-        
         connectedUsers.get(playerID).setReadyLobby(false);
 
         io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
@@ -145,7 +148,12 @@ io.on("connection", async (socket) => {
         );
         // reqHandler(playerID);
         // remove user from room
-        if (rooms.get(targetRoom).getUsers().includes(connectedUsers.get(playerID))) {
+        if (
+          rooms
+            .get(targetRoom)
+            .getUsers()
+            .includes(connectedUsers.get(playerID))
+        ) {
           rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
         }
         clearPlayerSlot(playerID);
@@ -156,7 +164,11 @@ io.on("connection", async (socket) => {
         // socket leaves room
         // connectedUsers.get(playerID).setCurrentRoom(null);
         socket.leave(targetRoom);
-        console.log("leaving room", targetRoom, connectedUsers.get(playerID).getName());
+        console.log(
+          "leaving room",
+          targetRoom,
+          connectedUsers.get(playerID).getName()
+        );
         console.log(socket.rooms);
       }
     }
@@ -166,13 +178,15 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (theRoom !== null) {
         if (rooms.has(theRoom)) {
-          
           // if (!connectedUsers.get(playerID).getInGame()) {
           var room = rooms.get(theRoom);
           let users = room.getGame().getUsers();
           var apartOfGame = false;
           for (var i = 0; i < users.length; i++) {
-            if (users[i].getPlayer(theRoom) == connectedUsers.get(playerID).getPlayer(theRoom)) {
+            if (
+              users[i].getPlayer(theRoom) ==
+              connectedUsers.get(playerID).getPlayer(theRoom)
+            ) {
               if (users[i].getPlayer(theRoom).getDisconnected() == false) {
                 apartOfGame = true;
               }
@@ -231,7 +245,6 @@ io.on("connection", async (socket) => {
               );
             }
           }
-
         }
       }
     }
@@ -258,6 +271,7 @@ io.on("connection", async (socket) => {
     // reset game
     room.getGame().reset();
     room.getGame().resetDone();
+    room.getGame().resetGameInterval();
     // set all users ready
     for (var i = 0; i < users.length; i++) {
       users[i].setInGame(true);
@@ -277,6 +291,8 @@ io.on("connection", async (socket) => {
             roomCode,
             new Player(users[i].getName(), new Role(roles[rand]))
           );
+          // Set playerRoom
+          users[i].getPlayer(roomCode).setPlayerRoom(roomCode);
           // have used up this role
           seen.push(rand);
 
@@ -466,12 +482,23 @@ io.on("connection", async (socket) => {
         user.getPlayer(previousRoom).setIsKilled(true);
         user.getPlayer(previousRoom).setDisconnected(true);
         user.getPlayer(previousRoom).addKiller("Server");
-        console.log("Calling death handler from force kill")
-        deathHandler(playerID, rooms.get(previousRoom), previousRoom, gameToLeave);
+        console.log("Calling death handler from force kill");
+        deathHandler(
+          playerID,
+          rooms.get(previousRoom),
+          previousRoom,
+          gameToLeave
+        );
         // if (gameToLeave.getUsers().includes(user)) {
         //   gameToLeave.removeUser(user)
         // }
         io.to(previousRoom).emit("updateSetPlayers");
+        checkForWin(
+          playerID,
+          rooms.get(previousRoom),
+          previousRoom,
+          gameToLeave
+        );
       }
     }
   }
@@ -489,14 +516,14 @@ io.on("connection", async (socket) => {
           var previousRoomCode = user.getPrevious()[i];
           var previousRoom = rooms.get(previousRoomCode);
           var previousGame = previousRoom.getGame();
-          forceKill(playerID, previousRoomCode, previousGame)
+          forceKill(playerID, previousRoomCode, previousGame);
           io.to(playerID).emit(
             "beginClearEvilRoom",
             previousGame.getEvilRoom()
           );
         }
         // Clear previous array
-        user.setPrevious([])
+        user.setPrevious([]);
       }
     }
   }
@@ -716,13 +743,9 @@ io.on("connection", async (socket) => {
     var room = rooms.get(roomCode);
     var game = room.getGame();
     if (checkUserExist(playerID)) {
-      
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-        
         if (room.getUsers().includes(connectedUsers.get(playerID)) == false) {
-          
           room.addUser(connectedUsers.get(playerID));
-          
         }
       }
     }
@@ -759,7 +782,10 @@ io.on("connection", async (socket) => {
           updatePlayerCount(playerID);
         } else if (state.includes("game")) {
           // emitTo = "ready-status-game";
-          connectedUsers.get(playerID).getPlayer(roomCode).setReadyGame(notReady);
+          connectedUsers
+            .get(playerID)
+            .getPlayer(roomCode)
+            .setReadyGame(notReady);
 
           // var playerIsReady = connectedUsers.get(playerID).getReadyGame();
           // socket.to(connectedUsers.get(playerID), playerIsReady, checkAllReadyGame(roomCode, playerID)).emit(emitTo);
@@ -847,8 +873,6 @@ io.on("connection", async (socket) => {
     }
   });
 
-  
-
   function updatePlayerCount(playerID) {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
@@ -875,24 +899,21 @@ io.on("connection", async (socket) => {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         console.log("THIS " + roomCode);
         if (state.includes("lobby")) {
-          
-            socket.join(connectedUsers.get(playerID).getCurrentRoom());
-            checkForAlreadyExistingUser(roomCode, playerID);
-            socket.emit("viewRoom", roomCode);
-            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-              "viewPlayerCount",
-              amountUnready(roomCode),
-              hostInLobby(roomCode),
-              connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
-              checkAllReadyLobby(roomCode, playerID),
-              rooms.get(roomCode).getUsers().length,
-              rooms.get(roomCode).getRoles().length
-            );
-            reqHandler(playerID);
-            console.log(socket.rooms);
-            socket.emit("joinPlayerSlot");
-            
-          
+          socket.join(connectedUsers.get(playerID).getCurrentRoom());
+          checkForAlreadyExistingUser(roomCode, playerID);
+          socket.emit("viewRoom", roomCode);
+          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+            "viewPlayerCount",
+            amountUnready(roomCode),
+            hostInLobby(roomCode),
+            connectedUsers.get(rooms.get(roomCode).getHost()).getName(),
+            checkAllReadyLobby(roomCode, playerID),
+            rooms.get(roomCode).getUsers().length,
+            rooms.get(roomCode).getRoles().length
+          );
+          reqHandler(playerID);
+          console.log(socket.rooms);
+          socket.emit("joinPlayerSlot");
         } else if (state.includes("app")) {
           if (
             rooms.get(roomCode).getGame().getProgress() == true &&
@@ -916,7 +937,7 @@ io.on("connection", async (socket) => {
             );
             reqHandler(playerID);
             console.log(socket.rooms);
-            
+
             socket.emit("joinPlayerSlot");
           }
         }
@@ -1476,7 +1497,15 @@ io.on("connection", async (socket) => {
                           abilityMessage = `${player.getPlayerName()} is not going to frame anyone`;
                         }
                       }
-                      sendMessage(playerID, "evil", abilityMessage, "Night");
+                      sendMessage(
+                        playerID,
+                        room,
+                        roomCode,
+                        game,
+                        "evil",
+                        abilityMessage,
+                        "Night"
+                      );
                     } else {
                       var abilityMessage = "";
                       if (player.abilityTarget == null) {
@@ -1521,7 +1550,15 @@ io.on("connection", async (socket) => {
                         player.abilityTarget = null;
                         abilityMessage = `You are not targeting anyone`;
                       }
-                      sendMessage(playerID, "socket", abilityMessage, "Night");
+                      sendMessage(
+                        playerID,
+                        room,
+                        roomCode,
+                        game,
+                        "socket",
+                        abilityMessage,
+                        "Night"
+                      );
                     }
                   }
                 }
@@ -1546,6 +1583,9 @@ io.on("connection", async (socket) => {
                             player.getRole().killVoteCount;
                           sendMessage(
                             playerID,
+                            room,
+                            roomCode,
+                            game,
                             "evil",
                             `${player.getPlayerName()} is voting to kill ${theVoteTargetPlayer.getPlayerName()} (${
                               theVoteTargetPlayer.nightVotes
@@ -1563,6 +1603,9 @@ io.on("connection", async (socket) => {
                             player.getRole().killVoteCount;
                           sendMessage(
                             playerID,
+                            room,
+                            roomCode,
+                            game,
                             "evil",
                             `${player.getPlayerName()} is voting to kill ${theVoteTargetPlayer.getPlayerName()} (${
                               theVoteTargetPlayer.nightVotes
@@ -1578,6 +1621,9 @@ io.on("connection", async (socket) => {
                             player.getRole().killVoteCount;
                           sendMessage(
                             playerID,
+                            room,
+                            roomCode,
+                            game,
                             "evil",
                             `${player.getPlayerName()} removed their vote from ${theVoteTargetPlayer.getPlayerName()} (${
                               theVoteTargetPlayer.nightVotes
@@ -1598,6 +1644,9 @@ io.on("connection", async (socket) => {
 
                         sendMessage(
                           playerID,
+                          room,
+                          roomCode,
+                          game,
                           "all",
                           `${player.getPlayerName()} is voting to lynch ${theVoteTargetPlayer.getPlayerName()}`,
                           "Day"
@@ -1614,6 +1663,9 @@ io.on("connection", async (socket) => {
                           player.getRole().voteCount;
                         sendMessage(
                           playerID,
+                          room,
+                          roomCode,
+                          game,
                           "all",
                           `${player.getPlayerName()} is voting to lynch ${theVoteTargetPlayer.getPlayerName()}`,
                           "Day"
@@ -1627,6 +1679,9 @@ io.on("connection", async (socket) => {
                           player.getRole().voteCount;
                         sendMessage(
                           playerID,
+                          room,
+                          roomCode,
+                          game,
                           "all",
                           `${player.getPlayerName()} removed their vote from ${theVoteTargetPlayer.getPlayerName()}`,
                           "Day"
@@ -1748,37 +1803,38 @@ io.on("connection", async (socket) => {
               isEvil = false;
             }
           } else {
-            if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") && socketPlayer.getOldRole() !== null)) {
+            if (
+              socketRole.type.includes("executioner") ||
+              (socketRole.type.includes("jester") &&
+                socketPlayer.getOldRole() !== null)
+            ) {
               if (socketRole.type.includes("executioner")) {
                 if (user == socketRole.target) {
                   isEvil = null;
                   type = "target+dead";
-                  
                 } else {
                   isEvil = null;
                   type = "dead";
-                  
                 }
-              } else if (socketRole.type.includes("jester") && socketPlayer.getOldRole().includes("executioner")) {
+              } else if (
+                socketRole.type.includes("jester") &&
+                socketPlayer.getOldRole().includes("executioner")
+              ) {
                 if (user == socketPlayer.getOldTarget()) {
                   isEvil = null;
                   type = "target+dead";
-                  
                 } else {
                   isEvil = null;
                   type = "dead";
-                  
                 }
               }
             } else if (socketRole.type.includes("lawyer")) {
               if (user == socketRole.client) {
                 isEvil = null;
                 type = "client+dead";
-                
               } else {
                 isEvil = null;
                 type = "dead";
-                
               }
             } else {
               isEvil = null;
@@ -1888,7 +1944,11 @@ io.on("connection", async (socket) => {
               }
             }
             // if socket is executioner
-            else if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") &&socketPlayer.getOldRole() !== null)) {
+            else if (
+              socketRole.type.includes("executioner") ||
+              (socketRole.type.includes("jester") &&
+                socketPlayer.getOldRole() !== null)
+            ) {
               if (socketRole.type.includes("executioner")) {
                 if (user == socketRole.target) {
                   isEvil = null;
@@ -1899,7 +1959,10 @@ io.on("connection", async (socket) => {
                   type = "none";
                   pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
                 }
-              } else if (socketRole.type.includes("jester") && socketPlayer.getOldRole().includes("executioner")) {
+              } else if (
+                socketRole.type.includes("jester") &&
+                socketPlayer.getOldRole().includes("executioner")
+              ) {
                 if (user == socketPlayer.getOldTarget()) {
                   isEvil = null;
                   type = "target";
@@ -1945,37 +2008,38 @@ io.on("connection", async (socket) => {
               isEvil = false;
             }
           } else {
-            if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") && socketPlayer.getOldRole() !== null)) {
+            if (
+              socketRole.type.includes("executioner") ||
+              (socketRole.type.includes("jester") &&
+                socketPlayer.getOldRole() !== null)
+            ) {
               if (socketRole.type.includes("executioner")) {
                 if (user == socketRole.target) {
                   isEvil = null;
                   type = "target+dead";
-                  
                 } else {
                   isEvil = null;
                   type = "dead";
-                  
                 }
-              } else if (socketRole.type.includes("jester") && socketPlayer.getOldRole().includes("executioner")) {
+              } else if (
+                socketRole.type.includes("jester") &&
+                socketPlayer.getOldRole().includes("executioner")
+              ) {
                 if (user == socketPlayer.getOldTarget()) {
                   isEvil = null;
                   type = "target+dead";
-                  
                 } else {
                   isEvil = null;
                   type = "dead";
-                  
                 }
               }
             } else if (socketRole.type.includes("lawyer")) {
               if (user == socketRole.client) {
                 isEvil = null;
                 type = "client+dead";
-                
               } else {
                 isEvil = null;
                 type = "dead";
-                
               }
             } else {
               isEvil = null;
@@ -2009,7 +2073,11 @@ io.on("connection", async (socket) => {
             }
           }
           // if socket is executioner
-          else if (socketRole.type.includes("executioner") || (socketRole.type.includes("jester") && socketPlayer.getOldRole() !== null)) {
+          else if (
+            socketRole.type.includes("executioner") ||
+            (socketRole.type.includes("jester") &&
+              socketPlayer.getOldRole() !== null)
+          ) {
             if (socketRole.type.includes("executioner")) {
               if (user == socketRole.target) {
                 isEvil = null;
@@ -2020,7 +2088,10 @@ io.on("connection", async (socket) => {
                 type = "none";
                 pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
               }
-            } else if (socketRole.type.includes("jester") && socketPlayer.getOldRole().includes("executioner")) {
+            } else if (
+              socketRole.type.includes("jester") &&
+              socketPlayer.getOldRole().includes("executioner")
+            ) {
               if (user == socketPlayer.getOldTarget()) {
                 isEvil = null;
                 type = "target";
@@ -2081,7 +2152,7 @@ io.on("connection", async (socket) => {
             } else if (state.includes("refresh")) {
               emitTo = "setPlayersRefresh";
             }
-            console.log("Player", connectedUsers.get(playerID).getName(), "sees", generateValidPlayerList(playerID))
+
             socket.emit(
               emitTo,
               generateValidPlayerList(playerID),
@@ -2145,58 +2216,130 @@ io.on("connection", async (socket) => {
     }
   });
 
-  // Prevent message from being spammed
-  var emitCycleOnce = true;
-  var emitPhaseOnce = true;
-
-  function messageHandlerForPhases(playerID, game) {
+  function messageHandlerForPhases(playerID, room, roomCode, game) {
     var lineSeperator = "--------------------------------";
-    if (emitPhaseOnce) {
+    if (game.getEmitPhaseOnce()) {
       if (game.getPhase().includes("actions")) {
-        sendMessage(playerID, "all", lineSeperator, "lineSeperator");
         sendMessage(
           playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          lineSeperator,
+          "lineSeperator"
+        );
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
           "all",
           "It's time to act. The action phase has begun",
           "important"
         );
       }
       if (game.getPhase().includes("message")) {
-        sendMessage(playerID, "all", lineSeperator, "lineSeperator");
-        sendMessage(playerID, "all", "The sun begins to rise", "extra");
-      }
-      if (game.getPhase().includes("recap")) {
-        sendMessage(playerID, "all", lineSeperator, "lineSeperator");
-        sendMessage(playerID, "all", "This happened last night", "extra");
-      }
-      if (game.getPhase().includes("discussion")) {
-        sendMessage(playerID, "all", lineSeperator, "lineSeperator");
-        sendMessage(playerID, "all", "Time for discussion!", "extra");
-      }
-      if (game.getPhase().includes("voting")) {
-        sendMessage(playerID, "all", lineSeperator, "lineSeperator");
         sendMessage(
           playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          lineSeperator,
+          "lineSeperator"
+        );
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          "The sun begins to rise",
+          "extra"
+        );
+      }
+      if (game.getPhase().includes("recap")) {
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          lineSeperator,
+          "lineSeperator"
+        );
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          "This happened last night",
+          "extra"
+        );
+      }
+      if (game.getPhase().includes("discussion")) {
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          lineSeperator,
+          "lineSeperator"
+        );
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          "Time for discussion!",
+          "extra"
+        );
+      }
+      if (game.getPhase().includes("voting")) {
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          lineSeperator,
+          "lineSeperator"
+        );
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
           "all",
           "It's time to cast your votes",
           "important"
         );
       }
-      emitPhaseOnce = false;
+      game.setEmitPhaseOnce(false);
     }
   }
 
-  function messageHandlerForCycles(playerID, game) {
-    if (emitCycleOnce) {
+  function messageHandlerForCycles(playerID, room, roomCode, game) {
+    if (game.getEmitCycleOnce()) {
       if (game.getCycle().includes("Night")) {
         sendMessage(
           playerID,
+          room,
+          roomCode,
+          game,
           "all",
           game.getCycle() + " " + game.getCycleCount(),
           "timestamp"
         );
         sendMessage(
           playerID,
+          room,
+          roomCode,
+          game,
           "all",
           "The moon glows. The night has begun",
           "extra"
@@ -2204,23 +2347,38 @@ io.on("connection", async (socket) => {
       } else if (game.getCycle().includes("Day")) {
         sendMessage(
           playerID,
+          room,
+          roomCode,
+          game,
           "all",
           game.getCycle() + " " + game.getCycleCount(),
           "timestamp"
         );
-        sendMessage(playerID, "all", "The day has begun", "extra");
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          "The day has begun",
+          "extra"
+        );
       }
     }
-    emitCycleOnce = false;
+    game.setEmitCycleOnce(false);
   }
 
   // be able to send toAll, to player, and to target
 
-  function sendMessage(playerID, sendTo = "", message = "", type = "") {
-    var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-    var room = rooms.get(roomCode);
-    var game = room.getGame();
-
+  function sendMessage(
+    playerID,
+    room,
+    roomCode,
+    game,
+    sendTo = "",
+    message = "",
+    type = ""
+  ) {
     if (sendTo == "all") {
       for (var i = 0; i < game.getUsers().length; i++) {
         if (game.getUsers()[i].getInGame()) {
@@ -2242,25 +2400,27 @@ io.on("connection", async (socket) => {
       );
     } else if (sendTo == "socket") {
       if (connectedUsers.get(playerID).getInGame()) {
-        connectedUsers.get(playerID).getPlayer(roomCode).addMessage({ message, type });
+        connectedUsers
+          .get(playerID)
+          .getPlayer(roomCode)
+          .addMessage({ message, type });
       }
       io.to(playerID).emit("recieveMessage", message, type, game.getCycle());
     } else if (sendTo == "target") {
       if (connectedUsers.get(playerID).getInGame()) {
-        connectedUsers.get(playerID).getPlayer(roomCode).addMessage({ message, type });
+        connectedUsers
+          .get(playerID)
+          .getPlayer(roomCode)
+          .addMessage({ message, type });
       }
       io.to(playerID).emit("recieveMessage", message, type, game.getCycle());
     }
   }
 
-  var nightMessagesOnce = 0;
-  var recapOnce = 0;
-  var dayMessagesOnce = 0;
-
-  function resetPhaseConditions() {
-    nightMessagesOnce = 0;
-    recapOnce = 0;
-    dayMessagesOnce = 0;
+  function resetPhaseConditions(game) {
+    game.setNightMessagesOnce(0);
+    game.setRecapOnce(0);
+    game.setDayMessagesOnce(0);
   }
 
   socket.on("setActionsOnPhase", (playerID, state) => {
@@ -2296,43 +2456,42 @@ io.on("connection", async (socket) => {
   // TODO: need to do this
   // ! FIX THIS
   function gameHandler(playerID) {
-
     // ? PROXY HANDLING
     var roomCode = connectedUsers.get(playerID).getCurrentRoom();
     var room = rooms.get(roomCode);
     var game = room.getGame();
     if (game.getCycle() == "Night") {
       if (game.getPhase() == "nightMessages") {
-        if (nightMessagesOnce == 0) {
+        if (game.getNightMessagesOnce() == 0) {
           console.log("EXECUTING NIGHT ACTIONS");
           executeNightActions(playerID, room, roomCode, game);
           voteHandlerEvil(playerID, room, roomCode, game);
           io.to(roomCode).emit("updateSetPlayers");
-          nightMessagesOnce = 1;
+          game.setNightMessagesOnce(1);
           resetAllActions(playerID, room, roomCode, game);
         }
       }
     } else if (game.getCycle() == "Day") {
       if (game.getPhase() == "dayMessages") {
-        if (dayMessagesOnce == 0) {
+        if (game.getDayMessagesOnce() == 0) {
           console.log("VOTE GLOBAL");
           voteHandlerGlobal(playerID, room, roomCode, game);
           console.log("DEATH HANDLER VOTE");
           deathHandler(playerID, room, roomCode, game);
           io.to(roomCode).emit("updateSetPlayers");
           checkForWin(playerID, room, roomCode, game);
-          dayMessagesOnce = 1;
+          game.setDayMessagesOnce(1);
           resetAllActions(playerID, room, roomCode, game);
         }
       } else if (game.getPhase() == "discussion") {
         resetAllActions(playerID, room, roomCode, game);
       } else if (game.getPhase() == "recap") {
-        if (recapOnce == 0) {
+        if (game.getRecapOnce() == 0) {
           console.log("DEATH HANDLER RECAP");
           deathHandler(playerID, room, roomCode, game);
           io.to(roomCode).emit("updateSetPlayers");
           checkForWin(playerID, room, roomCode, game);
-          recapOnce = 1;
+          game.setRecapOnce(1);
           resetAllActions(playerID, room, roomCode, game);
         }
       }
@@ -2402,7 +2561,7 @@ io.on("connection", async (socket) => {
         } else if (game.getUsers().length == 0) {
           // Return immediately (this means everybody has LEFT, one by one)
           // game.setDone(true)
-          endGameClear(game, roomCode)
+          endGameClear(game, roomCode);
         } else if (evilCount == 0 && neutralCount == 0 && goodCount > 0) {
           // GOOD TEAM WINS
           game.setGoodWin(true);
@@ -2501,6 +2660,9 @@ io.on("connection", async (socket) => {
                 console.log(serialKillerMessages[rand]);
                 sendMessage(
                   playerID,
+                  room,
+                  roomCode,
+                  game,
                   "all",
                   serialKillerMessages[rand],
                   "info"
@@ -2560,8 +2722,10 @@ io.on("connection", async (socket) => {
               }
             } else if (theJester !== null || secondJester !== null) {
               if (
-                (!theJester.getPlayer(roomCode).getIsKilled() && !theJester.getPlayer(roomCode).getIsLynched()) ||
-                (!secondJester.getPlayer(roomCode).getIsKilled() && !secondJester.getPlayer(roomCode).getIsLynched())
+                (!theJester.getPlayer(roomCode).getIsKilled() &&
+                  !theJester.getPlayer(roomCode).getIsLynched()) ||
+                (!secondJester.getPlayer(roomCode).getIsKilled() &&
+                  !secondJester.getPlayer(roomCode).getIsLynched())
               ) {
                 game.setNeutralWin(true);
 
@@ -2633,6 +2797,9 @@ io.on("connection", async (socket) => {
                     var rand = random(0, serialKillerMessages.length - 1);
                     sendMessage(
                       playerID,
+                      room,
+                      roomCode,
+                      game,
                       "all",
                       serialKillerMessages[rand],
                       "info"
@@ -2683,8 +2850,10 @@ io.on("connection", async (socket) => {
               }
             } else if (theJester !== null && secondJester == null) {
               if (
-                (!theJester.getPlayer(roomCode).getIsKilled() && !theJester.getPlayer(roomCode).getIsLynched()) ||
-                (!secondJester.getPlayer(roomCode).getIsKilled() && !secondJester.getPlayer(roomCode).getIsLynched())
+                (!theJester.getPlayer(roomCode).getIsKilled() &&
+                  !theJester.getPlayer(roomCode).getIsLynched()) ||
+                (!secondJester.getPlayer(roomCode).getIsKilled() &&
+                  !secondJester.getPlayer(roomCode).getIsLynched())
               ) {
                 if (theLawyer !== null) {
                   if (theJester !== null && secondJester == null) {
@@ -2743,7 +2912,15 @@ io.on("connection", async (socket) => {
         ];
         var rand = random(0, jesterMessages.length - 1);
         console.log(jesterMessages[rand]);
-        sendMessage(playerID, "all", jesterMessages[rand], "info");
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          jesterMessages[rand],
+          "info"
+        );
       } else if (!game.getJesterWin() && game.getExecutionerWin()) {
         var executionerMessages = [
           "Just doing what has to been done",
@@ -2752,7 +2929,15 @@ io.on("connection", async (socket) => {
         ];
         var rand = random(0, executionerMessages.length - 1);
         console.log(executionerMessages[rand]);
-        sendMessage(playerID, "all", executionerMessages[rand], "info");
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          executionerMessages[rand],
+          "info"
+        );
       }
     }
 
@@ -2895,11 +3080,11 @@ io.on("connection", async (socket) => {
       if (user.getPrevious().includes(roomCode)) {
         user.removePrevious(roomCode);
       }
-      
     }
     io.to(roomCode).emit("returnToLobby");
     game.reset();
     game.setDone(true);
+    clearClock(game);
   }
 
   socket.on("requestProxy", (playerID, state) => {
@@ -2915,7 +3100,6 @@ io.on("connection", async (socket) => {
               socket.emit("fetchedProxyApp", proxyIdenfication.get(playerID));
             }
           }
-
         } else if (state.includes("lobby")) {
           socket.emit("fetchedProxyLobby", proxyIdenfication.get(playerID));
         }
@@ -2952,6 +3136,9 @@ io.on("connection", async (socket) => {
       // send message to evil people that it worked
       sendMessage(
         playerID,
+        room,
+        roomCode,
+        game,
         "evil",
         `You have decided to murder ${targetPlayer.getPlayerName()} (${
           targetPlayer.nightVotes
@@ -2960,12 +3147,18 @@ io.on("connection", async (socket) => {
       );
       sendMessage(
         playerID,
+        room,
+        roomCode,
+        game,
         "evil",
         `${targetPlayer.getPlayerName()} has been murdered - excellent >:)`,
         "confirm"
       );
       sendMessage(
         target,
+        room,
+        roomCode,
+        game,
         "target",
         `You died! You were killed by members of the Evil team`,
         "alert"
@@ -2973,12 +3166,18 @@ io.on("connection", async (socket) => {
     } else {
       sendMessage(
         playerID,
+        room,
+        roomCode,
+        game,
         "evil",
         `No one was killed tonight, someone protected ${targetPlayer.getPlayerName()}`,
         "info"
       );
       sendMessage(
         target,
+        room,
+        roomCode,
+        game,
         "target",
         `Someone tried to kill you, but you were protected`,
         "info"
@@ -3026,6 +3225,9 @@ io.on("connection", async (socket) => {
         } else {
           sendMessage(
             playerID,
+            room,
+            roomCode,
+            game,
             "evil",
             `No one was voted to get killed`,
             "info"
@@ -3034,6 +3236,9 @@ io.on("connection", async (socket) => {
       } else {
         sendMessage(
           playerID,
+          room,
+          roomCode,
+          game,
           "evil",
           "The vote was tied, no blood gets spilled tonight",
           "info"
@@ -3090,18 +3295,27 @@ io.on("connection", async (socket) => {
     // SEND LYNCHED MESSAGE
     sendMessage(
       playerID,
+      room,
+      roomCode,
+      game,
       "all",
       `The town has voted to lynch ${targetPlayer.getPlayerName()}`,
       "info"
     );
     sendMessage(
       target,
+      room,
+      roomCode,
+      game,
       "target",
       `You died! You were lynched by members of the town`,
       "alert"
     );
     sendMessage(
       playerID,
+      room,
+      roomCode,
+      game,
       "all",
       `${targetPlayer.getPlayerName()} has been lynched. Justice!`,
       "info"
@@ -3221,12 +3435,18 @@ io.on("connection", async (socket) => {
       if (!gotLynched) {
         sendMessage(
           playerID,
+          room,
+          roomCode,
+          game,
           "all",
           `There was no majority to lynch anyone`,
           "info"
         );
         sendMessage(
           playerID,
+          room,
+          roomCode,
+          game,
           "all",
           `No one was lynched - hope it was the right decision`,
           "info"
@@ -3276,12 +3496,18 @@ io.on("connection", async (socket) => {
                 abilityTargetPlayer.isBlocked = true;
                 sendMessage(
                   user.playerID,
+                  room,
+                  roomCode,
+                  game,
                   "socket",
                   `You trapped ${abilityTargetPlayer.getPlayerName()}`,
                   "confirm"
                 );
                 sendMessage(
                   abilityTarget.playerID,
+                  room,
+                  roomCode,
+                  game,
                   "target",
                   `You have been trapped! Your night ability was blocked by the Trapper`,
                   "info"
@@ -3292,12 +3518,18 @@ io.on("connection", async (socket) => {
                   abilityTargetPlayer.isBlocked = true;
                   sendMessage(
                     user.playerID,
+                    room,
+                    roomCode,
+                    game,
                     "socket",
                     `You cast a freeze spell on ${abilityTargetPlayer.getPlayerName()}`,
                     "confirm"
                   );
                   sendMessage(
                     abilityTarget.playerID,
+                    room,
+                    roomCode,
+                    game,
                     "target",
                     `You have been frozen! Your night ability was blocked by the Witch`,
                     "info"
@@ -3319,6 +3551,9 @@ io.on("connection", async (socket) => {
                         abilityTargetPlayer.isDisguised = true;
                         sendMessage(
                           user.playerID,
+                          room,
+                          roomCode,
+                          game,
                           "socket",
                           `You disguised yourself. Self uses left: ${
                             user.getPlayer(roomCode).getRole().selfUsage
@@ -3333,6 +3568,9 @@ io.on("connection", async (socket) => {
                         abilityTargetPlayer.isDisguised = true;
                         sendMessage(
                           user.playerID,
+                          room,
+                          roomCode,
+                          game,
                           "socket",
                           `You don't have any self uses left. Self uses left: ${
                             user.getPlayer(roomCode).getRole().selfUsage
@@ -3346,6 +3584,9 @@ io.on("connection", async (socket) => {
                       abilityTargetPlayer.isDisguised = true;
                       sendMessage(
                         user.playerID,
+                        room,
+                        roomCode,
+                        game,
                         "socket",
                         `You disguise ${abilityTargetPlayer.getPlayerName()}. They will appear good to the Investigator this night`,
                         "confirm"
@@ -3359,6 +3600,9 @@ io.on("connection", async (socket) => {
                     abilityTargetPlayer.isDisguised = true;
                     sendMessage(
                       user.playerID,
+                      room,
+                      roomCode,
+                      game,
                       "socket",
                       `You frame ${abilityTargetPlayer.getPlayerName()}. They will appear evil to the Investigator this night`,
                       "confirm"
@@ -3373,6 +3617,9 @@ io.on("connection", async (socket) => {
                   // READ FROM FAKE TEAM
                   sendMessage(
                     user.playerID,
+                    room,
+                    roomCode,
+                    game,
                     "socket",
                     `You investigate ${abilityTargetPlayer.getPlayerName()}. They are: ${
                       abilityTargetPlayer.fakeTeam
@@ -3384,6 +3631,9 @@ io.on("connection", async (socket) => {
                   // abilityTargetPlayer.getRole().team
                   sendMessage(
                     user.playerID,
+                    room,
+                    roomCode,
+                    game,
                     "socket",
                     `You investigate ${abilityTargetPlayer.getPlayerName()}. They are: ${
                       abilityTargetPlayer.getRole().team
@@ -3395,6 +3645,9 @@ io.on("connection", async (socket) => {
                 // DIDNT WORK
                 sendMessage(
                   user.playerID,
+                  room,
+                  roomCode,
+                  game,
                   "socket",
                   `Your investigation didn't yield any results. Someone blocked you`,
                   "info"
@@ -3408,6 +3661,9 @@ io.on("connection", async (socket) => {
                     abilityTargetPlayer.isProtected = true;
                     sendMessage(
                       user.playerID,
+                      room,
+                      roomCode,
+                      game,
                       "socket",
                       `You protected yourself. Self uses left: ${
                         user.getPlayer(roomCode).getRole().selfUsage
@@ -3419,6 +3675,9 @@ io.on("connection", async (socket) => {
                   ) {
                     sendMessage(
                       user.playerID,
+                      room,
+                      roomCode,
+                      game,
                       "socket",
                       `You don't have any self uses left. Self uses left: ${
                         user.getPlayer(roomCode).getRole().selfUsage
@@ -3430,12 +3689,18 @@ io.on("connection", async (socket) => {
                   abilityTargetPlayer.isProtected = true;
                   sendMessage(
                     user.playerID,
+                    room,
+                    roomCode,
+                    game,
                     "socket",
                     `You protected ${abilityTargetPlayer.getPlayerName()}. Your patient lives to see the day`,
                     "confirm"
                   );
                   sendMessage(
                     abilityTarget.playerID,
+                    room,
+                    roomCode,
+                    game,
                     "target",
                     `You feel slightly stronger. You were protected by the Doctor`,
                     "info"
@@ -3445,6 +3710,9 @@ io.on("connection", async (socket) => {
                 // DIDNT WORK
                 sendMessage(
                   user.playerID,
+                  room,
+                  roomCode,
+                  game,
                   "socket",
                   `Your medical aid didn't work. Someone blocked you`,
                   "info"
@@ -3457,12 +3725,18 @@ io.on("connection", async (socket) => {
                 abilityTargetPlayer.addKiller("Serial Killer");
                 sendMessage(
                   user.playerID,
+                  room,
+                  roomCode,
+                  game,
                   "socket",
                   `You sink your knife into ${abilityTargetPlayer.getPlayerName()}. Your victim falls to the ground`,
                   "confirm"
                 );
                 sendMessage(
                   abilityTarget.playerID,
+                  room,
+                  roomCode,
+                  game,
                   "target",
                   `You feel a sharp pain in your back. You have been murdered by the Serial Killer`,
                   "alert"
@@ -3472,12 +3746,18 @@ io.on("connection", async (socket) => {
                 if (abilityTargetPlayer.isProtected) {
                   sendMessage(
                     user.playerID,
+                    room,
+                    roomCode,
+                    game,
                     "socket",
                     `Your lust for blood has been contained. Someone protected ${abilityTargetPlayer.getPlayerName()}`,
                     "info"
                   );
                   sendMessage(
                     abilityTarget.playerID,
+                    room,
+                    roomCode,
+                    game,
                     "target",
                     `Someone tried to kill you, but you were protected by the Doctor`,
                     "info"
@@ -3487,6 +3767,9 @@ io.on("connection", async (socket) => {
                 if (player.isBlocked) {
                   sendMessage(
                     user.playerID,
+                    room,
+                    roomCode,
+                    game,
                     "socket",
                     `Your killing spree has been halted to a stop. Someone blocked you`,
                     "info"
@@ -3511,7 +3794,9 @@ io.on("connection", async (socket) => {
     var player = connectedUsers.get(playerID).getPlayer(roomCode);
     if (player.voteTarget !== null) {
       theVoteTarget = getKeyFromValue(proxyIdenfication, player.voteTarget);
-      theVoteTargetPlayer = connectedUsers.get(theVoteTarget).getPlayer(roomCode);
+      theVoteTargetPlayer = connectedUsers
+        .get(theVoteTarget)
+        .getPlayer(roomCode);
       if (game.getCycle() == "Day") {
         theVoteTargetPlayer.dayVotes -= player.getRole().voteCount;
       } else if (game.getCycle() == "Night") {
@@ -3583,21 +3868,29 @@ io.on("connection", async (socket) => {
     var noneLynched = true;
     for (var i = 0; i < game.getAlive().length; i++) {
       var player = game.getAlive()[i].getPlayer(roomCode);
-      console.log("death handler", player)
+      console.log("death handler", player);
       if (player.getIsKilled()) {
         noneDead = false;
         if (!player.killedBy.includes("Server")) {
           sendMessage(
             playerID,
+            room,
+            roomCode,
+            game,
             "all",
             `${player.getPlayerName()} died during the night`,
             "alert"
           );
         } else if (player.killedBy.includes("Server")) {
-          playerID,
+          sendMessage(
+            playerID,
+            room,
+            roomCode,
+            game,
             "all",
             `${player.getPlayerName()} mysteriously died`,
             "alert"
+          );
         }
         if (player.killedBy.length > 0) {
           // killed
@@ -3610,6 +3903,9 @@ io.on("connection", async (socket) => {
             if (killer.includes("Evil")) {
               sendMessage(
                 playerID,
+                room,
+                roomCode,
+                game,
                 "all",
                 `${player.getPlayerName()} was killed by member of the ${killer} team`,
                 "alert"
@@ -3617,6 +3913,9 @@ io.on("connection", async (socket) => {
             } else if (killer.includes("Serial Killer")) {
               sendMessage(
                 playerID,
+                room,
+                roomCode,
+                game,
                 "all",
                 `${player.getPlayerName()} was murdered by the ${killer}`,
                 "alert"
@@ -3624,6 +3923,9 @@ io.on("connection", async (socket) => {
             } else if (killer.includes("Server")) {
               sendMessage(
                 playerID,
+                room,
+                roomCode,
+                game,
                 "all",
                 `${player.getPlayerName()} left the game (${killer})`,
                 "alert"
@@ -3634,6 +3936,9 @@ io.on("connection", async (socket) => {
         // WHAT WAS THEIR ROLE
         sendMessage(
           playerID,
+          room,
+          roomCode,
+          game,
           "all",
           `${player.getPlayerName()} role was: ${player.getRole().name}`,
           "important"
@@ -3654,13 +3959,18 @@ io.on("connection", async (socket) => {
             // executioner targets gets killed
             // executioner becomes JESTER
             executioner.getPlayer(roomCode).setOldRole("executioner");
-            executioner.getPlayer(roomCode).setOldTarget(executioner.getPlayer(roomCode).getRole().target);
+            executioner
+              .getPlayer(roomCode)
+              .setOldTarget(executioner.getPlayer(roomCode).getRole().target);
             executioner.getPlayer(roomCode).setRole(new Role("jester"));
             //  update set players only for executioner
             io.to(executioner.getPlayerID()).emit("updateSetPlayers");
             updateRoleCard(playerID, "socket", executioner.getPlayerID());
             sendMessage(
               executioner.getPlayerID(),
+              room,
+              roomCode,
+              game,
               "target",
               `Your target ${player.getPlayerName()} has died. You have become a Jester!`,
               "important"
@@ -3681,6 +3991,9 @@ io.on("connection", async (socket) => {
         // WHAT WAS THEIR ROLE
         sendMessage(
           playerID,
+          room,
+          roomCode,
+          game,
           "all",
           `${player.getPlayerName()} role was: ${player.getRole().name}`,
           "important"
@@ -3690,7 +4003,7 @@ io.on("connection", async (socket) => {
         if (!game.getCemetery().includes(game.getAlive()[i])) {
           game.addCemetery(game.getAlive()[i]);
           // REMOVE FROM ALIVE ARRAY
-          
+
           game.removeAlive(game.getAlive()[i]);
           io.to(roomCode).emit("cemetery", generateCemeteryList(playerID));
         }
@@ -3708,6 +4021,9 @@ io.on("connection", async (socket) => {
     if (game.getNoDeaths() == maxNoDeaths - 1) {
       sendMessage(
         playerID,
+        room,
+        roomCode,
+        game,
         "all",
         `Please note - if no one dies again, the game will end with a timeout`,
         "important"
@@ -3717,6 +4033,9 @@ io.on("connection", async (socket) => {
     if (noneDead && game.getPhase() == "recap") {
       sendMessage(
         playerID,
+        room,
+        roomCode,
+        game,
         "all",
         "Nothing seems to have happened. That probably means something good...right?",
         "info"
@@ -3724,129 +4043,163 @@ io.on("connection", async (socket) => {
     }
   }
 
+  function clearClock(game) {
+    if (game.getDone()) {
+      clearInterval(game.getGameInterval());
+      game.setGameInterval(null);
+    }
+  }
+
   function clockHandler(playerID, roomCode, room, game) {
-    // Night and Day
-    var currentCycle = 0;
-    // Actions, discussion
-    var currentPhase = 0;
-    var theDurations = Object.values(durations);
-    var nightLength = Object.values(theDurations[0]).length;
-    var dayLength = Object.values(theDurations[1]).length;
+    game.setCurrentCycle(0);
+    game.setCurrentPhase(0);
+
+    game.setTheDurations(Object.values(durations));
+    game.setNightLength(Object.values(game.getTheDurations()[0]).length);
+    game.setDayLength(Object.values(game.getTheDurations()[1]).length);
 
     game.setCycleCount(1);
     // Two objects, Night object, Day object
     // Set duration to night object -> first phase
     initClock(
       game.getTimer(),
-      Object.values(theDurations[currentCycle])[currentPhase]
-      );
-      game.setCycle("Night");
-      game.setPhase(Object.keys(theDurations[currentCycle])[currentPhase]);
-      
-      // time is equal to intervalID
-      GAME_CLOCK_ID = setInterval(function () {
-      // console.log("THE CLOCK ID", GAME_CLOCK_ID)
-      if (game.getDone()) {
-        clearInterval(GAME_CLOCK_ID);
-        GAME_CLOCK_ID = null;
-      }
-      console.log(
-        game.getTimer().getCounter(),
-        game.getPhase(),
-        "phase:" + currentPhase,
-        "cycle:" + currentCycle,
-        game.getCycle(),
-        game.getCycleCount()
-      );
-      if (game.getDone() == false) {
-        // send clock to clients
-        io.to(roomCode).emit(
-          "clock",
+      Object.values(game.getTheDurations()[game.getCurrentCycle()])[
+        game.getCurrentPhase()
+      ]
+    );
+    game.setCycle("Night");
+    game.setPhase(
+      Object.keys(game.getTheDurations()[game.getCurrentCycle()])[
+        game.getCurrentPhase()
+      ]
+    );
+
+    // time is equal to intervalID
+    game.setGameInterval(
+      setInterval(function () {
+        // console.log("THE CLOCK ID", GAME_CLOCK_ID)
+
+        console.log(
           game.getTimer().getCounter(),
           game.getPhase(),
+          "phase:" + game.getCurrentPhase(),
+          "cycle:" + game.getCurrentCycle(),
           game.getCycle(),
           game.getCycleCount()
         );
-        messageHandlerForCycles(playerID, game, emitCycleOnce);
-        messageHandlerForPhases(playerID, game, emitPhaseOnce);
+        if (game.getDone() == false) {
+          // send clock to clients
+          io.to(roomCode).emit(
+            "clock",
+            game.getTimer().getCounter(),
+            game.getPhase(),
+            game.getCycle(),
+            game.getCycleCount()
+          );
+          messageHandlerForCycles(
+            playerID,
+            room,
+            roomCode,
+            game,
+            game.getEmitCycleOnce()
+          );
+          messageHandlerForPhases(
+            playerID,
+            room,
+            roomCode,
+            game,
+            game.getEmitPhaseOnce()
+          );
 
-        gameHandler(playerID);
-        io.to(roomCode).emit("changeUI", game.getCycle());
+          gameHandler(playerID);
+          io.to(roomCode).emit("changeUI", game.getCycle());
 
-        // ! DEBUG TIME
-        // console.log("counter from server:", counter);
+          // ! DEBUG TIME
+          // console.log("counter from server:", counter);
 
-        if (game.getTimer().getCounter() <= 0) {
-          // NIGHT
-          if (currentCycle == 0) {
-            if (currentPhase < nightLength) {
-              currentPhase++;
-              game.setPhase(
-                Object.keys(theDurations[currentCycle])[currentPhase]
+          if (game.getTimer().getCounter() <= 0) {
+            // NIGHT
+            if (game.getCurrentCycle() == 0) {
+              if (game.getCurrentPhase() < game.getNightLength()) {
+                game.setCurrentPhase(game.getCurrentPhase() + 1);
+                game.setPhase(
+                  Object.keys(game.getTheDurations()[game.getCurrentCycle()])[
+                    game.getCurrentPhase()
+                  ]
+                );
+                game.setEmitPhaseOnce(true);
+                console.log("night less");
+                io.to(roomCode).emit("updateSetPlayers");
+                setActionsOnPhase(playerID, "clock");
+              }
+              if (game.getCurrentPhase() >= game.getNightLength()) {
+                game.setCurrentPhase(0);
+                game.setCurrentCycle(1);
+                game.setPhase(
+                  Object.keys(game.getTheDurations()[game.getCurrentCycle()])[
+                    game.getCurrentPhase()
+                  ]
+                );
+                game.setEmitPhaseOnce(true);
+                game.setCycle("Day");
+                // Prevent from spamming message
+                game.setEmitCycleOnce(true);
+                // io.to(roomCode).emit("changeUI", game.getCycle());
+                // io.to(roomCode).emit("updateSetPlayers");
+              }
+              initClock(
+                game.getTimer(),
+                Object.values(game.getTheDurations()[game.getCurrentCycle()])[
+                  game.getCurrentPhase()
+                ]
               );
-              emitPhaseOnce = true;
-              console.log("night less");
-              io.to(roomCode).emit("updateSetPlayers");
-              setActionsOnPhase(playerID, "clock");
             }
-            if (currentPhase >= nightLength) {
-              currentPhase = 0;
-              currentCycle = 1;
-              game.setPhase(
-                Object.keys(theDurations[currentCycle])[currentPhase]
+            // DAY
+            else if (game.getCurrentCycle() == 1) {
+              if (game.getCurrentPhase() < game.getDayLength()) {
+                game.setCurrentPhase(game.getCurrentPhase() + 1);
+                game.setPhase(
+                  Object.keys(game.getTheDurations()[game.getCurrentCycle()])[
+                    game.getCurrentPhase()
+                  ]
+                );
+                game.setEmitPhaseOnce(true);
+                console.log("day less");
+                io.to(roomCode).emit("updateSetPlayers");
+                setActionsOnPhase(playerID, "clock");
+              }
+              if (game.getCurrentPhase() >= game.getDayLength()) {
+                resetAllActions(playerID, room, roomCode, game);
+                resetPhaseConditions(game);
+                game.setCurrentPhase(0);
+                game.setCurrentCycle(0);
+                game.setPhase(
+                  Object.keys(game.getTheDurations()[game.getCurrentCycle()])[
+                    game.getCurrentPhase()
+                  ]
+                );
+                game.setEmitPhaseOnce(true);
+                game.setCycle("Night");
+                // Prevent from spamming message
+                game.setEmitCycleOnce(true);
+                // Increment cycle count
+                game.setCycleCount(game.getCycleCount() + 1);
+                // io.to(roomCode).emit("changeUI", game.getCycle());
+              }
+
+              initClock(
+                game.getTimer(),
+                Object.values(game.getTheDurations()[game.getCurrentCycle()])[
+                  game.getCurrentPhase()
+                ]
               );
-              emitPhaseOnce = true;
-              game.setCycle("Day");
-              // Prevent from spamming message
-              emitCycleOnce = true;
-              // io.to(roomCode).emit("changeUI", game.getCycle());
-              // io.to(roomCode).emit("updateSetPlayers");
             }
-            initClock(
-              game.getTimer(),
-              Object.values(theDurations[currentCycle])[currentPhase]
-            );
+          } else {
+            game.getTimer().tick();
           }
-          // DAY
-          else if (currentCycle == 1) {
-            if (currentPhase < dayLength) {
-              currentPhase++;
-              game.setPhase(
-                Object.keys(theDurations[currentCycle])[currentPhase]
-              );
-              emitPhaseOnce = true;
-              console.log("day less");
-              io.to(roomCode).emit("updateSetPlayers");
-              setActionsOnPhase(playerID, "clock");
-            }
-            if (currentPhase >= dayLength) {
-              resetAllActions(playerID, room, roomCode, game);
-              resetPhaseConditions();
-              currentPhase = 0;
-              currentCycle = 0;
-              game.setPhase(
-                Object.keys(theDurations[currentCycle])[currentPhase]
-              );
-              emitPhaseOnce = true;
-              game.setCycle("Night");
-              // Prevent from spamming message
-              emitCycleOnce = true;
-              // Increment cycle count
-              game.setCycleCount(game.getCycleCount() + 1);
-              // io.to(roomCode).emit("changeUI", game.getCycle());
-            }
-
-            initClock(
-              game.getTimer(),
-              Object.values(theDurations[currentCycle])[currentPhase]
-            );
-          }
-        } else {
-          game.getTimer().tick();
         }
-      }
-    }, 1000);
-
+      }, 1000)
+    );
   }
 
   function initClock(timer, duration) {

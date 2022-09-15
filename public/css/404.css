@@ -8,6 +8,8 @@
   /* Day */
   --light-bg: hsl(0, 0%, 100%);
   --dark-fg: hsl(0, 0%, 0%);
+  --main-shadow: hsl(320, 49%, 17%);
+  --main-highlight: hsl(320, 49%, 35%);
 }
 
 body {
@@ -22,6 +24,23 @@ body {
   margin: 0;
   min-width: 100%;
   background-color: var(--light-bg);
+}
+
+.body-main {
+  color: var(--light-fg);
+  /* background-color: var(--dark-bg);*/
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    var(--main-highlight) 0%,
+    var(--main-shadow) 100%
+  );
+  background-attachment: fixed;
+}
+
+.navbar-main {
+  /* background-color: var(--dark-bg); */
+  width: auto;
+  height: auto;
 }
 
 .body-dark {
@@ -80,15 +99,15 @@ p {
   align-items: center;
   font-size: 3.7rem;
   font-weight: 600;
-  color: var(--dark-fg);
-  margin: 0.3rem 0 1rem 0;
+  color: var(--light-fg);
+  margin: 0rem 0 1rem 0;
 }
 .header {
   display: block;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 400;
-  color: #000000;
+  color: var(--light-fg);
   margin: 0.25rem 2rem 0.25rem 2rem;
 }
 .header-bold {
@@ -96,8 +115,8 @@ p {
   text-align: center;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #000000;
-  margin: 1rem 2rem 0.25rem 2rem;
+  color: var(--light-fg);
+  margin: 0.5rem 2rem 1rem 2rem;
 }
 
 #with-eyes {
@@ -113,12 +132,11 @@ p {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color: var(--light-bg);
 }
 
 .robot-404 {
-  width: 10rem;
-  height: 10rem;
+  width: 12rem;
+  height: 12rem;
 }
 
 @media screen and (max-width: 600px) {
@@ -133,9 +151,9 @@ p {
   .header {
     display: block;
     text-align: center;
-    font-size: 1.15rem;
+    font-size: 1rem;
     font-weight: 400;
-    color: #000000;
+    color: var(--light-fg);
     margin: 0.25rem 2rem 0.25rem 2rem;
   }
 }
