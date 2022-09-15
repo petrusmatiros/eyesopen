@@ -629,7 +629,8 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
     );
     abilityButton.classList.remove("game-button-ability-norounding");
     voteButton.classList.remove("game-button-vote-norounding");
-
+    console.log(players[i])
+    console.log("===========")
     if (players[i].userID == proxyID) {
       currentElement.style.fontWeight = 700;
       if (cycle.includes("Night")) {
@@ -654,13 +655,6 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             element.classList.remove("game-player-unselectable");
           } else {
             // dead everyone else
-            if (players[i].type == "client+dead") {
-              element.children[0].id = "game-show-mark";
-              element.children[0].src = "/assets/icons/briefcase.svg";
-            } else if (players[i].type == "target+dead") {
-              element.children[0].id = "game-show-mark";
-              element.children[0].src = "/assets/icons/target.svg";
-            }
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove("game-player-evil");
             element.classList.add("game-player-dead");
@@ -789,13 +783,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             element.classList.remove("game-player-unselectable");
           } else {
             // dead everyone else
-            if (players[i].type == "client+dead") {
-              element.children[0].id = "game-show-mark";
-              element.children[0].src = "/assets/icons/briefcase.svg";
-            } else if (players[i].type == "target+dead") {
-              element.children[0].id = "game-show-mark";
-              element.children[0].src = "/assets/icons/target.svg";
-            }
+          
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove("game-player-evil");
             element.classList.add("game-player-dead");
@@ -844,15 +832,23 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             );
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
+          } else if (players[i].type == "client+dead") {
+            element.children[0].id = "game-show-mark";
+            element.children[0].src = "/assets/icons/briefcase.svg";
+            currentElement.classList.add("game-player-dead");
+            currentElement.classList.remove("game-player-evil");
+            element.classList.add("game-player-dead");
+            element.classList.remove("game-player-unselectable");
+          } else if (players[i].type == "target+dead") {
+            element.children[0].id = "game-show-mark";
+            element.children[0].src = "/assets/icons/target.svg";
+            currentElement.classList.add("game-player-dead");
+            currentElement.classList.remove("game-player-evil");
+            element.classList.add("game-player-dead");
+            element.classList.remove("game-player-unselectable");
           } else {
             // dead everyone else
-            if (players[i].type == "client+dead") {
-              element.children[0].id = "game-show-mark";
-              element.children[0].src = "/assets/icons/briefcase.svg";
-            } else if (players[i].type == "target+dead") {
-              element.children[0].id = "game-show-mark";
-              element.children[0].src = "/assets/icons/target.svg";
-            }
+            
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove("game-player-evil");
             element.classList.add("game-player-dead");
@@ -890,15 +886,23 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
               );
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
+            } else if (players[i].type == "client+dead") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/briefcase.svg";
+              currentElement.classList.add("game-player-dead");
+              currentElement.classList.remove("game-player-evil");
+              element.classList.add("game-player-dead");
+              element.classList.remove("game-player-unselectable");
+            } else if (players[i].type == "target+dead") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/target.svg";
+              currentElement.classList.add("game-player-dead");
+              currentElement.classList.remove("game-player-evil");
+              element.classList.add("game-player-dead");
+              element.classList.remove("game-player-unselectable");
             } else {
               // dead everyone else
-              if (players[i].type == "client+dead") {
-                element.children[0].id = "game-show-mark";
-                element.children[0].src = "/assets/icons/briefcase.svg";
-              } else if (players[i].type == "target+dead") {
-                element.children[0].id = "game-show-mark";
-                element.children[0].src = "/assets/icons/target.svg";
-              }
+              
               currentElement.classList.add("game-player-dead");
               currentElement.classList.remove("game-player-evil");
               element.classList.add("game-player-dead");
@@ -1087,15 +1091,23 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
               );
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
+            } else if (players[i].type == "client+dead") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/briefcase.svg";
+              currentElement.classList.add("game-player-dead");
+              currentElement.classList.remove("game-player-evil");
+              element.classList.add("game-player-dead");
+              element.classList.remove("game-player-unselectable");
+            } else if (players[i].type == "target+dead") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/target.svg";
+              currentElement.classList.add("game-player-dead");
+              currentElement.classList.remove("game-player-evil");
+              element.classList.add("game-player-dead");
+              element.classList.remove("game-player-unselectable");
             } else {
               // dead everyone else
-              if (players[i].type == "client+dead") {
-                element.children[0].id = "game-show-mark";
-                element.children[0].src = "/assets/icons/briefcase.svg";
-              } else if (players[i].type == "target+dead") {
-                element.children[0].id = "game-show-mark";
-                element.children[0].src = "/assets/icons/target.svg";
-              }
+              
               currentElement.classList.add("game-player-dead");
               currentElement.classList.remove("game-player-evil");
               element.classList.add("game-player-dead");
