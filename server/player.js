@@ -27,6 +27,8 @@ class Player {
     this.oldRole = null;
     // Ready game
     this.readyGame = false;
+    // clear after every game
+    this.messages = [];
     // DO NOT RESET
     this.isKilled = false;
     this.isLynched = false;
@@ -89,6 +91,16 @@ class Player {
 
   setReadyGame(readyGame) {
     this.readyGame = readyGame;
+  }
+
+  getMessages() {
+    return this.messages;
+  }
+  addMessage(message) {
+    this.messages.push(message)
+  }
+  removeMessage(message) {
+    this.messages.splice(this.messages.indexOf(message), 1);
   }
 
   getIsKilled() {

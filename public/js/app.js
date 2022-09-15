@@ -594,6 +594,14 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
   var colCount = 0;
   var playerSlot = 0;
   var checkCount = 0;
+
+  for (var slotCount = 0; slotCount < slots.length; slotCount++) {
+    for (var colCount = 0; colCount < slots[slotCount]; colCount++) {
+      let playerElement = slots[slotCount][colCount];
+      playerElement.classList.add("game-player-hidden");
+    }
+  }
+
   for (var i = 0; i < players.length; i++) {
     if (checkCount == 2) {
       playerSlot++;

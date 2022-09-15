@@ -106,6 +106,7 @@ app.get("*", (req, res) => {
 });
 
 var jsonData = require("./roles.json");
+const { Console } = require("console");
 
 // establish server connection with socket
 io.on("connection", async (socket) => {
@@ -168,7 +169,14 @@ io.on("connection", async (socket) => {
           
           // if (!connectedUsers.get(playerID).getInGame()) {
           var room = rooms.get(theRoom);
-          if (room.getGame().getUsers().includes(connectedUsers.get(playerID))) {
+          let users = room.getGame().getUsers();
+          var apartOfGame = false;
+          for (var i = 0; i < users.length; i++) {
+            if (users[i].getPlayer(theRoom) == connectedUsers.get(playerID).getPlayer(theRoom)) {
+              apartOfGame = true;
+            }
+          }
+          if (apartOfGame) {
             if (state.includes("index")) {
               console.log(playerID, "(index) is apart of room", theRoom);
               socket.emit(
@@ -455,10 +463,12 @@ io.on("connection", async (socket) => {
         // RESET PREVIOUS USER
         user.getPlayer(previousRoom).setIsKilled(true);
         user.getPlayer(previousRoom).addKiller("Server");
+        console.log("Calling death handler from force kill")
         deathHandler(playerID, rooms.get(previousRoom), previousRoom, gameToLeave);
-        if (gameToLeave.getUsers().includes(user)) {
-          gameToLeave.removeUser(user)
-        }
+        // if (gameToLeave.getUsers().includes(user)) {
+        //   gameToLeave.removeUser(user)
+        // }
+        io.to(previousRoom).emit("updateSetPlayers");
       }
     }
   }
@@ -2030,7 +2040,7 @@ io.on("connection", async (socket) => {
           if (game.getUsers().includes(connectedUsers.get(playerID))) {
             socket.emit(
               "savedMessages",
-              connectedUsers.get(playerID).getMessages(),
+              connectedUsers.get(playerID).getPlayer(roomCode).getMessages(),
               game.getCycle()
             );
           }
@@ -2118,14 +2128,14 @@ io.on("connection", async (socket) => {
     if (sendTo == "all") {
       for (var i = 0; i < game.getUsers().length; i++) {
         if (game.getUsers()[i].getInGame()) {
-          game.getUsers()[i].addMessage({ message, type });
+          game.getUsers()[i].getPlayer(roomCode).addMessage({ message, type });
         }
       }
       io.to(roomCode).emit("recieveMessage", message, type, game.getCycle());
     } else if (sendTo == "evil") {
       for (var i = 0; i < game.getEvil().length; i++) {
         if (game.getEvil()[i].getInGame()) {
-          game.getEvil()[i].addMessage({ message, type });
+          game.getEvil()[i].getPlayer(roomCode).addMessage({ message, type });
         }
       }
       io.to(game.getEvilRoom()).emit(
@@ -2136,12 +2146,12 @@ io.on("connection", async (socket) => {
       );
     } else if (sendTo == "socket") {
       if (connectedUsers.get(playerID).getInGame()) {
-        connectedUsers.get(playerID).addMessage({ message, type });
+        connectedUsers.get(playerID).getPlayer(roomCode).addMessage({ message, type });
       }
       io.to(playerID).emit("recieveMessage", message, type, game.getCycle());
     } else if (sendTo == "target") {
       if (connectedUsers.get(playerID).getInGame()) {
-        connectedUsers.get(playerID).addMessage({ message, type });
+        connectedUsers.get(playerID).getPlayer(roomCode).addMessage({ message, type });
       }
       io.to(playerID).emit("recieveMessage", message, type, game.getCycle());
     }
@@ -3476,6 +3486,7 @@ io.on("connection", async (socket) => {
     var noneLynched = true;
     for (var i = 0; i < game.getAlive().length; i++) {
       var player = game.getAlive()[i].getPlayer(roomCode);
+      console.log("death handler", player)
       if (player.getIsKilled()) {
         noneDead = false;
         if (!player.killedBy.includes("Server")) {

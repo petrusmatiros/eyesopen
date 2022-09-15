@@ -7,8 +7,6 @@ class User {
   ) {
     this.playerID = playerID;
     this.name = name;
-    // clear after every game
-    this.messages = [];
     // reset every game
     this.player = new Map();
     // reset depending on state
@@ -22,7 +20,6 @@ class User {
   }
 
   reset() {
-    this.messages = [];
     this.readyLobby = false;
     this.inGame = false;
   }
@@ -33,15 +30,7 @@ class User {
   getName() {
     return this.name;
   }
-  getMessages() {
-    return this.messages;
-  }
-  addMessage(message) {
-    this.messages.push(message)
-  }
-  removeMessage(message) {
-    this.messages.splice(this.messages.indexOf(message), 1);
-  }
+  
   getPlayer() {
     return this.player;
   }
