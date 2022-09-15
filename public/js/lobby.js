@@ -454,13 +454,17 @@ function updatePlayerSlots(host, slots, proxyID) {
       var status = slot.parentElement.parentElement.children[1];
       if (value.userID == host) {
         slot.parentElement.parentElement.style.border =
-          "2px solid var(--slot-border)";
-      } else if (value.userID == proxyID) {
-        slot.parentElement.parentElement.style.border =
-          "2px dashed var(--slot-border)";
+          "2px solid var(--slot-border-joined)";
+          slot.parentElement.parentElement.style.backgroundColor = "var(--slot-joined)";
+        } else if (value.userID == proxyID) {
+          slot.parentElement.parentElement.style.border =
+          "2px dashed var(--slot-border-joined)";
+          slot.parentElement.parentElement.style.backgroundColor = "var(--slot-joined)";
       } else {
         slot.parentElement.parentElement.style.border =
-          "2px dashed var(--slot-joined)";
+          "2px solid var(--slot-border-other)";
+          
+        
       }
       // status.innerText = "not ready";
     } else if (value.taken == false) {
@@ -471,7 +475,7 @@ function updatePlayerSlots(host, slots, proxyID) {
       var status = slot.parentElement.parentElement.children[1];
       status.id = "";
       slot.parentElement.parentElement.style.border =
-        "2px solid var(--slot-empty)";
+        "2px solid var(--slot-border-empty)";
     }
   }
 }
