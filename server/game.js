@@ -7,6 +7,8 @@ class Game {
     this.cycle = "";
     // Phase
     this.phase = "";
+    // Interval
+    this.interval = null;
     // Timer
     this.timer = new Timer();
     // Keeping track of evil players
@@ -43,6 +45,8 @@ class Game {
     this.cycle = "";
     // Phase
     this.phase = "";
+    // Interval
+    this.interval = null;
     // Timer
     this.timer = new Timer();
     // Keeping track of evil players
@@ -98,6 +102,14 @@ class Game {
 
   setPhase(phase) {
     this.phase = phase;
+  }
+
+  getGameInterval() {
+    return this.interval;
+  }
+
+  setGameInterval(func) {
+    this.interval = setInterval(func, 1000)
   }
 
   getTimer() {
