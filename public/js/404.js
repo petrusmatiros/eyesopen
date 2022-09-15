@@ -17,19 +17,17 @@ socket.on("connect", () => {
   animateRobot();
 });
 
+var theHeader = document.getElementById("header");
+var preFix = "Beep Boop";
+var robotFrames = ["└[∵]┘", "┌[∵]┐"];
+
+setInterval(() => {
+  var rand = random(0, robotFrames.length - 1);
+  theHeader.innerText = preFix + " " + robotFrames[rand];
+}, 850);
+
 function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function animateRobot() {
-  var theHeader = document.getElementById("header");
-  var preFix = "Beep Boop";
-  var robotFrames = ["└[∵]┘", "┌[∵]┐"];
-
-  setInterval(() => {
-    var rand = random(0, robotFrames.length - 1);
-    theHeader.innerText = preFix + " " + robotFrames[rand];
-  }, 850);
 }
 
 /**
