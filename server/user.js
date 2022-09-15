@@ -1,10 +1,7 @@
 var { Player } = require("./player");
 
 class User {
-  constructor(
-    playerID=undefined,
-    name = "",
-  ) {
+  constructor(playerID = undefined, name = "") {
     this.playerID = playerID;
     this.name = name;
     // reset every game
@@ -30,14 +27,14 @@ class User {
   getName() {
     return this.name;
   }
-  
+
   getPlayer() {
     return this.player;
   }
   getReadyLobby() {
     return this.readyLobby;
   }
-  
+
   getInGame() {
     return this.inGame;
   }
@@ -45,7 +42,7 @@ class User {
     return this.previous;
   }
   addPrevious(previous) {
-    this.previous.push(previous)
+    this.previous.push(previous);
   }
   removePrevious(previous) {
     this.previous.splice(this.previous.indexOf(previous), 1);

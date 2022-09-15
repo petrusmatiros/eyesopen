@@ -56,18 +56,6 @@ class Game {
     this.cycleCount = 0;
     // Name of current cycle
     this.cycle = "";
-    // Interval counts
-    this.currentCycle = 0;
-    this.currentPhase = 0;
-    this.theDurations = null;
-    this.nightLength = 0;
-    this.dayLength = 0;
-    // Emit booleans
-    this.emitPhaseOnce = true;
-    this.emitCycleOnce = true;
-    this.nightMessagesOnce = 0;
-    this.recapOnce = 0;
-    this.dayMessagesOnce = 0;
     // Phase
     this.phase = "";
     // Interval
@@ -350,8 +338,6 @@ class Game {
   setNoDeaths(noDeaths) {
     this.noDeaths = noDeaths;
   }
-
-  
 
   getProgress() {
     return this.inProgress;

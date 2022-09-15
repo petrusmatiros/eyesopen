@@ -51,7 +51,6 @@ socket.on("connect", () => {
       }
       socket.emit("checkUserApartOfGame", getPlayerID(), room, "app");
       socket.on("apartOfGameApp", (apartOfGame, inProgress, code) => {
-
         if (apartOfGame && inProgress == true) {
           if (window.location.href.includes("/game") == false) {
             if (window.location.href.endsWith("/")) {

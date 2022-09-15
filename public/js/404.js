@@ -1,11 +1,9 @@
 // const domain = "https://84.216.161.205/";
 const domain = "https://eyesopen.ml/";
-const socket = io(domain, {secure: true});
+const socket = io(domain, { secure: true });
 // const socket = io(domain);
 
-
 const lobby = domain + "lobby/";
-
 
 socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
@@ -15,8 +13,8 @@ socket.on("connect", () => {
     } else {
       socket.emit("setRoom", getPlayerID());
     }
-    animateRobot();
   });
+  animateRobot();
 });
 
 function random(min, max) {
@@ -27,11 +25,11 @@ function animateRobot() {
   var theHeader = document.getElementById("header");
   var preFix = "Beep Boop";
   var robotFrames = ["└[∵]┘", "┌[∵]┐"];
-  
+
   setInterval(() => {
     var rand = random(0, robotFrames.length - 1);
-    theHeader.innerText = preFix + " " + robotFrames[rand]
-  }, 850)
+    theHeader.innerText = preFix + " " + robotFrames[rand];
+  }, 850);
 }
 
 /**

@@ -159,6 +159,11 @@ socket.on("endGame", (win, winType, lawyerWin, winners) => {
 });
 
 function endGame(proxyID, win, winType, lawyerWin, winners) {
+  var theState = document.getElementById("winState");
+  var theWinningMessage = document.getElementById("winningMessage");
+  var theWinners = document.getElementById("winners");
+  // Clear winners so the string doesn't get duplicates
+  theWinners.innerText = "";
   var victory = false;
   var listOfWinners = "";
   if (win) {
@@ -216,9 +221,6 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
       state = "DRAW";
     }
 
-    var theState = document.getElementById("winState");
-    var theWinningMessage = document.getElementById("winningMessage");
-    var theWinners = document.getElementById("winners");
     if (winType == "good") {
       theWinningMessage.style.color = "var(--good-bg-selected)";
     } else if (winType == "evil") {
