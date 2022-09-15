@@ -595,9 +595,10 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
   var playerSlot = 0;
   var checkCount = 0;
 
-  for (var slotCount = 0; slotCount < slots.length; slotCount++) {
-    for (var colCount = 0; colCount < slots[slotCount]; colCount++) {
-      let playerElement = slots[slotCount][colCount];
+  for (var theCol = 0; theCol < slots.length; theCol++) {
+    var thePlayers = slots[theCol].children;
+    for (var playerDiv = 0; playerDiv < thePlayers.length; playerDiv++) {
+      let playerElement = thePlayers[playerDiv];
       playerElement.classList.add("game-player-hidden");
     }
   }
@@ -633,7 +634,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
       currentElement.style.fontWeight = 700;
       if (cycle.includes("Night")) {
         // Dead
-        if (players[i].type.includes("dead")) {
+        if (players[i].type == "dead") {
           abilityButton.setAttribute("onclick", "");
           voteButton.setAttribute("onclick", "");
           abilityButton.style.display = "none";
@@ -643,7 +644,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
           stateButton.classList.remove("game-button-unselectable");
           stateButton.innerText = "dead";
           // if dead
-          if (players[i].type == "evil") {
+          if (players[i].type == "evil+dead") {
             // dead evil
             currentElement.classList.add(
               "game-player-evil",
@@ -653,6 +654,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             element.classList.remove("game-player-unselectable");
           } else {
             // dead everyone else
+            if (players[i].type == "client+dead") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/briefcase.svg";
+            } else if (players[i].type == "target+dead") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/target.svg";
+            }
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove("game-player-evil");
             element.classList.add("game-player-dead");
@@ -761,7 +769,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
         }
       } else if (cycle.includes("Day")) {
         // Dead
-        if (players[i].type.includes("dead")) {
+        if (players[i].type == "dead") {
           abilityButton.setAttribute("onclick", "");
           voteButton.setAttribute("onclick", "");
           abilityButton.style.display = "none";
@@ -771,7 +779,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
           stateButton.classList.remove("game-button-unselectable");
           stateButton.innerText = "dead";
           // if dead
-          if (players[i].type == "evil") {
+          if (players[i].type == "evil+dead") {
             // dead evil
             currentElement.classList.add(
               "game-player-evil",
@@ -781,6 +789,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             element.classList.remove("game-player-unselectable");
           } else {
             // dead everyone else
+            if (players[i].type == "client+dead") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/briefcase.svg";
+            } else if (players[i].type == "target+dead") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/target.svg";
+            }
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove("game-player-evil");
             element.classList.add("game-player-dead");
@@ -811,7 +826,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
       // EVERYONE
       currentElement.style.fontWeight = 400;
       if (isDead) {
-        if (players[i].type.includes("dead")) {
+        if (players[i].type == "dead") {
           abilityButton.setAttribute("onclick", "");
           voteButton.setAttribute("onclick", "");
           abilityButton.style.display = "none";
@@ -821,7 +836,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
           stateButton.classList.remove("game-button-unselectable");
           stateButton.innerText = "dead";
           // if dead
-          if (players[i].type == "evil") {
+          if (players[i].type == "evil+dead") {
             // dead evil
             currentElement.classList.add(
               "game-player-evil",
@@ -831,6 +846,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             element.classList.remove("game-player-unselectable");
           } else {
             // dead everyone else
+            if (players[i].type == "client+dead") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/briefcase.svg";
+            } else if (players[i].type == "target+dead") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/target.svg";
+            }
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove("game-player-evil");
             element.classList.add("game-player-dead");
@@ -850,7 +872,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
       } else {
         if (cycle.includes("Night")) {
           // Dead
-          if (players[i].type.includes("dead")) {
+          if (players[i].type == "dead") {
             abilityButton.setAttribute("onclick", "");
             voteButton.setAttribute("onclick", "");
             abilityButton.style.display = "none";
@@ -860,7 +882,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             stateButton.classList.remove("game-button-unselectable");
             stateButton.innerText = "dead";
             // if dead
-            if (players[i].type == "evil") {
+            if (players[i].type == "evil+dead") {
               // dead evil
               currentElement.classList.add(
                 "game-player-evil",
@@ -870,6 +892,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
               element.classList.remove("game-player-unselectable");
             } else {
               // dead everyone else
+              if (players[i].type == "client+dead") {
+                element.children[0].id = "game-show-mark";
+                element.children[0].src = "/assets/icons/briefcase.svg";
+              } else if (players[i].type == "target+dead") {
+                element.children[0].id = "game-show-mark";
+                element.children[0].src = "/assets/icons/target.svg";
+              }
               currentElement.classList.add("game-player-dead");
               currentElement.classList.remove("game-player-evil");
               element.classList.add("game-player-dead");
@@ -1030,17 +1059,17 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             element.classList.remove("game-player-dead");
             currentElement.classList.remove("game-player-dead");
             // Client, Target, Evil (variations), None
-            if (players[i].type.includes("client")) {
+            if (players[i].type == "client") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/briefcase.svg";
-            } else if (players[i].type.includes("target")) {
+            } else if (players[i].type == "target") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/target.svg";
             }
           }
         } else if (cycle.includes("Day")) {
           // Dead
-          if (players[i].type.includes("dead")) {
+          if (players[i].type == "dead") {
             abilityButton.setAttribute("onclick", "");
             voteButton.setAttribute("onclick", "");
             abilityButton.style.display = "none";
@@ -1050,7 +1079,7 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             stateButton.classList.remove("game-button-unselectable");
             stateButton.innerText = "dead";
             // if dead
-            if (players[i].type == "evil") {
+            if (players[i].type == "evil+dead") {
               // dead evil
               currentElement.classList.add(
                 "game-player-evil",
@@ -1060,6 +1089,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
               element.classList.remove("game-player-unselectable");
             } else {
               // dead everyone else
+              if (players[i].type == "client+dead") {
+                element.children[0].id = "game-show-mark";
+                element.children[0].src = "/assets/icons/briefcase.svg";
+              } else if (players[i].type == "target+dead") {
+                element.children[0].id = "game-show-mark";
+                element.children[0].src = "/assets/icons/target.svg";
+              }
               currentElement.classList.add("game-player-dead");
               currentElement.classList.remove("game-player-evil");
               element.classList.add("game-player-dead");
@@ -1078,10 +1114,10 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             currentElement.classList.remove("game-player-dead");
             element.classList.remove("game-player-unselectable");
             // Client, Target, Evil (variations), None
-            if (players[i].type.includes("client")) {
+            if (players[i].type == "client") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/briefcase.svg";
-            } else if (players[i].type.includes("target")) {
+            } else if (players[i].type == "target") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/target.svg";
             } else if (players[i].type == "evil") {
