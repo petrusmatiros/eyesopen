@@ -291,77 +291,122 @@
             Start
           </div>
         </div>
-        <div id="overlay" onclick="hideInfo()"></div>
+        <div class="overlay" id="overlay-rolecards" onclick="hideInfo()"></div>
+        <div class="overlay" id="overlay-rolecardinfo" onclick="hideCard()"></div>
         
         <div class="lobby-rolecard-container no-select" id="lobby-rolecard-container">
           <div class="close" id="adjusted-close">
             <img
+            class="close-button"
+            onclick="hideInfo()"
+            src="/assets/icons/close.svg"
+            alt="close x icon"
+            />
+          </div>
+          <div class="lobby-rolecard-container-title">Rolecards</div>
+          <div class="lobby-rolecards-wrapper">
+            <!-- Good role cards -->
+            <div class="lobby-rolecard-team-container">
+              <div class="lobby-rolecard-team-title good-selected-color">Good</div>
+              <div class="lobby-rolecard-team-wrapper">
+
+               
+
+                <div class="lobby-rolecard" id="villager-card" onclick="showCard(this)">
+                  <img class="lobby-rolecard-image" src="/assets/rolecards/Villager.svg"/>
+                  <div class="lobby-rolecard-role good-selected-color">Villager</div>
+                </div>
+                <div class="lobby-rolecard" id="investigator-card" onclick="showCard(this)">
+                  <img class="lobby-rolecard-image" src="/assets/rolecards/Investigator.svg"/>
+                  <div class="lobby-rolecard-role good-selected-color">Investigator</div>
+                </div>
+                <div class="lobby-rolecard" id="doctor-card" onclick="showCard(this)">
+                  <img class="lobby-rolecard-image" src="/assets/rolecards/Doctor.svg"/>
+                  <div class="lobby-rolecard-role good-selected-color">Doctor</div>
+                </div>
+                <div class="lobby-rolecard" id="mayor-card" onclick="showCard(this)">
+                  <img class="lobby-rolecard-image" src="/assets/rolecards/Mayor.svg"/>
+                  <div class="lobby-rolecard-role good-selected-color">Mayor</div>
+                </div>
+                <div class="lobby-rolecard" id="trapper-card" onclick="showCard(this)">
+                  <img class="lobby-rolecard-image" src="/assets/rolecards/Trapper.svg"/>
+                  <div class="lobby-rolecard-role good-selected-color">Trapper</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Evil role cards -->
+            <div class="lobby-rolecard-team-container">
+              <div class="lobby-rolecard-team-title evil-selected-color">Evil</div>
+              <div class="lobby-rolecard-team-wrapper">
+                <div class="lobby-rolecard" id="godfather-card" onclick="showCard(this)">
+                  <img class="lobby-rolecard-image" src="/assets/rolecards/Godfather.svg"/>
+                  <div class="lobby-rolecard-role evil-selected-color">Godfather</div>
+                </div>
+                <div class="lobby-rolecard" id="mafioso-card" onclick="showCard(this)">
+                  <img class="lobby-rolecard-image" src="/assets/rolecards/Mafioso.svg"/>
+                  <div class="lobby-rolecard-role evil-selected-color">Mafioso</div>
+                </div>
+                <div class="lobby-rolecard" id="surgeon-card" onclick="showCard(this)">
+                  <img class="lobby-rolecard-image" src="/assets/rolecards/Surgeon.svg"/>
+                  <div class="lobby-rolecard-role evil-selected-color">Surgeon</div>
+                </div>
+                <div class="lobby-rolecard" id="witch-card" onclick="showCard(this)">
+                  <img class="lobby-rolecard-image" src="/assets/rolecards/Witch.svg"/>
+                  <div class="lobby-rolecard-role evil-selected-color">Witch</div>
+                </div>
+                <div class="lobby-rolecard" id="framer-card" onclick="showCard(this)">
+                  <img class="lobby-rolecard-image" src="/assets/rolecards/Framer.svg"/>
+                  <div class="lobby-rolecard-role evil-selected-color">Framer</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Neutral role cards -->
+            <div class="lobby-rolecard-team-container">
+              <div class="lobby-rolecard-team-title neutral-selected-color">Neutral</div>
+              <div class="lobby-rolecard-team-wrapper">
+                <div class="lobby-rolecard" id="jester-card" onclick="showCard(this)">
+                  <img class="lobby-rolecard-image" src="/assets/rolecards/Jester.svg"/>
+                  <div class="lobby-rolecard-role neutral-selected-color">Jester</div>
+                </div>
+                <div class="lobby-rolecard" id="serial killer-card" onclick="showCard(this)">
+                  <img class="lobby-rolecard-image" src="/assets/rolecards/Serial Killer.svg"/>
+                  <div class="lobby-rolecard-role neutral-selected-color">Serial Killer</div>
+                </div>
+                <div class="lobby-rolecard" id="executioner-card" onclick="showCard(this)">
+                  <img class="lobby-rolecard-image" src="/assets/rolecards/Executioner.svg"/>
+                  <div class="lobby-rolecard-role neutral-selected-color">Executioner</div>
+                </div>
+                <div class="lobby-rolecard" id="lawyer-card" onclick="showCard(this)">
+                  <img class="lobby-rolecard-image" src="/assets/rolecards/Lawyer.svg"/>
+                  <div class="lobby-rolecard-role neutral-selected-color">Lawyer</div>
+                </div>
+              </div>
+            </div>
+            </div>
+        </div class="lobby-rolecard-container no-select">
+
+         <!-- Card to display -->
+         <div class="lobby-rolecard-display-container" id="lobby-rolecard-display-container">
+          <div class="close" id="adjusted-close-2">
+            <img
               class="close-button"
-              onclick="hideInfo()"
+              onclick="hideCard()"
               src="/assets/icons/close.svg"
               alt="close x icon"
             />
           </div>
-          <div class="lobby-rolecard-container-title">Rolecards</div>
-          <div class="lobby-rolecard-scroller" id="lobby-rolecard-scroller">
-            <div class="lobby-rolecard-wrapper">
-              <div class="lobby-rolecard-divider no-select good-selected">
-                <div class="seperated-letters">
-                  <p class="sep-letter">G</p>
-                  <p class="sep-letter">O</p>
-                  <p class="sep-letter">O</p>
-                  <p class="sep-letter">D</p>
-                </div>
-                
-              </div>
-              <img class="lobby-rolecard-info" src="/assets/rolecards/Villager_card.svg"/>
-              <img class="lobby-rolecard-info" src="/assets/rolecards/Investigator_card.svg"/>
-              <img class="lobby-rolecard-info" src="/assets/rolecards/Doctor_card.svg"/>
-              <img class="lobby-rolecard-info" src="/assets/rolecards/Mayor_card.svg"/>
-              <img class="lobby-rolecard-info" src="/assets/rolecards/Trapper_card.svg"/> 
-            </div>
-            
-            
-            <div class="lobby-rolecard-wrapper">
-              <div class="lobby-rolecard-divider no-select evil-selected">
-                <div class="seperated-letters">
-                  <p class="sep-letter">E</p>
-                  <p class="sep-letter">V</p>
-                  <p class="sep-letter">I</p>
-                  <p class="sep-letter">L</p>
-                </div>
-                
-              </div>
-              <img class="lobby-rolecard-info" src="/assets/rolecards/Godfather_card.svg"/>
-              <img class="lobby-rolecard-info" src="/assets/rolecards/Mafioso_card.svg"/>
-              <img class="lobby-rolecard-info" src="/assets/rolecards/Surgeon_card.svg"/>
-              <img class="lobby-rolecard-info" src="/assets/rolecards/Witch_card.svg"/>
-              <img class="lobby-rolecard-info" src="/assets/rolecards/Framer_card.svg"/> 
-            </div>
-            
+          <div class="lobby-rolecard-display-text" id="lobby-rolecard-display-text">
+            <div class="lobby-rolecard-display-role" id="lobby-rolecard-display-role">---</div>
+            <div class="lobby-rolecard-display-description" id="lobby-rolecard-display-description">---</div>
+          </div>
+          <img class="lobby-rolecard-display-image" id="lobby-rolecard-display-image"></img>
+          <div class="lobby-rolecard-display-mission" id="lobby-rolecard-display-mission">---</div>
+        </div>
 
-            <div class="lobby-rolecard-wrapper no-margin">
-              <div class="lobby-rolecard-divider no-select neutral-selected">
-                <div class="seperated-letters">
-                  <p class="sep-letter">N</p>
-                  <p class="sep-letter">E</p>
-                  <p class="sep-letter">U</p>
-                  <p class="sep-letter">T</p>
-                  <p class="sep-letter">R</p>
-                  <p class="sep-letter">A</p>
-                  <p class="sep-letter">L</p>
-                </div>
-                
-              </div>
-              <img class="lobby-rolecard-info" src="/assets/rolecards/Jester_card.svg"/>
-              <img class="lobby-rolecard-info" src="/assets/rolecards/Serial Killer_card.svg"/>
-              <img class="lobby-rolecard-info" src="/assets/rolecards/Executioner_card.svg"/>
-              <img class="lobby-rolecard-info no-margin" src="/assets/rolecards/Lawyer_card.svg"/>
-            </div>
-            
-          </div class="lobby-rolecard-scroller no-select">
-            
-        </div class="lobby-rolecard-container no-select">
+        <!-- Notification badge -->
+        <div class="lobby-notification" id="lobby-notification" onclick="hideNotification()"></div>
         
       </div>
     </div>

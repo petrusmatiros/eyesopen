@@ -99,6 +99,9 @@ socket.on("connect", () => {
           });
         }
 
+        navigator.clipboard.writeText(window.location.href);
+        showNotification("copy");
+
         socket.emit("checkIfHost", getPlayerID(), "visibility");
         socket.on("isHost", (isHost) => {
           if (isHost) {
@@ -240,14 +243,78 @@ socket.on("connect", () => {
   });
 });
 
+function showNotification(type) {
+  if (type == "copy") {
+    var theNotification = document.getElementById("lobby-notification");
+    theNotification.style.display = "flex";
+    theNotification.innerText = "Copied link to clipboard. Share it! ᕕ( ᐛ )ᕗ"
+    setTimeout(() => {
+      theNotification.style.display = "none";
+    }, 5000)
+  }
+}
+
+function hideNotification() {
+  var theNotification = document.getElementById("lobby-notification");
+  theNotification.style.display = "none";
+}
+
 function hideInfo() {
-  document.getElementById("overlay").style.display = "none";
+  document.getElementById("overlay-rolecards").style.display = "none";
   document.getElementById("lobby-rolecard-container").style.display = "none";
 }
 function showInfo() {
   // show overlay
-  document.getElementById("overlay").style.display = "block";
+  document.getElementById("overlay-rolecards").style.display = "block";
   document.getElementById("lobby-rolecard-container").style.display = "block";
+  // overlay should close everything
+  // show caroseul with scroll snap of all role cards
+}
+function hideCard() {
+  var displayContainer = document.getElementById("lobby-rolecard-display-container");
+  displayContainer.style.display = "none";
+  document.getElementById("overlay-rolecardinfo").style.display = "none";
+  document.getElementById("overlay-rolecards").setAttribute("onclick", "hideCard()");
+  document.getElementById("adjusted-close").setAttribute("onclick", "hideCard()");
+}
+function showCard(element) {
+  // show overlay
+  document.getElementById("overlay-rolecards").setAttribute("onclick", "");
+  document.getElementById("adjusted-close").setAttribute("onclick", "");
+  var displayContainer = document.getElementById("lobby-rolecard-display-container");
+  var displayRole = document.getElementById("lobby-rolecard-display-role");
+  var displayDescription = document.getElementById("lobby-rolecard-display-description");
+  var displayImage = document.getElementById("lobby-rolecard-display-image");
+  var displayMission = document.getElementById("lobby-rolecard-display-mission");
+  var targetElementID = element.id.replace("-card", "");
+  socket.emit("requestLobbyDisplayCard", getPlayerID(), targetElementID);
+  socket.on("fetchedLobbyDisplayCard", (name, team, description, mission) => {
+    displayRole.innerText = name;
+    displayDescription.innerText = description;
+    displayMission.innerText = mission;
+    var theSrc = "/assets/rolecards/" + name + ".svg"
+    displayImage.src = theSrc;
+    if (team.includes("good")) {
+      displayRole.classList.add("good-selected-color");
+      displayRole.classList.remove("evil-selected-color", "neutral-selected-color");
+      displayMission.classList.add("good-selected-color");
+      displayMission.classList.remove("evil-selected-color", "neutral-selected-color");
+    }
+    else if (team.includes("evil")) {
+      displayRole.classList.add("evil-selected-color");
+      displayRole.classList.remove("good-selected-color", "neutral-selected-color");
+      displayMission.classList.add("evil-selected-color");
+      displayMission.classList.remove("good-selected-color", "neutral-selected-color");
+    }
+    else if (team.includes("neutral")) {
+      displayRole.classList.add("neutral-selected-color");
+      displayRole.classList.remove("good-selected-color", "evil-selected-color");
+      displayMission.classList.add("neutral-selected-color");
+      displayMission.classList.remove("good-selected-color", "evil-selected-color");
+    }
+  })
+  displayContainer.style.display = "flex";
+  document.getElementById("overlay-rolecardinfo").style.display = "block";
   // overlay should close everything
   // show caroseul with scroll snap of all role cards
 }

@@ -765,6 +765,17 @@ io.on("connection", async (socket) => {
       }
     }
   });
+  socket.on("requestLobbyDisplayCard", (playerID, targetID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        if (targetID !== null && targetID !== undefined && targetID !== "") {
+          var roleObject = jsonData["roles"][targetID];
+          socket.emit("fetchedLobbyDisplayCard", roleObject.name, roleObject.team, roleObject.description, roleObject.mission);
+        }
+      }
+    }
+  });
 
   socket.on("player-unready", (playerID, state) => {
     if (checkUserExist(playerID)) {

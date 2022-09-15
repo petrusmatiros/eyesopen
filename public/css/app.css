@@ -670,18 +670,24 @@
 }
 
 /* Popup */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
 
 .game-overlay {
   position: fixed;
   display: block;
-  background-color: var(--dark-fg);
-  opacity: 35%;
+  background-color: rgba(0, 0, 0, 0.35);
+  animation: fadeIn 0.3s 1;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
   width: 100%;
   height: 100%;
+  backdrop-filter: blur(0.25rem);
+  -webkit-backdrop-filter: blur(0.25rem);
 }
 /* Animations  */
 .gelatine-light-fixed {
@@ -707,6 +713,7 @@
   align-items: center;
   flex-direction: column;
   position: fixed;
+  animation: fadeIn 0.3s 1;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -715,7 +722,9 @@
   padding: 3rem 1.5rem 3rem 1.5rem;
   max-width: 17.5rem;
   min-width: 17.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
 }
+
 .game-popup-text {
   user-select: none;
   color: var(--dark-fg);
@@ -954,6 +963,7 @@
 #waiting {
   font-size: 2.5rem;
   margin-bottom: 0;
+  opacity: 100% !important;
 }
 
 /* Game rolecard colors */
