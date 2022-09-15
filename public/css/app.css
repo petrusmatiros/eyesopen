@@ -672,6 +672,13 @@
   50% { transform: scale(1.05, 0.95) translate(-50%, -50%); }
   75% { transform: scale(0.98, 1.02) translate(-50%, -50%); }
 }
+
+.shadow-light {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+}
+.shadow-medium {
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.3);
+}
 .game-popup {
   display: none;
   justify-content: center;
@@ -686,7 +693,6 @@
   padding: 3rem 1.5rem 3rem 1.5rem;
   max-width: 17.5rem;
   min-width: 17.5rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
 }
 .game-popup-text {
   user-select: none;
@@ -905,6 +911,16 @@
   flex-direction: column;
   margin-top: 2rem;
 }
+
+.game-title-night {
+  opacity: 75%;
+  color: var(--light-fg);
+}
+.game-title-day {
+  opacity: 75%;
+  color: var(--dark-bg);
+}
+
 .game-title {
   user-select: none;
   text-align: center;
@@ -945,7 +961,7 @@
   align-items: center;
   flex-direction: column;
   background-color: var(--light-bg);
-  padding: 1.5em;
+  padding: 2em 1.5em 2em 1.5em;
   border-radius: 1rem;
   margin: 0.15rem;
   min-width: 17rem;
