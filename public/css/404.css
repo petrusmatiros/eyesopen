@@ -100,12 +100,12 @@ p {
   font-size: 3.7rem;
   font-weight: 600;
   color: var(--light-fg);
-  margin: 0.3rem 0 1rem 0;
+  margin: 0rem 0 1rem 0;
 }
 .header {
   display: block;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 400;
   color: var(--light-fg);
   margin: 0.25rem 2rem 0.25rem 2rem;
@@ -116,7 +116,7 @@ p {
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--light-fg);
-  margin: 1rem 2rem 0.25rem 2rem;
+  margin: 0.5rem 2rem 1rem 2rem;
 }
 
 #with-eyes {
@@ -135,8 +135,8 @@ p {
 }
 
 .robot-404 {
-  width: 10rem;
-  height: 10rem;
+  width: 12rem;
+  height: 12rem;
 }
 
 @media screen and (max-width: 600px) {
@@ -151,7 +151,7 @@ p {
   .header {
     display: block;
     text-align: center;
-    font-size: 1.15rem;
+    font-size: 1rem;
     font-weight: 400;
     color: var(--light-fg);
     margin: 0.25rem 2rem 0.25rem 2rem;

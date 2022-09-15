@@ -271,6 +271,7 @@ io.on("connection", async (socket) => {
     // reset game
     room.getGame().reset();
     room.getGame().resetDone();
+    room.getGame().resetGameInterval();
     // set all users ready
     for (var i = 0; i < users.length; i++) {
       users[i].setInGame(true);

@@ -58,8 +58,6 @@ class Game {
     this.cycle = "";
     // Phase
     this.phase = "";
-    // Interval
-    this.interval = null;
     // Timer
     this.timer = new Timer();
     // Keeping track of evil players
@@ -91,6 +89,22 @@ class Game {
   }
   resetDone() {
     this.isDone = false;
+  }
+  resetGameInterval() {
+    // Interval
+    this.interval = null;
+    // Interval counts
+    this.currentCycle = 0;
+    this.currentPhase = 0;
+    this.theDurations = null;
+    this.nightLength = 0;
+    this.dayLength = 0;
+    // Emit booleans
+    this.emitPhaseOnce = true;
+    this.emitCycleOnce = true;
+    this.nightMessagesOnce = 0;
+    this.recapOnce = 0;
+    this.dayMessagesOnce = 0;
   }
 
   getCycleCount() {
