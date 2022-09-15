@@ -452,7 +452,7 @@ io.on("connection", async (socket) => {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var user = connectedUsers.get(playerID);
 
-        // RESET PREVIOUS USER¨
+        // RESET PREVIOUS USER
         user.getPlayer(previousRoom).setIsKilled(true);
         user.getPlayer(previousRoom).addKiller("Server");
         deathHandler(playerID, rooms.get(previousRoom), previousRoom, gameToLeave);
@@ -3479,12 +3479,19 @@ io.on("connection", async (socket) => {
       var player = game.getAlive()[i].getPlayer(roomCode);
       if (player.getIsKilled()) {
         noneDead = false;
-        sendMessage(
+        if (!player.killedBy.includes("Server")) {
+          sendMessage(
+            playerID,
+            "all",
+            `${player.getPlayerName()} died during the night`,
+            "alert"
+          );
+        } else if (player.killedBy.includes("Server")) {
           playerID,
-          "all",
-          `${player.getPlayerName()} died during the night`,
-          "alert"
-        );
+            "all",
+            `${player.getPlayerName()} mysteriously died`,
+            "alert"
+        }
         if (player.killedBy.length > 0) {
           // killed
           for (
