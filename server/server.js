@@ -3722,8 +3722,8 @@ io.on("connection", async (socket) => {
     game.setCurrentPhase(0);
 
     game.setTheDurations(Object.values(durations))
-    game.setNightLength(Object.values(theDurations[0]).length);
-    game.setDayLength(Object.values(theDurations[1]).length);
+    game.setNightLength(Object.values(game.getTheDurations()[0]).length);
+    game.setDayLength(Object.values(game.getTheDurations()[1]).length);
 
     game.setCycleCount(1);
     // Two objects, Night object, Day object
@@ -3790,7 +3790,7 @@ io.on("connection", async (socket) => {
               game.setEmitPhaseOnce(true);
               game.setCycle("Day");
               // Prevent from spamming message
-              game.getEmitCycleOnce(true);
+              game.setEmitCycleOnce(true);
               // io.to(roomCode).emit("changeUI", game.getCycle());
               // io.to(roomCode).emit("updateSetPlayers");
             }
