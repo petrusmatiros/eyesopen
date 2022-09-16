@@ -482,6 +482,15 @@ io.on("connection", async (socket) => {
         user.getPlayer(previousRoom).setIsKilled(true);
         user.getPlayer(previousRoom).setDisconnected(true);
         user.getPlayer(previousRoom).addKiller("Server");
+        sendMessage(
+          playerID,
+          rooms.get(previousRoom),
+          previousRoom,
+          gameToLeave,
+          "all",
+          `${user.getPlayer(previousRoom).getPlayerName()} left the game (Server)`,
+          "alert"
+        );
         console.log("Calling death handler from force kill");
         deathHandler(
           playerID,
@@ -4178,15 +4187,15 @@ io.on("connection", async (socket) => {
                 "alert"
               );
             } else if (killer.includes("Server")) {
-              sendMessage(
-                playerID,
-                room,
-                roomCode,
-                game,
-                "all",
-                `${player.getPlayerName()} left the game (${killer})`,
-                "alert"
-              );
+              // sendMessage(
+              //   playerID,
+              //   room,
+              //   roomCode,
+              //   game,
+              //   "all",
+              //   `${player.getPlayerName()} left the game (${killer})`,
+              //   "alert"
+              // );
             }
           }
         }
