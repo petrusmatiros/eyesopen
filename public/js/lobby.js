@@ -26,6 +26,12 @@ function resetCookie(override = false) {
     }
   }
 }
+
+function revealLobby() {
+  var theLobby = document.getElementById("lobby-without-eyes");
+  theLobby.style.display = "flex";
+}
+
 var test = false;
 socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
@@ -34,6 +40,7 @@ socket.on("connect", () => {
       resetCookie();
       window.location.href = window.location.href + "/join";
     } else {
+      revealLobby();
       var URL = "";
       var room = "";
       if (window.location.href.endsWith("/")) {

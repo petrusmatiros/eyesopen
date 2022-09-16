@@ -46,7 +46,17 @@
   --neutral-bg-selected: hsl(0, 0%, 15%);
 }
 
-.menu {
+#lobby-without-eyes {
+  display: none;
+  margin-top: 0;
+
+}
+
+.lobby-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   width: 100%;
 }
 

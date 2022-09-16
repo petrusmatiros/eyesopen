@@ -1587,20 +1587,22 @@ io.on("connection", async (socket) => {
                       player.getRole().type.includes("mayor") &&
                       player.getRole().hasOwnProperty("revealed")
                     ) {
-                      if (player.getRole().revealed == false) {
-                        if (player.abilityTarget !== null) {
-                          var theAbilityTargetPlayer = connectedUsers
-                            .get(getKeyFromValue(proxyIdenfication, targetID))
-                            .getPlayer(roomCode);
-                            if (player == theAbilityTargetPlayer) {
-                              mayorReveal(playerID, room, roomCode, game)
-                              // Reset
-                              player.abilityTarget = null;
-                            }
+                      if (targetID !== null) {
+                        console.log("Mayor target not null");
+                        var theAbilityTargetPlayer = connectedUsers
+                          .get(getKeyFromValue(proxyIdenfication, targetID))
+                          .getPlayer(roomCode);
+                        if (player == theAbilityTargetPlayer) {
+                          console.log("Mayor selected themself");
+                          if (player.getRole().revealed == false) {
+                            console.log("Mayor not revealed");
+                            mayorReveal(playerID, room, roomCode, game);
+                            // Reset
+                            // player.abilityTarget = targetID;
+                          }
                         }
                       }
                     }
-                    
                   }
                 }
               } else if (elementID == "game-button-vote") {
@@ -1877,8 +1879,7 @@ io.on("connection", async (socket) => {
                 isEvil = null;
                 type = "dead";
               }
-            } 
-            else if (userRole.type.includes("mayor")) {
+            } else if (userRole.type.includes("mayor")) {
               if (userRole.hasOwnProperty("revealed")) {
                 if (userRole.revealed == true) {
                   type = "mayor+dead";
@@ -2107,8 +2108,7 @@ io.on("connection", async (socket) => {
                 isEvil = null;
                 type = "dead";
               }
-            } 
-            else if (userRole.type.includes("mayor")) {
+            } else if (userRole.type.includes("mayor")) {
               if (userRole.hasOwnProperty("revealed")) {
                 if (userRole.revealed == true) {
                   type = "mayor+dead";
@@ -3510,20 +3510,34 @@ io.on("connection", async (socket) => {
 
       var aliveUsersCount = game.getAlive().length;
       var targetCount = Array.from(targets.values());
-
+      var topVotes = [];
       var gotLynched = false;
+      var voteTie = false;
       for (var i = 0; i < targetCount.length; i++) {
         var majority = aliveUsersCount / 2;
 
         if (targetCount[i] > majority) {
-          console.log("majority: " + targetCount[i]);
+          topVotes.push(targetCount[i]);
+        }
+      }
+
+      if (topVotes.length == 1) {
+        // NOT A TIE
+        console.log("majority: " + targetCount[i]);
           var mostVotedIndex = targetCount.indexOf(targetCount[i]);
           var mostVoted = Array.from(targets.keys())[mostVotedIndex];
           gotLynched = true;
+          voteTie = false;
           globalVote(playerID, room, roomCode, game, mostVoted);
-        }
+
+      } else if (topVotes.length > 1) {
+        // VOTE TIE
+        console.log("TIE: " + targetCount[i]);
+        gotLynched = false;
+        voteTie = true;
       }
-      if (!gotLynched) {
+
+      if (!gotLynched && !voteTie) {
         sendMessage(
           playerID,
           room,
@@ -3531,6 +3545,26 @@ io.on("connection", async (socket) => {
           game,
           "all",
           `There was no majority to lynch anyone`,
+          "info"
+        );
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          `No one was lynched - hope it was the right decision`,
+          "info"
+        );
+      }
+      else if (!gotLynched && voteTie) {
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          `The votes have been tied!`,
           "info"
         );
         sendMessage(
@@ -3570,7 +3604,6 @@ io.on("connection", async (socket) => {
                 "bold"
               );
               io.to(roomCode).emit("updateSetPlayers");
-            } else {
             }
           }
         }
