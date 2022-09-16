@@ -297,7 +297,6 @@ socket.on("recieveMessage", (message, type, cycle) => {
     messageType += "night";
     newMessage.classList.add(messageType);
   } else if (type.includes("confirm")) {
-
     messageType += "confirm";
     newMessage.classList.add(messageType);
     if (cycle.includes("Day")) {
@@ -308,7 +307,6 @@ socket.on("recieveMessage", (message, type, cycle) => {
       newMessage.classList.add(messageType + "-night");
     }
   } else if (type.includes("info")) {
-
     messageType += "info";
     newMessage.classList.add(messageType);
     if (cycle.includes("Day")) {
@@ -319,7 +317,6 @@ socket.on("recieveMessage", (message, type, cycle) => {
       newMessage.classList.add(messageType + "-night");
     }
   } else if (type.includes("alert")) {
-
     messageType += "alert";
     newMessage.classList.add(messageType);
     if (cycle.includes("Day")) {
@@ -330,7 +327,6 @@ socket.on("recieveMessage", (message, type, cycle) => {
       newMessage.classList.add(messageType + "-night");
     }
   } else if (type.includes("important")) {
-
     messageType += "important";
     newMessage.classList.add(messageType);
     if (cycle.includes("Day")) {
@@ -341,7 +337,6 @@ socket.on("recieveMessage", (message, type, cycle) => {
       newMessage.classList.add(messageType + "-night");
     }
   } else if (type.includes("extra")) {
-
     messageType += "extra";
     newMessage.classList.add(messageType);
     if (cycle.includes("Day")) {
@@ -425,55 +420,52 @@ function loadSavedMessages(messages, cycle) {
       messageType += "confirm";
       newMessage.classList.add(messageType);
       if (cycle.includes("Day")) {
-      newMessage.classList.add(messageType + "-day");
-      newMessage.classList.remove(messageType + "-night");
-    } else if (cycle.includes("Night")) {
-      newMessage.classList.remove(messageType + "-day");
-      newMessage.classList.add(messageType + "-night");
-    }
+        newMessage.classList.add(messageType + "-day");
+        newMessage.classList.remove(messageType + "-night");
+      } else if (cycle.includes("Night")) {
+        newMessage.classList.remove(messageType + "-day");
+        newMessage.classList.add(messageType + "-night");
+      }
     } else if (messages[i].type.includes("info")) {
       messageType += "info";
       newMessage.classList.add(messageType);
       if (cycle.includes("Day")) {
-      newMessage.classList.add(messageType + "-day");
-      newMessage.classList.remove(messageType + "-night");
-    } else if (cycle.includes("Night")) {
-      newMessage.classList.remove(messageType + "-day");
-      newMessage.classList.add(messageType + "-night");
-    }
+        newMessage.classList.add(messageType + "-day");
+        newMessage.classList.remove(messageType + "-night");
+      } else if (cycle.includes("Night")) {
+        newMessage.classList.remove(messageType + "-day");
+        newMessage.classList.add(messageType + "-night");
+      }
     } else if (messages[i].type.includes("alert")) {
-
       messageType += "alert";
       newMessage.classList.add(messageType);
       if (cycle.includes("Day")) {
-      newMessage.classList.add(messageType + "-day");
-      newMessage.classList.remove(messageType + "-night");
-    } else if (cycle.includes("Night")) {
-      newMessage.classList.remove(messageType + "-day");
-      newMessage.classList.add(messageType + "-night");
-    }
+        newMessage.classList.add(messageType + "-day");
+        newMessage.classList.remove(messageType + "-night");
+      } else if (cycle.includes("Night")) {
+        newMessage.classList.remove(messageType + "-day");
+        newMessage.classList.add(messageType + "-night");
+      }
     } else if (messages[i].type.includes("important")) {
-
       messageType += "important";
       newMessage.classList.add(messageType);
       if (cycle.includes("Day")) {
-      newMessage.classList.add(messageType + "-day");
-      newMessage.classList.remove(messageType + "-night");
-    } else if (cycle.includes("Night")) {
-      newMessage.classList.remove(messageType + "-day");
-      newMessage.classList.add(messageType + "-night");
-    }
+        newMessage.classList.add(messageType + "-day");
+        newMessage.classList.remove(messageType + "-night");
+      } else if (cycle.includes("Night")) {
+        newMessage.classList.remove(messageType + "-day");
+        newMessage.classList.add(messageType + "-night");
+      }
     } else if (messages[i].type.includes("extra")) {
-
       messageType += "extra";
       newMessage.classList.add(messageType);
       if (cycle.includes("Day")) {
-      newMessage.classList.add(messageType + "-day");
-      newMessage.classList.remove(messageType + "-night");
-    } else if (cycle.includes("Night")) {
-      newMessage.classList.remove(messageType + "-day");
-      newMessage.classList.add(messageType + "-night");
-    }
+        newMessage.classList.add(messageType + "-day");
+        newMessage.classList.remove(messageType + "-night");
+      } else if (cycle.includes("Night")) {
+        newMessage.classList.remove(messageType + "-day");
+        newMessage.classList.add(messageType + "-night");
+      }
     } else if (messages[i].type.includes("timestamp")) {
       if (cycle.includes("Day")) {
         messageType += "day";
@@ -731,6 +723,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             );
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
+          } else if (players[i].type == "mayor+dead") {
+            element.children[0].id = "game-show-mark";
+            element.children[0].src = "/assets/icons/megaphone.svg";
+            currentElement.classList.add("game-player-dead");
+            currentElement.classList.remove("game-player-evil");
+            element.classList.add("game-player-dead");
+            element.classList.remove("game-player-unselectable");
           } else {
             // dead everyone else
             currentElement.classList.add("game-player-dead");
@@ -859,6 +858,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             );
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
+          } else if (players[i].type == "mayor+dead") {
+            element.children[0].id = "game-show-mark";
+            element.children[0].src = "/assets/icons/megaphone.svg";
+            currentElement.classList.add("game-player-dead");
+            currentElement.classList.remove("game-player-evil");
+            element.classList.add("game-player-dead");
+            element.classList.remove("game-player-unselectable");
           } else {
             // dead everyone else
 
@@ -882,6 +888,23 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
           if (players[i].type == "evil") {
             currentElement.classList.add("game-player-evil");
             element.classList.remove("game-player-unselectable");
+          } else if (players[i].type == "mayor") {
+            if (socketRole.type.includes("mayor")) {
+              if (socketRole.hasOwnProperty("hasDayAbility")) {
+                if (socketRole.hasDayAbility == true) {
+                  if (socketRole.revealed == false) {
+                    abilityButton.setAttribute(
+                      "onclick",
+                      "actionHandler(this)"
+                    );
+                    abilityButton.style.display = "flex";
+                  } else if (socketRole.revealed == true) {
+                    abilityButton.setAttribute("onclick", "");
+                    abilityButton.style.display = "none";
+                  }
+                }
+              }
+            }
           } else if (players[i].type == "none") {
             currentElement.classList.remove("game-player-evil");
             element.classList.remove("game-player-unselectable");
@@ -920,6 +943,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
           } else if (players[i].type == "target+dead") {
             element.children[0].id = "game-show-mark";
             element.children[0].src = "/assets/icons/target.svg";
+            currentElement.classList.add("game-player-dead");
+            currentElement.classList.remove("game-player-evil");
+            element.classList.add("game-player-dead");
+            element.classList.remove("game-player-unselectable");
+          } else if (players[i].type == "mayor+dead") {
+            element.children[0].id = "game-show-mark";
+            element.children[0].src = "/assets/icons/megaphone.svg";
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove("game-player-evil");
             element.classList.add("game-player-dead");
@@ -975,6 +1005,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             } else if (players[i].type == "target+dead") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/target.svg";
+              currentElement.classList.add("game-player-dead");
+              currentElement.classList.remove("game-player-evil");
+              element.classList.add("game-player-dead");
+              element.classList.remove("game-player-unselectable");
+            } else if (players[i].type == "mayor+dead") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/megaphone.svg";
               currentElement.classList.add("game-player-dead");
               currentElement.classList.remove("game-player-evil");
               element.classList.add("game-player-dead");
@@ -1149,6 +1186,9 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             } else if (players[i].type == "target") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/target.svg";
+            } else if (players[i].type == "mayor") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/megaphone.svg";
             } else {
               element.children[0].id = "";
               element.children[0].src = "";
@@ -1188,6 +1228,13 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
               currentElement.classList.remove("game-player-evil");
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
+            } else if (players[i].type == "mayor+dead") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/megaphone.svg";
+              currentElement.classList.add("game-player-dead");
+              currentElement.classList.remove("game-player-evil");
+              element.classList.add("game-player-dead");
+              element.classList.remove("game-player-unselectable");
             } else {
               // dead everyone else
               element.children[0].id = "";
@@ -1216,6 +1263,9 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             } else if (players[i].type == "target") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/target.svg";
+            } else if (players[i].type == "mayor") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/megaphone.svg";
             } else if (players[i].type == "evil") {
               element.children[0].id = "";
               element.children[0].src = "";
@@ -1387,8 +1437,7 @@ function changeUI(theme) {
           messages[i].classList.remove("game-message-alert" + "-day");
           messages[i].classList.add("game-message-alert" + "-night");
         }
-      }
-      else if (messages[i].className.includes("info")) {
+      } else if (messages[i].className.includes("info")) {
         if (theme.includes("Day")) {
           messages[i].classList.add("game-message-info" + "-day");
           messages[i].classList.remove("game-message-info" + "-night");
@@ -1396,8 +1445,7 @@ function changeUI(theme) {
           messages[i].classList.remove("game-message-info" + "-day");
           messages[i].classList.add("game-message-info" + "-night");
         }
-      }
-      else if (messages[i].className.includes("confirm")) {
+      } else if (messages[i].className.includes("confirm")) {
         if (theme.includes("Day")) {
           messages[i].classList.add("game-message-confirm" + "-day");
           messages[i].classList.remove("game-message-confirm" + "-night");
@@ -1405,8 +1453,7 @@ function changeUI(theme) {
           messages[i].classList.remove("game-message-confirm" + "-day");
           messages[i].classList.add("game-message-confirm" + "-night");
         }
-      }
-      else if (messages[i].className.includes("important")) {
+      } else if (messages[i].className.includes("important")) {
         if (theme.includes("Day")) {
           messages[i].classList.add("game-message-important" + "-day");
           messages[i].classList.remove("game-message-important" + "-night");
@@ -1414,8 +1461,7 @@ function changeUI(theme) {
           messages[i].classList.remove("game-message-important" + "-day");
           messages[i].classList.add("game-message-important" + "-night");
         }
-      }
-      else if (messages[i].className.includes("extra")) {
+      } else if (messages[i].className.includes("extra")) {
         if (theme.includes("Day")) {
           messages[i].classList.add("game-message-extra" + "-day");
           messages[i].classList.remove("game-message-extra" + "-night");
@@ -1458,8 +1504,7 @@ function changeUI(theme) {
           messages[i].classList.remove("game-message-alert" + "-day");
           messages[i].classList.add("game-message-alert" + "-night");
         }
-      }
-      else if (messages[i].className.includes("info")) {
+      } else if (messages[i].className.includes("info")) {
         if (theme.includes("Day")) {
           messages[i].classList.add("game-message-info" + "-day");
           messages[i].classList.remove("game-message-info" + "-night");
@@ -1467,8 +1512,7 @@ function changeUI(theme) {
           messages[i].classList.remove("game-message-info" + "-day");
           messages[i].classList.add("game-message-info" + "-night");
         }
-      }
-      else if (messages[i].className.includes("confirm")) {
+      } else if (messages[i].className.includes("confirm")) {
         if (theme.includes("Day")) {
           messages[i].classList.add("game-message-confirm" + "-day");
           messages[i].classList.remove("game-message-confirm" + "-night");
@@ -1476,8 +1520,7 @@ function changeUI(theme) {
           messages[i].classList.remove("game-message-confirm" + "-day");
           messages[i].classList.add("game-message-confirm" + "-night");
         }
-      }
-      else if (messages[i].className.includes("important")) {
+      } else if (messages[i].className.includes("important")) {
         if (theme.includes("Day")) {
           messages[i].classList.add("game-message-important" + "-day");
           messages[i].classList.remove("game-message-important" + "-night");
@@ -1485,8 +1528,7 @@ function changeUI(theme) {
           messages[i].classList.remove("game-message-important" + "-day");
           messages[i].classList.add("game-message-important" + "-night");
         }
-      }
-      else if (messages[i].className.includes("extra")) {
+      } else if (messages[i].className.includes("extra")) {
         if (theme.includes("Day")) {
           messages[i].classList.add("game-message-extra" + "-day");
           messages[i].classList.remove("game-message-extra" + "-night");

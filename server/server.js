@@ -771,7 +771,13 @@ io.on("connection", async (socket) => {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         if (targetID !== null && targetID !== undefined && targetID !== "") {
           var roleObject = jsonData["roles"][targetID];
-          socket.emit("fetchedLobbyDisplayCard", roleObject.name, roleObject.team, roleObject.description, roleObject.mission);
+          socket.emit(
+            "fetchedLobbyDisplayCard",
+            roleObject.name,
+            roleObject.team,
+            roleObject.description,
+            roleObject.mission
+          );
         }
       }
     }
@@ -1572,6 +1578,30 @@ io.on("connection", async (socket) => {
                       );
                     }
                   }
+                } else if (
+                  game.getPhase() == "voting" &&
+                  game.getCycle() == "Day"
+                ) {
+                  if (game.getTimer().getCounter() >= 0) {
+                    if (
+                      player.getRole().type.includes("mayor") &&
+                      player.getRole().hasOwnProperty("revealed")
+                    ) {
+                      if (player.getRole().revealed == false) {
+                        if (player.abilityTarget !== null) {
+                          var theAbilityTargetPlayer = connectedUsers
+                            .get(getKeyFromValue(proxyIdenfication, targetID))
+                            .getPlayer(roomCode);
+                            if (player == theAbilityTargetPlayer) {
+                              mayorReveal(playerID, room, roomCode, game)
+                              // Reset
+                              player.abilityTarget = null;
+                            }
+                        }
+                      }
+                    }
+                    
+                  }
                 }
               } else if (elementID == "game-button-vote") {
                 if (player.voteTarget !== null) {
@@ -1847,11 +1877,36 @@ io.on("connection", async (socket) => {
                 isEvil = null;
                 type = "dead";
               }
+            } 
+            else if (userRole.type.includes("mayor")) {
+              if (userRole.hasOwnProperty("revealed")) {
+                if (userRole.revealed == true) {
+                  type = "mayor+dead";
+                  isEvil = null;
+                } else {
+                  type = "dead";
+                  isEvil = null;
+                }
+              }
             } else {
               isEvil = null;
             }
           }
           pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+        }
+
+        if (userRole.type.includes("mayor")) {
+          if (userRole.hasOwnProperty("revealed")) {
+            if (userRole.revealed == true) {
+              type = "mayor";
+              isEvil = null;
+              pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+            } else {
+              type = "none";
+              isEvil = null;
+              pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+            }
+          }
         }
 
         if (socketRole.hasNightAbility) {
@@ -2052,11 +2107,36 @@ io.on("connection", async (socket) => {
                 isEvil = null;
                 type = "dead";
               }
+            } 
+            else if (userRole.type.includes("mayor")) {
+              if (userRole.hasOwnProperty("revealed")) {
+                if (userRole.revealed == true) {
+                  type = "mayor+dead";
+                  isEvil = null;
+                } else {
+                  type = "dead";
+                  isEvil = null;
+                }
+              }
             } else {
               isEvil = null;
             }
           }
           pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+        }
+
+        if (userRole.type.includes("mayor")) {
+          if (userRole.hasOwnProperty("revealed")) {
+            if (userRole.revealed == true) {
+              type = "mayor";
+              isEvil = null;
+              pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+            } else {
+              type = "none";
+              isEvil = null;
+              pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+            }
+          }
         }
 
         if (user == socketUser) {
@@ -3465,6 +3545,38 @@ io.on("connection", async (socket) => {
       }
     }
   }
+
+  function mayorReveal(playerID, room, roomCode, game) {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        var user = connectedUsers.get(playerID);
+        var player = user.getPlayer(roomCode);
+        var role = player.getRole();
+        if (game.getProgress()) {
+          if (game.getUsers().includes(connectedUsers.get(playerID))) {
+            if (role.type.includes("mayor")) {
+              role.voteCount = 3;
+              role.revealed = true;
+              sendMessage(
+                playerID,
+                room,
+                roomCode,
+                game,
+                "all",
+                `${player.getPlayerName()} has revealed themselves as the Mayor. Their vote now counts as 3`
+              );
+              io.to(roomCode).emit("updateSetPlayers");
+            } else {
+            }
+          }
+        }
+      }
+    }
+  }
+
   function executeNightActions(playerID, room, roomCode, game) {
     // Ability order:
     // Blocks

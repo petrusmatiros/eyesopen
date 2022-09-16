@@ -6,6 +6,7 @@
             "team": "good",
             "mission": "win with the good team",
             "hasNightAbility": false,
+            "hasDayAbility": false,
             "voteCount": 1
         },
         "investigator": {
@@ -14,6 +15,7 @@
             "team": "good",
             "mission": "investigate players and deduct what team they belong to",
             "hasNightAbility": true,
+            "hasDayAbility": false,
             "voteCount": 1
         },
         "doctor": {
@@ -22,6 +24,7 @@
             "team": "good",
             "mission": "protect players or yourself (once)",
             "hasNightAbility": true,
+            "hasDayAbility": false,
             "voteCount": 1,
             "selfUsage": 1
         },
@@ -29,9 +32,11 @@
             "name": "Mayor",
             "description": "influential, sarcastic and a bit political",
             "team": "good",
-            "mission": "your vote (day) counts as 2",
+            "mission": "you can reveal yourself during the day - granting you a vote count of 3",
             "hasNightAbility": false,
-            "voteCount": 2
+            "hasDayAbility": true,
+            "revealed": false,
+            "voteCount": 1
         },
         "trapper": {
             "name": "Trapper",
@@ -39,14 +44,16 @@
             "team": "good",
             "mission": "trap another player, blocking their ability",
             "hasNightAbility": true,
+            "hasDayAbility": false,
             "voteCount": 1
         },
         "godfather": {
             "name": "Godfather",
             "description": "say hello to their little friend >:)",
             "team": "evil",
-            "mission": "your vote (night) counts as 2",
+            "mission": "your vote to kill counts as 2 (night)",
             "hasNightAbility": false,
+            "hasDayAbility": false,
             "voteCount": 1,
             "killVoteCount": 2
         },
@@ -56,6 +63,7 @@
             "team": "evil",
             "mission": "vote to kill another player during the night",
             "hasNightAbility": false,
+            "hasDayAbility": false,
             "voteCount": 1,
             "killVoteCount": 1
         },
@@ -65,6 +73,7 @@
             "team": "evil",
             "mission": " restructure someones face (or yours once) to make evil players look good",
             "hasNightAbility": true,
+            "hasDayAbility": false,
             "voteCount": 1,
             "selfUsage": 1,
             "killVoteCount": 1
@@ -75,6 +84,7 @@
             "team": "evil",
             "mission": "block someone's ability at night (except mafia) ",
             "hasNightAbility": true,
+            "hasDayAbility": false,
             "voteCount": 1,
             "killVoteCount": 1
         },
@@ -84,6 +94,7 @@
             "team": "evil",
             "mission": "frame another player, making them look like an evil player",
             "hasNightAbility": true,
+            "hasDayAbility": false,
             "voteCount": 1,
             "killVoteCount": 1
         },
@@ -93,6 +104,7 @@
             "team": "neutral",
             "mission": "make yourself get voted out",
             "hasNightAbility": false,
+            "hasDayAbility": false,
             "voteCount": 1
         },
         "serial killer": {
@@ -101,6 +113,7 @@
             "team": "neutral",
             "mission": "kill everyone",
             "hasNightAbility": true,
+            "hasDayAbility": false,
             "voteCount": 1,
             "killVoteCount": 1
         },
@@ -110,6 +123,7 @@
             "team": "neutral",
             "mission": "get your target voted out to win - you become a jester if your target dies at night",
             "hasNightAbility": false,
+            "hasDayAbility": false,
             "voteCount": 1,
             "target": null
         },
@@ -119,6 +133,7 @@
             "team": "neutral",
             "mission": "make your client (evil or neutral) win",
             "hasNightAbility": false,
+            "hasDayAbility": false,
             "voteCount": 1,
             "client": null
         }
