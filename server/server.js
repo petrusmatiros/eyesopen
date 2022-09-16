@@ -3614,22 +3614,25 @@ io.on("connection", async (socket) => {
         var majority = aliveUsersCount / 2;
 
         if (targetCount[i] > majority) {
-          topVotes.push(targetCount[i]);
+          var voteValue = targetCount[i];
+          var mostVotedIndex = targetCount.indexOf(targetCount[i]);
+          var mostVoted = Array.from(targets.keys())[mostVotedIndex];
+          var majorityVote = {mostVoted, mostVotedIndex, voteValue}
+          topVotes.push(majorityVote);
         }
       }
 
       if (topVotes.length == 1) {
         // NOT A TIE
-        console.log("majority: " + targetCount[i]);
-          var mostVotedIndex = targetCount.indexOf(targetCount[i]);
-          var mostVoted = Array.from(targets.keys())[mostVotedIndex];
-          gotLynched = true;
-          voteTie = false;
-          globalVote(playerID, room, roomCode, game, mostVoted);
+        var voteOne = topVotes[0];
+        console.log("majority: " + voteOne.voteValue);
+        gotLynched = true;
+        voteTie = false;
+        globalVote(playerID, room, roomCode, game, voteOne.mostVoted);
 
       } else if (topVotes.length > 1) {
         // VOTE TIE
-        console.log("TIE: " + targetCount[i]);
+        console.log("TIE between", topVotes);
         gotLynched = false;
         voteTie = true;
       }
