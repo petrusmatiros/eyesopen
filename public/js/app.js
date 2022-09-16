@@ -1450,8 +1450,8 @@ function changeUI(theme) {
     body.classList.add("game-background-night");
     playerCard.classList.remove("game-day-bg", "game-day-fg");
     playerCard.classList.add("game-night-bg", "game-night-fg");
-    playerCardQuestionMark.classList.remove("game-day-bg", "game-day-fg");
-    playerCardQuestionMark.classList.add("game-night-bg", "game-night-fg");
+    playerCardQuestionMark.classList.remove("game-day-fg");
+    playerCardQuestionMark.classList.add("game-night-fg");
     playerCardDivider.classList.remove("game-day-border");
     playerCardDivider.classList.add("game-night-border");
     playerCardButton.classList.remove("game-day-secondary");
@@ -1517,8 +1517,8 @@ function changeUI(theme) {
     body.classList.add("game-background-day");
     playerCard.classList.remove("game-night-bg", "game-night-fg");
     playerCard.classList.add("game-day-bg", "game-day-fg");
-    playerCardQuestionMark.classList.remove("game-night-bg", "game-night-fg");
-    playerCardQuestionMark.classList.add("game-day-bg", "game-day-fg");
+    playerCardQuestionMark.classList.remove("game-night-fg");
+    playerCardQuestionMark.classList.add("game-day-fg");
     playerCardDivider.classList.remove("game-night-border");
     playerCardDivider.classList.add("game-day-border");
     playerCardButton.classList.remove("game-night-secondary");

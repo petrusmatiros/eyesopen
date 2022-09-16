@@ -141,6 +141,7 @@
   margin-top: 0.75rem;
   font-size: 6rem;
   font-weight: 700;
+  background: none !important;
 }
 
 .game-player-card {
@@ -224,8 +225,8 @@
 }
 .game-player-card-mission {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-end;
+  align-items: flex-start;
   font-weight: 400;
   font-size: 0.65rem;
   margin-left: 0.25rem;
