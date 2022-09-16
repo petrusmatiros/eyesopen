@@ -308,8 +308,6 @@ function hideCard() {
   displayImage.style.display = "none";
   displayMission.style.display = "none";
   document.getElementById("overlay-rolecardinfo").style.display = "none";
-  document.getElementById("overlay-rolecards").setAttribute("onclick", "hideCard()");
-  document.getElementById("adjusted-close").setAttribute("onclick", "hideCard()");
 }
 function showCard(element) {
   // show overlay
