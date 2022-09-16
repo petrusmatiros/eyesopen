@@ -38,7 +38,7 @@ function addEventListeners() {
 
 function setFocus() {
   var user = document.getElementById("user");
-  user.tyle.display = "flex"
+  user.style.display = "flex"
   document.getElementById("inputUser").focus();
 }
 

@@ -39,7 +39,9 @@ Enjoy ^-^
 - Minimum 3 players
 
 ## Role cards
-<p>
+
+TBD
+<!-- <p>
 <img src="public/assets/rolecards/Villager_card.svg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Investigator_card.svg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Doctor_card.svg" alt="role-card" width=150>
@@ -54,7 +56,7 @@ Enjoy ^-^
 <img src="public/assets/rolecards/Serial%20Killer_card.svg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Executioner_card.svg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Lawyer_card.svg" alt="role-card" width=150>
-</p>
+</p> -->
 
 
 

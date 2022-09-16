@@ -1304,7 +1304,7 @@ function showRoleCard(
     roleCardMission.innerText = mission;
     var readyButton = document.getElementsByClassName("game-ready-button")[0];
     var icon = document.getElementsByClassName("game-rolecard-icon")[0];
-    icon.src = "/assets/rolecards/" + name + "_bordered.svg";
+    icon.src = "/assets/rolecards/" + name + ".svg";
 
     if (team.includes("good")) {
       roleCardTitle.classList.add("game-rolecard-good-fg");

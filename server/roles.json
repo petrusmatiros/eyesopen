@@ -35,7 +35,7 @@
         },
         "trapper": {
             "name": "Trapper",
-            "description": "a sneaky and experienced trapmaker",
+            "description": "a sneaky and experienced trapper",
             "team": "good",
             "mission": "trap another player, blocking their ability",
             "hasNightAbility": true,
@@ -73,7 +73,7 @@
             "name": "Witch",
             "description": "an infamous spell caster, known to use dark magic to get what you want",
             "team": "evil",
-            "mission": "block someone's (except mafia) ability at night",
+            "mission": "block someone's ability at night (except mafia) ",
             "hasNightAbility": true,
             "voteCount": 1,
             "killVoteCount": 1
@@ -108,7 +108,7 @@
             "name": "Executioner",
             "description": "hiding in the shadows - waiting to strike",
             "team": "neutral",
-            "mission": "Get your target voted out to win. You become the jester if your target dies at night",
+            "mission": "get your target voted out to win - you become a jester if your target dies at night",
             "hasNightAbility": false,
             "voteCount": 1,
             "target": null
