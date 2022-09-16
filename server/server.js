@@ -2417,15 +2417,15 @@ io.on("connection", async (socket) => {
     var lineSeperator = "--------------------------------";
     if (game.getEmitPhaseOnce()) {
       if (game.getPhase().includes("actions")) {
-        sendMessage(
-          playerID,
-          room,
-          roomCode,
-          game,
-          "all",
-          lineSeperator,
-          "lineSeperator"
-        );
+        // sendMessage(
+        //   playerID,
+        //   room,
+        //   roomCode,
+        //   game,
+        //   "all",
+        //   lineSeperator,
+        //   "lineSeperator"
+        // );
         sendMessage(
           playerID,
           room,
@@ -2457,15 +2457,15 @@ io.on("connection", async (socket) => {
         );
       }
       if (game.getPhase().includes("recap")) {
-        sendMessage(
-          playerID,
-          room,
-          roomCode,
-          game,
-          "all",
-          lineSeperator,
-          "lineSeperator"
-        );
+        // sendMessage(
+        //   playerID,
+        //   room,
+        //   roomCode,
+        //   game,
+        //   "all",
+        //   lineSeperator,
+        //   "lineSeperator"
+        // );
         sendMessage(
           playerID,
           room,
