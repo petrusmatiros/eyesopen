@@ -3810,7 +3810,7 @@ io.on("connection", async (socket) => {
                       roomCode,
                       game,
                       "target",
-                      `The Witch tried to cast a freeze spell on you - but you're far too experienced so it doesn't affect you`,
+                      `The Witch tried to cast a freeze spell on you - but you're far too experienced with traps so it doesn't affect you`,
                       "info"
                     );
                   } else {
