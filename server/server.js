@@ -3769,15 +3769,27 @@ io.on("connection", async (socket) => {
                   `You trapped ${abilityTargetPlayer.getPlayerName()}`,
                   "confirm"
                 );
-                sendMessage(
-                  abilityTarget.playerID,
-                  room,
-                  roomCode,
-                  game,
-                  "target",
-                  `You have been trapped! Your night ability was blocked by the Trapper`,
-                  "info"
-                );
+                if (abilityTargetPlayer.getRole().type.includes("witch")) {
+                  sendMessage(
+                    abilityTarget.playerID,
+                    room,
+                    roomCode,
+                    game,
+                    "target",
+                    `The Trapper tried to trap you - but you know a thing or two about trapping so it doesn't affect you. Hehehe`,
+                    "info"
+                  );
+                } else {
+                  sendMessage(
+                    abilityTarget.playerID,
+                    room,
+                    roomCode,
+                    game,
+                    "target",
+                    `You have been trapped! Your night ability was blocked by the Trapper`,
+                    "info"
+                  );
+                }
               } else if (role.type.includes("witch")) {
                 if (!abilityTargetPlayer.getRole().team.includes("evil")) {
                   // CAN BLOCK EVERYONE EXCEPT EVIL
@@ -3791,15 +3803,27 @@ io.on("connection", async (socket) => {
                     `You cast a freeze spell on ${abilityTargetPlayer.getPlayerName()}`,
                     "confirm"
                   );
-                  sendMessage(
-                    abilityTarget.playerID,
-                    room,
-                    roomCode,
-                    game,
-                    "target",
-                    `You have been frozen! Your night ability was blocked by the Witch`,
-                    "info"
-                  );
+                  if (abilityTargetPlayer.getRole().type.includes("trapper")) {
+                    sendMessage(
+                      abilityTarget.playerID,
+                      room,
+                      roomCode,
+                      game,
+                      "target",
+                      `The Witch tried to cast a freeze spell on you - but you're far too experienced so it doesn't affect you`,
+                      "info"
+                    );
+                  } else {
+                    sendMessage(
+                      abilityTarget.playerID,
+                      room,
+                      roomCode,
+                      game,
+                      "target",
+                      `You have been frozen! Your night ability was blocked by the Witch`,
+                      "info"
+                    );
+                  }
                 }
               }
             } else if (
