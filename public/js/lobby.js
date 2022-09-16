@@ -295,6 +295,8 @@ function showInfo() {
   // show caroseul with scroll snap of all role cards
 }
 function hideCard() {
+  document.getElementById("overlay-rolecards").setAttribute("onclick", "hideInfo()");
+  document.getElementById("adjusted-close").setAttribute("onclick", "hideInfo()");
   var displayContainer = document.getElementById("lobby-rolecard-display-container");
   var displayRole = document.getElementById("lobby-rolecard-display-role");
   var displayDescription = document.getElementById("lobby-rolecard-display-description");
