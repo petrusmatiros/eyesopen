@@ -258,11 +258,17 @@ function checkNumber(element) {
 }
 
 function hideGameSettings() {
-
+  var gameSettingsContainer = document.getElementById("lobby-gamesettings-container");
+  var gameSettingsOverlay = document.getElementById("overlay-gamesettings");
+  gameSettingsContainer.style.display = "none";
+  gameSettingsOverlay.style.display = "none";
 }
 
 function showGameSettings() {
-
+  var gameSettingsContainer = document.getElementById("lobby-gamesettings-container");
+  var gameSettingsOverlay = document.getElementById("overlay-gamesettings");
+  gameSettingsContainer.style.display = "flex";
+  gameSettingsOverlay.style.display = "flex";
 }
 
 function getSeenNotification() {
