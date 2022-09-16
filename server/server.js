@@ -4353,20 +4353,7 @@ io.on("connection", async (socket) => {
             game.getCycle(),
             game.getCycleCount()
           );
-          messageHandlerForCycles(
-            playerID,
-            room,
-            roomCode,
-            game,
-            game.getEmitCycleOnce()
-          );
-          messageHandlerForPhases(
-            playerID,
-            room,
-            roomCode,
-            game,
-            game.getEmitPhaseOnce()
-          );
+          
 
           gameHandler(playerID);
           io.to(roomCode).emit("changeUI", game.getCycle());
@@ -4452,6 +4439,20 @@ io.on("connection", async (socket) => {
               );
             }
           } else {
+            messageHandlerForCycles(
+              playerID,
+              room,
+              roomCode,
+              game,
+              game.getEmitCycleOnce()
+            );
+            messageHandlerForPhases(
+              playerID,
+              room,
+              roomCode,
+              game,
+              game.getEmitPhaseOnce()
+            );
             game.getTimer().tick();
           }
         }
