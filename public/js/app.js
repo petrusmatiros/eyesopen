@@ -916,13 +916,9 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
             currentElement.classList.add("game-player-evil");
             element.classList.remove("game-player-unselectable");
           } else if (socketRole.type.includes("mayor")) {
-            console.log("is mayor");
             if (socketRole.hasOwnProperty("hasDayAbility")) {
-              console.log("has property");
               if (socketRole.hasDayAbility == true) {
-                console.log("property is true");
                 if (socketRole.revealed == false) {
-                  console.log("not revealed");
                   abilityButton.setAttribute("onclick", "actionHandler(this)");
                   abilityButton.style.display = "flex";
                   abilityButton.classList.add("game-button-ability-norounding");
@@ -930,7 +926,6 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
                   element.children[0].id = "";
                   element.children[0].src = "";
                 } else if (socketRole.revealed == true) {
-                  console.log("is revealed");
                   abilityButton.setAttribute("onclick", "");
                   abilityButton.style.display = "none";
                   abilityButton.classList.remove(

@@ -108,7 +108,7 @@ socket.on("connect", () => {
           });
         }
 
-        navigator.clipboard.writeText(window.location.href);
+        
         showNotification("copy");
 
         socket.emit("checkIfHost", getPlayerID(), "visibility");
@@ -252,14 +252,29 @@ socket.on("connect", () => {
   });
 });
 
+function getSeenNotification() {
+  var cookies = document.cookie.split(";");
+  for (var i = 0; i < cookies.length; i++) {
+    if (cookies[i].includes("seenNotification")) {
+      return cookies[i].split("=")[1];
+    }
+  }
+}
+
+const fiveHours = 60 * 60 * 5;
+
 function showNotification(type) {
   if (type == "copy") {
-    var theNotification = document.getElementById("lobby-notification");
-    theNotification.style.display = "flex";
-    theNotification.innerText = "Copied link to clipboard. Share it! ᕕ( ᐛ )ᕗ"
-    setTimeout(() => {
-      theNotification.style.display = "none";
-    }, 3000)
+    if (getSeenNotification() !== "true") {
+      navigator.clipboard.writeText(window.location.href);
+      document.cookie = `seenNotification=true; path=/; max-age=${fiveHours}; SameSite=Lax`;
+      var theNotification = document.getElementById("lobby-notification");
+      theNotification.style.display = "flex";
+      theNotification.innerText = "Copied link to clipboard. Share it! ᕕ( ᐛ )ᕗ"
+      setTimeout(() => {
+        theNotification.style.display = "none";
+      }, 5000)
+    }
   }
 }
 
