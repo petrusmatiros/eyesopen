@@ -259,7 +259,7 @@ function showNotification(type) {
     theNotification.innerText = "Copied link to clipboard. Share it! ᕕ( ᐛ )ᕗ"
     setTimeout(() => {
       theNotification.style.display = "none";
-    }, 5000)
+    }, 3000)
   }
 }
 
