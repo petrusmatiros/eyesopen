@@ -18,6 +18,26 @@ class Game {
     this.recapOnce = 0;
     this.dayMessagesOnce = 0;
 
+    // Game settings
+    // Durations can not be lower than 0
+    // showRoles, true or false
+    // voteMessages, hidden, anonymous, visible
+    this.settingsDefault = true;
+    this.settings = {
+      setting_durations: {
+        actions : 1,
+        discussion: 1,
+        voting: 1,
+      },
+      setting_showRoles: {
+        showRoles: true,
+      },
+      setting_voteMessages: {
+        voteMessages: "visible"
+      }
+    }
+
+
     // Phase
     this.phase = "";
     // Interval
@@ -87,7 +107,7 @@ class Game {
     // Booleans for inProgress and finished
     this.inProgress = false;
   }
-  resetDone() {
+  resetGameDone() {
     this.isDone = false;
   }
   resetGameInterval() {
@@ -105,6 +125,39 @@ class Game {
     this.nightMessagesOnce = 0;
     this.recapOnce = 0;
     this.dayMessagesOnce = 0;
+  }
+
+  resetGameSettings() {
+    this.settingsDefault = true;
+    // Game settings
+    // Durations can not be lower than 0
+    // showRoles, true or false
+    // voteMessages, hidden, anonymous, visible
+    this.settings = {
+      setting_durations: {
+        actions : 1,
+        discussion: 1,
+        voting: 1,
+      },
+      setting_showRoles: {
+        showRoles: true,
+      },
+      setting_voteMessages: {
+        voteMessages: "visible"
+      }
+    }
+  }
+
+  getSettingsDefault() {
+    return this.settingsDefault;
+  }
+
+  setSettingsDefault(settingsDefault) {
+    this.settingsDefault = this.settingsDefault
+  }
+
+  getSettings() {
+    return this.settings;
   }
 
   getCycleCount() {

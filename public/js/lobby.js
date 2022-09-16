@@ -252,6 +252,19 @@ socket.on("connect", () => {
   });
 });
 
+
+function checkNumber(element) {
+  // do something
+}
+
+function hideGameSettings() {
+
+}
+
+function showGameSettings() {
+
+}
+
 function getSeenNotification() {
   var cookies = document.cookie.split(";");
   for (var i = 0; i < cookies.length; i++) {
