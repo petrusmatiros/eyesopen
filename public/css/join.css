@@ -204,7 +204,7 @@ p {
 
 .card-input {
   position: fixed;
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -216,7 +216,6 @@ p {
   background: var(--light-bg);
   padding: 1.85em;
   border-radius: 0.6em;
-
   width: 17em;
 }
 
@@ -251,6 +250,7 @@ input[type="text"] {
   outline: none;
   border-radius: 0.6em;
   border: 2px solid #b1b1b1;
+  
 }
 
 input[type="text"]:focus {

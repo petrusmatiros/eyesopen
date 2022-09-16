@@ -14,7 +14,44 @@ socket.on("connect", () => {
       socket.emit("setRoom", getPlayerID());
     }
   });
+  addEventListeners()
 });
+
+
+
+function addEventListeners() {
+  var theCodeInput = document.getElementById("code");
+  var theUserInput = document.getElementById("inputUser");
+  var theHostInput = document.getElementById("inputHost");
+  theCodeInput.addEventListener('keydown', (e) => {
+    if (!e.repeat) {
+      if (e.key !== null) {
+        if (e.key == "Enter") {
+          checkRoomCode();
+        }
+      }
+    } 
+  });
+  theUserInput.addEventListener('keydown', (e) => {
+    if (!e.repeat) {
+      if (e.key !== null) {
+        if (e.key == "Enter") {
+          checkName(false)
+        }
+      }
+    } 
+  });
+  theHostInput.addEventListener('keydown', (e) => {
+    if (!e.repeat) {
+      if (e.key !== null) {
+        if (e.key == "Enter") {
+          checkName(true)
+
+        }
+      }
+    } 
+  });
+}
 
 function animateTitle() {
   var title = document.getElementsByClassName("title-eyesopen")[0];
@@ -127,8 +164,6 @@ function getPlayerID() {
     }
   }
 }
-
-
 
 function closeCard() {
   document.getElementById("overlay").style.display = "none";

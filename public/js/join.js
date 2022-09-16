@@ -8,7 +8,6 @@ const lobby = domain + "lobby/";
 socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
   socket.on("userExists", (userExists) => {
-    setFocus();
     if (!userExists) {
       resetCookie();
     } else {
@@ -18,9 +17,28 @@ socket.on("connect", () => {
       window.location.href = lobby + room;
     }
   });
+  addEventListeners()
+  setFocus();
 });
 
+
+function addEventListeners() {
+  var theUserInput = document.getElementById("inputUser");
+  theUserInput.addEventListener('keydown', (e) => {
+    if (!e.repeat) {
+      if (e.key !== null) {
+        if (e.key == "Enter") {
+          checkDirectName();
+        }
+      }
+    } 
+  });
+  
+}
+
 function setFocus() {
+  var user = document.getElementById("user");
+  user.tyle.display = "flex"
   document.getElementById("inputUser").focus();
 }
 

@@ -263,6 +263,7 @@
   line-height: 1;
   backdrop-filter: blur(0.25rem);
   -webkit-backdrop-filter: blur(0.25rem);
+  box-shadow: 0 0.5rem 1rem var(--main-shadow);
 }
 
 #overlay-rolecardinfo {
