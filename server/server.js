@@ -1842,8 +1842,20 @@ io.on("connection", async (socket) => {
               type = "evil+dead";
               isEvil = true;
             } else {
-              type = "dead";
-              isEvil = false;
+              if (userRole.type.includes("mayor")) {
+                if (userRole.hasOwnProperty("revealed")) {
+                  if (userRole.revealed == true) {
+                    type = "mayor+dead";
+                    isEvil = false;
+                  } else {
+                    type = "dead";
+                    isEvil = false;
+                  }
+                }
+              } else {
+                isEvil = false;
+                type = "dead";
+              }
             }
           } else {
             if (
@@ -1856,8 +1868,20 @@ io.on("connection", async (socket) => {
                   isEvil = null;
                   type = "target+dead";
                 } else {
-                  isEvil = null;
-                  type = "dead";
+                  if (userRole.type.includes("mayor")) {
+                    if (userRole.hasOwnProperty("revealed")) {
+                      if (userRole.revealed == true) {
+                        type = "mayor+dead";
+                        isEvil = null;
+                      } else {
+                        type = "dead";
+                        isEvil = null;
+                      }
+                    }
+                  } else {
+                    isEvil = null;
+                    type = "dead";
+                  }
                 }
               } else if (
                 socketRole.type.includes("jester") &&
@@ -1867,8 +1891,20 @@ io.on("connection", async (socket) => {
                   isEvil = null;
                   type = "target+dead";
                 } else {
-                  isEvil = null;
-                  type = "dead";
+                  if (userRole.type.includes("mayor")) {
+                    if (userRole.hasOwnProperty("revealed")) {
+                      if (userRole.revealed == true) {
+                        type = "mayor+dead";
+                        isEvil = null;
+                      } else {
+                        type = "dead";
+                        isEvil = null;
+                      }
+                    }
+                  } else {
+                    isEvil = null;
+                    type = "dead";
+                  }
                 }
               }
             } else if (socketRole.type.includes("lawyer")) {
@@ -1876,8 +1912,20 @@ io.on("connection", async (socket) => {
                 isEvil = null;
                 type = "client+dead";
               } else {
-                isEvil = null;
-                type = "dead";
+                if (userRole.type.includes("mayor")) {
+                  if (userRole.hasOwnProperty("revealed")) {
+                    if (userRole.revealed == true) {
+                      type = "mayor+dead";
+                      isEvil = null;
+                    } else {
+                      type = "dead";
+                      isEvil = null;
+                    }
+                  }
+                } else {
+                  isEvil = null;
+                  type = "dead";
+                }
               }
             } else if (userRole.type.includes("mayor")) {
               if (userRole.hasOwnProperty("revealed")) {
@@ -1889,7 +1937,8 @@ io.on("connection", async (socket) => {
                   isEvil = null;
                 }
               }
-            } else {
+            } 
+            else {
               isEvil = null;
             }
           }
@@ -2071,8 +2120,20 @@ io.on("connection", async (socket) => {
               type = "evil+dead";
               isEvil = true;
             } else {
-              type = "dead";
-              isEvil = false;
+              if (userRole.type.includes("mayor")) {
+                if (userRole.hasOwnProperty("revealed")) {
+                  if (userRole.revealed == true) {
+                    type = "mayor+dead";
+                    isEvil = false;
+                  } else {
+                    type = "dead";
+                    isEvil = false;
+                  }
+                }
+              } else {
+                isEvil = false;
+                type = "dead";
+              }
             }
           } else {
             if (
@@ -2085,8 +2146,20 @@ io.on("connection", async (socket) => {
                   isEvil = null;
                   type = "target+dead";
                 } else {
-                  isEvil = null;
-                  type = "dead";
+                  if (userRole.type.includes("mayor")) {
+                    if (userRole.hasOwnProperty("revealed")) {
+                      if (userRole.revealed == true) {
+                        type = "mayor+dead";
+                        isEvil = null;
+                      } else {
+                        type = "dead";
+                        isEvil = null;
+                      }
+                    }
+                  } else {
+                    isEvil = null;
+                    type = "dead";
+                  }
                 }
               } else if (
                 socketRole.type.includes("jester") &&
@@ -2096,8 +2169,20 @@ io.on("connection", async (socket) => {
                   isEvil = null;
                   type = "target+dead";
                 } else {
-                  isEvil = null;
-                  type = "dead";
+                  if (userRole.type.includes("mayor")) {
+                    if (userRole.hasOwnProperty("revealed")) {
+                      if (userRole.revealed == true) {
+                        type = "mayor+dead";
+                        isEvil = null;
+                      } else {
+                        type = "dead";
+                        isEvil = null;
+                      }
+                    }
+                  } else {
+                    isEvil = null;
+                    type = "dead";
+                  }
                 }
               }
             } else if (socketRole.type.includes("lawyer")) {
@@ -2105,8 +2190,20 @@ io.on("connection", async (socket) => {
                 isEvil = null;
                 type = "client+dead";
               } else {
-                isEvil = null;
-                type = "dead";
+                if (userRole.type.includes("mayor")) {
+                  if (userRole.hasOwnProperty("revealed")) {
+                    if (userRole.revealed == true) {
+                      type = "mayor+dead";
+                      isEvil = null;
+                    } else {
+                      type = "dead";
+                      isEvil = null;
+                    }
+                  }
+                } else {
+                  isEvil = null;
+                  type = "dead";
+                }
               }
             } else if (userRole.type.includes("mayor")) {
               if (userRole.hasOwnProperty("revealed")) {
