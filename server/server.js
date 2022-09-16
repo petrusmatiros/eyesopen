@@ -3566,7 +3566,8 @@ io.on("connection", async (socket) => {
                 roomCode,
                 game,
                 "all",
-                `${player.getPlayerName()} has revealed themselves as the Mayor. Their vote now counts as 3`
+                `${player.getPlayerName()} has revealed themselves as the Mayor. Their vote now counts as 3`,
+                "bold"
               );
               io.to(roomCode).emit("updateSetPlayers");
             } else {

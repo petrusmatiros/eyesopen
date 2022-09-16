@@ -272,7 +272,15 @@ function showInfo() {
 }
 function hideCard() {
   var displayContainer = document.getElementById("lobby-rolecard-display-container");
+  var displayRole = document.getElementById("lobby-rolecard-display-role");
+  var displayDescription = document.getElementById("lobby-rolecard-display-description");
+  var displayImage = document.getElementById("lobby-rolecard-display-image");
+  var displayMission = document.getElementById("lobby-rolecard-display-mission");
   displayContainer.style.display = "none";
+  displayRole.style.display = "none";
+  displayDescription.style.display = "none";
+  displayImage.style.display = "none";
+  displayMission.style.display = "none";
   document.getElementById("overlay-rolecardinfo").style.display = "none";
   document.getElementById("overlay-rolecards").setAttribute("onclick", "hideCard()");
   document.getElementById("adjusted-close").setAttribute("onclick", "hideCard()");
@@ -314,6 +322,10 @@ function showCard(element) {
     }
   })
   displayContainer.style.display = "flex";
+  displayRole.style.display = "flex";
+  displayDescription.style.display = "flex";
+  displayImage.style.display = "flex";
+  displayMission.style.display = "flex";
   document.getElementById("overlay-rolecardinfo").style.display = "block";
   // overlay should close everything
   // show caroseul with scroll snap of all role cards

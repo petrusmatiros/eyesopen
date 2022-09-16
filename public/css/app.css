@@ -212,6 +212,9 @@
   width: 0.5rem;
 }
 .game-player-card-role {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-weight: 700;
   font-size: 1rem;
   margin-left: 0.25rem;
@@ -220,12 +223,16 @@
   max-width: 10rem;
 }
 .game-player-card-mission {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-weight: 400;
   font-size: 0.65rem;
   margin-left: 0.25rem;
   margin-bottom: 0.75rem;
   min-width: 10rem;
   max-width: 10rem;
+  vertical-align: center;
   line-height: 1.15;
 }
 
@@ -1038,6 +1045,7 @@
   padding: 0.75rem 1rem 0.75rem 1rem;
   border-radius: 1rem;
   margin-bottom: 1rem;
+  line-height: 1.15;
 }
 
 .game-button-container {
