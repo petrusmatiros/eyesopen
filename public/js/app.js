@@ -1384,6 +1384,7 @@ function showRoleCard(
     var roleCardMission = document.getElementsByClassName(
       "game-rolecard-mission"
     )[0];
+    roleCardMission.style.backgroundColor = `var(--${team}-bg-mission`
     roleCardMission.innerText = mission;
     var readyButton = document.getElementsByClassName("game-ready-button")[0];
     var icon = document.getElementsByClassName("game-rolecard-icon")[0];

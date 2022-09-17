@@ -30,18 +30,21 @@
   /* Good */
   --good-fg: var(--dark-fg);
   --good-bg: hsl(108, 100%, 85%);
+  --good-bg-mission: hsl(108, 100%, 93%);
   --good-fg-selected: var(--light-fg);
   --good-bg-selected: hsl(108, 100%, 25%);
 
   /* Evil */
   --evil-fg: var(--dark-fg);
   --evil-bg: hsl(360, 100%, 85%);
+  --evil-bg-mission: hsl(360, 100%, 93%);
   --evil-fg-selected: var(--light-fg);
   --evil-bg-selected: hsl(360, 100%, 50%);
 
   /* Neutral */
   --neutral-fg: var(--dark-fg);
   --neutral-bg: hsl(0, 0%, 83%);
+  --neutral-bg-mission: hsl(0, 0%, 93%);
   --neutral-fg-selected: var(--light-fg);
   --neutral-bg-selected: hsl(0, 0%, 15%);
 }
@@ -214,7 +217,7 @@
   color: var(--dark-fg);
   font-size: 1rem;
   font-weight: 600;
-  background-color: var(--mission-grey);
+  /* background-color: var(--mission-grey); */
   padding: 0.75rem 1rem 0.75rem 1rem;
   border-radius: 1rem;
   line-height: 1.15;

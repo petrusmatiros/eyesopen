@@ -348,6 +348,7 @@ function showCard(element) {
     displayRole.innerText = name;
     displayDescription.innerText = description;
     displayMission.innerText = mission;
+    displayMission.style.backgroundColor = `var(--${team}-bg-mission`
     var theSrc = ""
     if (name.includes("Godfather")) {
        theSrc = "/assets/rolecards/" + name + ".jpg"
