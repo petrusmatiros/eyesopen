@@ -257,6 +257,11 @@ function checkNumber(element) {
   // do something
 }
 
+function resetGameSettings() {}
+function saveGameSettings() {
+  hideGameSettings()
+}
+
 function hideGameSettings() {
   var gameSettingsContainer = document.getElementById("lobby-gamesettings-container");
   var gameSettingsOverlay = document.getElementById("overlay-gamesettings");
@@ -343,7 +348,14 @@ function showCard(element) {
     displayRole.innerText = name;
     displayDescription.innerText = description;
     displayMission.innerText = mission;
-    var theSrc = "/assets/rolecards/" + name + ".svg"
+    var theSrc = ""
+    if (name.includes("Godfather")) {
+       theSrc = "/assets/rolecards/" + name + ".jpg"
+
+    } else {
+
+      theSrc = "/assets/rolecards/" + name + ".svg"
+    }
     displayImage.src = theSrc;
     if (team.includes("good")) {
       displayRole.classList.add("good-selected-color");

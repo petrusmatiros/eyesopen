@@ -203,8 +203,9 @@
   align-items: center;
   animation: fadeIn 0.2s 1;
   width: 12.5rem;
-  height: 12.5rem;
   padding: 0.15em;
+  margin: 1rem;
+  border-radius: 1rem;
 }
 .lobby-rolecard-display-mission {
   display: flex;
@@ -401,6 +402,45 @@ input[type=number]::-webkit-inner-spin-button {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
   min-width: 21rem;
   max-width: 21rem;
+}
+
+.lobby-gamesettings-buttons {
+  user-select: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  font-size: 1.25rem;
+  font-weight: 600;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.lobby-gamesettings-resetbutton {
+  
+  color: var(--dark-fg);
+  background-color: hsl(0, 80%, 80%);
+  border-radius: 0.6rem;
+  padding: 0.6em 1em 0.6em 1em;
+}
+.lobby-gamesettings-resetbutton:hover {
+  background-color: hsl(0, 80%, 70%);
+}
+.lobby-gamesettings-resetbutton:active {
+  background-color: hsl(0, 80%, 65%);
+}
+.lobby-gamesettings-donebutton {
+  color: var(--dark-fg);
+  background-color: hsl(0, 0%, 80%);
+  border-radius: 0.6rem;
+  padding: 0.6em 1em 0.6em 1em;
+}
+.lobby-gamesettings-donebutton:hover {
+  background-color: hsl(0, 0%, 70%);
+}
+.lobby-gamesettings-donebutton:active {
+  background-color: hsl(0, 0%, 65%);
 }
 
 .lobby-gamesettings-durations {

@@ -1659,7 +1659,7 @@ io.on("connection", async (socket) => {
                             roomCode,
                             game,
                             "evil",
-                            `${player.getPlayerName()} is voting to kill ${theVoteTargetPlayer.getPlayerName()} (${
+                            `${player.getPlayerName()} changed their vote. They are voting to kill ${theVoteTargetPlayer.getPlayerName()} (${
                               theVoteTargetPlayer.nightVotes
                             })`,
                             "Night"
@@ -1719,7 +1719,7 @@ io.on("connection", async (socket) => {
                           roomCode,
                           game,
                           "all",
-                          `${player.getPlayerName()} is voting to lynch ${theVoteTargetPlayer.getPlayerName()}`,
+                          `${player.getPlayerName()} has changed their vote. They are voting to lynch ${theVoteTargetPlayer.getPlayerName()}`,
                           "Day"
                         );
                       } else if (
@@ -3631,6 +3631,7 @@ io.on("connection", async (socket) => {
         }
       }
 
+
       if (topVotes.length == 1) {
         // NOT A TIE
         var voteOne = topVotes[0];
@@ -3640,10 +3641,38 @@ io.on("connection", async (socket) => {
         globalVote(playerID, room, roomCode, game, voteOne.mostVoted);
 
       } else if (topVotes.length > 1) {
-        // VOTE TIE
-        console.log("TIE between", topVotes);
-        gotLynched = false;
+
+        // Handle if votes are ABOVE majority but SAME VALUE --> tie
+        // Handle if votes are ABOVE majority but one has HIGHER value --> vote
+        var highestVoteCount = 0;
+        var theHighestVote = undefined;
+        var seenHighVote = [];
+
+        for (var i = 0; i < topVotes.length; i++) {
+          if (topVotes[i].voteValue > highestVoteCount) {
+            if (!seenHighVote.includes(topVotes[i].voteValue)) {
+              highestVoteCount = topVotes[i].voteValue;
+              theHighestVote = topVotes[i];
+              seenHighVote.push(topVotes[i].voteValue)
+            } 
+          } else if (topVotes[i].voteValue == highestVoteCount) {
+            highestVoteCount = 0;
+            theHighestVote = undefined;
+          }
+        }
+
+        if (highestVoteCount == 0 && theHighestVote == undefined) {
+          gotLynched = false;
         voteTie = true;
+          // TIE
+          console.log("TIE between", topVotes);
+        } else if (highestVoteCount !== 0 && theHighestVote !== undefined) {
+          gotLynched = true;
+          voteTie = false;
+          // VOTE
+          console.log("VOTE between majority votes", topVotes);
+          globalVote(playerID, room, roomCode, game, theHighestVote.mostVoted);
+        }
       }
 
       if (!gotLynched && !voteTie) {

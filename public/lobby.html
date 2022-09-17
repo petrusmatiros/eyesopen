@@ -304,7 +304,10 @@
             </div>
           </div>
         </div>
-
+        <div class="lobby-gamesettings-buttons">
+          <div class="lobby-gamesettings-resetbutton" id="lobby-gamesettings-resetbutton" onclick="resetGameSettings()">Reset</div>
+          <div class="lobby-gamesettings-donebutton" id="lobby-gamesettings-donebutton" onclick="saveGameSettings()">Done</div>
+        </div>
       </div>
 
 
@@ -353,7 +356,7 @@
             <div class="lobby-rolecard-team-title evil-selected-color">Evil</div>
             <div class="lobby-rolecard-team-wrapper">
               <div class="lobby-rolecard" id="godfather-card" onclick="showCard(this)">
-                <img class="lobby-rolecard-image" src="/assets/rolecards/Godfather.svg" />
+                <img class="lobby-rolecard-image" src="/assets/rolecards/Godfather.jpg" />
                 <div class="lobby-rolecard-role evil-selected-color">Godfather</div>
               </div>
               <div class="lobby-rolecard" id="mafioso-card" onclick="showCard(this)">
