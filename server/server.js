@@ -1315,30 +1315,30 @@ io.on("connection", async (socket) => {
   };
 
   // ! DEBUG
-  var durations = {
-    night: {
-      actions: 15,
-      nightMessages: 5,
-    },
-    day: {
-      recap: 5,
-      discussion: 6,
-      voting: 15,
-      dayMessages: 5,
-    },
-  };
   // var durations = {
   //   night: {
-  //     actions: 40,
+  //     actions: 15,
   //     nightMessages: 5,
   //   },
   //   day: {
   //     recap: 5,
-  //     discussion: 45,
-  //     voting: 30,
+  //     discussion: 6,
+  //     voting: 15,
   //     dayMessages: 5,
   //   },
   // };
+  var durations = {
+    night: {
+      actions: 40,
+      nightMessages: 5,
+    },
+    day: {
+      recap: 5,
+      discussion: 45,
+      voting: 30,
+      dayMessages: 5,
+    },
+  };
 
   socket.on("updateUI", (playerID) => {
     if (checkUserExist(playerID)) {
