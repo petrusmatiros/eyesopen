@@ -276,7 +276,7 @@ p {
   margin-bottom: 1.5rem;
   padding: 0.6em 1em 0.6em 1em;
   border: none;
-  border-radius: 0.6em;
+  border-radius: 0.5rem;
   text-decoration: none;
 }
 
@@ -394,7 +394,7 @@ p {
     margin-bottom: 1.5rem;
     padding: 0.6em 1em 0.6em 1em;
     border: none;
-    border-radius: 0.6em;
+    border-radius: 0.5rem;
     text-decoration: none;
   }
   .links {
@@ -497,7 +497,7 @@ p {
   user-select: none;
   text-align: center;
   background-color: #2d2d2d;
-  border-radius: 0.6em;
+  border-radius: 0.5rem;
   padding: 0.5em;
   color: #ffffff;
 }
@@ -534,7 +534,7 @@ p {
   align-items: center;
   background: var(--light-bg);
   padding: 1.85em;
-  border-radius: 0.6em;
+  border-radius: 0.5rem;
 
   width: 17em;
 }
@@ -552,7 +552,7 @@ p {
   width: 2rem;
   height: 2rem;
   vertical-align: bottom;
-  border-radius: 0.6em;
+  border-radius: 0.5rem;
 }
 
 .close-button:hover {
@@ -592,7 +592,7 @@ input[type="text"] {
   margin: 0.5em 1em 0.5em 1em;
   padding: 0.5em 1em 0.5em 1em;
   outline: none;
-  border-radius: 0.6em;
+  border-radius: 0.5rem;
   border: 2px solid #b1b1b1;
 }
 
@@ -614,7 +614,7 @@ input[type="text"]:focus {
   margin: 0.5em 1em 0.5em 1em;
   padding: 0.6em 0.6em 0.6em 0.6em;
   border: none;
-  border-radius: 0.6em;
+  border-radius: 0.5rem;
   text-decoration: none;
 }
 
