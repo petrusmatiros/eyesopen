@@ -219,7 +219,7 @@
   font-weight: 600;
   /* background-color: var(--mission-grey); */
   padding: 0.75rem 1rem 0.75rem 1rem;
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   line-height: 1.15;
   vertical-align: center;
 }
@@ -449,7 +449,7 @@ input[type=number]::-webkit-inner-spin-button {
 .lobby-gamesettings-durations {
   padding: 1em;
   background-color: hsl(0, 0%, 95%);
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   margin-bottom: 1rem;
 }
 
@@ -501,7 +501,7 @@ input[type=number]::-webkit-inner-spin-button {
 .lobby-gamesettings-messages {
   padding: 1em;
   background-color: hsl(0, 0%, 97%);
-  border-radius: 1rem;
+  border-radius: 0.75rem;
 }
 
 .game-settings {
@@ -605,7 +605,7 @@ input[type=number]::-webkit-inner-spin-button {
   padding: 0.35em;
   font-size: 1rem;
   font-weight: 600;
-  border-radius: 0.5em;
+  border-radius: 0.5rem;
   border: 2px solid var(--light-fg);
   backdrop-filter: blur(3rem);
   -webkit-backdrop-filter: blur(3rem);
@@ -923,7 +923,7 @@ input[type=number]::-webkit-inner-spin-button {
   text-align: center;
   font-size: 1.25rem;
   font-weight: 500;
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   padding: 0.45rem 1.5rem 0.45rem 1.5rem;
   min-width: 4.5rem;
 }
@@ -967,7 +967,7 @@ input[type=number]::-webkit-inner-spin-button {
     cursor: pointer;
     font-size: 1.25rem;
     font-weight: 500;
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
     padding: 0.75rem 1rem 0.75rem 1rem;
     min-width: 4.5rem;
   }

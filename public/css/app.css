@@ -159,8 +159,8 @@
   margin: 2rem 0.5rem 1rem 0.5rem;
   max-width: 20.5rem;
   min-width: 20.5rem;
-  max-height: 6.65rem;
-  min-height: 7.75rem;
+  max-height: 8rem;
+  min-height: 8rem;
 }
 
 /* Animations */
@@ -201,8 +201,10 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  max-width: 6.25rem;
-  min-width: 6.25rem;
+  max-width: 6rem;
+  min-width: 6rem;
+  border-radius: 0.75rem;
+  margin-right: 1rem;
 }
 
 .game-player-card-wrapper {
@@ -1036,9 +1038,10 @@
 .game-rolecard-icon {
   display: flex;
   width: 12.5rem;
-  height: 12.5rem;
   padding: 0.15em;
   margin: 0.25rem;
+  border-radius: 1rem;
+  margin: 1rem;
 }
 
 .game-rolecard-mission {
@@ -1048,7 +1051,7 @@
   font-weight: 600;
   /* background-color: var(--mission-grey); */
   padding: 0.75rem 1rem 0.75rem 1rem;
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   margin-bottom: 1rem;
   line-height: 1.05;
 }
@@ -1069,7 +1072,7 @@
   color: var(--light-fg);
   font-size: 1.25rem;
   font-weight: 500;
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   padding: 0.75rem 1.5rem 0.75rem 1.5rem;
 }
 

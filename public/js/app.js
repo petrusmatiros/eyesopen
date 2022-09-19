@@ -1329,7 +1329,7 @@ socket.on("fetchedPlayerCardPress", (name, team, mission) => {
   var playerRole = document.getElementById("game-player-card-role");
   var playerMission = document.getElementById("game-player-card-mission");
   var playerTeam = team.charAt(0).toUpperCase() + team.slice(1);
-  playerIcon.src = "/assets/rolecards/" + name + ".svg";
+  playerIcon.src = "/assets/rolecards/" + name + ".jpg";
   playerRole.innerText = name + ` (${playerTeam})`;
   playerMission.innerText = mission;
 });
@@ -1388,7 +1388,7 @@ function showRoleCard(
     roleCardMission.innerText = mission;
     var readyButton = document.getElementsByClassName("game-ready-button")[0];
     var icon = document.getElementsByClassName("game-rolecard-icon")[0];
-    icon.src = "/assets/rolecards/" + name + ".svg";
+    icon.src = "/assets/rolecards/" + name + ".jpg";
 
     if (team.includes("good")) {
       roleCardTitle.classList.add("game-rolecard-good-fg");
@@ -1424,6 +1424,8 @@ function showRoleCard(
     roleCardMission.innerText = mission;
   }
 }
+
+
 function changeUI(theme) {
   var navbar = document.getElementById("game-navbar");
   var body = document.getElementById("game-body");
@@ -1620,7 +1622,7 @@ function showGame(allReady) {
       var playerRole = document.getElementById("game-player-card-role");
       var playerMission = document.getElementById("game-player-card-mission");
       var playerTeam = team.charAt(0).toUpperCase() + team.slice(1);
-      playerIcon.src = "/assets/rolecards/" + name + ".svg";
+      playerIcon.src = "/assets/rolecards/" + name + ".jpg";
       playerRole.innerText = name + ` (${playerTeam})`;
       playerMission.innerText = mission;
     });

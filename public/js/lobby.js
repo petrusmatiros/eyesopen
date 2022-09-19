@@ -349,14 +349,7 @@ function showCard(element) {
     displayDescription.innerText = description;
     displayMission.innerText = mission;
     displayMission.style.backgroundColor = `var(--${team}-bg-mission`
-    var theSrc = ""
-    if (name.includes("Godfather")) {
-       theSrc = "/assets/rolecards/" + name + ".jpg"
-
-    } else {
-
-      theSrc = "/assets/rolecards/" + name + ".svg"
-    }
+    theSrc = "/assets/rolecards/" + name + ".jpg"
     displayImage.src = theSrc;
     if (team.includes("good")) {
       displayRole.classList.add("good-selected-color");

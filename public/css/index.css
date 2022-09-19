@@ -276,7 +276,7 @@ p {
   margin-bottom: 1.5rem;
   padding: 0.6em 1em 0.6em 1em;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   text-decoration: none;
 }
 
@@ -394,7 +394,7 @@ p {
     margin-bottom: 1.5rem;
     padding: 0.6em 1em 0.6em 1em;
     border: none;
-    border-radius: 0.5rem;
+    border-radius: 1rem;
     text-decoration: none;
   }
   .links {
@@ -486,21 +486,6 @@ p {
   outline: none !important;
 }
 
-.clock-container {
-  display: none;
-  justify-content: center;
-  align-items: center;
-  padding: 0.5em;
-}
-
-.clock {
-  user-select: none;
-  text-align: center;
-  background-color: #2d2d2d;
-  border-radius: 0.5rem;
-  padding: 0.5em;
-  color: #ffffff;
-}
 
 @keyframes fadeIn {
   0% { opacity: 0; }
