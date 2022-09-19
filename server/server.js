@@ -3406,26 +3406,28 @@ io.on("connection", async (socket) => {
 
       var targets = new Map();
       for (var i = 0; i < evilUsers.length; i++) {
-        if (evilUsers[i].getPlayer(roomCode).voteTarget !== null) {
-          var theVoteTarget = getKeyFromValue(
-            proxyIdenfication,
-            evilUsers[i].getPlayer(roomCode).voteTarget
-          );
-          var voteTargetPlayer = connectedUsers
-            .get(theVoteTarget)
-            .getPlayer(roomCode);
-          if (!game.getCemetery().includes(connectedUsers.get(theVoteTarget))) {
-            if (targets.has(theVoteTarget)) {
-              targets.set(
-                theVoteTarget,
-                targets.get(theVoteTarget) +
+        if (evilUsers[i].getIsKilled() == false && evilUsers[i].getIsLynched() == false) {
+          if (evilUsers[i].getPlayer(roomCode).voteTarget !== null) {
+            var theVoteTarget = getKeyFromValue(
+              proxyIdenfication,
+              evilUsers[i].getPlayer(roomCode).voteTarget
+            );
+            var voteTargetPlayer = connectedUsers
+              .get(theVoteTarget)
+              .getPlayer(roomCode);
+            if (!game.getCemetery().includes(connectedUsers.get(theVoteTarget))) {
+              if (targets.has(theVoteTarget)) {
+                targets.set(
+                  theVoteTarget,
+                  targets.get(theVoteTarget) +
+                    evilUsers[i].getPlayer(roomCode).getRole().killVoteCount
+                );
+              } else if (!targets.has(theVoteTarget)) {
+                targets.set(
+                  theVoteTarget,
                   evilUsers[i].getPlayer(roomCode).getRole().killVoteCount
-              );
-            } else if (!targets.has(theVoteTarget)) {
-              targets.set(
-                theVoteTarget,
-                evilUsers[i].getPlayer(roomCode).getRole().killVoteCount
-              );
+                );
+              }
             }
           }
         }
@@ -3597,7 +3599,7 @@ io.on("connection", async (socket) => {
 
   function voteHandlerGlobal(playerID, room, roomCode, game) {
     if (game.getCycle() == "Day") {
-      var users = game.getUsers();
+      var users = game.getAlive();
       console.log("COUNTING VOTES GLOBAL");
 
       var targets = new Map();
