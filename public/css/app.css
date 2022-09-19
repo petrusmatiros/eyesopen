@@ -66,7 +66,7 @@
 }
 
 .game-background-night {
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
     url(/assets/images/game_background.jpg);
   background-attachment: fixed;
 }
@@ -83,7 +83,7 @@
   background: radial-gradient(
       50% 50% at 50% 50%,
       rgba(255, 2, 2, 0) 0%,
-      rgba(255, 13, 13, 0.2) 100%
+      rgba(255, 13, 13, 0.25) 100%
     ),
     linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url(/assets/images/game_background.jpg) !important;
