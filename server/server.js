@@ -488,7 +488,9 @@ io.on("connection", async (socket) => {
           previousRoom,
           gameToLeave,
           "all",
-          `${user.getPlayer(previousRoom).getPlayerName()} left the game (Server)`,
+          `${user
+            .getPlayer(previousRoom)
+            .getPlayerName()} left the game (Server)`,
           "alert"
         );
         console.log("Calling death handler from force kill");
@@ -1946,8 +1948,7 @@ io.on("connection", async (socket) => {
                   isEvil = null;
                 }
               }
-            } 
-            else {
+            } else {
               isEvil = null;
             }
           }
@@ -2750,6 +2751,10 @@ io.on("connection", async (socket) => {
         }
       }
 
+      console.log("good", goodCount);
+      console.log("evil", evilCount);
+      console.log("neutral", neutralCount);
+
       // Handle only 2 players alive?
 
       if (!game.getExecutionerWin() && !game.getJesterWin()) {
@@ -2843,11 +2848,11 @@ io.on("connection", async (socket) => {
         ) {
           // SERIAL KILLER WINS
           if (neutralCount == 1) {
-            if (theSerialKiller !== null) {
-              if (
-                !theSerialKiller.getPlayer(roomCode).getIsKilled() &&
-                !theSerialKiller.getPlayer(roomCode).getIsLynched()
-              ) {
+            if (
+              !theSerialKiller.getPlayer(roomCode).getIsKilled() &&
+              !theSerialKiller.getPlayer(roomCode).getIsLynched()
+            ) {
+              if (theSerialKiller !== null) {
                 var serialKillerMessages = [
                   "DIE, DIE, DIE!",
                   "*diabolical screech* WHO'S NEXT?!",
@@ -2888,27 +2893,23 @@ io.on("connection", async (socket) => {
                   }
                 }
               }
-            } 
-            else if (theLawyer !== null) {
-              if (
-                !theLawyer.getPlayer(roomCode).getIsKilled() &&
-                !theLawyer.getPlayer(roomCode).getIsLynched()
-              ) {
+            } else if (
+              !theLawyer.getPlayer(roomCode).getIsKilled() &&
+              !theLawyer.getPlayer(roomCode).getIsLynched()
+            ) {
+              if (theLawyer !== null) {
                 // Lawyer does not win, since their target is dead, so just a neutral win.
                 game.setNeutralWin(true);
                 var winnerID = theLawyer.getPlayerID();
-                var winnerName = theLawyer
-                  .getPlayer(roomCode)
-                  .getPlayerName();
+                var winnerName = theLawyer.getPlayer(roomCode).getPlayerName();
                 var winner = { winnerID, winnerName };
                 game.addWinner(winner);
               }
-            } 
-            else if (theExecutioner !== null) {
-              if (
-                !theExecutioner.getPlayer(roomCode).getIsKilled() &&
-                !theExecutioner.getPlayer(roomCode).getIsLynched()
-              ) {
+            } else if (
+              !theExecutioner.getPlayer(roomCode).getIsKilled() &&
+              !theExecutioner.getPlayer(roomCode).getIsLynched()
+            ) {
+              if (theExecutioner !== null) {
                 game.setNeutralWin(true);
                 var winnerID = theExecutioner.getPlayerID();
                 var winnerName = theExecutioner
@@ -2933,14 +2934,13 @@ io.on("connection", async (socket) => {
                   }
                 }
               }
-            } 
-            else if (theJester !== null || secondJester !== null) {
-              if (
-                (!theJester.getPlayer(roomCode).getIsKilled() &&
-                  !theJester.getPlayer(roomCode).getIsLynched()) ||
-                (!secondJester.getPlayer(roomCode).getIsKilled() &&
-                  !secondJester.getPlayer(roomCode).getIsLynched())
-              ) {
+            } else if (
+              (!theJester.getPlayer(roomCode).getIsKilled() &&
+                !theJester.getPlayer(roomCode).getIsLynched()) ||
+              (!secondJester.getPlayer(roomCode).getIsKilled() &&
+                !secondJester.getPlayer(roomCode).getIsLynched())
+            ) {
+              if (theJester !== null || secondJester !== null) {
                 game.setNeutralWin(true);
 
                 if (theJester !== null && secondJester == null) {
@@ -2991,11 +2991,11 @@ io.on("connection", async (socket) => {
               }
             }
           } else if (neutralCount == 2) {
-            if (theSerialKiller !== null) {
-              if (
-                !theSerialKiller.getPlayer(roomCode).getIsKilled() &&
-                !theSerialKiller.getPlayer(roomCode).getIsLynched()
-              ) {
+            if (
+              !theSerialKiller.getPlayer(roomCode).getIsKilled() &&
+              !theSerialKiller.getPlayer(roomCode).getIsLynched()
+            ) {
+              if (theSerialKiller !== null) {
                 if (theLawyer !== null) {
                   if (
                     theLawyer.getPlayer(roomCode).getRole().client ==
@@ -3034,11 +3034,11 @@ io.on("connection", async (socket) => {
                   }
                 }
               }
-            } else if (theExecutioner !== null) {
-              if (
-                !theExecutioner.getPlayer(roomCode).getIsKilled() &&
-                !theExecutioner.getPlayer(roomCode).getIsLynched()
-              ) {
+            } else if (
+              !theExecutioner.getPlayer(roomCode).getIsKilled() &&
+              !theExecutioner.getPlayer(roomCode).getIsLynched()
+            ) {
+              if (theExecutioner !== null) {
                 if (theLawyer !== null) {
                   if (
                     theLawyer.getPlayer(roomCode).getRole().client ==
@@ -3062,13 +3062,13 @@ io.on("connection", async (socket) => {
                   }
                 }
               }
-            } else if (theJester !== null && secondJester == null) {
-              if (
-                (!theJester.getPlayer(roomCode).getIsKilled() &&
-                  !theJester.getPlayer(roomCode).getIsLynched()) ||
-                (!secondJester.getPlayer(roomCode).getIsKilled() &&
-                  !secondJester.getPlayer(roomCode).getIsLynched())
-              ) {
+            } else if (
+              (!theJester.getPlayer(roomCode).getIsKilled() &&
+                !theJester.getPlayer(roomCode).getIsLynched()) ||
+              (!secondJester.getPlayer(roomCode).getIsKilled() &&
+                !secondJester.getPlayer(roomCode).getIsLynched())
+            ) {
+              if (theJester !== null && secondJester == null) {
                 if (theLawyer !== null) {
                   if (theJester !== null && secondJester == null) {
                     if (
@@ -3406,7 +3406,7 @@ io.on("connection", async (socket) => {
 
       var targets = new Map();
       for (var i = 0; i < evilUsers.length; i++) {
-        if (evilUsers[i].getIsKilled() == false && evilUsers[i].getIsLynched() == false) {
+        if (game.getAlive().includes(evilUsers[i])) {
           if (evilUsers[i].getPlayer(roomCode).voteTarget !== null) {
             var theVoteTarget = getKeyFromValue(
               proxyIdenfication,
@@ -3415,7 +3415,9 @@ io.on("connection", async (socket) => {
             var voteTargetPlayer = connectedUsers
               .get(theVoteTarget)
               .getPlayer(roomCode);
-            if (!game.getCemetery().includes(connectedUsers.get(theVoteTarget))) {
+            if (
+              !game.getCemetery().includes(connectedUsers.get(theVoteTarget))
+            ) {
               if (targets.has(theVoteTarget)) {
                 targets.set(
                   theVoteTarget,
@@ -3645,11 +3647,10 @@ io.on("connection", async (socket) => {
           var voteValue = targetCount[i];
           var mostVotedIndex = targetCount.indexOf(targetCount[i]);
           var mostVoted = Array.from(targets.keys())[mostVotedIndex];
-          var majorityVote = {mostVoted, mostVotedIndex, voteValue}
+          var majorityVote = { mostVoted, mostVotedIndex, voteValue };
           topVotes.push(majorityVote);
         }
       }
-
 
       if (topVotes.length == 1) {
         // NOT A TIE
@@ -3658,9 +3659,7 @@ io.on("connection", async (socket) => {
         gotLynched = true;
         voteTie = false;
         globalVote(playerID, room, roomCode, game, voteOne.mostVoted);
-
       } else if (topVotes.length > 1) {
-
         // Handle if votes are ABOVE majority but SAME VALUE --> tie
         // Handle if votes are ABOVE majority but one has HIGHER value --> vote
         var highestVoteCount = 0;
@@ -3672,8 +3671,8 @@ io.on("connection", async (socket) => {
             if (!seenHighVote.includes(topVotes[i].voteValue)) {
               highestVoteCount = topVotes[i].voteValue;
               theHighestVote = topVotes[i];
-              seenHighVote.push(topVotes[i].voteValue)
-            } 
+              seenHighVote.push(topVotes[i].voteValue);
+            }
           } else if (topVotes[i].voteValue == highestVoteCount) {
             highestVoteCount = 0;
             theHighestVote = undefined;
@@ -3682,7 +3681,7 @@ io.on("connection", async (socket) => {
 
         if (highestVoteCount == 0 && theHighestVote == undefined) {
           gotLynched = false;
-        voteTie = true;
+          voteTie = true;
           // TIE
           console.log("TIE between", topVotes);
         } else if (highestVoteCount !== 0 && theHighestVote !== undefined) {
@@ -3713,8 +3712,7 @@ io.on("connection", async (socket) => {
           `No one was lynched - hope it was the right decision`,
           "info"
         );
-      }
-      else if (!gotLynched && voteTie) {
+      } else if (!gotLynched && voteTie) {
         sendMessage(
           playerID,
           room,
@@ -4434,7 +4432,7 @@ io.on("connection", async (socket) => {
             game.getCycle(),
             game.getCycleCount()
           );
-          
+
           messageHandlerForCycles(
             playerID,
             room,
@@ -4533,7 +4531,6 @@ io.on("connection", async (socket) => {
               );
             }
           } else {
-            
             game.getTimer().tick();
           }
         }
