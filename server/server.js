@@ -2454,7 +2454,7 @@ io.on("connection", async (socket) => {
           game,
           "all",
           "The sun begins to rise",
-          "extra"
+          "bold"
         );
       }
       if (game.getPhase().includes("recap")) {
@@ -2540,7 +2540,7 @@ io.on("connection", async (socket) => {
           game,
           "all",
           "The moon glows. The night has begun",
-          "extra"
+          "bold"
         );
       } else if (game.getCycle().includes("Day")) {
         sendMessage(
@@ -2559,7 +2559,7 @@ io.on("connection", async (socket) => {
           game,
           "all",
           "The day has begun",
-          "extra"
+          "bold"
         );
       }
     }
@@ -4284,6 +4284,7 @@ io.on("connection", async (socket) => {
           checkIfExecutionerAlive(playerID, room, roomCode, game)
         );
 
+        
         if (executionerObject[0] == true) {
           var executioner = executionerObject[1];
 
@@ -4291,11 +4292,11 @@ io.on("connection", async (socket) => {
           if (
             executioner.getPlayer(roomCode).getRole().target ==
             game.getAlive()[i]
-          ) {
-            // executioner targets gets killed
-            // executioner becomes JESTER
-            executioner.getPlayer(roomCode).setOldRole("executioner");
-            executioner
+            ) {
+              // executioner targets gets killed
+              // executioner becomes JESTER
+              executioner.getPlayer(roomCode).setOldRole("executioner");
+              executioner
               .getPlayer(roomCode)
               .setOldTarget(executioner.getPlayer(roomCode).getRole().target);
             executioner.getPlayer(roomCode).setRole(new Role("jester"));
@@ -4311,6 +4312,14 @@ io.on("connection", async (socket) => {
               `Your target ${player.getPlayerName()} has died. You have become a Jester!`,
               "important"
             );
+          }
+        }
+        
+        var lawyerObject = Object.values(checkIfLawyerAlive(playerID, room, roomCode, game));
+        if (lawyerObject[0] == true) {
+          var lawyer = lawyerObject[1];
+          if (lawyer.getPlayer(roomCode).getRole().client == game.getAlive()[i]) {
+            sendMessage(lawyer.getPlayerID(), room, roomCode, game, "target", `Your client ${player.getPlayerName()} has died. You're now on your own`, "info")
           }
         }
 
@@ -4334,6 +4343,15 @@ io.on("connection", async (socket) => {
           `${player.getPlayerName()} role was: ${player.getRole().name}`,
           "important"
         );
+
+        var lawyerObject = Object.values(checkIfLawyerAlive(playerID, room, roomCode, game));
+
+        if (lawyerObject[0] == true) {
+          var lawyer = lawyerObject[1];
+          if (game.getAlive()[i] == lawyer.getPlayer(roomCode).getRole().client) {
+            sendMessage(lawyer.getPlayerID(), room, roomCode, game, "target", `Your client ${player.getPlayerName()} has died. You're now on your own`, "info")
+          }
+        }
 
         // AFTER THAT, ADD THEM TO CEMETERY
         if (!game.getCemetery().includes(game.getAlive()[i])) {
