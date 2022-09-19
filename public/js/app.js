@@ -197,7 +197,7 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
           winningMessage = "Evil team wins";
         }
       } else if (winType == "neutral") {
-        winningMessage = "Neutral team wins";
+        winningMessage = "Neutral roles wins";
       } else if (winType == "jester") {
         winningMessage = "Jester wins";
       } else if (winType == "serial killer") {
@@ -225,8 +225,10 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
       theWinningMessage.style.color = "var(--good-bg-selected)";
     } else if (winType == "evil") {
       theWinningMessage.style.color = "var(--evil-bg-selected)";
-    } else {
+    } else if (winType == "neutral") {
       theWinningMessage.style.color = "var(--neutral-bg-selected)";
+    } else {
+      theWinningMessage.style.color = "var(--dark-fg)";
     }
     theState.innerText = state;
     theWinningMessage.innerText = winningMessage;

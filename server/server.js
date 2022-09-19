@@ -2888,7 +2888,23 @@ io.on("connection", async (socket) => {
                   }
                 }
               }
-            } else if (theExecutioner !== null) {
+            } 
+            else if (theLawyer !== null) {
+              if (
+                !theLawyer.getPlayer(roomCode).getIsKilled() &&
+                !theLawyer.getPlayer(roomCode).getIsLynched()
+              ) {
+                // Lawyer does not win, since their target is dead, so just a neutral win.
+                game.setNeutralWin(true);
+                var winnerID = theLawyer.getPlayerID();
+                var winnerName = theLawyer
+                  .getPlayer(roomCode)
+                  .getPlayerName();
+                var winner = { winnerID, winnerName };
+                game.addWinner(winner);
+              }
+            } 
+            else if (theExecutioner !== null) {
               if (
                 !theExecutioner.getPlayer(roomCode).getIsKilled() &&
                 !theExecutioner.getPlayer(roomCode).getIsLynched()
@@ -2917,7 +2933,8 @@ io.on("connection", async (socket) => {
                   }
                 }
               }
-            } else if (theJester !== null || secondJester !== null) {
+            } 
+            else if (theJester !== null || secondJester !== null) {
               if (
                 (!theJester.getPlayer(roomCode).getIsKilled() &&
                   !theJester.getPlayer(roomCode).getIsLynched()) ||
@@ -4135,8 +4152,8 @@ io.on("connection", async (socket) => {
   function resetAllActions(playerID, room, roomCode, game) {
     console.log("RESET ALL ACTIONS");
 
-    for (var i = 0; i < game.getAlive().length; i++) {
-      let user = game.getAlive()[i];
+    for (var i = 0; i < game.getUsers().length; i++) {
+      let user = game.getUsers()[i];
       let player = user.getPlayer(roomCode);
       player.reset();
       io.to(user.getPlayerID()).emit(
