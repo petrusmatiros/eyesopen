@@ -20,7 +20,7 @@
   --leave-button: hsl(360, 100%, 50%);
   --leave-button--hover: hsl(360, 100%, 45%);
   --leave-button--active: hsl(360, 100%, 40%);
-  --secondary-day: hsl(0, 0%, 97%);
+  --secondary-day: hsl(0, 0%, 95%);
   --secondary-night: hsl(0, 0%, 25%);
   --cemetery: hsl(0, 0%, 20%);
 
@@ -203,7 +203,7 @@
   flex-direction: column;
   max-width: 6rem;
   min-width: 6rem;
-  border-radius: 0.75rem;
+  border-radius: 0.7rem;
   margin-right: 1rem;
 }
 
@@ -213,7 +213,7 @@
   max-width: 10rem;
 }
 .game-player-card-divider {
-  height: 5.25rem;
+  height: 6rem;
   border-radius: 50rem;
   width: 0.5rem;
 }
