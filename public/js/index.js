@@ -171,10 +171,14 @@ function requestID() {
   console.log("You connect with id", socket.id);
   socket.emit("requestID", socket.id, getPlayerID());
   socket.on("playerID", (playerID) => {
-    console.log("playerID from server:", playerID);
-    if (getPlayerID() == "null") {
-      document.cookie = `eyesopenID=${playerID}; path=/; max-age=${fiveHours}; SameSite=Lax`;
-      socket.emit("completedID", getPlayerID());
+    if (playerID == null) {
+      window.location.reload();
+    } else {
+      console.log("playerID from server:", playerID);
+      if (getPlayerID() == "null") {
+        document.cookie = `eyesopenID=${playerID}; path=/; max-age=${fiveHours}; SameSite=Lax`;
+        socket.emit("completedID", getPlayerID());
+      }
     }
   });
 }
@@ -243,8 +247,12 @@ function displayHost() {
     socket.emit("createRoom", getPlayerID());
     socket.emit("fetchHostRoom", getPlayerID());
     socket.on("hostRoom", (roomCode) => {
-      console.log(roomCode);
-      setLocation(`lobby/${roomCode}`, false);
+      if (roomCode == null) {
+        window.location.reload();
+      } else {
+        console.log(roomCode);
+        setLocation(`lobby/${roomCode}`, false);
+      }
     });
   }
 }

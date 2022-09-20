@@ -682,6 +682,7 @@ io.on("connection", async (socket) => {
   socket.on("requestID", (socketID, playerID) => {
     if (!checkUserExist(playerID)) {
       console.log(socketID, "requesting player ID");
+      // About 2.17 billion possible users and proxy IDs ((26+10)^6)
       // Keep checking for unique player ID
       var notUniqueID = true;
       while (notUniqueID) {
@@ -689,7 +690,7 @@ io.on("connection", async (socket) => {
           length: 6,
           charset: "alphanumeric",
         });
-        if (!connectedUsers.has(playerID)) {
+        if (!checkUserExist(playerID)) {
           notUniqueID = false;
         }
       }
@@ -711,6 +712,9 @@ io.on("connection", async (socket) => {
           console.log("Proxy created");
           proxyIdenfication.set(playerID, proxyID);
           socket.emit("playerID", playerID);
+        } else if (notUniqueID && notUniqueProxy) {
+          
+          socket.emit("playerID", null);
       }
     }
   });
@@ -1174,6 +1178,7 @@ io.on("connection", async (socket) => {
           }
         }
       } else {
+        // About 60.4 million possible rooms((26+10)^5)
         var notUniqueRoom = true;
         while (notUniqueRoom) {
           var roomCode = randomstring.generate({
@@ -1186,16 +1191,18 @@ io.on("connection", async (socket) => {
             notUniqueRoom = false;
           }
         }
-        // Setting up room
-        connectedUsers.get(playerID).setCurrentRoom(roomCode);
-        rooms.set(roomCode, new Room(playerID));
-        checkForAlreadyExistingUser(roomCode, playerID);
-
-        console.log("room", roomCode, "created");
-        console.log(socket.id, "joined", roomCode);
-
-        // Log rooms that socket is in
-        console.log(rooms);
+        if (!notUniqueRoom) {
+          // Setting up room
+          connectedUsers.get(playerID).setCurrentRoom(roomCode);
+          rooms.set(roomCode, new Room(playerID));
+          checkForAlreadyExistingUser(roomCode, playerID);
+  
+          console.log("room", roomCode, "created");
+          console.log(socket.id, "joined", roomCode);
+  
+          // Log rooms that socket is in
+          console.log(rooms);
+        }
       }
       console.log("room in:", socket.rooms);
     }
