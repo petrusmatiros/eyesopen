@@ -92,6 +92,27 @@
   display: flex;
 }
 
+
+.index-notification {
+  position: fixed;
+  display: none;
+  bottom: 5vh;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  animation: fadeIn 0.3s 1;
+  font-weight: 500;
+  padding: 1em;
+  border-radius: 10rem;
+  color: var(--light-fg);
+  background-color: rgba(0, 0 ,0, 0.90);
+  vertical-align: center;
+  line-height: 1;
+  backdrop-filter: blur(0.25rem);
+  -webkit-backdrop-filter: blur(0.25rem);
+  box-shadow: 0 0.5rem 1rem var(--main-shadow);
+}
+
 body {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
@@ -261,6 +282,13 @@ p {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+#changeUsername {
+  display: none;
+  font-size: 1rem !important;
+  border-radius: 0.65rem !important;
+  animation: fadeIn 0.3s 1, pop-light2 1s 1;
 }
 
 .title-button {

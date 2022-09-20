@@ -99,6 +99,7 @@ socket.on("connect", () => {
         socket.on("playerSlots", (host, slots) => {
           updatePlayerSlotsWithProxy(host, slots);
         });
+        
 
         function updatePlayerSlotsWithProxy(host, slots) {
           socket.emit("requestProxy", getPlayerID(), "lobby");
@@ -106,9 +107,17 @@ socket.on("connect", () => {
             updatePlayerSlots(host, slots, proxyID);
             console.log("updated player slots");
           });
+          refreshReady();
         }
 
+        function refreshReady() {
+          socket.emit("refreshReady", getPlayerID(), "all");
+          socket.on("ready-status-lobby-refresh", (users) => {
+            readyStatusLobby(users);
+          });
+        }
         
+
         showNotification("copy");
 
         socket.emit("checkIfHost", getPlayerID(), "visibility");
@@ -239,19 +248,10 @@ socket.on("connect", () => {
         socket.on("fetchedRolesDisconnect", (roles) => {
           updateRoles(roles);
         });
-
-        setTimeout(() => {
-          socket.emit("refreshReady", getPlayerID());
-        }, 300);
-        socket.on("ready-status-lobby-refresh", (users) => {
-          readyStatusLobby(users)
-        });
-
       });
     }
   });
 });
-
 
 function checkNumber(element) {
   // do something
@@ -259,18 +259,22 @@ function checkNumber(element) {
 
 function resetGameSettings() {}
 function saveGameSettings() {
-  hideGameSettings()
+  hideGameSettings();
 }
 
 function hideGameSettings() {
-  var gameSettingsContainer = document.getElementById("lobby-gamesettings-container");
+  var gameSettingsContainer = document.getElementById(
+    "lobby-gamesettings-container"
+  );
   var gameSettingsOverlay = document.getElementById("overlay-gamesettings");
   gameSettingsContainer.style.display = "none";
   gameSettingsOverlay.style.display = "none";
 }
 
 function showGameSettings() {
-  var gameSettingsContainer = document.getElementById("lobby-gamesettings-container");
+  var gameSettingsContainer = document.getElementById(
+    "lobby-gamesettings-container"
+  );
   var gameSettingsOverlay = document.getElementById("overlay-gamesettings");
   gameSettingsContainer.style.display = "flex";
   gameSettingsOverlay.style.display = "flex";
@@ -294,10 +298,10 @@ function showNotification(type) {
       document.cookie = `seenNotification=true; path=/; max-age=${fiveHours}; SameSite=Lax`;
       var theNotification = document.getElementById("lobby-notification");
       theNotification.style.display = "flex";
-      theNotification.innerText = "Copied link to clipboard. Share it! ᕕ( ᐛ )ᕗ"
+      theNotification.innerText = "Copied link to clipboard. Share it! ᕕ( ᐛ )ᕗ";
       setTimeout(() => {
         theNotification.style.display = "none";
-      }, 5000)
+      }, 5000);
     }
   }
 }
@@ -319,13 +323,23 @@ function showInfo() {
   // show caroseul with scroll snap of all role cards
 }
 function hideCard() {
-  document.getElementById("overlay-rolecards").setAttribute("onclick", "hideInfo()");
-  document.getElementById("adjusted-close").setAttribute("onclick", "hideInfo()");
-  var displayContainer = document.getElementById("lobby-rolecard-display-container");
+  document
+    .getElementById("overlay-rolecards")
+    .setAttribute("onclick", "hideInfo()");
+  document
+    .getElementById("adjusted-close")
+    .setAttribute("onclick", "hideInfo()");
+  var displayContainer = document.getElementById(
+    "lobby-rolecard-display-container"
+  );
   var displayRole = document.getElementById("lobby-rolecard-display-role");
-  var displayDescription = document.getElementById("lobby-rolecard-display-description");
+  var displayDescription = document.getElementById(
+    "lobby-rolecard-display-description"
+  );
   var displayImage = document.getElementById("lobby-rolecard-display-image");
-  var displayMission = document.getElementById("lobby-rolecard-display-mission");
+  var displayMission = document.getElementById(
+    "lobby-rolecard-display-mission"
+  );
   displayContainer.style.display = "none";
   displayRole.style.display = "none";
   displayDescription.style.display = "none";
@@ -337,39 +351,61 @@ function showCard(element) {
   // show overlay
   document.getElementById("overlay-rolecards").setAttribute("onclick", "");
   document.getElementById("adjusted-close").setAttribute("onclick", "");
-  var displayContainer = document.getElementById("lobby-rolecard-display-container");
+  var displayContainer = document.getElementById(
+    "lobby-rolecard-display-container"
+  );
   var displayRole = document.getElementById("lobby-rolecard-display-role");
-  var displayDescription = document.getElementById("lobby-rolecard-display-description");
+  var displayDescription = document.getElementById(
+    "lobby-rolecard-display-description"
+  );
   var displayImage = document.getElementById("lobby-rolecard-display-image");
-  var displayMission = document.getElementById("lobby-rolecard-display-mission");
+  var displayMission = document.getElementById(
+    "lobby-rolecard-display-mission"
+  );
   var targetElementID = element.id.replace("-card", "");
   socket.emit("requestLobbyDisplayCard", getPlayerID(), targetElementID);
   socket.on("fetchedLobbyDisplayCard", (name, team, description, mission) => {
     displayRole.innerText = name;
     displayDescription.innerText = description;
     displayMission.innerText = mission;
-    displayMission.style.backgroundColor = `var(--${team}-bg-mission`
-    theSrc = "/assets/rolecards/" + name + ".jpg"
+    displayMission.style.backgroundColor = `var(--${team}-bg-mission`;
+    theSrc = "/assets/rolecards/" + name + ".jpg";
     displayImage.src = theSrc;
     if (team.includes("good")) {
       displayRole.classList.add("good-selected-color");
-      displayRole.classList.remove("evil-selected-color", "neutral-selected-color");
+      displayRole.classList.remove(
+        "evil-selected-color",
+        "neutral-selected-color"
+      );
       displayMission.classList.add("good-selected-color");
-      displayMission.classList.remove("evil-selected-color", "neutral-selected-color");
-    }
-    else if (team.includes("evil")) {
+      displayMission.classList.remove(
+        "evil-selected-color",
+        "neutral-selected-color"
+      );
+    } else if (team.includes("evil")) {
       displayRole.classList.add("evil-selected-color");
-      displayRole.classList.remove("good-selected-color", "neutral-selected-color");
+      displayRole.classList.remove(
+        "good-selected-color",
+        "neutral-selected-color"
+      );
       displayMission.classList.add("evil-selected-color");
-      displayMission.classList.remove("good-selected-color", "neutral-selected-color");
-    }
-    else if (team.includes("neutral")) {
+      displayMission.classList.remove(
+        "good-selected-color",
+        "neutral-selected-color"
+      );
+    } else if (team.includes("neutral")) {
       displayRole.classList.add("neutral-selected-color");
-      displayRole.classList.remove("good-selected-color", "evil-selected-color");
+      displayRole.classList.remove(
+        "good-selected-color",
+        "evil-selected-color"
+      );
       displayMission.classList.add("neutral-selected-color");
-      displayMission.classList.remove("good-selected-color", "evil-selected-color");
+      displayMission.classList.remove(
+        "good-selected-color",
+        "evil-selected-color"
+      );
     }
-  })
+  });
   displayContainer.style.display = "flex";
   displayRole.style.display = "flex";
   displayDescription.style.display = "flex";
@@ -409,23 +445,27 @@ socket.on("ready-status-lobby", (users) => {
   readyStatusLobby(users);
 });
 
+
+
 function readyStatusLobby(users) {
   var lobbyButtons = document.getElementsByClassName(
     "lobby-button-container"
   )[0];
   lobbyButtons.style.display = "flex";
   for (var i = 0; i < users.length; i++) {
-    if (users[i].thePlayerID !== undefined && users[i].thePlayerID !== null) {
+    if (document.getElementById(users[i].thePlayerID) !== null) {
       if (users[i].readyLobby) {
         var status = document.getElementById(users[i].thePlayerID).parentElement
           .children[1];
         status.innerText = "ready";
         status.id = "status-ready";
+        
       } else if (!users[i].readyLobby) {
         var status = document.getElementById(users[i].thePlayerID).parentElement
           .children[1];
-        status.innerText = "not ready";
-        status.id = "status-notready";
+          status.innerText = "not ready";
+          status.id = "status-notready";
+        
       }
     }
   }
@@ -576,22 +616,22 @@ function updatePlayerSlots(host, slots, proxyID) {
       slot.innerText = value.userName;
       if (value.userID !== undefined) {
         slot.parentElement.id = value.userID;
-      }
-      slot.parentElement.parentElement.id = "joined";
-      var status = slot.parentElement.parentElement.children[1];
-      if (value.userID == host) {
-        slot.parentElement.parentElement.style.border =
-          "2px solid var(--slot-border-joined)";
-          slot.parentElement.parentElement.style.backgroundColor = "var(--slot-joined)";
+        slot.parentElement.parentElement.id = "joined";
+        var status = slot.parentElement.parentElement.children[1];
+        if (value.userID == host) {
+          slot.parentElement.parentElement.style.border =
+            "2px solid var(--slot-border-joined)";
+          slot.parentElement.parentElement.style.backgroundColor =
+            "var(--slot-joined)";
         } else if (value.userID == proxyID) {
           slot.parentElement.parentElement.style.border =
-          "2px dashed var(--slot-border-joined)";
-          slot.parentElement.parentElement.style.backgroundColor = "var(--slot-joined)";
-      } else {
-        slot.parentElement.parentElement.style.border =
-          "2px solid var(--slot-border-other)";
-
-        
+            "2px dashed var(--slot-border-joined)";
+          slot.parentElement.parentElement.style.backgroundColor =
+            "var(--slot-joined)";
+        } else {
+          slot.parentElement.parentElement.style.border =
+            "2px solid var(--slot-border-other)";
+        }
       }
       // status.innerText = "not ready";
     } else if (value.taken == false) {
