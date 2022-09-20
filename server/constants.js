@@ -26,18 +26,3 @@ global.roleTypes = {
   Executioner: "executioner",
   Lawyer: "lawyer",
 };
-
-// module.exports = {
-//   ACTIONS,
-//   NIGHTMESSAGES,
-//   RECAP,
-//   DISCUSSION,
-//   VOTING,
-//   DAYMESSAGES,
-//   SHOWROLES,
-//   VOTEMESSAGES,
-//   minPlayers,
-//   maxPlayers,
-//   maxNoDeaths,
-//   roleTypes
-// };

@@ -257,47 +257,58 @@
         <div class="close" id="adjusted-close3">
           <img class="close-button" onclick="hideGameSettings()" src="/assets/icons/close.svg" alt="close x icon" />
         </div>
-        <div class="lobby-gamesettings-help" id="lobby-gamesettings-help"></div>
-        <div class="lobby-gamesettings-durations">
-          <div class="lobby-gamesettings-title">Game durations</div>
-          <div class="lobby-gamesettings-setting">
-            <div class="lobby-gamesettings-setting-title">Action phase:</div>
-            <input type="number" id="actionInput" name="actionInput" placeholder="Seconds" step="1" min="1" max="180"
-              oninput="checkNumber(this)" onchange="checkNumber(this)" />
-          </div>
-          <div class="lobby-gamesettings-setting">
-            <div class="lobby-gamesettings-setting-title">Discussion phase:</div>
-            <input type="number" id="discussionInput" name="discussionInput" placeholder="Seconds" step="1" min="1"
-              max="180" oninput="checkNumber(this)" onchange="checkNumber(this)" />
-          </div>
-          <div class="lobby-gamesettings-setting">
-            <div class="lobby-gamesettings-setting-title">Voting phase:</div>
-            <input type="number" id="votingInput" name="votingInput" placeholder="Seconds" step="1" min="1" max="180"
-              oninput="checkNumber(this)" onchange="checkNumber(this)" />
-          </div>
-        </div>
         <div class="lobby-gamesettings-messages">
           <div class="lobby-gamesettings-title">Game messages</div>
           <div class="lobby-gamesettings-setting">
             <div class="lobby-gamesettings-setting-title">Show roles?</div>
-            <input type="checkbox" id="showRoleInput" name="showRoleInput" checked>
+            <div class="lobby-gamesettings-checkbox" onclick="selectShowRole()"><img id="checkbox-check" alt="check icon" src="/assets/icons/check.svg"></div>
           </div>
           <div class="lobby-gamesettings-setting lobby-gamesettings-column">
-            <div class="lobby-gamesettings-setting-title">Vote messages:</div>
+            <div class="lobby-gamesettings-setting-title lobby-gamesettings-flexstart">Vote messages:</div>
             <div class="lobby-gamesettings-radiobuttons">
-              <div class="lobby-gamesettings-radio">
-                <div class="lobby-gamesettings-radio-button" tabindex="0" id="voteMessagesHidden" onclick="selectVoteMessageSettings(this)"></div>
+
+              <div class="lobby-gamesettings-radio" onclick="selectVoteMessageSettings(this)">
+                <div class="lobby-gamesettings-radio-button-container" tabindex="0">
+                  <div class="lobby-gamesettings-radio-button" id="voteMessagesHidden"></div>
+                </div>
+                
                 <div class="lobby-gamesettings-radio-text">Hidden</div>
               </div>
-              <div class="lobby-gamesettings-radio">
-                <div class="lobby-gamesettings-radio-button" tabindex="0" id="voteMessagesAnonymous" onclick="selectVoteMessageSettings(this)"></div>
+              <div class="lobby-gamesettings-radio" onclick="selectVoteMessageSettings(this)">
+                <div class="lobby-gamesettings-radio-button-container" tabindex="0">
+                  <div class="lobby-gamesettings-radio-button" id="voteMessagesAnonymous"></div>
+                </div>
+                
                 <div class="lobby-gamesettings-radio-text">Anonymous</div>
               </div>
-              <div class="lobby-gamesettings-radio">
-                <div class="lobby-gamesettings-radio-button" tabindex="0" id="voteMessagesVisible" onclick="selectVoteMessageSettings(this)"></div>
+              <div class="lobby-gamesettings-radio" onclick="selectVoteMessageSettings(this)">
+                <div class="lobby-gamesettings-radio-button-container" tabindex="0">
+                  <div class="lobby-gamesettings-radio-button" id="voteMessagesVisible"></div>
+                </div>
+                
                 <div class="lobby-gamesettings-radio-text">Visible</div>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="lobby-gamesettings-help" id="lobby-gamesettings-help"></div>
+        <div class="lobby-gamesettings-durations">
+          <div class="lobby-gamesettings-title" id="durations-title">Game durations</div>
+          <div class="lobby-gamesettings-subtitle">Duration is in seconds</div>
+          <div class="lobby-gamesettings-setting lobby-gamesettings-spacebetween">
+            <div class="lobby-gamesettings-setting-title">Actions phase:</div>
+            <input type="number" id="actionInput" name="actionInput" placeholder="Seconds" step="1" min="1" max="180"
+              oninput="checkNumber(this)" onchange="checkNumber(this)" />
+          </div>
+          <div class="lobby-gamesettings-setting lobby-gamesettings-spacebetween">
+            <div class="lobby-gamesettings-setting-title">Discussion phase:</div>
+            <input type="number" id="discussionInput" name="discussionInput" placeholder="Seconds" step="1" min="1"
+              max="180" oninput="checkNumber(this)" onchange="checkNumber(this)" />
+          </div>
+          <div class="lobby-gamesettings-setting lobby-gamesettings-spacebetween">
+            <div class="lobby-gamesettings-setting-title">Voting phase:</div>
+            <input type="number" id="votingInput" name="votingInput" placeholder="Seconds" step="1" min="1" max="180"
+              oninput="checkNumber(this)" onchange="checkNumber(this)" />
           </div>
         </div>
         <div class="lobby-gamesettings-buttons">

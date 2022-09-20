@@ -300,32 +300,62 @@ function gameSettingError(type) {
     "The duration must be between 10s and 300s";
 }
 
+function selectShowRole() {
+  var showRoleInput = document.getElementsByClassName("lobby-gamesettings-checkbox")[0];
+  var showRoleCheck = document.getElementById("checkbox-check");
+  var toShow = false;
+  if (showRoleInput.id == "showrole-checked") {
+    showRoleInput.id = "";
+    showRoleCheck.style.opacity = "0%";
+    toShow = false;
+  } else if (showRoleInput.id !== "showrole-checked") {
+    showRoleInput.id = "showrole-checked";
+    showRoleCheck.style.opacity = "100%";
+    toShow = true;
+  }
+  socket.emit("setShowRoles", getPlayerID(), toShow)
+}
+
 
 function selectVoteMessageSettings(element) {
+  var theButtonContainer = element.children[0]
+  var theButton = theButtonContainer.children[0];
   if (
-    element.id == "voteMessagesHidden" ||
-    element.id == "voteMessagesAnonymous" ||
-    element.id == "voteMessagesVisible"
+    theButton.id == "voteMessagesHidden" ||
+    theButton.id == "voteMessagesAnonymous" ||
+    theButton.id == "voteMessagesVisible"
   ) {
     var inputType = "";
     var radioHidden = document.getElementById("voteMessagesHidden");
     var radioAnonymous = document.getElementById("voteMessagesAnonymous");
     var radioVisible = document.getElementById("voteMessagesVisible");
-    if (element.id == "voteMessagesHidden") {
+    var radioHiddenParentContainer = radioHidden.parentElement.parentElement;
+    var radioAnonymousParentContainer = radioAnonymous.parentElement.parentElement;
+    var radioVisibleParentContainer = radioVisible.parentElement.parentElement;
+    if (theButton.id == "voteMessagesHidden") {
       inputType = "hidden";
-      radioHidden.parentElement.id = "votemessage-checked";
-      radioAnonymous.parentElement.id = "";
-      radioVisible.parentElement.id = "";
-    } else if (element.id == "voteMessagesAnonymous") {
+      radioHiddenParentContainer.id = "votemessage-checked";
+      radioHidden.style.backgroundColor = "var(--game-setting-clicked)";
+      radioAnonymous.style.backgroundColor = "var(--game-setting)";
+      radioVisible.style.backgroundColor = "var(--game-setting)";
+      radioAnonymousParentContainer.id = "";
+      radioVisibleParentContainer.id = "";
+    } else if (theButton.id == "voteMessagesAnonymous") {
       inputType = "anonymous";
-      radioHidden.parentElement.id = "";
-      radioAnonymous.parentElement.id = "votemessage-checked";
-      radioVisible.parentElement.id = "";
-    } else if (element.id == "votingInput") {
+      radioHiddenParentContainer.id = "";
+      radioHidden.style.backgroundColor = "var(--game-setting)";
+      radioAnonymous.style.backgroundColor = "var(--game-setting-clicked)";
+      radioVisible.style.backgroundColor = "var(--game-setting)";
+      radioAnonymousParentContainer.id = "votemessage-checked";
+      radioVisibleParentContainer.id = "";
+    } else if (theButton.id == "voteMessagesVisible") {
       inputType = "visible";
-      radioHidden.parentElement.id = "";
-      radioAnonymous.parentElement.id = "";
-      radioVisible.parentElement.id = "votemessage-checked";
+      radioHidden.style.backgroundColor = "var(--game-setting)";
+      radioAnonymous.style.backgroundColor = "var(--game-setting)";
+      radioVisible.style.backgroundColor = "var(--game-setting-clicked)";
+      radioHiddenParentContainer.id = "";
+      radioAnonymousParentContainer.id = "";
+      radioVisibleParentContainer.id = "votemessage-checked";
     }
 
     socket.emit("setVoteMessages", getPlayerID(), inputType)
@@ -414,33 +444,52 @@ socket.on("fetchedGameSettings", (settings) => {
   var actionsInput = document.getElementById("actionInput");
   var discussionInput = document.getElementById("discussionInput");
   var votingInput = document.getElementById("votingInput");
-  var showRoleInput = document.getElementById("showRoleInput");
-  var radioHidden = document.getElementById("voteMessageHidden");
-  var radioAnonymous = document.getElementById("voteMessageAnonymous");
-  var radioVisible = document.getElementById("voteMessageVisible");
+  var showRoleInput = document.getElementsByClassName("lobby-gamesettings-checkbox")[0];
+  var showRoleCheck = document.getElementById("checkbox-check");
+  var radioHidden = document.getElementById("voteMessagesHidden");
+  var radioAnonymous = document.getElementById("voteMessagesAnonymous");
+  var radioVisible = document.getElementById("voteMessagesVisible");
+  var radioHiddenParentContainer = radioHidden.parentElement.parentElement;
+  var radioAnonymousParentContainer = radioAnonymous.parentElement.parentElement;
+  var radioVisibleParentContainer = radioVisible.parentElement.parentElement;
   // Durations
   actionsInput.value = settings["actions"]["value"];
   discussionInput.value = settings["discussion"]["value"];
   votingInput.value = settings["voting"]["value"];
 
-  // !FIX THIS
   // Show roles?
-  // showRoleInput.value = settings["showRoles"]["value"];
+  if (settings["showRoles"]["value"]) {
+    showRoleInput.id = "showrole-checked";
+    showRoleCheck.style.opacity = "100%";
+  } else {
+    showRoleInput.id = "";
+    showRoleCheck.style.opacity = "0%";
+    
+  }
 
-  // // Vote messages
-  // if (settings["voteMessages"]["value"] == "hidden") {
-  //   radioHidden.value = "on";
-  //   radioAnonymous.value = "off";
-  //   radioVisible.value = "off";
-  // } else if (settings["voteMessages"]["value"] == "anonymous") {
-  //   radioHidden.value = "off";
-  //   radioAnonymous.value = "on";
-  //   radioVisible.value = "off";
-  // } else if (settings["voteMessages"]["value"] == "visible") {
-  //   radioHidden.value = "off";
-  //   radioAnonymous.value = "off";
-  //   radioVisible.value = "on";
-  // }
+  // Vote messages
+  if (settings["voteMessages"]["value"] == "hidden") {
+    radioHiddenParentContainer.id = "votemessage-checked";
+      radioHidden.style.backgroundColor = "var(--game-setting-clicked)";
+      radioAnonymous.style.backgroundColor = "var(--game-setting)";
+      radioVisible.style.backgroundColor = "var(--game-setting)";
+      radioAnonymousParentContainer.id = "";
+      radioVisibleParentContainer.id = "";
+  } else if (settings["voteMessages"]["value"] == "anonymous") {
+    radioHiddenParentContainer.id = "";
+      radioHidden.style.backgroundColor = "var(--game-setting)";
+      radioAnonymous.style.backgroundColor = "var(--game-setting-clicked)";
+      radioVisible.style.backgroundColor = "var(--game-setting)";
+      radioAnonymousParentContainer.id = "votemessage-checked";
+      radioVisibleParentContainer.id = "";
+  } else if (settings["voteMessages"]["value"] == "visible") {
+    radioHidden.style.backgroundColor = "var(--game-setting)";
+      radioAnonymous.style.backgroundColor = "var(--game-setting)";
+      radioVisible.style.backgroundColor = "var(--game-setting-clicked)";
+      radioHiddenParentContainer.id = "";
+      radioAnonymousParentContainer.id = "";
+      radioVisibleParentContainer.id = "votemessage-checked";
+  }
 });
 function loadGameSettings() {
   socket.emit("loadGameSettings", getPlayerID());

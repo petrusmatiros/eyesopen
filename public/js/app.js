@@ -400,9 +400,16 @@ function loadCemetery(burried) {
   var deceasedList = deceasedElement.children;
 
   for (var i = 0; i < burried.length; i++) {
-    deceasedList[
-      i
-    ].innerText = `${burried[i].burriedPlayerName} (${burried[i].burriedPlayerRole})`;
+    if (burried[i].burriedPlayerRole == "") {
+      deceasedList[
+        i
+      ].innerText = `${burried[i].burriedPlayerName}`;
+    } else {
+      deceasedList[
+        i
+      ].innerText = `${burried[i].burriedPlayerName} (${burried[i].burriedPlayerRole})`;
+    }
+    
   }
 }
 
