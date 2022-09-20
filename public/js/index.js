@@ -433,8 +433,12 @@ function checkName(isHost) {
         hostNameCorrect();
         socket.emit("fetchHostRoom", getPlayerID());
         socket.on("hostRoom", (roomCode) => {
-          console.log(roomCode);
-          UserInputDoneHost(roomCode);
+          if (roomCode == null) {
+            window.location.reload()
+          } else {
+            console.log(roomCode);
+            UserInputDoneHost(roomCode);
+          }
         });
         // socket.on("hostRoom", (hostRoom) => {
         //   UserInputDoneHost(hostRoom);

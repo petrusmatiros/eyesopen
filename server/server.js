@@ -713,9 +713,8 @@ io.on("connection", async (socket) => {
           proxyIdenfication.set(playerID, proxyID);
           socket.emit("playerID", playerID);
         } else if (notUniqueID && notUniqueProxy) {
-          
           socket.emit("playerID", null);
-      }
+        }
     }
   });
 
