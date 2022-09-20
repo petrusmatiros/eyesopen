@@ -682,14 +682,35 @@ io.on("connection", async (socket) => {
   socket.on("requestID", (socketID, playerID) => {
     if (!checkUserExist(playerID)) {
       console.log(socketID, "requesting player ID");
-      var playerID = randomstring.generate(6);
-      var proxyID = randomstring.generate(6);
-      if (!checkProxyExist(proxyID)) {
-        if (!checkProxyEqual(playerID, proxyID)) {
+      // Keep checking for unique player ID
+      var notUniqueID = true;
+      while (notUniqueID) {
+        var playerID = randomstring.generate({
+          length: 6,
+          charset: "alphanumeric",
+        });
+        if (!connectedUsers.has(playerID)) {
+          notUniqueID = false;
+        }
+      }
+      // Keep checking for unique proxy ID
+      var notUniqueProxy = true;
+      while (notUniqueProxy) {
+        var proxyID = randomstring.generate({
+          length: 6,
+          charset: "alphanumeric",
+        });
+        if (!checkProxyExist(proxyID)) {
+          if (!checkProxyEqual(playerID, proxyID)) {
+            notUniqueProxy = false;
+          }
+        }
+      }
+      
+      if (!notUniqueID && !notUniqueProxy) {
           console.log("Proxy created");
           proxyIdenfication.set(playerID, proxyID);
           socket.emit("playerID", playerID);
-        }
       }
     }
   });
@@ -1134,6 +1155,7 @@ io.on("connection", async (socket) => {
             length: 5,
             charset: "alphanumeric",
             capitalization: "uppercase",
+            readable: true
           });
           // Setting up room
           connectedUsers.get(playerID).setCurrentRoom(roomCode);
@@ -1152,11 +1174,18 @@ io.on("connection", async (socket) => {
           }
         }
       } else {
-        var roomCode = randomstring.generate({
-          length: 5,
-          charset: "alphanumeric",
-          capitalization: "uppercase",
-        });
+        var notUniqueRoom = true;
+        while (notUniqueRoom) {
+          var roomCode = randomstring.generate({
+            length: 5,
+            charset: "alphanumeric",
+            capitalization: "uppercase",
+            readable: true
+          });
+          if (!rooms.has(roomCode)) {
+            notUniqueRoom = false;
+          }
+        }
         // Setting up room
         connectedUsers.get(playerID).setCurrentRoom(roomCode);
         rooms.set(roomCode, new Room(playerID));

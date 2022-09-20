@@ -288,7 +288,7 @@ p {
   display: none;
   font-size: 1rem !important;
   border-radius: 0.65rem !important;
-  animation: fadeIn 0.3s 1, pop-light2 1s 1;
+  animation: fadeIn 0.3s 1, pop-light 1s 1;
 }
 
 .title-button {
