@@ -33,10 +33,8 @@ var { Game } = require("./game");
 var { Role } = require("./role");
 var { Player } = require("./player");
 var { User } = require("./user");
+require("./constants");
 
-const minPlayers = 3;
-const maxPlayers = 14;
-const maxNoDeaths = 20;
 
 var rooms = new Map();
 var connectedUsers = new Map();
@@ -541,6 +539,173 @@ io.on("connection", async (socket) => {
     }
   }
 
+  socket.on("setDuration", (playerID, inputValue, inputType) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            var MIN_SECONDS = 10;
+            var MAX_SECONDS = 300;
+            console.log(inputValue)
+            console.log(inputType)
+            if (inputType == "actions") {
+              if (inputValue >= MIN_SECONDS || inputValue <= MAX_SECONDS) {
+                game.settings[inputType]["isDefault"] = false;
+                game.settings[inputType]["value"] = inputValue;
+              }
+            } else if (inputType == "discussion") {
+              if (inputValue >= MIN_SECONDS || inputValue <= MAX_SECONDS) {
+                game.settings[inputType]["isDefault"] = false;
+                game.settings[inputType]["value"] = inputValue;
+              }
+            }
+            else if (inputType == "voting") {
+              if (inputValue >= MIN_SECONDS || inputValue <= MAX_SECONDS) {
+                game.settings[inputType]["isDefault"] = false;
+                game.settings[inputType]["value"] = inputValue;
+              }
+            }
+          }
+          console.log("after change", game.settings)
+          console.log("#########")
+        }
+      }
+    }
+  })
+
+  socket.on("setShowRoles", (playerID, toShow) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            if (toShow) {
+              game.settings["showRoles"]["isDefault"] = false;
+              game.settings["showRoles"]["value"] = toShow;
+            }
+          }
+        }
+      }
+    }
+  })
+  socket.on("setVoteMessages", (playerID, type) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            if (type == "hidden") {
+              game.settings["voteMessages"]["isDefault"] = false;
+              game.settings["voteMessages"]["value"] = type;
+            }
+            else if (type == "anonymous") {
+              game.settings["voteMessages"]["isDefault"] = false;
+              game.settings["voteMessages"]["value"] = type;
+            }
+            else if (type == "visible") {
+              game.settings["voteMessages"]["isDefault"] = false;
+              game.settings["voteMessages"]["value"] = type;
+            }
+          }
+        }
+      }
+    }
+  })
+
+
+
+  socket.on("saveGameSettings", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            setSettings(playerID, room, roomCode, game)
+            console.log(game.settings)
+          }
+        }
+      }
+    }
+  })
+  socket.on("loadGameSettings", (playerID, reset) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            socket.emit("fetchedGameSettings", game.settings)
+          }
+        }
+      }
+    }
+  })
+  socket.on("resetNotSavedGameSettings", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            setSettings(playerID, room, roomCode, game)
+          }
+        }
+      }
+    }
+  })
+
+  function setSettings(playerID, room, roomCode, game) {
+    for (var [setting, values] of Object.entries(game.settings)) {
+      console.log(game.settings)
+      if (values.isDefault == true) {
+        if (setting == "actions") {
+          values.value = ACTIONS;
+        }
+        else if (setting == "discussion") {
+          values.value = DISCUSSION;
+        }
+        else if (setting == "voting") {
+          values.value = VOTING;
+        }
+        else if (setting == "showRoles") {
+          values.value = SHOWROLES;
+        }
+        else if (setting == "voteMessages") {
+          values.value = VOTEMESSAGES;
+        }
+      }
+    }
+  }
+
+  socket.on("resetGameSettings", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            // game.settingsDefault = true;
+            game.resetGameSettings();
+            socket.emit("fetchedGameSettings", game.settings)
+          }
+        }
+      }
+    }
+  })
+
+
   // set all users to inGame
   // set game to inProgress
   // make sure done is false
@@ -709,12 +874,12 @@ io.on("connection", async (socket) => {
       }
       
       if (!notUniqueID && !notUniqueProxy) {
-          console.log("Proxy created");
-          proxyIdenfication.set(playerID, proxyID);
-          socket.emit("playerID", playerID);
-        } else if (notUniqueID && notUniqueProxy) {
-          socket.emit("playerID", null);
-        }
+        console.log("Proxy created");
+        proxyIdenfication.set(playerID, proxyID);
+        socket.emit("playerID", playerID);
+      } else if (notUniqueID && notUniqueProxy) {
+        socket.emit("playerID", null);
+      }
     }
   });
 
@@ -1154,30 +1319,7 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (temp.length > 0) {
         if (checkAlreadyHost(rooms, playerID) == false) {
-          var roomCode = randomstring.generate({
-            length: 5,
-            charset: "alphanumeric",
-            capitalization: "uppercase",
-            readable: true
-          });
-          // Setting up room
-          connectedUsers.get(playerID).setCurrentRoom(roomCode);
-          rooms.set(roomCode, new Room(playerID));
-          checkForAlreadyExistingUser(roomCode, playerID);
-
-          console.log("room", roomCode, "created");
-          console.log(socket.id, "joined", roomCode);
-
-          // Log rooms that socket is in
-          console.log(rooms);
-        } else {
-          var hostRoom = getHostRoom(rooms, playerID);
-          if (hostRoom !== null) {
-            connectedUsers.get(playerID).setCurrentRoom(hostRoom);
-          }
-        }
-      } else {
-        // About 60.4 million possible rooms((26+10)^5)
+          // About 60.4 million possible rooms((26+10)^5)
         var notUniqueRoom = true;
         while (notUniqueRoom) {
           var roomCode = randomstring.generate({
@@ -1195,13 +1337,38 @@ io.on("connection", async (socket) => {
           connectedUsers.get(playerID).setCurrentRoom(roomCode);
           rooms.set(roomCode, new Room(playerID));
           checkForAlreadyExistingUser(roomCode, playerID);
-  
+
           console.log("room", roomCode, "created");
           console.log(socket.id, "joined", roomCode);
-  
+
           // Log rooms that socket is in
           console.log(rooms);
         }
+        } else {
+          var hostRoom = getHostRoom(rooms, playerID);
+          if (hostRoom !== null) {
+            connectedUsers.get(playerID).setCurrentRoom(hostRoom);
+          }
+        }
+      } else {
+        var roomCode = randomstring.generate({
+          length: 5,
+          charset: "alphanumeric",
+          capitalization: "uppercase",
+          readable: true
+        });
+        
+        // Setting up room
+        connectedUsers.get(playerID).setCurrentRoom(roomCode);
+        rooms.set(roomCode, new Room(playerID));
+        checkForAlreadyExistingUser(roomCode, playerID);
+
+        console.log("room", roomCode, "created");
+        console.log(socket.id, "joined", roomCode);
+
+        // Log rooms that socket is in
+        console.log(rooms);
+        
       }
       console.log("room in:", socket.rooms);
     }
@@ -1359,49 +1526,6 @@ io.on("connection", async (socket) => {
 
   // GAME related
   // ====================================================
-
-  const roleTypes = {
-    Villager: "villager",
-    Investigator: "investigator",
-    Doctor: "doctor",
-    Mayor: "mayor",
-    Trapper: "trapper",
-    Godfather: "godfather",
-    Mafioso: "mafioso",
-    Surgeon: "surgeon",
-    Witch: "witch",
-    Framer: "framer",
-    Jester: "jester",
-    SerialKiller: "serial killer",
-    Executioner: "executioner",
-    Lawyer: "lawyer",
-  };
-
-  // ! DEBUG
-  // var durations = {
-  //   night: {
-  //     actions: 15,
-  //     nightMessages: 5,
-  //   },
-  //   day: {
-  //     recap: 5,
-  //     discussion: 6,
-  //     voting: 15,
-  //     dayMessages: 5,
-  //   },
-  // };
-  var durations = {
-    night: {
-      actions: 40,
-      nightMessages: 5,
-    },
-    day: {
-      recap: 5,
-      discussion: 45,
-      voting: 30,
-      dayMessages: 5,
-    },
-  };
 
   socket.on("updateUI", (playerID) => {
     if (checkUserExist(playerID)) {
@@ -4479,7 +4603,10 @@ io.on("connection", async (socket) => {
     game.setCurrentCycle(0);
     game.setCurrentPhase(0);
 
-    game.setTheDurations(Object.values(durations));
+    game.getTheDurations().night.actions = game.settings.actions.value; 
+    game.getTheDurations().day.discussion = game.settings.discussion.value; 
+    game.getTheDurations().day.voting = game.settings.voting.value; 
+
     game.setNightLength(Object.values(game.getTheDurations()[0]).length);
     game.setDayLength(Object.values(game.getTheDurations()[1]).length);
 

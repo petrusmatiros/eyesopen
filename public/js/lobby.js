@@ -99,7 +99,6 @@ socket.on("connect", () => {
         socket.on("playerSlots", (host, slots) => {
           updatePlayerSlotsWithProxy(host, slots);
         });
-        
 
         function updatePlayerSlotsWithProxy(host, slots) {
           socket.emit("requestProxy", getPlayerID(), "lobby");
@@ -116,7 +115,6 @@ socket.on("connect", () => {
             readyStatusLobby(users);
           });
         }
-        
 
         showNotification("copy");
 
@@ -134,6 +132,7 @@ socket.on("connect", () => {
             var startButton =
               document.getElementsByClassName("lobby-button start");
             startButton[0].style.display = "inline";
+            revealGameSettingsButton();
           } else {
             console.log("REMOVING HOST VISIBILITY");
             document.getElementById("roles").classList.remove("selectable");
@@ -253,16 +252,153 @@ socket.on("connect", () => {
   });
 });
 
-function checkNumber(element) {
-  // do something
+function resetGameSettingsError(type = "") {
+  document.getElementById("lobby-gamesettings-help").style.opacity = "0%";
+  document.getElementById("lobby-gamesettings-help").innerText = "";
+
+  var actionInput = document.getElementById("actionInput");
+  var discussionInput = document.getElementById("discussionInput");
+  var votingInput = document.getElementById("votingInput");
+  if (type == "all") {
+    actionInput.style.border = "2px solid #b1b1b1";
+    actionInput.classList.remove("lobby-gamesetting-error");
+
+    discussionInput.style.border = "2px solid #b1b1b1";
+    discussionInput.classList.remove("lobby-gamesetting-error");
+
+    votingInput.style.border = "2px solid #b1b1b1";
+    votingInput.classList.remove("lobby-gamesetting-error");
+  } else {
+    if (actionInput.className.includes("lobby-gamesetting-error")) {
+      actionInput.style.border = "2px solid #b1b1b1";
+      actionInput.classList.remove("lobby-gamesetting-error");
+    } else if (discussionInput.className.includes("lobby-gamesetting-error")) {
+      discussionInput.style.border = "2px solid #b1b1b1";
+      discussionInput.classList.remove("lobby-gamesetting-error");
+    } else if (votingInput.className.includes("lobby-gamesetting-error")) {
+      votingInput.style.border = "2px solid #b1b1b1";
+      votingInput.classList.remove("lobby-gamesetting-error");
+    }
+  }
 }
 
-function resetGameSettings() {}
+function gameSettingError(type) {
+  var theElementId = "";
+
+  if (type == "action") {
+    theElementId = type + "Input";
+  } else if (type == "discussion") {
+    theElementId = type + "Input";
+  } else if (type == "voting") {
+    theElementId = type + "Input";
+  }
+  document.getElementById("lobby-gamesettings-help").style.opacity = "100%";
+  var theElement = document.getElementById(theElementId);
+  theElement.classList.add("lobby-gamesetting-error");
+  theElement.style.border = "2px solid hsl(0, 100%, 45%)";
+  document.getElementById("lobby-gamesettings-help").innerText =
+    "The duration must be between 10s and 300s";
+}
+
+
+function selectVoteMessageSettings(element) {
+  if (
+    element.id == "voteMessagesHidden" ||
+    element.id == "voteMessagesAnonymous" ||
+    element.id == "voteMessagesVisible"
+  ) {
+    var inputType = "";
+    var radioHidden = document.getElementById("voteMessagesHidden");
+    var radioAnonymous = document.getElementById("voteMessagesAnonymous");
+    var radioVisible = document.getElementById("voteMessagesVisible");
+    if (element.id == "voteMessagesHidden") {
+      inputType = "hidden";
+      radioHidden.parentElement.id = "votemessage-checked";
+      radioAnonymous.parentElement.id = "";
+      radioVisible.parentElement.id = "";
+    } else if (element.id == "voteMessagesAnonymous") {
+      inputType = "anonymous";
+      radioHidden.parentElement.id = "";
+      radioAnonymous.parentElement.id = "votemessage-checked";
+      radioVisible.parentElement.id = "";
+    } else if (element.id == "votingInput") {
+      inputType = "visible";
+      radioHidden.parentElement.id = "";
+      radioAnonymous.parentElement.id = "";
+      radioVisible.parentElement.id = "votemessage-checked";
+    }
+
+    socket.emit("setVoteMessages", getPlayerID(), inputType)
+  }
+}
+
+function checkNumber(element) {
+  // do something
+  if (
+    element.id == "actionInput" ||
+    element.id == "discussionInput" ||
+    element.id == "votingInput"
+  ) {
+    var MIN_SECONDS = 10;
+    var MAX_SECONDS = 300;
+    var inputType = "";
+    var durationToChange = "";
+    if (element.id == "actionInput") {
+      inputType = "action";
+      durationToChange = "actions";
+    } else if (element.id == "discussionInput") {
+      inputType = "discussion";
+      durationToChange = "discussion";
+    } else if (element.id == "votingInput") {
+      inputType = "voting";
+      durationToChange = "voting";
+    }
+
+    if (element.value < MIN_SECONDS || element.value > MAX_SECONDS) {
+      gameSettingError(inputType);
+      return false;
+    } else {
+      resetGameSettingsError();
+      document.getElementById(inputType + "Input").style.border =
+        "2px solid #b1b1b1";
+        socket.emit(
+          "setDuration",
+          getPlayerID(),
+          element.valueAsNumber,
+          durationToChange
+        );
+      
+      return true;
+    }
+  }
+}
+
+function resetNotSavedGameSettings() {
+  socket.emit("resetNotSavedGameSettings", getPlayerID());
+}
+
+function resetGameSettings() {
+  resetGameSettingsError("all");
+  socket.emit("resetGameSettings", getPlayerID());
+  loadGameSettings();
+}
 function saveGameSettings() {
-  hideGameSettings();
+  var actionsInput = document.getElementById("actionInput");
+  var discussionInput = document.getElementById("discussionInput");
+  var votingInput = document.getElementById("votingInput");
+  if (
+    checkNumber(actionsInput) &&
+    checkNumber(discussionInput) &&
+    checkNumber(votingInput)
+  ) {
+    socket.emit("saveGameSettings", getPlayerID());
+    hideGameSettings();
+  }
 }
 
 function hideGameSettings() {
+  resetNotSavedGameSettings();
+  resetGameSettingsError();
   var gameSettingsContainer = document.getElementById(
     "lobby-gamesettings-container"
   );
@@ -271,7 +407,47 @@ function hideGameSettings() {
   gameSettingsOverlay.style.display = "none";
 }
 
+function revealGameSettingsButton() {
+  document.getElementById("lobby-gamesettings-icon").style.display = "flex";
+}
+socket.on("fetchedGameSettings", (settings) => {
+  var actionsInput = document.getElementById("actionInput");
+  var discussionInput = document.getElementById("discussionInput");
+  var votingInput = document.getElementById("votingInput");
+  var showRoleInput = document.getElementById("showRoleInput");
+  var radioHidden = document.getElementById("voteMessageHidden");
+  var radioAnonymous = document.getElementById("voteMessageAnonymous");
+  var radioVisible = document.getElementById("voteMessageVisible");
+  // Durations
+  actionsInput.value = settings["actions"]["value"];
+  discussionInput.value = settings["discussion"]["value"];
+  votingInput.value = settings["voting"]["value"];
+
+  // !FIX THIS
+  // Show roles?
+  // showRoleInput.value = settings["showRoles"]["value"];
+
+  // // Vote messages
+  // if (settings["voteMessages"]["value"] == "hidden") {
+  //   radioHidden.value = "on";
+  //   radioAnonymous.value = "off";
+  //   radioVisible.value = "off";
+  // } else if (settings["voteMessages"]["value"] == "anonymous") {
+  //   radioHidden.value = "off";
+  //   radioAnonymous.value = "on";
+  //   radioVisible.value = "off";
+  // } else if (settings["voteMessages"]["value"] == "visible") {
+  //   radioHidden.value = "off";
+  //   radioAnonymous.value = "off";
+  //   radioVisible.value = "on";
+  // }
+});
+function loadGameSettings() {
+  socket.emit("loadGameSettings", getPlayerID());
+}
+
 function showGameSettings() {
+  loadGameSettings();
   var gameSettingsContainer = document.getElementById(
     "lobby-gamesettings-container"
   );
@@ -445,8 +621,6 @@ socket.on("ready-status-lobby", (users) => {
   readyStatusLobby(users);
 });
 
-
-
 function readyStatusLobby(users) {
   var lobbyButtons = document.getElementsByClassName(
     "lobby-button-container"
@@ -459,13 +633,11 @@ function readyStatusLobby(users) {
           .children[1];
         status.innerText = "ready";
         status.id = "status-ready";
-        
       } else if (!users[i].readyLobby) {
         var status = document.getElementById(users[i].thePlayerID).parentElement
           .children[1];
-          status.innerText = "not ready";
-          status.id = "status-notready";
-        
+        status.innerText = "not ready";
+        status.id = "status-notready";
       }
     }
   }

@@ -1,4 +1,5 @@
 var { Timer } = require("./timer");
+require("./constants")
 class Game {
   constructor() {
     // DAY & NIGHT count
@@ -8,7 +9,18 @@ class Game {
     // Interval counts
     this.currentCycle = 0;
     this.currentPhase = 0;
-    this.theDurations = null;
+    this.theDurations = {
+      night: {
+        actions: ACTIONS,
+        nightMessages: NIGHTMESSAGES,
+      },
+      day: {
+        recap: RECAP,
+        discussion: DISCUSSION,
+        voting: VOTING,
+        dayMessages: DAYMESSAGES,
+      },
+    };
     this.nightLength = 0;
     this.dayLength = 0;
     // Emit booleans
@@ -19,21 +31,26 @@ class Game {
     this.dayMessagesOnce = 0;
 
     // Game settings
-    // Durations can not be lower than 0
-    // showRoles, true or false
-    // voteMessages, hidden, anonymous, visible
-    this.settingsDefault = true;
     this.settings = {
-      setting_durations: {
-        actions : 1,
-        discussion: 1,
-        voting: 1,
+      actions : {
+        value: ACTIONS,
+        isDefault: true
       },
-      setting_showRoles: {
-        showRoles: true,
+      discussion: {
+        value: DISCUSSION,
+        isDefault: true
       },
-      setting_voteMessages: {
-        voteMessages: "visible"
+      voting: {
+        value: VOTING,
+        isDefault: true
+      },
+      showRoles: {
+        value: SHOWROLES,
+        isDefault: true
+      },
+      voteMessages: {
+        value: VOTEMESSAGES,
+        isDefault: true
       }
     }
 
@@ -116,7 +133,18 @@ class Game {
     // Interval counts
     this.currentCycle = 0;
     this.currentPhase = 0;
-    this.theDurations = null;
+    this.theDurations = {
+      night: {
+        actions: ACTIONS,
+        nightMessages: NIGHTMESSAGES,
+      },
+      day: {
+        recap: RECAP,
+        discussion: DISCUSSION,
+        voting: VOTING,
+        dayMessages: DAYMESSAGES,
+      },
+    };
     this.nightLength = 0;
     this.dayLength = 0;
     // Emit booleans
@@ -128,22 +156,27 @@ class Game {
   }
 
   resetGameSettings() {
-    this.settingsDefault = true;
     // Game settings
-    // Durations can not be lower than 0
-    // showRoles, true or false
-    // voteMessages, hidden, anonymous, visible
     this.settings = {
-      setting_durations: {
-        actions : 1,
-        discussion: 1,
-        voting: 1,
+      actions : {
+        value: ACTIONS,
+        isDefault: true
       },
-      setting_showRoles: {
-        showRoles: true,
+      discussion: {
+        value: DISCUSSION,
+        isDefault: true
       },
-      setting_voteMessages: {
-        voteMessages: "visible"
+      voting: {
+        value: VOTING,
+        isDefault: true
+      },
+      showRoles: {
+        value: SHOWROLES,
+        isDefault: true
+      },
+      voteMessages: {
+        value: VOTEMESSAGES,
+        isDefault: true
       }
     }
   }

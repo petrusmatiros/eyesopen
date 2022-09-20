@@ -1,19 +1,4 @@
-const roleTypes = {
-  Villager: "villager",
-  Investigator: "investigator",
-  Doctor: "doctor",
-  Mayor: "mayor",
-  Trapper: "trapper",
-  Godfather: "godfather",
-  Mafioso: "mafioso",
-  Surgeon: "surgeon",
-  Witch: "witch",
-  Framer: "framer",
-  Jester: "jester",
-  SerialKiller: "serial killer",
-  Executioner: "executioner",
-  Lawyer: "lawyer",
-};
+require("./constants")
 
 var { Role } = require("./role");
 

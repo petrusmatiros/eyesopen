@@ -83,9 +83,13 @@ function requestID() {
   socket.emit("requestID", socket.id, getPlayerID());
   socket.on("playerID", (playerID) => {
     console.log("playerID from server:", playerID);
-    if (getPlayerID() == "null") {
-      document.cookie = `eyesopenID=${playerID}; path=/; max-age=${fiveHours}; SameSite=Lax`;
-      socket.emit("completedID", getPlayerID());
+    if (playerID == null) {
+      window.location.reload();
+    } else {
+      if (getPlayerID() == "null") {
+        document.cookie = `eyesopenID=${playerID}; path=/; max-age=${fiveHours}; SameSite=Lax`;
+        socket.emit("completedID", getPlayerID());
+      }
     }
   });
 }

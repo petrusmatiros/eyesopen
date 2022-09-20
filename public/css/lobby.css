@@ -340,7 +340,7 @@ input[type="number"] {
   background-color: var(--light-fg);
   font-family: "League Spartan", sans-serif;
   text-align: center;
-  font-size: 0.75rem;
+  font-size: 1rem;
   margin: 0.5em 1em 0.5em 1em;
   padding: 0.5em;
   outline: none;
@@ -349,31 +349,65 @@ input[type="number"] {
   width: 5rem;
 }
 
-input[type="checkbox"] {
+/* input[type="checkbox"] {
   cursor: pointer;
   width: 1.5rem;
   height: 1.5rem;
 
+} */
+
+.lobby-gamesettings-radiobuttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 1rem;
+}
+.lobby-gamesettings-radio {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 0.35rem;
 }
 
-label {
-  font-family: "League Spartan", sans-serif;
-  text-align: center;
-  font-size: 0.75rem;
-  color: var(--dark-fg)
-}
-
-input[type="radio"] {
+.lobby-gamesettings-radio-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  vertical-align: center;
   cursor: pointer;
-  width: 1.1rem;
-  height: 1.1rem;
-
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 1rem;
+  background-color: var(--menu-button-bg);
+}
+.lobby-gamesettings-radio-button:hover {
+  background-color: var(--menu-button-hover-bg);
+}
+.lobby-gamesettings-radio-button:focus {
+  background-color: hsl(100, 100%, 40%);
+  outline: 2px solid var(--menu-button-hover-fg)
+}
+.lobby-gamesettings-radio-button:active {
+  background-color: var(--menu-button-active-bg);
+}
+.lobby-gamesettings-radio-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  vertical-align: center;
+  display: inline;
+  color: var(--dark-fg);
+  font-size: 0.85rem;
+  font-weight: 400;
 }
 
 input[type="number"]:focus {
   cursor: pointer;
   outline: none;
-  border: 2px solid #000000;
+  border: 2px solid var(--dark-fg);
 }
 
 input[type=number]::-webkit-outer-spin-button, 
@@ -423,15 +457,15 @@ input[type=number]::-webkit-inner-spin-button {
 .lobby-gamesettings-resetbutton {
   
   color: var(--dark-fg);
-  background-color: hsl(0, 80%, 80%);
+  background-color: hsl(0, 100%, 80%);
   border-radius: 0.6rem;
   padding: 0.6em 1em 0.6em 1em;
 }
 .lobby-gamesettings-resetbutton:hover {
-  background-color: hsl(0, 80%, 70%);
+  background-color: hsl(0, 100%, 70%);
 }
 .lobby-gamesettings-resetbutton:active {
-  background-color: hsl(0, 80%, 65%);
+  background-color: hsl(0, 100%, 65%);
 }
 .lobby-gamesettings-donebutton {
   color: var(--dark-fg);
@@ -446,12 +480,37 @@ input[type=number]::-webkit-inner-spin-button {
   background-color: hsl(0, 0%, 65%);
 }
 
+.lobby-gamesettings-help {
+  opacity: 0%;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--dark-fg);
+  margin: 0.3em 1em 0.3em 1em;
+  min-height: 0.5rem;
+  max-height: 0.5rem;
+}
+
 .lobby-gamesettings-durations {
   padding: 1em;
-  background-color: hsl(0, 0%, 95%);
   border-radius: 0.75rem;
+  margin-top: 0.35rem;
   margin-bottom: 1rem;
+  border: 2px dashed var(--dark-fg);
+  min-width: 16.5rem;
+  max-width: 16.5rem;
 }
+
+.lobby-gamesettings-messages {
+  padding: 1em;
+  border-radius: 0.75rem;
+  border: 2px dashed var(--dark-fg);
+  min-width: 16.5rem;
+  max-width: 16.5rem;
+}
+
 
 .lobby-gamesettings-title {
   display: flex;
@@ -496,15 +555,7 @@ input[type=number]::-webkit-inner-spin-button {
   margin-bottom: 0.5rem;
 }
 
-.lobby-gamesettings-input {}
-
-.lobby-gamesettings-messages {
-  padding: 1em;
-  background-color: hsl(0, 0%, 97%);
-  border-radius: 0.75rem;
-}
-
-.game-settings {
+.lobby-gamesettings-icon {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -513,6 +564,7 @@ input[type=number]::-webkit-inner-spin-button {
   -ms-user-select: none;
   user-select: none;
   cursor: pointer;
+  display: none;
   width: 1.5rem;
   height: 1.5rem;
   vertical-align: middle;
@@ -521,12 +573,12 @@ input[type=number]::-webkit-inner-spin-button {
   margin-right: -0.5rem;
 }
 
-.game-settings:hover {
+.lobby-gamesettings-icon:hover {
   background-color: hsl(0, 0%, 20%);
   margin-right: -0.5rem;
 }
 
-.game-settings:active {
+.lobby-gamesettings-icon:active {
   background-color: hsl(0, 0%, 15%);
   margin-right: -0.5rem;
 }
