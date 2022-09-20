@@ -4340,6 +4340,16 @@ io.on("connection", async (socket) => {
           `${player.getPlayerName()} role was: ${player.getRole().name}`,
           "important"
         );
+        var lineSeperator = "--------------------------------";
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          lineSeperator,
+          "lineSeperator"
+        );
 
         var executionerObject = Object.values(
           checkIfExecutionerAlive(playerID, room, roomCode, game)
