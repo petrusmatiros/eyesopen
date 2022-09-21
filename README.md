@@ -5,30 +5,31 @@
 ---
 
 # Table of contents
-
+<!-- - [Eyes Open <img src="public/assets/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">](#eyes-open-)
+    - [Mafia/Werewolf/ToS inspired web based game](#mafiawerewolftos-inspired-web-based-game)
+- [Table of contents](#table-of-contents) -->
   ### Game
-<!-- - [Eyes Open <img src=public/assets/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">](#eyes-open-)
-    - [Mafia/Werewolf/ToS inspired web based game](#mafiawerewolftos-inspired-web-based-game) -->
   - [Link to website](#link-to-website)
   - [Game description & objective](#game-description--objective)
   - [Requirements](#requirements)
-  - [Role info](#role-info)
-  <!-- - [Dependencies](#dependencies)
+  - [Role cards](#role-cards)
+    - [Good](#good)
+    - [Evil](#evil)
+    - [Neutral](#neutral)
+  ### Project
+  - [Dependencies](#dependencies)
   - [Install and build](#install-and-build)
+  ### Miscellaneous info
   - [Assets](#assets)
-  - [Notes](#notes) -->
-### Project
-- [Dependencies](#dependencies)
-- [Install and build](#install-and-build)
-### Miscellaneous info
-- [Assets](#assets)
-- [Notes](#notes)
+  - [Notes](#notes)
 
 ---
 
 ## Link to website
-#### TBD
-Enjoy ^-^
+<!-- #### TBD -->
+ https://eyesopen.ml
+ 
+ Enjoy ^-^
 
 
 ## Game description & objective
@@ -40,42 +41,30 @@ Enjoy ^-^
 
 ## Role cards
 
-TBD
-
 ### Good
 <p>
-
 <img src="public/assets/rolecards/Villager.jpg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Doctor.jpg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Investigator.jpg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Mayor.jpg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Trapper.jpg" alt="role-card" width=150>
-
 </p>
-
-<br>
 
 ### Evil
 <p>
-
 <img src="public/assets/rolecards/Godfather.jpg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Mafioso.jpg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Surgeon.jpg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Witch.jpg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Framer.jpg" alt="role-card" width=150>
-
 </p>
-
-<br>
 
 ### Neutral
 <p>
-
 <img src="public/assets/rolecards/Jester.jpg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Serial Killer.jpg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Executioner.jpg" alt="role-card" width=150>
 <img src="public/assets/rolecards/Lawyer.jpg" alt="role-card" width=150>
-
 </p>
 
 
