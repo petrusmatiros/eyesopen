@@ -1851,7 +1851,7 @@ io.on("connection", async (socket) => {
                             roomCode,
                             game,
                             "evil",
-                            `${player.getPlayerName()} changed their vote. They are voting to kill ${theVoteTargetPlayer.getPlayerName()} (${
+                            `${player.getPlayerName()} changed their vote to kill ${theVoteTargetPlayer.getPlayerName()} (${
                               theVoteTargetPlayer.nightVotes
                             })`,
                             "Night"
@@ -1936,7 +1936,7 @@ io.on("connection", async (socket) => {
                               roomCode,
                               game,
                               "all",
-                              `${player.getPlayerName()} has changed their vote. They are voting to lynch ${theVoteTargetPlayer.getPlayerName()}`,
+                              `${player.getPlayerName()} has changed their vote to lynch ${theVoteTargetPlayer.getPlayerName()}`,
                               "Day"
                             );
                           }

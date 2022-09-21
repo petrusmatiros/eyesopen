@@ -357,6 +357,7 @@ socket.on("recieveMessage", (message, type, cycle) => {
     newMessage.style.justifyContent = "center";
     newMessage.style.alignItems = "center";
     newMessage.style.fontWeight = "600";
+    newMessage.style.marginTop = "1rem";
   } else if (type.includes("lineSeperator")) {
     if (cycle.includes("Day")) {
       messageType += "day";
@@ -484,6 +485,7 @@ function loadSavedMessages(messages, cycle) {
       newMessage.style.justifyContent = "center";
       newMessage.style.alignItems = "center";
       newMessage.style.fontWeight = "600";
+      newMessage.style.marginTop = "1rem";
     } else if (messages[i].type.includes("lineSeperator")) {
       if (cycle.includes("Day")) {
         messageType += "day";
