@@ -3559,18 +3559,7 @@ io.on("connection", async (socket) => {
     }
   }
 
-  function checkForVoteTie(array) {
-    var isTie = false;
-    var seen = [];
-    for (var i = 0; i < array.length; i++) {
-      if (!seen.includes(array[i])) {
-        seen.push(array[i]);
-      } else {
-        isTie = true;
-      }
-    }
-    return isTie;
-  }
+
 
   function evilVote(playerID, room, roomCode, game, target) {
     var targetPlayer = connectedUsers.get(target).getPlayer(roomCode);
@@ -3665,10 +3654,29 @@ io.on("connection", async (socket) => {
         }
       }
       var targetCount = Array.from(targets.values());
-      if (!checkForVoteTie(targetCount)) {
-        if (Math.max(...targetCount) > 0) {
-          var mostVotedIndex = targetCount.indexOf(Math.max(...targetCount));
-          var mostVoted = Array.from(targets.keys())[mostVotedIndex];
+
+
+      var highestVoteCount = 0;
+      var theHighestVote = undefined;
+      var seenHighVote = [];
+
+      for (var i = 0; i < targetCount.length; i++) {
+        if (targetCount[i] > highestVoteCount) {
+          if (!seenHighVote.includes(targetCount[i])) {
+            highestVoteCount = targetCount[i];
+            theHighestVote = i;
+            seenHighVote.push(targetCount[i]);
+          }
+        } else if (targetCount[i] == highestVoteCount) {
+          highestVoteCount = 0;
+          theHighestVote = undefined;
+        }
+      }
+
+      
+      if (Math.max(...targetCount) > 0) {
+        if (highestVoteCount !== 0 && theHighestVote !== undefined) {
+          var mostVoted = Array.from(targets.keys())[theHighestVote];
           evilVote(playerID, room, roomCode, game, mostVoted);
         } else {
           sendMessage(
@@ -3677,7 +3685,7 @@ io.on("connection", async (socket) => {
             roomCode,
             game,
             "evil",
-            `No one was voted to get killed`,
+            "The vote was tied, no blood gets spilled tonight",
             "info"
           );
         }
@@ -3688,7 +3696,7 @@ io.on("connection", async (socket) => {
           roomCode,
           game,
           "evil",
-          "The vote was tied, no blood gets spilled tonight",
+          `No one was voted to get killed`,
           "info"
         );
       }
