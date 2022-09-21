@@ -591,7 +591,7 @@ io.on("connection", async (socket) => {
               game.settings["showRoles"]["isDefault"] = toShow;
               game.settings["showRoles"]["value"] = toShow;
             }
-            console.log(game.settings)
+            
           }
         }
       }
@@ -618,7 +618,7 @@ io.on("connection", async (socket) => {
               game.settings["voteMessages"]["value"] = type;
             }
           }
-          console.log(game.settings)
+          
         }
       }
     }
@@ -635,7 +635,7 @@ io.on("connection", async (socket) => {
         if (room.getHost() == playerID) {
           if (room.getGame().getProgress() == false) {
             setSettings(playerID, room, roomCode, game)
-            console.log(game.settings)
+            
           }
         }
       }
@@ -672,7 +672,7 @@ io.on("connection", async (socket) => {
 
   function setSettings(playerID, room, roomCode, game) {
     for (var [setting, values] of Object.entries(game.settings)) {
-      console.log(game.settings)
+      
       if (values.isDefault == true) {
         if (setting == "actions") {
           values.value = ACTIONS;
