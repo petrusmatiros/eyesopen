@@ -42,11 +42,39 @@ Enjoy ^-^
 
 TBD
 
+### Good
 <p>
 
+<img src="public/assets/rolecards/Villager.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Doctor.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Investigator.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Mayor.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Trapper.jpg" alt="role-card" width=150>
 
-<img src="public/assets/rolecards/Villager.jpg" alt="role-card" width=150>Villager
-<img src="public/assets/rolecards/Doctor.jpg" alt="role-card" width=150>Doctor
+</p>
+
+<br>
+
+### Evil
+<p>
+
+<img src="public/assets/rolecards/Godfather.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Mafioso.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Surgeon.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Witch.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Framer.jpg" alt="role-card" width=150>
+
+</p>
+
+<br>
+
+### Neutral
+<p>
+
+<img src="public/assets/rolecards/Jester.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Serial Killer.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Executioner.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Lawyer.jpg" alt="role-card" width=150>
 
 </p>
 
