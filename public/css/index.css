@@ -92,6 +92,27 @@
   display: flex;
 }
 
+
+.index-notification {
+  position: fixed;
+  display: none;
+  bottom: 5vh;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  animation: fadeIn 0.3s 1;
+  font-weight: 500;
+  padding: 1em;
+  border-radius: 10rem;
+  color: var(--light-fg);
+  background-color: rgba(0, 0 ,0, 0.90);
+  vertical-align: center;
+  line-height: 1;
+  backdrop-filter: blur(0.25rem);
+  -webkit-backdrop-filter: blur(0.25rem);
+  box-shadow: 0 0.5rem 1rem var(--main-shadow);
+}
+
 body {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
@@ -263,6 +284,13 @@ p {
   flex-direction: column;
 }
 
+#changeUsername {
+  display: none;
+  font-size: 1rem !important;
+  border-radius: 0.65rem !important;
+  animation: fadeIn 0.3s 1, pop-light 1s 1;
+}
+
 .title-button {
   user-select: none;
   cursor: pointer;
@@ -276,7 +304,7 @@ p {
   margin-bottom: 1.5rem;
   padding: 0.6em 1em 0.6em 1em;
   border: none;
-  border-radius: 0.6em;
+  border-radius: 1rem;
   text-decoration: none;
 }
 
@@ -394,7 +422,7 @@ p {
     margin-bottom: 1.5rem;
     padding: 0.6em 1em 0.6em 1em;
     border: none;
-    border-radius: 0.6em;
+    border-radius: 1rem;
     text-decoration: none;
   }
   .links {
@@ -486,21 +514,6 @@ p {
   outline: none !important;
 }
 
-.clock-container {
-  display: none;
-  justify-content: center;
-  align-items: center;
-  padding: 0.5em;
-}
-
-.clock {
-  user-select: none;
-  text-align: center;
-  background-color: #2d2d2d;
-  border-radius: 0.6em;
-  padding: 0.5em;
-  color: #ffffff;
-}
 
 @keyframes fadeIn {
   0% { opacity: 0; }
@@ -534,7 +547,7 @@ p {
   align-items: center;
   background: var(--light-bg);
   padding: 1.85em;
-  border-radius: 0.6em;
+  border-radius: 0.5rem;
 
   width: 17em;
 }
@@ -552,7 +565,7 @@ p {
   width: 2rem;
   height: 2rem;
   vertical-align: bottom;
-  border-radius: 0.6em;
+  border-radius: 0.5rem;
 }
 
 .close-button:hover {
@@ -592,7 +605,7 @@ input[type="text"] {
   margin: 0.5em 1em 0.5em 1em;
   padding: 0.5em 1em 0.5em 1em;
   outline: none;
-  border-radius: 0.6em;
+  border-radius: 0.5rem;
   border: 2px solid #b1b1b1;
 }
 
@@ -614,7 +627,7 @@ input[type="text"]:focus {
   margin: 0.5em 1em 0.5em 1em;
   padding: 0.6em 0.6em 0.6em 0.6em;
   border: none;
-  border-radius: 0.6em;
+  border-radius: 0.5rem;
   text-decoration: none;
 }
 

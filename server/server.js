@@ -33,10 +33,8 @@ var { Game } = require("./game");
 var { Role } = require("./role");
 var { Player } = require("./player");
 var { User } = require("./user");
+require("./constants");
 
-const minPlayers = 3;
-const maxPlayers = 14;
-const maxNoDeaths = 20;
 
 var rooms = new Map();
 var connectedUsers = new Map();
@@ -138,11 +136,8 @@ io.on("connection", async (socket) => {
       if (targetRoom !== null) {
         connectedUsers.get(playerID).setReadyLobby(false);
 
-        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-          "ready-status-lobby",
-          generateProxyReadyLobby(playerID)
-        );
-        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+        
+        io.to(targetRoom).emit(
           "rolePickConditionDisconnect",
           false
         );
@@ -150,13 +145,18 @@ io.on("connection", async (socket) => {
         // remove user from room
         if (
           rooms
-            .get(targetRoom)
-            .getUsers()
-            .includes(connectedUsers.get(playerID))
-        ) {
-          rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
-        }
-        clearPlayerSlot(playerID);
+          .get(targetRoom)
+          .getUsers()
+          .includes(connectedUsers.get(playerID))
+          ) {
+            rooms.get(targetRoom).removeUser(connectedUsers.get(playerID));
+          }
+          clearPlayerSlot(playerID);
+          updatePlayerSlot(playerID);
+          io.to(targetRoom).emit(
+            "ready-status-lobby",
+            generateProxyReadyLobby(playerID)
+          );
         updatePlayerCount(playerID);
         // TODO: check for requirement instead???
         updateRoles();
@@ -270,7 +270,7 @@ io.on("connection", async (socket) => {
     var users = room.getUsers();
     // reset game
     room.getGame().reset();
-    room.getGame().resetDone();
+    room.getGame().resetGameDone();
     room.getGame().resetGameInterval();
     // set all users ready
     for (var i = 0; i < users.length; i++) {
@@ -488,7 +488,9 @@ io.on("connection", async (socket) => {
           previousRoom,
           gameToLeave,
           "all",
-          `${user.getPlayer(previousRoom).getPlayerName()} left the game (Server)`,
+          `${user
+            .getPlayer(previousRoom)
+            .getPlayerName()} left the game (Server)`,
           "alert"
         );
         console.log("Calling death handler from force kill");
@@ -536,6 +538,178 @@ io.on("connection", async (socket) => {
       }
     }
   }
+
+  socket.on("setDuration", (playerID, inputValue, inputType) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            var MIN_SECONDS = 10;
+            var MAX_SECONDS = 300;
+            console.log(inputValue)
+            console.log(inputType)
+            if (inputType == "actions") {
+              if (inputValue >= MIN_SECONDS || inputValue <= MAX_SECONDS) {
+                game.settings[inputType]["isDefault"] = false;
+                game.settings[inputType]["value"] = inputValue;
+              }
+            } else if (inputType == "discussion") {
+              if (inputValue >= MIN_SECONDS || inputValue <= MAX_SECONDS) {
+                game.settings[inputType]["isDefault"] = false;
+                game.settings[inputType]["value"] = inputValue;
+              }
+            }
+            else if (inputType == "voting") {
+              if (inputValue >= MIN_SECONDS || inputValue <= MAX_SECONDS) {
+                game.settings[inputType]["isDefault"] = false;
+                game.settings[inputType]["value"] = inputValue;
+              }
+            }
+          }
+          console.log("after change", game.settings)
+          console.log("#########")
+        }
+      }
+    }
+  })
+
+  socket.on("setShowRoles", (playerID, toShow) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            if (toShow) {
+              game.settings["showRoles"]["isDefault"] = toShow;
+              game.settings["showRoles"]["value"] = toShow;
+            } else if (!toShow) {
+              game.settings["showRoles"]["isDefault"] = toShow;
+              game.settings["showRoles"]["value"] = toShow;
+            }
+            console.log(game.settings)
+          }
+        }
+      }
+    }
+  })
+  socket.on("setVoteMessages", (playerID, type) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            if (type == "hidden") {
+              game.settings["voteMessages"]["isDefault"] = false;
+              game.settings["voteMessages"]["value"] = type;
+            }
+            else if (type == "anonymous") {
+              game.settings["voteMessages"]["isDefault"] = false;
+              game.settings["voteMessages"]["value"] = type;
+            }
+            else if (type == "visible") {
+              game.settings["voteMessages"]["isDefault"] = false;
+              game.settings["voteMessages"]["value"] = type;
+            }
+          }
+          console.log(game.settings)
+        }
+      }
+    }
+  })
+
+
+
+  socket.on("saveGameSettings", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            setSettings(playerID, room, roomCode, game)
+            console.log(game.settings)
+          }
+        }
+      }
+    }
+  })
+  socket.on("loadGameSettings", (playerID, reset) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            socket.emit("fetchedGameSettings", game.settings)
+          }
+        }
+      }
+    }
+  })
+  socket.on("resetNotSavedGameSettings", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            setSettings(playerID, room, roomCode, game)
+          }
+        }
+      }
+    }
+  })
+
+  function setSettings(playerID, room, roomCode, game) {
+    for (var [setting, values] of Object.entries(game.settings)) {
+      console.log(game.settings)
+      if (values.isDefault == true) {
+        if (setting == "actions") {
+          values.value = ACTIONS;
+        }
+        else if (setting == "discussion") {
+          values.value = DISCUSSION;
+        }
+        else if (setting == "voting") {
+          values.value = VOTING;
+        }
+        else if (setting == "showRoles") {
+          values.value = SHOWROLES;
+        }
+        else if (setting == "voteMessages") {
+          values.value = VOTEMESSAGES;
+        }
+      }
+    }
+  }
+
+  socket.on("resetGameSettings", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            // game.settingsDefault = true;
+            game.resetGameSettings();
+            socket.emit("fetchedGameSettings", game.settings)
+          }
+        }
+      }
+    }
+  })
+
 
   // set all users to inGame
   // set game to inProgress
@@ -678,14 +852,38 @@ io.on("connection", async (socket) => {
   socket.on("requestID", (socketID, playerID) => {
     if (!checkUserExist(playerID)) {
       console.log(socketID, "requesting player ID");
-      var playerID = randomstring.generate(6);
-      var proxyID = randomstring.generate(6);
-      if (!checkProxyExist(proxyID)) {
-        if (!checkProxyEqual(playerID, proxyID)) {
-          console.log("Proxy created");
-          proxyIdenfication.set(playerID, proxyID);
-          socket.emit("playerID", playerID);
+      // About 2.17 billion possible users and proxy IDs ((26+10)^6)
+      // Keep checking for unique player ID
+      var notUniqueID = true;
+      while (notUniqueID) {
+        var playerID = randomstring.generate({
+          length: 6,
+          charset: "alphanumeric",
+        });
+        if (!checkUserExist(playerID)) {
+          notUniqueID = false;
         }
+      }
+      // Keep checking for unique proxy ID
+      var notUniqueProxy = true;
+      while (notUniqueProxy) {
+        var proxyID = randomstring.generate({
+          length: 6,
+          charset: "alphanumeric",
+        });
+        if (!checkProxyExist(proxyID)) {
+          if (!checkProxyEqual(playerID, proxyID)) {
+            notUniqueProxy = false;
+          }
+        }
+      }
+      
+      if (!notUniqueID && !notUniqueProxy) {
+        console.log("Proxy created");
+        proxyIdenfication.set(playerID, proxyID);
+        socket.emit("playerID", playerID);
+      } else if (notUniqueID && notUniqueProxy) {
+        socket.emit("playerID", null);
       }
     }
   });
@@ -728,6 +926,15 @@ io.on("connection", async (socket) => {
     }
   });
 
+  socket.on("changeUsername", (playerID, newName) => {
+    if (checkUserExist(playerID)) {
+      console.log("NewName:", newName, ", playerID:", playerID);
+      let user = connectedUsers.get(playerID);
+      user.setName(newName);
+      console.log("Users:", connectedUsers.get(playerID));
+    }
+  })
+
   function hostInLobby(roomCode) {
     var room = rooms.get(roomCode);
     if (room.getUsers().includes(connectedUsers.get(room.getHost()))) {
@@ -760,14 +967,16 @@ io.on("connection", async (socket) => {
     }
   }
 
-  socket.on("refreshReady", (playerID) => {
+  socket.on("refreshReady", (playerID, state) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
 
-        var notReady = false;
-        connectedUsers.get(playerID).setReadyLobby(notReady);
-        io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+        if (state.includes("socket")) {
+          var notReady = false;
+          connectedUsers.get(playerID).setReadyLobby(notReady);
+        }
+        io.to(roomCode).emit(
           "ready-status-lobby-refresh",
           generateProxyReadyLobby(playerID)
         );
@@ -992,11 +1201,12 @@ io.on("connection", async (socket) => {
               room.slots[key]["userName"] = connectedUsers
                 .get(playerID)
                 .getName();
-              io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+              io.to(roomCode).emit(
                 "playerSlots",
                 proxyIdenfication.get(room.getHost()),
                 room.slots
               );
+              
               break;
             }
           }
@@ -1005,6 +1215,18 @@ io.on("connection", async (socket) => {
     }
   });
 
+
+  function updatePlayerSlot(playerID) {
+    if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+      var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+      var room = rooms.get(roomCode);
+      io.to(roomCode).emit(
+        "playerSlots",
+        proxyIdenfication.get(room.getHost()),
+        room.slots
+      );
+    }
+  }
   function clearPlayerSlot(playerID) {
     if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
       var roomCode = connectedUsers.get(playerID).getCurrentRoom();
@@ -1102,11 +1324,20 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (temp.length > 0) {
         if (checkAlreadyHost(rooms, playerID) == false) {
+          // About 60.4 million possible rooms((26+10)^5)
+        var notUniqueRoom = true;
+        while (notUniqueRoom) {
           var roomCode = randomstring.generate({
             length: 5,
             charset: "alphanumeric",
             capitalization: "uppercase",
+            readable: true
           });
+          if (!rooms.has(roomCode)) {
+            notUniqueRoom = false;
+          }
+        }
+        if (!notUniqueRoom) {
           // Setting up room
           connectedUsers.get(playerID).setCurrentRoom(roomCode);
           rooms.set(roomCode, new Room(playerID));
@@ -1117,6 +1348,7 @@ io.on("connection", async (socket) => {
 
           // Log rooms that socket is in
           console.log(rooms);
+        }
         } else {
           var hostRoom = getHostRoom(rooms, playerID);
           if (hostRoom !== null) {
@@ -1128,7 +1360,9 @@ io.on("connection", async (socket) => {
           length: 5,
           charset: "alphanumeric",
           capitalization: "uppercase",
+          readable: true
         });
+        
         // Setting up room
         connectedUsers.get(playerID).setCurrentRoom(roomCode);
         rooms.set(roomCode, new Room(playerID));
@@ -1139,6 +1373,7 @@ io.on("connection", async (socket) => {
 
         // Log rooms that socket is in
         console.log(rooms);
+        
       }
       console.log("room in:", socket.rooms);
     }
@@ -1296,49 +1531,6 @@ io.on("connection", async (socket) => {
 
   // GAME related
   // ====================================================
-
-  const roleTypes = {
-    Villager: "villager",
-    Investigator: "investigator",
-    Doctor: "doctor",
-    Mayor: "mayor",
-    Trapper: "trapper",
-    Godfather: "godfather",
-    Mafioso: "mafioso",
-    Surgeon: "surgeon",
-    Witch: "witch",
-    Framer: "framer",
-    Jester: "jester",
-    SerialKiller: "serial killer",
-    Executioner: "executioner",
-    Lawyer: "lawyer",
-  };
-
-  // ! DEBUG
-  var durations = {
-    night: {
-      actions: 15,
-      nightMessages: 5,
-    },
-    day: {
-      recap: 5,
-      discussion: 6,
-      voting: 15,
-      dayMessages: 5,
-    },
-  };
-  // var durations = {
-  //   night: {
-  //     actions: 40,
-  //     nightMessages: 5,
-  //   },
-  //   day: {
-  //     recap: 5,
-  //     discussion: 45,
-  //     voting: 30,
-  //     dayMessages: 5,
-  //   },
-  // };
 
   socket.on("updateUI", (playerID) => {
     if (checkUserExist(playerID)) {
@@ -1659,7 +1851,7 @@ io.on("connection", async (socket) => {
                             roomCode,
                             game,
                             "evil",
-                            `${player.getPlayerName()} is voting to kill ${theVoteTargetPlayer.getPlayerName()} (${
+                            `${player.getPlayerName()} changed their vote. They are voting to kill ${theVoteTargetPlayer.getPlayerName()} (${
                               theVoteTargetPlayer.nightVotes
                             })`,
                             "Night"
@@ -1693,16 +1885,30 @@ io.on("connection", async (socket) => {
                         player.voteTarget = targetID;
                         theVoteTargetPlayer.dayVotes +=
                           player.getRole().voteCount;
+                          if (game.settings.voteMessages.value == "anonymous") {
+          
+                            sendMessage(
+                              playerID,
+                              room,
+                              roomCode,
+                              game,
+                              "all",
+                              `${player.getPlayerName()} have cast their vote`,
+                              "Day"
+                            );
+                          } else if (game.settings.voteMessages.value == "visible") {
 
-                        sendMessage(
-                          playerID,
-                          room,
-                          roomCode,
-                          game,
-                          "all",
-                          `${player.getPlayerName()} is voting to lynch ${theVoteTargetPlayer.getPlayerName()}`,
-                          "Day"
-                        );
+                            sendMessage(
+                              playerID,
+                              room,
+                              roomCode,
+                              game,
+                              "all",
+                              `${player.getPlayerName()} is voting to lynch ${theVoteTargetPlayer.getPlayerName()}`,
+                              "Day"
+                            );
+                          }
+
                       } else if (
                         player.voteTarget !== targetID &&
                         player.voteTarget !== null
@@ -1713,15 +1919,28 @@ io.on("connection", async (socket) => {
                         player.voteTarget = targetID;
                         theVoteTargetPlayer.dayVotes +=
                           player.getRole().voteCount;
-                        sendMessage(
-                          playerID,
-                          room,
-                          roomCode,
-                          game,
-                          "all",
-                          `${player.getPlayerName()} is voting to lynch ${theVoteTargetPlayer.getPlayerName()}`,
-                          "Day"
-                        );
+                          if (game.settings.voteMessages.value == "anonymous") {
+                            sendMessage(
+                              playerID,
+                              room,
+                              roomCode,
+                              game,
+                              "all",
+                              `${player.getPlayerName()} has changed their vote`,
+                              "Day"
+                            );
+                          } else if (game.settings.voteMessages.value == "visible") {
+                            sendMessage(
+                              playerID,
+                              room,
+                              roomCode,
+                              game,
+                              "all",
+                              `${player.getPlayerName()} has changed their vote. They are voting to lynch ${theVoteTargetPlayer.getPlayerName()}`,
+                              "Day"
+                            );
+                          }
+                        
                       } else if (
                         player.voteTarget == targetID &&
                         player.voteTarget !== null
@@ -1729,15 +1948,28 @@ io.on("connection", async (socket) => {
                         player.voteTarget = null;
                         theVoteTargetPlayer.dayVotes -=
                           player.getRole().voteCount;
-                        sendMessage(
-                          playerID,
-                          room,
-                          roomCode,
-                          game,
-                          "all",
-                          `${player.getPlayerName()} removed their vote from ${theVoteTargetPlayer.getPlayerName()}`,
-                          "Day"
-                        );
+                          if (game.settings.voteMessages.value == "anonymous") {
+                            sendMessage(
+                              playerID,
+                              room,
+                              roomCode,
+                              game,
+                              "all",
+                              `${player.getPlayerName()} removed their vote`,
+                              "Day"
+                            );
+                          } else if (game.settings.voteMessages.value == "visible") {
+                            sendMessage(
+                              playerID,
+                              room,
+                              roomCode,
+                              game,
+                              "all",
+                              `${player.getPlayerName()} removed their vote from ${theVoteTargetPlayer.getPlayerName()}`,
+                              "Day"
+                            );
+                          }
+                        
                       }
                     }
                   }
@@ -1946,8 +2178,7 @@ io.on("connection", async (socket) => {
                   isEvil = null;
                 }
               }
-            } 
-            else {
+            } else {
               isEvil = null;
             }
           }
@@ -2453,7 +2684,7 @@ io.on("connection", async (socket) => {
           game,
           "all",
           "The sun begins to rise",
-          "extra"
+          "bold"
         );
       }
       if (game.getPhase().includes("recap")) {
@@ -2539,7 +2770,7 @@ io.on("connection", async (socket) => {
           game,
           "all",
           "The moon glows. The night has begun",
-          "extra"
+          "bold"
         );
       } else if (game.getCycle().includes("Day")) {
         sendMessage(
@@ -2558,7 +2789,7 @@ io.on("connection", async (socket) => {
           game,
           "all",
           "The day has begun",
-          "extra"
+          "bold"
         );
       }
     }
@@ -2750,6 +2981,10 @@ io.on("connection", async (socket) => {
         }
       }
 
+      console.log("good", goodCount);
+      console.log("evil", evilCount);
+      console.log("neutral", neutralCount);
+
       // Handle only 2 players alive?
 
       if (!game.getExecutionerWin() && !game.getJesterWin()) {
@@ -2843,11 +3078,11 @@ io.on("connection", async (socket) => {
         ) {
           // SERIAL KILLER WINS
           if (neutralCount == 1) {
-            if (theSerialKiller !== null) {
-              if (
-                !theSerialKiller.getPlayer(roomCode).getIsKilled() &&
-                !theSerialKiller.getPlayer(roomCode).getIsLynched()
-              ) {
+            if (
+              !theSerialKiller.getPlayer(roomCode).getIsKilled() &&
+              !theSerialKiller.getPlayer(roomCode).getIsLynched()
+            ) {
+              if (theSerialKiller !== null) {
                 var serialKillerMessages = [
                   "DIE, DIE, DIE!",
                   "*diabolical screech* WHO'S NEXT?!",
@@ -2888,11 +3123,23 @@ io.on("connection", async (socket) => {
                   }
                 }
               }
-            } else if (theExecutioner !== null) {
-              if (
-                !theExecutioner.getPlayer(roomCode).getIsKilled() &&
-                !theExecutioner.getPlayer(roomCode).getIsLynched()
-              ) {
+            } else if (
+              !theLawyer.getPlayer(roomCode).getIsKilled() &&
+              !theLawyer.getPlayer(roomCode).getIsLynched()
+            ) {
+              if (theLawyer !== null) {
+                // Lawyer does not win, since their target is dead, so just a neutral win.
+                game.setNeutralWin(true);
+                var winnerID = theLawyer.getPlayerID();
+                var winnerName = theLawyer.getPlayer(roomCode).getPlayerName();
+                var winner = { winnerID, winnerName };
+                game.addWinner(winner);
+              }
+            } else if (
+              !theExecutioner.getPlayer(roomCode).getIsKilled() &&
+              !theExecutioner.getPlayer(roomCode).getIsLynched()
+            ) {
+              if (theExecutioner !== null) {
                 game.setNeutralWin(true);
                 var winnerID = theExecutioner.getPlayerID();
                 var winnerName = theExecutioner
@@ -2917,13 +3164,13 @@ io.on("connection", async (socket) => {
                   }
                 }
               }
-            } else if (theJester !== null || secondJester !== null) {
-              if (
-                (!theJester.getPlayer(roomCode).getIsKilled() &&
-                  !theJester.getPlayer(roomCode).getIsLynched()) ||
-                (!secondJester.getPlayer(roomCode).getIsKilled() &&
-                  !secondJester.getPlayer(roomCode).getIsLynched())
-              ) {
+            } else if (
+              (!theJester.getPlayer(roomCode).getIsKilled() &&
+                !theJester.getPlayer(roomCode).getIsLynched()) ||
+              (!secondJester.getPlayer(roomCode).getIsKilled() &&
+                !secondJester.getPlayer(roomCode).getIsLynched())
+            ) {
+              if (theJester !== null || secondJester !== null) {
                 game.setNeutralWin(true);
 
                 if (theJester !== null && secondJester == null) {
@@ -2974,11 +3221,11 @@ io.on("connection", async (socket) => {
               }
             }
           } else if (neutralCount == 2) {
-            if (theSerialKiller !== null) {
-              if (
-                !theSerialKiller.getPlayer(roomCode).getIsKilled() &&
-                !theSerialKiller.getPlayer(roomCode).getIsLynched()
-              ) {
+            if (
+              !theSerialKiller.getPlayer(roomCode).getIsKilled() &&
+              !theSerialKiller.getPlayer(roomCode).getIsLynched()
+            ) {
+              if (theSerialKiller !== null) {
                 if (theLawyer !== null) {
                   if (
                     theLawyer.getPlayer(roomCode).getRole().client ==
@@ -3017,11 +3264,11 @@ io.on("connection", async (socket) => {
                   }
                 }
               }
-            } else if (theExecutioner !== null) {
-              if (
-                !theExecutioner.getPlayer(roomCode).getIsKilled() &&
-                !theExecutioner.getPlayer(roomCode).getIsLynched()
-              ) {
+            } else if (
+              !theExecutioner.getPlayer(roomCode).getIsKilled() &&
+              !theExecutioner.getPlayer(roomCode).getIsLynched()
+            ) {
+              if (theExecutioner !== null) {
                 if (theLawyer !== null) {
                   if (
                     theLawyer.getPlayer(roomCode).getRole().client ==
@@ -3045,13 +3292,13 @@ io.on("connection", async (socket) => {
                   }
                 }
               }
-            } else if (theJester !== null && secondJester == null) {
-              if (
-                (!theJester.getPlayer(roomCode).getIsKilled() &&
-                  !theJester.getPlayer(roomCode).getIsLynched()) ||
-                (!secondJester.getPlayer(roomCode).getIsKilled() &&
-                  !secondJester.getPlayer(roomCode).getIsLynched())
-              ) {
+            } else if (
+              (!theJester.getPlayer(roomCode).getIsKilled() &&
+                !theJester.getPlayer(roomCode).getIsLynched()) ||
+              (!secondJester.getPlayer(roomCode).getIsKilled() &&
+                !secondJester.getPlayer(roomCode).getIsLynched())
+            ) {
+              if (theJester !== null && secondJester == null) {
                 if (theLawyer !== null) {
                   if (theJester !== null && secondJester == null) {
                     if (
@@ -3215,7 +3462,7 @@ io.on("connection", async (socket) => {
       }
       setTimeout(
         endGame,
-        7000,
+        5000,
         game,
         roomCode,
         win,
@@ -3389,26 +3636,30 @@ io.on("connection", async (socket) => {
 
       var targets = new Map();
       for (var i = 0; i < evilUsers.length; i++) {
-        if (evilUsers[i].getPlayer(roomCode).voteTarget !== null) {
-          var theVoteTarget = getKeyFromValue(
-            proxyIdenfication,
-            evilUsers[i].getPlayer(roomCode).voteTarget
-          );
-          var voteTargetPlayer = connectedUsers
-            .get(theVoteTarget)
-            .getPlayer(roomCode);
-          if (!game.getCemetery().includes(connectedUsers.get(theVoteTarget))) {
-            if (targets.has(theVoteTarget)) {
-              targets.set(
-                theVoteTarget,
-                targets.get(theVoteTarget) +
+        if (game.getAlive().includes(evilUsers[i])) {
+          if (evilUsers[i].getPlayer(roomCode).voteTarget !== null) {
+            var theVoteTarget = getKeyFromValue(
+              proxyIdenfication,
+              evilUsers[i].getPlayer(roomCode).voteTarget
+            );
+            var voteTargetPlayer = connectedUsers
+              .get(theVoteTarget)
+              .getPlayer(roomCode);
+            if (
+              !game.getCemetery().includes(connectedUsers.get(theVoteTarget))
+            ) {
+              if (targets.has(theVoteTarget)) {
+                targets.set(
+                  theVoteTarget,
+                  targets.get(theVoteTarget) +
+                    evilUsers[i].getPlayer(roomCode).getRole().killVoteCount
+                );
+              } else if (!targets.has(theVoteTarget)) {
+                targets.set(
+                  theVoteTarget,
                   evilUsers[i].getPlayer(roomCode).getRole().killVoteCount
-              );
-            } else if (!targets.has(theVoteTarget)) {
-              targets.set(
-                theVoteTarget,
-                evilUsers[i].getPlayer(roomCode).getRole().killVoteCount
-              );
+                );
+              }
             }
           }
         }
@@ -3580,7 +3831,7 @@ io.on("connection", async (socket) => {
 
   function voteHandlerGlobal(playerID, room, roomCode, game) {
     if (game.getCycle() == "Day") {
-      var users = game.getUsers();
+      var users = game.getAlive();
       console.log("COUNTING VOTES GLOBAL");
 
       var targets = new Map();
@@ -3626,7 +3877,7 @@ io.on("connection", async (socket) => {
           var voteValue = targetCount[i];
           var mostVotedIndex = targetCount.indexOf(targetCount[i]);
           var mostVoted = Array.from(targets.keys())[mostVotedIndex];
-          var majorityVote = {mostVoted, mostVotedIndex, voteValue}
+          var majorityVote = { mostVoted, mostVotedIndex, voteValue };
           topVotes.push(majorityVote);
         }
       }
@@ -3638,12 +3889,38 @@ io.on("connection", async (socket) => {
         gotLynched = true;
         voteTie = false;
         globalVote(playerID, room, roomCode, game, voteOne.mostVoted);
-
       } else if (topVotes.length > 1) {
-        // VOTE TIE
-        console.log("TIE between", topVotes);
-        gotLynched = false;
-        voteTie = true;
+        // Handle if votes are ABOVE majority but SAME VALUE --> tie
+        // Handle if votes are ABOVE majority but one has HIGHER value --> vote
+        var highestVoteCount = 0;
+        var theHighestVote = undefined;
+        var seenHighVote = [];
+
+        for (var i = 0; i < topVotes.length; i++) {
+          if (topVotes[i].voteValue > highestVoteCount) {
+            if (!seenHighVote.includes(topVotes[i].voteValue)) {
+              highestVoteCount = topVotes[i].voteValue;
+              theHighestVote = topVotes[i];
+              seenHighVote.push(topVotes[i].voteValue);
+            }
+          } else if (topVotes[i].voteValue == highestVoteCount) {
+            highestVoteCount = 0;
+            theHighestVote = undefined;
+          }
+        }
+
+        if (highestVoteCount == 0 && theHighestVote == undefined) {
+          gotLynched = false;
+          voteTie = true;
+          // TIE
+          console.log("TIE between", topVotes);
+        } else if (highestVoteCount !== 0 && theHighestVote !== undefined) {
+          gotLynched = true;
+          voteTie = false;
+          // VOTE
+          console.log("VOTE between majority votes", topVotes);
+          globalVote(playerID, room, roomCode, game, theHighestVote.mostVoted);
+        }
       }
 
       if (!gotLynched && !voteTie) {
@@ -3665,8 +3942,7 @@ io.on("connection", async (socket) => {
           `No one was lynched - hope it was the right decision`,
           "info"
         );
-      }
-      else if (!gotLynched && voteTie) {
+      } else if (!gotLynched && voteTie) {
         sendMessage(
           playerID,
           room,
@@ -4106,8 +4382,8 @@ io.on("connection", async (socket) => {
   function resetAllActions(playerID, room, roomCode, game) {
     console.log("RESET ALL ACTIONS");
 
-    for (var i = 0; i < game.getAlive().length; i++) {
-      let user = game.getAlive()[i];
+    for (var i = 0; i < game.getUsers().length; i++) {
+      let user = game.getUsers()[i];
       let player = user.getPlayer(roomCode);
       player.reset();
       io.to(user.getPlayerID()).emit(
@@ -4145,7 +4421,10 @@ io.on("connection", async (socket) => {
     for (var i = 0; i < game.getCemetery().length; i++) {
       var thePlayer = game.getCemetery()[i].getPlayer(roomCode);
       var burriedPlayerName = thePlayer.getPlayerName();
-      var burriedPlayerRole = thePlayer.getRole().name;
+      var burriedPlayerRole = "";
+      if (game.settings.showRoles.value == true) {
+        burriedPlayerRole = thePlayer.getRole().name;
+      }
       var burriedPlayer = { burriedPlayerName, burriedPlayerRole };
       burried.push(burriedPlayer);
     }
@@ -4156,6 +4435,7 @@ io.on("connection", async (socket) => {
     // SEND MESSAGE WHO DIED FROM WHOM (killedBY)
     var noneDead = true;
     var noneLynched = true;
+    var toSendToCemetery = [];
     for (var i = 0; i < game.getAlive().length; i++) {
       var player = game.getAlive()[i].getPlayer(roomCode);
       console.log("death handler", player);
@@ -4224,20 +4504,33 @@ io.on("connection", async (socket) => {
           }
         }
         // WHAT WAS THEIR ROLE
+        if (game.settings.showRoles.value == true) {
+          sendMessage(
+            playerID,
+            room,
+            roomCode,
+            game,
+            "all",
+            `${player.getPlayerName()} role was: ${player.getRole().name}`,
+            "important"
+          );
+        }
+        var lineSeperator = "--------------------------------";
         sendMessage(
           playerID,
           room,
           roomCode,
           game,
           "all",
-          `${player.getPlayerName()} role was: ${player.getRole().name}`,
-          "important"
+          lineSeperator,
+          "lineSeperator"
         );
 
         var executionerObject = Object.values(
           checkIfExecutionerAlive(playerID, room, roomCode, game)
         );
 
+        
         if (executionerObject[0] == true) {
           var executioner = executionerObject[1];
 
@@ -4245,11 +4538,11 @@ io.on("connection", async (socket) => {
           if (
             executioner.getPlayer(roomCode).getRole().target ==
             game.getAlive()[i]
-          ) {
-            // executioner targets gets killed
-            // executioner becomes JESTER
-            executioner.getPlayer(roomCode).setOldRole("executioner");
-            executioner
+            ) {
+              // executioner targets gets killed
+              // executioner becomes JESTER
+              executioner.getPlayer(roomCode).setOldRole("executioner");
+              executioner
               .getPlayer(roomCode)
               .setOldTarget(executioner.getPlayer(roomCode).getRole().target);
             executioner.getPlayer(roomCode).setRole(new Role("jester"));
@@ -4267,36 +4560,55 @@ io.on("connection", async (socket) => {
             );
           }
         }
-
-        // AFTER THAT, ADD THEM TO CEMETERY
-        if (!game.getCemetery().includes(game.getAlive()[i])) {
-          game.addCemetery(game.getAlive()[i]);
-          // REMOVE FROM ALIVE ARRAY
-          game.removeAlive(game.getAlive()[i]);
-          io.to(roomCode).emit("cemetery", generateCemeteryList(playerID));
+        
+        var lawyerObject = Object.values(checkIfLawyerAlive(playerID, room, roomCode, game));
+        if (lawyerObject[0] == true) {
+          var lawyer = lawyerObject[1];
+          if (lawyer.getPlayer(roomCode).getRole().client == game.getAlive()[i]) {
+            sendMessage(lawyer.getPlayerID(), room, roomCode, game, "target", `Your client ${player.getPlayerName()} has died. You're now on your own`, "info")
+          }
         }
+
+        // To send to cemetery
+        toSendToCemetery.push(game.getAlive()[i]);
+        
       } else if (player.getIsLynched()) {
         noneLynched = false;
         // lynched
         // WHAT WAS THEIR ROLE
-        sendMessage(
-          playerID,
-          room,
-          roomCode,
-          game,
-          "all",
-          `${player.getPlayerName()} role was: ${player.getRole().name}`,
-          "important"
-        );
-
-        // AFTER THAT, ADD THEM TO CEMETERY
-        if (!game.getCemetery().includes(game.getAlive()[i])) {
-          game.addCemetery(game.getAlive()[i]);
-          // REMOVE FROM ALIVE ARRAY
-
-          game.removeAlive(game.getAlive()[i]);
-          io.to(roomCode).emit("cemetery", generateCemeteryList(playerID));
+        if (game.settings.showRoles.value == true) {
+          sendMessage(
+            playerID,
+            room,
+            roomCode,
+            game,
+            "all",
+            `${player.getPlayerName()} role was: ${player.getRole().name}`,
+            "important"
+          );
         }
+
+        var lawyerObject = Object.values(checkIfLawyerAlive(playerID, room, roomCode, game));
+
+        if (lawyerObject[0] == true) {
+          var lawyer = lawyerObject[1];
+          if (game.getAlive()[i] == lawyer.getPlayer(roomCode).getRole().client) {
+            sendMessage(lawyer.getPlayerID(), room, roomCode, game, "target", `Your client ${player.getPlayerName()} has died. You're now on your own`, "info")
+          }
+        }
+
+        // To send to cemetery
+        toSendToCemetery.push(game.getAlive()[i]);
+      }
+    }
+
+    for (let i = 0; i < toSendToCemetery.length; i++) {
+      // AFTER THAT, ADD THEM TO CEMETERY
+      if (!game.getCemetery().includes(toSendToCemetery[i])) {
+        game.addCemetery(toSendToCemetery[i]);
+        // REMOVE FROM ALIVE ARRAY
+        game.removeAlive(toSendToCemetery[i]);
+        io.to(roomCode).emit("cemetery", generateCemeteryList(playerID));
       }
     }
 
@@ -4343,8 +4655,11 @@ io.on("connection", async (socket) => {
   function clockHandler(playerID, roomCode, room, game) {
     game.setCurrentCycle(0);
     game.setCurrentPhase(0);
+    game.getTheDurations().night.actions = game.settings.actions.value; 
+    game.getTheDurations().day.discussion = game.settings.discussion.value; 
+    game.getTheDurations().day.voting = game.settings.voting.value; 
+    game.setTheDurations(Object.values(game.getTheDurations()));
 
-    game.setTheDurations(Object.values(durations));
     game.setNightLength(Object.values(game.getTheDurations()[0]).length);
     game.setDayLength(Object.values(game.getTheDurations()[1]).length);
 
@@ -4386,7 +4701,7 @@ io.on("connection", async (socket) => {
             game.getCycle(),
             game.getCycleCount()
           );
-          
+
           messageHandlerForCycles(
             playerID,
             room,
@@ -4404,8 +4719,7 @@ io.on("connection", async (socket) => {
           gameHandler(playerID);
           io.to(roomCode).emit("changeUI", game.getCycle());
 
-          // ! DEBUG TIME
-          // console.log("counter from server:", counter);
+          
 
           if (game.getTimer().getCounter() <= 0) {
             // NIGHT
@@ -4485,7 +4799,6 @@ io.on("connection", async (socket) => {
               );
             }
           } else {
-            
             game.getTimer().tick();
           }
         }

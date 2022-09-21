@@ -197,7 +197,7 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
           winningMessage = "Evil team wins";
         }
       } else if (winType == "neutral") {
-        winningMessage = "Neutral team wins";
+        winningMessage = "Neutral roles wins";
       } else if (winType == "jester") {
         winningMessage = "Jester wins";
       } else if (winType == "serial killer") {
@@ -225,8 +225,10 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
       theWinningMessage.style.color = "var(--good-bg-selected)";
     } else if (winType == "evil") {
       theWinningMessage.style.color = "var(--evil-bg-selected)";
-    } else {
+    } else if (winType == "neutral") {
       theWinningMessage.style.color = "var(--neutral-bg-selected)";
+    } else {
+      theWinningMessage.style.color = "var(--dark-fg)";
     }
     theState.innerText = state;
     theWinningMessage.innerText = winningMessage;
@@ -398,9 +400,16 @@ function loadCemetery(burried) {
   var deceasedList = deceasedElement.children;
 
   for (var i = 0; i < burried.length; i++) {
-    deceasedList[
-      i
-    ].innerText = `${burried[i].burriedPlayerName} (${burried[i].burriedPlayerRole})`;
+    if (burried[i].burriedPlayerRole == "") {
+      deceasedList[
+        i
+      ].innerText = `${burried[i].burriedPlayerName}`;
+    } else {
+      deceasedList[
+        i
+      ].innerText = `${burried[i].burriedPlayerName} (${burried[i].burriedPlayerRole})`;
+    }
+    
   }
 }
 
@@ -1329,7 +1338,7 @@ socket.on("fetchedPlayerCardPress", (name, team, mission) => {
   var playerRole = document.getElementById("game-player-card-role");
   var playerMission = document.getElementById("game-player-card-mission");
   var playerTeam = team.charAt(0).toUpperCase() + team.slice(1);
-  playerIcon.src = "/assets/rolecards/" + name + ".svg";
+  playerIcon.src = "/assets/rolecards/" + name + ".jpg";
   playerRole.innerText = name + ` (${playerTeam})`;
   playerMission.innerText = mission;
 });
@@ -1384,10 +1393,11 @@ function showRoleCard(
     var roleCardMission = document.getElementsByClassName(
       "game-rolecard-mission"
     )[0];
+    roleCardMission.style.backgroundColor = `var(--${team}-bg-mission`
     roleCardMission.innerText = mission;
     var readyButton = document.getElementsByClassName("game-ready-button")[0];
     var icon = document.getElementsByClassName("game-rolecard-icon")[0];
-    icon.src = "/assets/rolecards/" + name + ".svg";
+    icon.src = "/assets/rolecards/" + name + ".jpg";
 
     if (team.includes("good")) {
       roleCardTitle.classList.add("game-rolecard-good-fg");
@@ -1423,6 +1433,8 @@ function showRoleCard(
     roleCardMission.innerText = mission;
   }
 }
+
+
 function changeUI(theme) {
   var navbar = document.getElementById("game-navbar");
   var body = document.getElementById("game-body");
@@ -1619,7 +1631,7 @@ function showGame(allReady) {
       var playerRole = document.getElementById("game-player-card-role");
       var playerMission = document.getElementById("game-player-card-mission");
       var playerTeam = team.charAt(0).toUpperCase() + team.slice(1);
-      playerIcon.src = "/assets/rolecards/" + name + ".svg";
+      playerIcon.src = "/assets/rolecards/" + name + ".jpg";
       playerRole.innerText = name + ` (${playerTeam})`;
       playerMission.innerText = mission;
     });

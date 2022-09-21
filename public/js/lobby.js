@@ -106,9 +106,16 @@ socket.on("connect", () => {
             updatePlayerSlots(host, slots, proxyID);
             console.log("updated player slots");
           });
+          refreshReady();
         }
 
-        
+        function refreshReady() {
+          socket.emit("refreshReady", getPlayerID(), "all");
+          socket.on("ready-status-lobby-refresh", (users) => {
+            readyStatusLobby(users);
+          });
+        }
+
         showNotification("copy");
 
         socket.emit("checkIfHost", getPlayerID(), "visibility");
@@ -125,6 +132,7 @@ socket.on("connect", () => {
             var startButton =
               document.getElementsByClassName("lobby-button start");
             startButton[0].style.display = "inline";
+            revealGameSettingsButton();
           } else {
             console.log("REMOVING HOST VISIBILITY");
             document.getElementById("roles").classList.remove("selectable");
@@ -239,18 +247,263 @@ socket.on("connect", () => {
         socket.on("fetchedRolesDisconnect", (roles) => {
           updateRoles(roles);
         });
-
-        setTimeout(() => {
-          socket.emit("refreshReady", getPlayerID());
-        }, 300);
-        socket.on("ready-status-lobby-refresh", (users) => {
-          readyStatusLobby(users)
-        });
-
       });
     }
   });
 });
+
+function resetGameSettingsError(type = "") {
+  document.getElementById("lobby-gamesettings-help").style.opacity = "0%";
+  document.getElementById("lobby-gamesettings-help").innerText = "";
+
+  var actionInput = document.getElementById("actionInput");
+  var discussionInput = document.getElementById("discussionInput");
+  var votingInput = document.getElementById("votingInput");
+  if (type == "all") {
+    actionInput.style.border = "2px solid #b1b1b1";
+    actionInput.classList.remove("lobby-gamesetting-error");
+
+    discussionInput.style.border = "2px solid #b1b1b1";
+    discussionInput.classList.remove("lobby-gamesetting-error");
+
+    votingInput.style.border = "2px solid #b1b1b1";
+    votingInput.classList.remove("lobby-gamesetting-error");
+  } else {
+    if (actionInput.className.includes("lobby-gamesetting-error")) {
+      actionInput.style.border = "2px solid #b1b1b1";
+      actionInput.classList.remove("lobby-gamesetting-error");
+    } else if (discussionInput.className.includes("lobby-gamesetting-error")) {
+      discussionInput.style.border = "2px solid #b1b1b1";
+      discussionInput.classList.remove("lobby-gamesetting-error");
+    } else if (votingInput.className.includes("lobby-gamesetting-error")) {
+      votingInput.style.border = "2px solid #b1b1b1";
+      votingInput.classList.remove("lobby-gamesetting-error");
+    }
+  }
+}
+
+function gameSettingError(type) {
+  var theElementId = "";
+
+  if (type == "action") {
+    theElementId = type + "Input";
+  } else if (type == "discussion") {
+    theElementId = type + "Input";
+  } else if (type == "voting") {
+    theElementId = type + "Input";
+  }
+  document.getElementById("lobby-gamesettings-help").style.opacity = "100%";
+  var theElement = document.getElementById(theElementId);
+  theElement.classList.add("lobby-gamesetting-error");
+  theElement.style.border = "2px solid hsl(0, 100%, 45%)";
+  document.getElementById("lobby-gamesettings-help").innerText =
+    "The duration must be between 10s and 300s";
+}
+
+function selectShowRole() {
+  var showRoleInput = document.getElementsByClassName("lobby-gamesettings-checkbox")[0];
+  var showRoleCheck = document.getElementById("checkbox-check");
+  var toShow = false;
+  if (showRoleInput.id == "showrole-checked") {
+    showRoleInput.id = "";
+    showRoleCheck.style.opacity = "0%";
+    toShow = false;
+  } else if (showRoleInput.id !== "showrole-checked") {
+    showRoleInput.id = "showrole-checked";
+    showRoleCheck.style.opacity = "100%";
+    toShow = true;
+  }
+  socket.emit("setShowRoles", getPlayerID(), toShow)
+}
+
+
+function selectVoteMessageSettings(element) {
+  var theButtonContainer = element.children[0]
+  var theButton = theButtonContainer.children[0];
+  if (
+    theButton.id == "voteMessagesHidden" ||
+    theButton.id == "voteMessagesAnonymous" ||
+    theButton.id == "voteMessagesVisible"
+  ) {
+    var inputType = "";
+    var radioHidden = document.getElementById("voteMessagesHidden");
+    var radioAnonymous = document.getElementById("voteMessagesAnonymous");
+    var radioVisible = document.getElementById("voteMessagesVisible");
+    var radioHiddenParentContainer = radioHidden.parentElement.parentElement;
+    var radioAnonymousParentContainer = radioAnonymous.parentElement.parentElement;
+    var radioVisibleParentContainer = radioVisible.parentElement.parentElement;
+    if (theButton.id == "voteMessagesHidden") {
+      inputType = "hidden";
+      radioHiddenParentContainer.id = "votemessage-checked";
+      radioHidden.style.backgroundColor = "var(--game-setting-clicked)";
+      radioAnonymous.style.backgroundColor = "var(--game-setting)";
+      radioVisible.style.backgroundColor = "var(--game-setting)";
+      radioAnonymousParentContainer.id = "";
+      radioVisibleParentContainer.id = "";
+    } else if (theButton.id == "voteMessagesAnonymous") {
+      inputType = "anonymous";
+      radioHiddenParentContainer.id = "";
+      radioHidden.style.backgroundColor = "var(--game-setting)";
+      radioAnonymous.style.backgroundColor = "var(--game-setting-clicked)";
+      radioVisible.style.backgroundColor = "var(--game-setting)";
+      radioAnonymousParentContainer.id = "votemessage-checked";
+      radioVisibleParentContainer.id = "";
+    } else if (theButton.id == "voteMessagesVisible") {
+      inputType = "visible";
+      radioHidden.style.backgroundColor = "var(--game-setting)";
+      radioAnonymous.style.backgroundColor = "var(--game-setting)";
+      radioVisible.style.backgroundColor = "var(--game-setting-clicked)";
+      radioHiddenParentContainer.id = "";
+      radioAnonymousParentContainer.id = "";
+      radioVisibleParentContainer.id = "votemessage-checked";
+    }
+
+    socket.emit("setVoteMessages", getPlayerID(), inputType)
+  }
+}
+
+function checkNumber(element) {
+  // do something
+  if (
+    element.id == "actionInput" ||
+    element.id == "discussionInput" ||
+    element.id == "votingInput"
+  ) {
+    var MIN_SECONDS = 10;
+    var MAX_SECONDS = 300;
+    var inputType = "";
+    var durationToChange = "";
+    if (element.id == "actionInput") {
+      inputType = "action";
+      durationToChange = "actions";
+    } else if (element.id == "discussionInput") {
+      inputType = "discussion";
+      durationToChange = "discussion";
+    } else if (element.id == "votingInput") {
+      inputType = "voting";
+      durationToChange = "voting";
+    }
+
+    if (element.value < MIN_SECONDS || element.value > MAX_SECONDS) {
+      gameSettingError(inputType);
+      return false;
+    } else {
+      resetGameSettingsError();
+      document.getElementById(inputType + "Input").style.border =
+        "2px solid #b1b1b1";
+        socket.emit(
+          "setDuration",
+          getPlayerID(),
+          element.valueAsNumber,
+          durationToChange
+        );
+      
+      return true;
+    }
+  }
+}
+
+function resetNotSavedGameSettings() {
+  socket.emit("resetNotSavedGameSettings", getPlayerID());
+}
+
+function resetGameSettings() {
+  resetGameSettingsError("all");
+  socket.emit("resetGameSettings", getPlayerID());
+  loadGameSettings();
+}
+function saveGameSettings() {
+  var actionsInput = document.getElementById("actionInput");
+  var discussionInput = document.getElementById("discussionInput");
+  var votingInput = document.getElementById("votingInput");
+  if (
+    checkNumber(actionsInput) &&
+    checkNumber(discussionInput) &&
+    checkNumber(votingInput)
+  ) {
+    socket.emit("saveGameSettings", getPlayerID());
+    hideGameSettings();
+  }
+}
+
+function hideGameSettings() {
+  resetNotSavedGameSettings();
+  resetGameSettingsError();
+  var gameSettingsContainer = document.getElementById(
+    "lobby-gamesettings-container"
+  );
+  var gameSettingsOverlay = document.getElementById("overlay-gamesettings");
+  gameSettingsContainer.style.display = "none";
+  gameSettingsOverlay.style.display = "none";
+}
+
+function revealGameSettingsButton() {
+  document.getElementById("lobby-gamesettings-icon").style.display = "flex";
+}
+socket.on("fetchedGameSettings", (settings) => {
+  var actionsInput = document.getElementById("actionInput");
+  var discussionInput = document.getElementById("discussionInput");
+  var votingInput = document.getElementById("votingInput");
+  var showRoleInput = document.getElementsByClassName("lobby-gamesettings-checkbox")[0];
+  var showRoleCheck = document.getElementById("checkbox-check");
+  var radioHidden = document.getElementById("voteMessagesHidden");
+  var radioAnonymous = document.getElementById("voteMessagesAnonymous");
+  var radioVisible = document.getElementById("voteMessagesVisible");
+  var radioHiddenParentContainer = radioHidden.parentElement.parentElement;
+  var radioAnonymousParentContainer = radioAnonymous.parentElement.parentElement;
+  var radioVisibleParentContainer = radioVisible.parentElement.parentElement;
+  // Durations
+  actionsInput.value = settings["actions"]["value"];
+  discussionInput.value = settings["discussion"]["value"];
+  votingInput.value = settings["voting"]["value"];
+
+  // Show roles?
+  if (settings["showRoles"]["value"]) {
+    showRoleInput.id = "showrole-checked";
+    showRoleCheck.style.opacity = "100%";
+  } else {
+    showRoleInput.id = "";
+    showRoleCheck.style.opacity = "0%";
+    
+  }
+
+  // Vote messages
+  if (settings["voteMessages"]["value"] == "hidden") {
+    radioHiddenParentContainer.id = "votemessage-checked";
+      radioHidden.style.backgroundColor = "var(--game-setting-clicked)";
+      radioAnonymous.style.backgroundColor = "var(--game-setting)";
+      radioVisible.style.backgroundColor = "var(--game-setting)";
+      radioAnonymousParentContainer.id = "";
+      radioVisibleParentContainer.id = "";
+  } else if (settings["voteMessages"]["value"] == "anonymous") {
+    radioHiddenParentContainer.id = "";
+      radioHidden.style.backgroundColor = "var(--game-setting)";
+      radioAnonymous.style.backgroundColor = "var(--game-setting-clicked)";
+      radioVisible.style.backgroundColor = "var(--game-setting)";
+      radioAnonymousParentContainer.id = "votemessage-checked";
+      radioVisibleParentContainer.id = "";
+  } else if (settings["voteMessages"]["value"] == "visible") {
+    radioHidden.style.backgroundColor = "var(--game-setting)";
+      radioAnonymous.style.backgroundColor = "var(--game-setting)";
+      radioVisible.style.backgroundColor = "var(--game-setting-clicked)";
+      radioHiddenParentContainer.id = "";
+      radioAnonymousParentContainer.id = "";
+      radioVisibleParentContainer.id = "votemessage-checked";
+  }
+});
+function loadGameSettings() {
+  socket.emit("loadGameSettings", getPlayerID());
+}
+
+function showGameSettings() {
+  loadGameSettings();
+  var gameSettingsContainer = document.getElementById(
+    "lobby-gamesettings-container"
+  );
+  var gameSettingsOverlay = document.getElementById("overlay-gamesettings");
+  gameSettingsContainer.style.display = "flex";
+  gameSettingsOverlay.style.display = "flex";
+}
 
 function getSeenNotification() {
   var cookies = document.cookie.split(";");
@@ -270,10 +523,10 @@ function showNotification(type) {
       document.cookie = `seenNotification=true; path=/; max-age=${fiveHours}; SameSite=Lax`;
       var theNotification = document.getElementById("lobby-notification");
       theNotification.style.display = "flex";
-      theNotification.innerText = "Copied link to clipboard. Share it! ᕕ( ᐛ )ᕗ"
+      theNotification.innerText = "Copied link to clipboard. Share it! ᕕ( ᐛ )ᕗ";
       setTimeout(() => {
         theNotification.style.display = "none";
-      }, 5000)
+      }, 5000);
     }
   }
 }
@@ -295,13 +548,23 @@ function showInfo() {
   // show caroseul with scroll snap of all role cards
 }
 function hideCard() {
-  document.getElementById("overlay-rolecards").setAttribute("onclick", "hideInfo()");
-  document.getElementById("adjusted-close").setAttribute("onclick", "hideInfo()");
-  var displayContainer = document.getElementById("lobby-rolecard-display-container");
+  document
+    .getElementById("overlay-rolecards")
+    .setAttribute("onclick", "hideInfo()");
+  document
+    .getElementById("adjusted-close")
+    .setAttribute("onclick", "hideInfo()");
+  var displayContainer = document.getElementById(
+    "lobby-rolecard-display-container"
+  );
   var displayRole = document.getElementById("lobby-rolecard-display-role");
-  var displayDescription = document.getElementById("lobby-rolecard-display-description");
+  var displayDescription = document.getElementById(
+    "lobby-rolecard-display-description"
+  );
   var displayImage = document.getElementById("lobby-rolecard-display-image");
-  var displayMission = document.getElementById("lobby-rolecard-display-mission");
+  var displayMission = document.getElementById(
+    "lobby-rolecard-display-mission"
+  );
   displayContainer.style.display = "none";
   displayRole.style.display = "none";
   displayDescription.style.display = "none";
@@ -313,38 +576,61 @@ function showCard(element) {
   // show overlay
   document.getElementById("overlay-rolecards").setAttribute("onclick", "");
   document.getElementById("adjusted-close").setAttribute("onclick", "");
-  var displayContainer = document.getElementById("lobby-rolecard-display-container");
+  var displayContainer = document.getElementById(
+    "lobby-rolecard-display-container"
+  );
   var displayRole = document.getElementById("lobby-rolecard-display-role");
-  var displayDescription = document.getElementById("lobby-rolecard-display-description");
+  var displayDescription = document.getElementById(
+    "lobby-rolecard-display-description"
+  );
   var displayImage = document.getElementById("lobby-rolecard-display-image");
-  var displayMission = document.getElementById("lobby-rolecard-display-mission");
+  var displayMission = document.getElementById(
+    "lobby-rolecard-display-mission"
+  );
   var targetElementID = element.id.replace("-card", "");
   socket.emit("requestLobbyDisplayCard", getPlayerID(), targetElementID);
   socket.on("fetchedLobbyDisplayCard", (name, team, description, mission) => {
     displayRole.innerText = name;
     displayDescription.innerText = description;
     displayMission.innerText = mission;
-    var theSrc = "/assets/rolecards/" + name + ".svg"
+    displayMission.style.backgroundColor = `var(--${team}-bg-mission`;
+    theSrc = "/assets/rolecards/" + name + ".jpg";
     displayImage.src = theSrc;
     if (team.includes("good")) {
       displayRole.classList.add("good-selected-color");
-      displayRole.classList.remove("evil-selected-color", "neutral-selected-color");
+      displayRole.classList.remove(
+        "evil-selected-color",
+        "neutral-selected-color"
+      );
       displayMission.classList.add("good-selected-color");
-      displayMission.classList.remove("evil-selected-color", "neutral-selected-color");
-    }
-    else if (team.includes("evil")) {
+      displayMission.classList.remove(
+        "evil-selected-color",
+        "neutral-selected-color"
+      );
+    } else if (team.includes("evil")) {
       displayRole.classList.add("evil-selected-color");
-      displayRole.classList.remove("good-selected-color", "neutral-selected-color");
+      displayRole.classList.remove(
+        "good-selected-color",
+        "neutral-selected-color"
+      );
       displayMission.classList.add("evil-selected-color");
-      displayMission.classList.remove("good-selected-color", "neutral-selected-color");
-    }
-    else if (team.includes("neutral")) {
+      displayMission.classList.remove(
+        "good-selected-color",
+        "neutral-selected-color"
+      );
+    } else if (team.includes("neutral")) {
       displayRole.classList.add("neutral-selected-color");
-      displayRole.classList.remove("good-selected-color", "evil-selected-color");
+      displayRole.classList.remove(
+        "good-selected-color",
+        "evil-selected-color"
+      );
       displayMission.classList.add("neutral-selected-color");
-      displayMission.classList.remove("good-selected-color", "evil-selected-color");
+      displayMission.classList.remove(
+        "good-selected-color",
+        "evil-selected-color"
+      );
     }
-  })
+  });
   displayContainer.style.display = "flex";
   displayRole.style.display = "flex";
   displayDescription.style.display = "flex";
@@ -390,7 +676,7 @@ function readyStatusLobby(users) {
   )[0];
   lobbyButtons.style.display = "flex";
   for (var i = 0; i < users.length; i++) {
-    if (users[i].thePlayerID !== undefined && users[i].thePlayerID !== null) {
+    if (document.getElementById(users[i].thePlayerID) !== null) {
       if (users[i].readyLobby) {
         var status = document.getElementById(users[i].thePlayerID).parentElement
           .children[1];
@@ -551,22 +837,22 @@ function updatePlayerSlots(host, slots, proxyID) {
       slot.innerText = value.userName;
       if (value.userID !== undefined) {
         slot.parentElement.id = value.userID;
-      }
-      slot.parentElement.parentElement.id = "joined";
-      var status = slot.parentElement.parentElement.children[1];
-      if (value.userID == host) {
-        slot.parentElement.parentElement.style.border =
-          "2px solid var(--slot-border-joined)";
-          slot.parentElement.parentElement.style.backgroundColor = "var(--slot-joined)";
+        slot.parentElement.parentElement.id = "joined";
+        var status = slot.parentElement.parentElement.children[1];
+        if (value.userID == host) {
+          slot.parentElement.parentElement.style.border =
+            "2px solid var(--slot-border-joined)";
+          slot.parentElement.parentElement.style.backgroundColor =
+            "var(--slot-joined)";
         } else if (value.userID == proxyID) {
           slot.parentElement.parentElement.style.border =
-          "2px dashed var(--slot-border-joined)";
-          slot.parentElement.parentElement.style.backgroundColor = "var(--slot-joined)";
-      } else {
-        slot.parentElement.parentElement.style.border =
-          "2px solid var(--slot-border-other)";
-
-        
+            "2px dashed var(--slot-border-joined)";
+          slot.parentElement.parentElement.style.backgroundColor =
+            "var(--slot-joined)";
+        } else {
+          slot.parentElement.parentElement.style.border =
+            "2px solid var(--slot-border-other)";
+        }
       }
       // status.innerText = "not ready";
     } else if (value.taken == false) {

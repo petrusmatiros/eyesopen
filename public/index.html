@@ -83,6 +83,7 @@
         <!-- <a class="title-button" href="lobby.html">Host new game</a> -->
         <a class="title-button pop-light1 shadow-light" onclick="displayHost()">Host new game</a>
         <div class="title-button pop-light2 shadow-light" onclick="displayUser()">Join game</div>
+        <div class="title-button shadow-light" id="changeUsername" onclick="displayChangeUsername()">Change username</div>
         <!-- <a class="title-button" onclick="join()" href="">Join game</a> -->
       </div>
 
@@ -111,6 +112,32 @@
           size="20"
         />
         <div class="confirm-button" onclick="checkName(false)">Confirm</div>
+      </div>
+      <div class="card-input shadow-light" id="changeName">
+        <div class="close">
+          <img
+            class="close-button"
+            onclick="hideChangeUsername()"
+            src="/assets/icons/close.svg"
+            alt="close x icon"
+          />
+        </div>
+        <div class="join-info">What will your new name be?</div>
+        <p class="join-help" id="changeName-help"></p>
+        <input
+          type="text"
+          id="inputChangeName"
+          name="inputChangeName"
+          placeholder="New username"
+          autocomplete="off"
+          autofocus
+          enterkeyhint="done"
+          required
+          minlength="1"
+          maxlength="12"
+          size="20"
+        />
+        <div class="confirm-button" onclick="changeName()">Update</div>
       </div>
 
       <div class="card-input shadow-light" id="host">
@@ -168,6 +195,9 @@
       </div>
       <!-- <a href="https://www.google.com/" target="_blank">test_link</a> -->
 
+
+
+
       <div class="links">
         <p class="designed-by">
           design & illustration by
@@ -198,6 +228,9 @@
           ></span>
         </a>
       </div>
+
+      <!-- Notification badge -->
+      <div class="index-notification" id="index-notification" onclick="hideNotification()"></div>
     </div>
   </body>
 </html>

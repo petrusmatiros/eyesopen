@@ -42,20 +42,20 @@ Enjoy ^-^
 
 TBD
 <!-- <p>
-<img src="public/assets/rolecards/Villager_card.svg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Investigator_card.svg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Doctor_card.svg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Mayor_card.svg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Trapper_card.svg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Godfather_card.svg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Mafioso_card.svg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Surgeon_card.svg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Witch_card.svg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Framer_card.svg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Jester_card.svg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Serial%20Killer_card.svg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Executioner_card.svg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Lawyer_card.svg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Villager.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Investigator.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Doctor.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Mayor.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Trapper.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Godfather.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Mafioso.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Surgeon.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Witch.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Framer.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Jester.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Serial%20Killer.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Executioner.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Lawyer.jpg" alt="role-card" width=150>
 </p> -->
 
 

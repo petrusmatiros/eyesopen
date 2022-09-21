@@ -1,4 +1,5 @@
 var { Timer } = require("./timer");
+require("./constants")
 class Game {
   constructor() {
     // DAY & NIGHT count
@@ -8,7 +9,18 @@ class Game {
     // Interval counts
     this.currentCycle = 0;
     this.currentPhase = 0;
-    this.theDurations = null;
+    this.theDurations = {
+      night: {
+        actions: ACTIONS,
+        nightMessages: NIGHTMESSAGES,
+      },
+      day: {
+        recap: RECAP,
+        discussion: DISCUSSION,
+        voting: VOTING,
+        dayMessages: DAYMESSAGES,
+      },
+    };
     this.nightLength = 0;
     this.dayLength = 0;
     // Emit booleans
@@ -17,6 +29,31 @@ class Game {
     this.nightMessagesOnce = 0;
     this.recapOnce = 0;
     this.dayMessagesOnce = 0;
+
+    // Game settings
+    this.settings = {
+      actions : {
+        value: ACTIONS,
+        isDefault: true
+      },
+      discussion: {
+        value: DISCUSSION,
+        isDefault: true
+      },
+      voting: {
+        value: VOTING,
+        isDefault: true
+      },
+      showRoles: {
+        value: SHOWROLES,
+        isDefault: true
+      },
+      voteMessages: {
+        value: VOTEMESSAGES,
+        isDefault: true
+      }
+    }
+
 
     // Phase
     this.phase = "";
@@ -87,7 +124,7 @@ class Game {
     // Booleans for inProgress and finished
     this.inProgress = false;
   }
-  resetDone() {
+  resetGameDone() {
     this.isDone = false;
   }
   resetGameInterval() {
@@ -96,7 +133,18 @@ class Game {
     // Interval counts
     this.currentCycle = 0;
     this.currentPhase = 0;
-    this.theDurations = null;
+    this.theDurations = {
+      night: {
+        actions: ACTIONS,
+        nightMessages: NIGHTMESSAGES,
+      },
+      day: {
+        recap: RECAP,
+        discussion: DISCUSSION,
+        voting: VOTING,
+        dayMessages: DAYMESSAGES,
+      },
+    };
     this.nightLength = 0;
     this.dayLength = 0;
     // Emit booleans
@@ -105,6 +153,44 @@ class Game {
     this.nightMessagesOnce = 0;
     this.recapOnce = 0;
     this.dayMessagesOnce = 0;
+  }
+
+  resetGameSettings() {
+    // Game settings
+    this.settings = {
+      actions : {
+        value: ACTIONS,
+        isDefault: true
+      },
+      discussion: {
+        value: DISCUSSION,
+        isDefault: true
+      },
+      voting: {
+        value: VOTING,
+        isDefault: true
+      },
+      showRoles: {
+        value: SHOWROLES,
+        isDefault: true
+      },
+      voteMessages: {
+        value: VOTEMESSAGES,
+        isDefault: true
+      }
+    }
+  }
+
+  getSettingsDefault() {
+    return this.settingsDefault;
+  }
+
+  setSettingsDefault(settingsDefault) {
+    this.settingsDefault = this.settingsDefault
+  }
+
+  getSettings() {
+    return this.settings;
   }
 
   getCycleCount() {

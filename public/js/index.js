@@ -9,19 +9,33 @@ socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
   socket.on("userExists", (userExists) => {
     if (!userExists) {
+      showChangeUsername(false);
       resetCookie();
     } else {
+      showChangeUsername(true);
       socket.emit("setRoom", getPlayerID());
     }
   });
   addEventListeners()
 });
 
+function showChangeUsername(toShow) {
+
+  if (toShow == true) {
+
+    document.getElementById("changeUsername").style.display = "flex";
+  } else if (toShow == false) {
+    
+    document.getElementById("changeUsername").style.display = "none";
+  }
+
+}
 
 
 function addEventListeners() {
   var theCodeInput = document.getElementById("code");
   var theUserInput = document.getElementById("inputUser");
+  var theChangeNameInput = document.getElementById("inputChangeName");
   var theHostInput = document.getElementById("inputHost");
   theCodeInput.addEventListener('keydown', (e) => {
     if (!e.repeat) {
@@ -37,6 +51,15 @@ function addEventListeners() {
       if (e.key !== null) {
         if (e.key == "Enter") {
           checkName(false)
+        }
+      }
+    } 
+  });
+  theChangeNameInput.addEventListener('keydown', (e) => {
+    if (!e.repeat) {
+      if (e.key !== null) {
+        if (e.key == "Enter") {
+          changeName();
         }
       }
     } 
@@ -148,10 +171,14 @@ function requestID() {
   console.log("You connect with id", socket.id);
   socket.emit("requestID", socket.id, getPlayerID());
   socket.on("playerID", (playerID) => {
-    console.log("playerID from server:", playerID);
-    if (getPlayerID() == "null") {
-      document.cookie = `eyesopenID=${playerID}; path=/; max-age=${fiveHours}; SameSite=Lax`;
-      socket.emit("completedID", getPlayerID());
+    if (playerID == null) {
+      window.location.reload();
+    } else {
+      console.log("playerID from server:", playerID);
+      if (getPlayerID() == "null") {
+        document.cookie = `eyesopenID=${playerID}; path=/; max-age=${fiveHours}; SameSite=Lax`;
+        socket.emit("completedID", getPlayerID());
+      }
     }
   });
 }
@@ -170,6 +197,7 @@ function closeCard() {
   hideUser();
   hideHost();
   hideJoin();
+  hideChangeUsername();
 }
 
 function checkIfSessionExists() {
@@ -188,12 +216,26 @@ function displayUser() {
     displayJoin();
   }
 }
+function displayChangeUsername() {
+  if (checkIfSessionExists()) {
+    document.getElementById("overlay").style.display = "block";
+    document.getElementById("changeName").style.display = "flex";
+    document.getElementById("inputChangeName").focus();
+  }
+}
 function hideUser() {
   document.getElementById("overlay").style.display = "none";
   document.getElementById("user").style.display = "none";
   document.getElementById("user-help").style.display = "none";
   document.getElementById("inputUser").value = "";
   document.getElementById("inputUser").style.border = "2px solid #b1b1b1";
+}
+function hideChangeUsername() {
+  document.getElementById("overlay").style.display = "none";
+  document.getElementById("changeName").style.display = "none";
+  document.getElementById("changeName-help").style.display = "none";
+  document.getElementById("inputChangeName").value = "";
+  document.getElementById("inputChangeName").style.border = "2px solid #b1b1b1";
 }
 
 function displayHost() {
@@ -205,8 +247,12 @@ function displayHost() {
     socket.emit("createRoom", getPlayerID());
     socket.emit("fetchHostRoom", getPlayerID());
     socket.on("hostRoom", (roomCode) => {
-      console.log(roomCode);
-      setLocation(`lobby/${roomCode}`, false);
+      if (roomCode == null) {
+        window.location.reload();
+      } else {
+        console.log(roomCode);
+        setLocation(`lobby/${roomCode}`, false);
+      }
     });
   }
 }
@@ -221,6 +267,10 @@ function hideHost() {
 function UserInputDone() {
   hideUser();
   displayJoin();
+}
+function ChangeUsernameDone() {
+  hideChangeUsername();
+  showNotification("newName")
 }
 
 function UserInputDoneHost(roomCode) {
@@ -312,14 +362,21 @@ function hostNameShortError() {
   document.getElementById("inputHost").style.border =
     "2px solid hsl(0, 100%, 45%)";
   document.getElementById("host-help").innerText =
-    "Username needs to be atleast 1 character(s) long";
+    "Username needs to be at least 1 character(s) long";
 }
 function userNameShortError() {
   document.getElementById("user-help").style.display = "flex";
   document.getElementById("inputUser").style.border =
     "2px solid hsl(0, 100%, 45%)";
   document.getElementById("user-help").innerText =
-    "Username needs to be atleast 1 character(s) long";
+    "Username needs to be at least 1 character(s) long";
+}
+function changeUsernameShortError() {
+  document.getElementById("changeName-help").style.display = "flex";
+  document.getElementById("inputChangeName").style.border =
+    "2px solid hsl(0, 100%, 45%)";
+  document.getElementById("changeName-help").innerText =
+    "Username needs to be at least 1 character(s) long";
 }
 
 function hostNameCorrect() {
@@ -331,6 +388,36 @@ function userNameCorrect() {
   document.getElementById("user-help").style.display = "none";
   document.getElementById("inputUser").style.border =
     "2px solid hsl(123, 100%, 45%)";
+}
+
+function changeName() {
+  
+    var inputVal = document.getElementById("inputChangeName").value;
+    if (inputVal.length < 1) {
+      changeUsernameShortError();
+    } else {
+      socket.emit("changeUsername", getPlayerID(), inputVal)
+      ChangeUsernameDone();
+    }
+  
+}
+
+
+function showNotification(type) {
+  if (type == "newName") {
+
+      var theNotification = document.getElementById("index-notification");
+      theNotification.style.display = "flex";
+      theNotification.innerText = "Username has been updated! (~‾⌣‾)~";
+      setTimeout(() => {
+        theNotification.style.display = "none";
+      }, 5000);
+  }
+}
+
+function hideNotification() {
+  var theNotification = document.getElementById("index-notification");
+  theNotification.style.display = "none";
 }
 
 function checkName(isHost) {
@@ -346,8 +433,12 @@ function checkName(isHost) {
         hostNameCorrect();
         socket.emit("fetchHostRoom", getPlayerID());
         socket.on("hostRoom", (roomCode) => {
-          console.log(roomCode);
-          UserInputDoneHost(roomCode);
+          if (roomCode == null) {
+            window.location.reload()
+          } else {
+            console.log(roomCode);
+            UserInputDoneHost(roomCode);
+          }
         });
         // socket.on("hostRoom", (hostRoom) => {
         //   UserInputDoneHost(hostRoom);

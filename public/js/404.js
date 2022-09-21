@@ -14,7 +14,6 @@ socket.on("connect", () => {
       socket.emit("setRoom", getPlayerID());
     }
   });
-  animateRobot();
 });
 
 var theHeader = document.getElementById("header");

@@ -20,7 +20,7 @@
   --leave-button: hsl(360, 100%, 50%);
   --leave-button--hover: hsl(360, 100%, 45%);
   --leave-button--active: hsl(360, 100%, 40%);
-  --secondary-day: hsl(0, 0%, 97%);
+  --secondary-day: hsl(0, 0%, 95%);
   --secondary-night: hsl(0, 0%, 25%);
   --cemetery: hsl(0, 0%, 20%);
 
@@ -28,18 +28,21 @@
   /* Good */
   --good-fg: var(--dark-fg);
   --good-bg: hsl(108, 100%, 85%);
+  --good-bg-mission: hsl(108, 100%, 93%);
   --good-fg-selected: var(--light-fg);
   --good-bg-selected: hsl(108, 100%, 25%);
 
   /* Evil */
   --evil-fg: var(--dark-fg);
   --evil-bg: hsl(360, 100%, 85%);
+  --evil-bg-mission: hsl(360, 100%, 93%);
   --evil-fg-selected: var(--light-fg);
   --evil-bg-selected: hsl(360, 100%, 50%);
 
   /* Neutral */
   --neutral-fg: var(--dark-fg);
   --neutral-bg: hsl(0, 0%, 83%);
+  --neutral-bg-mission: hsl(0, 0%, 93%);
   --neutral-fg-selected: var(--light-fg);
   --neutral-bg-selected: hsl(0, 0%, 15%);
 
@@ -63,7 +66,7 @@
 }
 
 .game-background-night {
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
     url(/assets/images/game_background.jpg);
   background-attachment: fixed;
 }
@@ -80,7 +83,7 @@
   background: radial-gradient(
       50% 50% at 50% 50%,
       rgba(255, 2, 2, 0) 0%,
-      rgba(255, 13, 13, 0.2) 100%
+      rgba(255, 13, 13, 0.25) 100%
     ),
     linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url(/assets/images/game_background.jpg) !important;
@@ -156,8 +159,8 @@
   margin: 2rem 0.5rem 1rem 0.5rem;
   max-width: 20.5rem;
   min-width: 20.5rem;
-  max-height: 6.65rem;
-  min-height: 7.75rem;
+  max-height: 8rem;
+  min-height: 8rem;
 }
 
 /* Animations */
@@ -198,8 +201,10 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  max-width: 6.25rem;
-  min-width: 6.25rem;
+  max-width: 6rem;
+  min-width: 6rem;
+  border-radius: 0.7rem;
+  margin-right: 1rem;
 }
 
 .game-player-card-wrapper {
@@ -208,7 +213,7 @@
   max-width: 10rem;
 }
 .game-player-card-divider {
-  height: 5.25rem;
+  height: 6rem;
   border-radius: 50rem;
   width: 0.5rem;
 }
@@ -372,8 +377,9 @@
   border-radius: 0.75rem;
   font-weight: 500;
   margin: 0 0.5rem 1.5rem 0.5rem;
-  min-width: 13rem;
-  max-width: 13rem;
+  min-width: 13.5rem;
+  max-width: 13.5rem;
+  line-height: 1;
 }
 
 .game-cycle {
@@ -388,7 +394,7 @@
   justify-content: center;
   align-items: center;
   vertical-align: text-top;
-  width: 1.75rem;
+  width: 1.55rem;
   margin-bottom: 0.15rem;
   margin-right: 0.25rem;
 }
@@ -413,9 +419,9 @@
 
 .game-clock-divider {
   height: 1.375rem;
-  border-radius: 50;
+  border-radius: 50rem;
   width: 0.25rem;
-  margin: 0 0.5rem 0 0.5rem;
+  margin: 0 1rem 0 0.5rem
 }
 
 .game-time {
@@ -766,7 +772,7 @@
   width: 2rem;
   height: 2rem;
   vertical-align: bottom;
-  border-radius: 0.6em;
+  border-radius: 0.5rem;
 }
 
 .game-close-button:hover {
@@ -1032,9 +1038,10 @@
 .game-rolecard-icon {
   display: flex;
   width: 12.5rem;
-  height: 12.5rem;
   padding: 0.15em;
   margin: 0.25rem;
+  border-radius: 1rem;
+  margin: 1rem;
 }
 
 .game-rolecard-mission {
@@ -1042,9 +1049,9 @@
   text-align: center;
   font-size: 0.95rem;
   font-weight: 600;
-  background-color: var(--mission-grey);
+  /* background-color: var(--mission-grey); */
   padding: 0.75rem 1rem 0.75rem 1rem;
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   margin-bottom: 1rem;
   line-height: 1.05;
 }
@@ -1065,7 +1072,7 @@
   color: var(--light-fg);
   font-size: 1.25rem;
   font-weight: 500;
-  border-radius: 0.6em;
+  border-radius: 0.75rem;
   padding: 0.75rem 1.5rem 0.75rem 1.5rem;
 }
 
