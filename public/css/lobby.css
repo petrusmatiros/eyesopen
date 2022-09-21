@@ -49,8 +49,7 @@
   --neutral-bg-selected: hsl(0, 0%, 15%);
 
   /* Game settings */
-  --game-setting: hsl(280, 100%, 90%);
-  --game-setting-hover: hsl(280, 100%, 80%);
+  --game-setting: hsl(0, 0%, 75%);
   --game-setting-clicked: hsl(280, 100%, 60%);
   --game-setting-focus: hsl(280, 100%, 40%);
   --game-setting-active: hsl(280, 100%, 40%);
@@ -432,9 +431,6 @@ input[type=number]::-webkit-inner-spin-button {
   width: 1.15rem;
   height: 1.15rem;
   border-radius: 1rem;
-  background-color: var(--game-setting);
-}
-.lobby-gamesettings-radio-button:hover {
   background-color: var(--game-setting-hover);
 }
 
