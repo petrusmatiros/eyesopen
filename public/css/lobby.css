@@ -349,7 +349,7 @@ input[type="number"] {
   background-color: var(--light-fg);
   font-family: "League Spartan", sans-serif;
   text-align: center;
-  font-size: 1rem;
+  font-size: 0.75rem;
   margin: 0.5rem 0 0 0;
   padding: 0.5em;
   outline: none;
@@ -372,17 +372,11 @@ input[type=number]::-webkit-inner-spin-button {
 
 }
 
-/* input[type="checkbox"] {
-  cursor: pointer;
-  width: 1.5rem;
-  height: 1.5rem;
-
-} */
 
 #checkbox-check {
   opacity: 0%;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1rem;
+  height: 1rem;
 }
 
 .lobby-gamesettings-checkbox {
@@ -391,7 +385,7 @@ input[type=number]::-webkit-inner-spin-button {
   align-items: center;
   vertical-align: center;
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 0.35rem;
   border-radius: 0.45rem;
   outline: 2px solid var(--dark-fg);
 }
@@ -592,7 +586,7 @@ input[type=number]::-webkit-inner-spin-button {
 .lobby-gamesettings-flexstart {
   justify-content: flex-start !important;
   width: 100%;
-  margin: 0 0.5rem 0.5rem 0.5rem !important
+  margin: 0 0 0.5rem 0.75rem !important
 }
 
 .lobby-gamesettings-column {
