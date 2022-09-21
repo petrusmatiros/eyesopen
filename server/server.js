@@ -2664,7 +2664,7 @@ io.on("connection", async (socket) => {
           game,
           "all",
           "It's time to act. The action phase has begun",
-          "important"
+          "extra"
         );
       }
       if (game.getPhase().includes("message")) {
@@ -2744,7 +2744,7 @@ io.on("connection", async (socket) => {
           game,
           "all",
           "It's time to cast your votes",
-          "important"
+          "extra"
         );
       }
       game.setEmitPhaseOnce(false);
