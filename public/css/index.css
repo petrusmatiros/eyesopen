@@ -547,7 +547,7 @@ p {
   align-items: center;
   background: var(--light-bg);
   padding: 1.85em;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
 
   width: 17em;
 }
@@ -605,7 +605,7 @@ input[type="text"] {
   margin: 0.5em 1em 0.5em 1em;
   padding: 0.5em 1em 0.5em 1em;
   outline: none;
-  border-radius: 0.5rem;
+  border-radius: 0.55rem;
   border: 2px solid #b1b1b1;
 }
 

@@ -381,8 +381,8 @@ input[type=number]::-webkit-inner-spin-button {
 
 #checkbox-check {
   opacity: 0%;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .lobby-gamesettings-checkbox {
