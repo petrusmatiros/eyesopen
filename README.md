@@ -178,5 +178,5 @@ npm build
 
 ## Notes
 
-This game is in it's alpha phase - still in development :D
+This game is in it's beta phase - still in development :D
 
