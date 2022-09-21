@@ -91,6 +91,10 @@
   background-attachment: fixed;
 }
 
+#game-navbar {
+  display: none;
+}
+
 /* Day and Night */
 .game-day-bg {
   background-color: var(--light-bg);
@@ -257,8 +261,8 @@
   flex-direction: column;
   padding: 1em;
   border-radius: 1rem;
-  min-height: 9.375rem;
-  max-height: 9.375rem;
+  min-height: 12.375rem;
+  max-height: 12.375rem;
   max-width: 18.5rem;
   min-width: 18.5rem;
   margin: 0 0.5rem 1.5rem 0.5rem;
@@ -300,7 +304,7 @@
   max-width: 16rem;
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem 0.25rem 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
   border-radius: 0.35rem;
 }
 /* Message types */
@@ -339,10 +343,10 @@
 }
 /* Standard */
 .game-message-day {
-  background-color: hsl(0, 0%, 97%);
+  background-color: hsl(0, 0%, 92%);
 }
 .game-message-night {
-  background-color: hsl(0, 0%, 18%);
+  background-color: hsl(0, 0%, 25%);
 }
 
 .game-panel-day {
@@ -1085,7 +1089,7 @@
     max-width: 17rem;
     font-size: 0.75rem;
     padding: 0.25rem 0.5rem 0.25rem 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.35rem;
     border-radius: 0.35rem;
   }
 }

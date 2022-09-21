@@ -3462,7 +3462,7 @@ io.on("connection", async (socket) => {
       }
       setTimeout(
         endGame,
-        5000,
+        7500,
         game,
         roomCode,
         win,
