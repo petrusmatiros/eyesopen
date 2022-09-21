@@ -4319,15 +4319,28 @@ io.on("connection", async (socket) => {
                     `Your lust for blood has been contained. Someone protected ${abilityTargetPlayer.getPlayerName()}`,
                     "info"
                   );
-                  sendMessage(
-                    abilityTarget.playerID,
-                    room,
-                    roomCode,
-                    game,
-                    "target",
-                    `Someone tried to kill you, but you were protected by the Doctor`,
-                    "info"
-                  );
+                  if (abilityTargetPlayer.getRole().type.includes("doctor")) {
+                    sendMessage(
+                      abilityTarget.playerID,
+                      room,
+                      roomCode,
+                      game,
+                      "target",
+                      `Someone tried to kill you, but you were protected`,
+                      "info"
+                    );
+                  } else {
+                    sendMessage(
+                      abilityTarget.playerID,
+                      room,
+                      roomCode,
+                      game,
+                      "target",
+                      `Someone tried to kill you, but you were protected by the Doctor`,
+                      "info"
+                    );
+
+                  }
                 }
 
                 if (player.isBlocked) {
