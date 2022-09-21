@@ -41,7 +41,7 @@ Enjoy ^-^
 ## Role cards
 
 TBD
-<div style="display:flex; justify-content:center; align-items:center; flex-direction:column; gap:1.5rem;">
+<p style="display:flex; justify-content:center; align-items:center; flex-direction:column; gap:1.5rem;">
   
   <div style="display:flex; justify-content:center; align-items:center; flex-direction:row; font-size: 1.5rem; font-weight: 700">Good</div>
   <div style="display:flex; justify-content:center; align-items:center; flex-direction:row; gap:0.5rem;">
@@ -109,7 +109,7 @@ TBD
     Lawyer
     </div>
   </div>
-</div>
+</p>
 
 
 
