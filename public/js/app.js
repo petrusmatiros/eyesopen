@@ -284,6 +284,8 @@ function autoScroll() {
   messages.scrollTop = messages.scrollHeight;
 }
 
+// Remove top margin from the first message recieved
+var firstMessageRecieved = false;
 socket.on("recieveMessage", (message, type, cycle) => {
   var messages = document.getElementById("game-message-scroller");
   var messageType = "game-message-";
@@ -377,6 +379,12 @@ socket.on("recieveMessage", (message, type, cycle) => {
       newMessage.classList.add(messageType);
     }
     newMessage.style.fontWeight = "475";
+  }
+
+  // Set margin top to be 0 for the first message
+  if (!firstMessageRecieved) {
+    newMessage.style.marginTop = "0";
+    firstMessageRecieved = true;
   }
 
   newMessage.innerText = message;
@@ -505,6 +513,11 @@ function loadSavedMessages(messages, cycle) {
         newMessage.classList.add(messageType);
       }
       newMessage.style.fontWeight = "475";
+    }
+
+    // Remove top margin from the first message
+    if (i == 0) {
+      newMessage.style.marginTop = "0";
     }
 
     newMessage.innerText = messages[i].message;
