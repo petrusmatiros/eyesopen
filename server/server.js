@@ -4515,16 +4515,7 @@ io.on("connection", async (socket) => {
             "important"
           );
         }
-        var lineSeperator = "--------------------------------";
-        sendMessage(
-          playerID,
-          room,
-          roomCode,
-          game,
-          "all",
-          lineSeperator,
-          "lineSeperator"
-        );
+        
 
         var executionerObject = Object.values(
           checkIfExecutionerAlive(playerID, room, roomCode, game)
