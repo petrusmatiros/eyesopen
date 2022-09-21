@@ -4435,6 +4435,7 @@ io.on("connection", async (socket) => {
     // SEND MESSAGE WHO DIED FROM WHOM (killedBY)
     var noneDead = true;
     var noneLynched = true;
+    var toSendToCemetery = [];
     for (var i = 0; i < game.getAlive().length; i++) {
       var player = game.getAlive()[i].getPlayer(roomCode);
       console.log("death handler", player);
@@ -4568,13 +4569,9 @@ io.on("connection", async (socket) => {
           }
         }
 
-        // AFTER THAT, ADD THEM TO CEMETERY
-        if (!game.getCemetery().includes(game.getAlive()[i])) {
-          game.addCemetery(game.getAlive()[i]);
-          // REMOVE FROM ALIVE ARRAY
-          game.removeAlive(game.getAlive()[i]);
-          io.to(roomCode).emit("cemetery", generateCemeteryList(playerID));
-        }
+        // To send to cemetery
+        toSendToCemetery.push(game.getAlive()[i]);
+        
       } else if (player.getIsLynched()) {
         noneLynched = false;
         // lynched
@@ -4600,14 +4597,18 @@ io.on("connection", async (socket) => {
           }
         }
 
-        // AFTER THAT, ADD THEM TO CEMETERY
-        if (!game.getCemetery().includes(game.getAlive()[i])) {
-          game.addCemetery(game.getAlive()[i]);
-          // REMOVE FROM ALIVE ARRAY
+        // To send to cemetery
+        toSendToCemetery.push(game.getAlive()[i]);
+      }
+    }
 
-          game.removeAlive(game.getAlive()[i]);
-          io.to(roomCode).emit("cemetery", generateCemeteryList(playerID));
-        }
+    for (let i = 0; i < toSendToCemetery.length; i++) {
+      // AFTER THAT, ADD THEM TO CEMETERY
+      if (!game.getCemetery().includes(toSendToCemetery[i])) {
+        game.addCemetery(toSendToCemetery[i]);
+        // REMOVE FROM ALIVE ARRAY
+        game.removeAlive(toSendToCemetery[i]);
+        io.to(roomCode).emit("cemetery", generateCemeteryList(playerID));
       }
     }
 
