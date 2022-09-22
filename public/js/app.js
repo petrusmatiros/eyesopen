@@ -197,7 +197,11 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
       } else if (winType == "neutral") {
         winningMessage = "Neutral roles wins";
       } else if (winType == "jester") {
-        winningMessage = "Jester wins";
+        if (lawyerWin) {
+          winningMessage = "Jester + Lawyer wins";
+        } else {
+          winningMessage = "Jester wins";
+        }
       } else if (winType == "serial killer") {
         if (lawyerWin) {
           winningMessage = "Serial Killer + Lawyer wins";
