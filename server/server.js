@@ -904,6 +904,7 @@ io.on("connection", async (socket) => {
       console.log("name:", name, ", playerID:", playerID);
       connectedUsers.set(playerID, new User(playerID, name));
       console.log("Users:", connectedUsers);
+      socket.emit("showChangeUsername", true);
     }
   });
 

@@ -17,17 +17,23 @@ socket.on("connect", () => {
   addEventListeners()
 });
 
-function showChangeUsername(toShow) {
+function showChangeUsername(toShow=false) {
 
   if (toShow == true) {
 
     document.getElementById("changeUsername").style.display = "flex";
+    document.getElementById("links").style.marginTop = "2.9rem";
   } else if (toShow == false) {
     
+    document.getElementById("links").style.marginTop = "5rem";
     document.getElementById("changeUsername").style.display = "none";
   }
 
 }
+
+socket.on("showChangeUsername", (toShow) => {
+  showChangeUsername(toShow);
+})
 
 
 function addEventListeners() {
@@ -222,6 +228,7 @@ function displayChangeUsername() {
   }
 }
 function hideUser() {
+  document.getElementById("inputUser").blur();
   document.getElementById("overlay").style.display = "none";
   document.getElementById("user").style.display = "none";
   document.getElementById("user-help").style.display = "none";
@@ -229,6 +236,7 @@ function hideUser() {
   document.getElementById("inputUser").style.border = "2px solid #b1b1b1";
 }
 function hideChangeUsername() {
+  document.getElementById("inputChangeName").blur();
   document.getElementById("overlay").style.display = "none";
   document.getElementById("changeName").style.display = "none";
   document.getElementById("changeName-help").style.display = "none";
@@ -255,6 +263,7 @@ function displayHost() {
   }
 }
 function hideHost() {
+  document.getElementById("inputHost").blur();
   document.getElementById("overlay").style.display = "none";
   document.getElementById("host").style.display = "none";
   document.getElementById("host-help").style.display = "none";
@@ -284,6 +293,7 @@ function displayJoin() {
 }
 
 function hideJoin() {
+  document.getElementById("code").blur(); 
   document.getElementById("overlay").style.display = "none";
   document.getElementById("join-room").style.display = "none";
   document.getElementById("join-help").style.display = "none";
