@@ -4605,7 +4605,13 @@ io.on("connection", async (socket) => {
         if (lawyerObject[0] == true) {
           var lawyer = lawyerObject[1];
           if (game.getAlive()[i] == lawyer.getPlayer(roomCode).getRole().client) {
-            sendMessage(lawyer.getPlayerID(), room, roomCode, game, "target", `Your client ${player.getPlayerName()} has died. You're now on your own`, "info")
+            if (game.getAlive()[i].getPlayer(roomCode).getRole().type.includes("jester")) {
+              // If client is lynced, and they are the jester
+              sendMessage(lawyer.getPlayerID(), room, roomCode, game, "target", `Your client ${player.getPlayerName()} has been lynched. Your client seems...happy for some reason`, "info")
+            } else {
+              sendMessage(lawyer.getPlayerID(), room, roomCode, game, "target", `Your client ${player.getPlayerName()} has been lynched. You're now on your own`, "info")
+
+            }
           }
         }
 
