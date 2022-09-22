@@ -1904,7 +1904,9 @@ io.on("connection", async (socket) => {
                               roomCode,
                               game,
                               "all",
-                              `${player.getPlayerName()} is voting to lynch ${theVoteTargetPlayer.getPlayerName()}`,
+                              `${player.getPlayerName()} is voting to lynch ${theVoteTargetPlayer.getPlayerName()} (${
+                                theVoteTargetPlayer.dayVotes
+                              })`,
                               "Day"
                             );
                           }
@@ -1936,7 +1938,9 @@ io.on("connection", async (socket) => {
                               roomCode,
                               game,
                               "all",
-                              `${player.getPlayerName()} has changed their vote to lynch ${theVoteTargetPlayer.getPlayerName()}`,
+                              `${player.getPlayerName()} has changed their vote to lynch ${theVoteTargetPlayer.getPlayerName()} (${
+                                theVoteTargetPlayer.dayVotes
+                              })`,
                               "Day"
                             );
                           }
@@ -1965,7 +1969,9 @@ io.on("connection", async (socket) => {
                               roomCode,
                               game,
                               "all",
-                              `${player.getPlayerName()} removed their vote from ${theVoteTargetPlayer.getPlayerName()}`,
+                              `${player.getPlayerName()} removed their vote from ${theVoteTargetPlayer.getPlayerName()} (${
+                                theVoteTargetPlayer.dayVotes
+                              })`,
                               "Day"
                             );
                           }
@@ -4606,7 +4612,7 @@ io.on("connection", async (socket) => {
           var lawyer = lawyerObject[1];
           if (game.getAlive()[i] == lawyer.getPlayer(roomCode).getRole().client) {
             if (game.getAlive()[i].getPlayer(roomCode).getRole().type.includes("jester")) {
-              // If client is lynced, and they are the jester
+              // If client is lynched, and they are the jester
               sendMessage(lawyer.getPlayerID(), room, roomCode, game, "target", `Your client ${player.getPlayerName()} has been lynched. Your client seems...happy for some reason`, "info")
             } else {
               sendMessage(lawyer.getPlayerID(), room, roomCode, game, "target", `Your client ${player.getPlayerName()} has been lynched. You're now on your own`, "info")
