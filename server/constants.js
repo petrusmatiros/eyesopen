@@ -7,6 +7,7 @@ global.VOTING = 30;
 global.DAYMESSAGES = 5;
 global.SHOWROLES = true;
 global.VOTEMESSAGES = "visible"
+global.minRoles = 3;
 global.minPlayers = 3;
 global.maxPlayers = 14;
 global.maxNoDeaths = 20;

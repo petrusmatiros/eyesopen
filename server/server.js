@@ -271,7 +271,7 @@ io.on("connection", async (socket) => {
     for (var i = 0; i < users.length; i++) {
       users[i].setInGame(true);
     }
-    if (roles.length >= 3) {
+    if (roles.length >= minRoles) {
       let seen = [];
       var i = 0;
       // keeping track of lawyer, jester, executioner
@@ -1197,33 +1197,70 @@ io.on("connection", async (socket) => {
     }
   });
 
+  socket.on("requestLobbyPlayers", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        if (room.getHost() == playerID) {
+          console.log("showing lobby players")
+          socket.emit(
+            "fetchLobbyPlayers",
+            room.slots
+          );
+        }
+      }
+
+    }
+  });
+  socket.on("kickPlayer", (playerID, proxyID) => {
+    if (checkUserExist(playerID)) {
+      var roomCode = getHostRoom(rooms, playerID)
+      if (roomCode !== null) {
+        var room = rooms.get(roomCode);
+        if (room.getHost() == playerID) {
+          var playerToKick = getKeyFromValue(proxyIdenfication, proxyID);
+          io.to(playerToKick).emit(
+            "hostKick",
+          );
+        }
+      }
+    }
+  });
+
   function updatePlayerSlot(playerID) {
-    if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-      var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-      var room = rooms.get(roomCode);
-      io.to(roomCode).emit(
-        "playerSlots",
-        proxyIdenfication.get(room.getHost()),
-        room.slots
-      );
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        io.to(roomCode).emit(
+          "playerSlots",
+          proxyIdenfication.get(room.getHost()),
+          room.slots
+        );
+      }
+
     }
   }
   function clearPlayerSlot(playerID) {
-    if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
-      var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-
-      var room = rooms.get(roomCode);
-      for (var [key, value] of Object.entries(room.slots)) {
-        if (value.userID == proxyIdenfication.get(playerID)) {
-          room.slots[key]["taken"] = false;
-          room.slots[key]["userID"] = undefined;
-          room.slots[key]["userName"] = "";
-          io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
-            "playerSlots",
-            proxyIdenfication.get(room.getHost()),
-            room.slots
-          );
-          break;
+    if (checkUserExist(playerID)) {
+      
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+  
+        var room = rooms.get(roomCode);
+        for (var [key, value] of Object.entries(room.slots)) {
+          if (value.userID == proxyIdenfication.get(playerID)) {
+            room.slots[key]["taken"] = false;
+            room.slots[key]["userID"] = undefined;
+            room.slots[key]["userName"] = "";
+            io.to(connectedUsers.get(playerID).getCurrentRoom()).emit(
+              "playerSlots",
+              proxyIdenfication.get(room.getHost()),
+              room.slots
+            );
+            break;
+          }
         }
       }
     }
@@ -1373,7 +1410,7 @@ io.on("connection", async (socket) => {
       }
       if (rooms.has(roomCode)) {
         // ! CHANGE THIS TO 14
-        if (rooms.get(roomCode).userCount() >= maxPlayers) {
+        if (rooms.get(roomCode).userCount() >= 2) {
           socket.emit(emitTo, "full");
           
         } else {

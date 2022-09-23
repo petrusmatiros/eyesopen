@@ -273,6 +273,11 @@ socket.on("connect", () => {
   });
 });
 
+socket.on("hostKick", () => {
+  console.log("kicked")
+  window.location.href = domain;
+})
+
 function resetGameSettingsError(type = "") {
   document.getElementById("lobby-gamesettings-help").style.opacity = "0%";
   document.getElementById("lobby-gamesettings-help").innerText = "";

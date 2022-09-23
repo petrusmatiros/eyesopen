@@ -57,7 +57,7 @@
     <div class="navbar-main">
       <div class="navbar-container">
         <a href="/" class="logo-link"
-          ><img class="logo" alt="eyesopen logo" src="/assets/icons/eyesopen.svg" alt="eyesopen logo"
+          ><img class="logo" alt="eyesopen logo" src="/assets/icons/eyesopen.svg"
         /></a>
       </div>
     </div>
@@ -86,7 +86,9 @@
         <div class="title-button shadow-light" id="changeUsername" onclick="displayChangeUsername()">Change username</div>
         <!-- <a class="title-button" onclick="join()" href="">Join game</a> -->
       </div>
-      <div id="overlay" onclick="closeCard()"></div>
+      <div class="overlay" id="overlay" onclick="closeCard()"></div>
+      
+
       <div class="card-input shadow-light" id="user">
         <div class="close">
           <img
@@ -195,7 +197,112 @@
       </div>
       <!-- <a href="https://www.google.com/" target="_blank">test_link</a> -->
 
+      <div class="overlay" id="overlay-popup1" onclick="hideKick()"></div>
+      
 
+      <!-- Kick -->
+      <div class="popup shadow-light" id="kick">
+        <div class="close">
+          <img
+            class="close-button"
+            id="popup-close"
+            onclick="hideKick()"
+            src="/assets/icons/close.svg"
+            alt="close x icon"
+          />
+        </div>
+        <div class="popup-text">
+          <div class="popup-title" id="popup-title">The room you created is full</div>
+          <div class="popup-subtitle" id="popup-subtitle">Kick someone out to be able to join</div>
+        </div>
+
+        <div class="players" id="players">
+          <div class="players-col" id="players-col1">
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+          </div>
+          <div class="players-col" id="players-col2">
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="overlay" id="overlay-popup2" onclick="hideKickConfirm()"></div>
+      <!-- Kick confirm -->
+      <div class="popup shadow-light" id="kickConfirm">
+        <div class="close">
+          <img
+            class="close-button"
+            id="popup-close"
+            onclick="hideKickConfirm()"
+            src="/assets/icons/close.svg"
+            alt="close x icon"
+          />
+        </div>
+        <div class="popup-text">
+          <div class="popup-title" id="playerToKick">Kick</div>
+        </div>
+        <img class="popup-icon" alt="devil emoji" src="/assets/icons/devil.svg">
+        <div class="popup-buttons">
+          <div class="popup-nobutton" onclick="hideKickConfirm()">Nope</div>
+          <div class="popup-yesbutton" onclick="kickConfirm()">Yeet them!</div>
+        </div>
+      </div>
 
 
       <div class="links" id="links">

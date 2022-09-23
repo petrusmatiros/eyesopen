@@ -17,6 +17,122 @@ socket.on("connect", () => {
   addEventListeners();
 });
 
+
+
+
+function loadPlayersInLobby(slots) {
+  var thePlayers = document.getElementById("players");
+  var columns = thePlayers.children;
+  for (var col = 0; col < columns.length; col++) {
+    var array = columns[col];
+    for (let i = 0; i < array.length; i++) {
+      var currentPlayer = array[i];
+      currentPlayer.id = "player-hidden";
+      currentPlayer.children[0].id = "";
+      currentPlayer.children[0].innerText = "";
+    }
+  }
+  var playerCount = 0;
+  var colCount = 0;
+  var col1 = document.getElementById("players-col1").children
+  var col2 = document.getElementById("players-col2").children
+  var currentColumn = col1;
+  for (var [key, value] of Object.entries(slots)) {
+    
+    if (playerCount == 2) {
+      colCount++;
+      playerCount = 0;
+    }
+
+    var playerElement = currentColumn[colCount];
+    if (value.userID !== undefined) {
+      playerElement.id = "";
+      playerElement.children[0].id = value.userID;
+      playerElement.children[0].innerText = value.userName;
+
+      if (currentColumn == col1) {
+        currentColumn = col2
+        playerCount++;
+      }
+      else if (currentColumn == col2) {
+        currentColumn = col1;
+        playerCount++;
+      }
+    } else {
+      playerElement.id = "player-hidden";
+      playerElement.children[0].id = "";
+      playerElement.children[0].innerText = "";
+    }
+  }
+}
+
+function hideKick() {
+  var overlayPopup = document.getElementById("overlay-popup1");
+  overlayPopup.style.display = "none";
+  var overlayPopupConfirm = document.getElementById("overlay-popup2");
+  overlayPopupConfirm.style.display = "none";
+  var kickPopup = document.getElementById("kick");
+  kickPopup.style.display = "none";
+  var kickPopupConfirm = document.getElementById("kickConfirm");
+  kickPopupConfirm.style.display = "none"
+}
+function displayKick() {
+  socket.emit("requestLobbyPlayers", getPlayerID());
+  socket.on("fetchLobbyPlayers", (slots) => {
+    loadPlayersInLobby(slots)
+  })
+  var overlayPopup = document.getElementById("overlay-popup1");
+  overlayPopup.style.display = "flex";
+  
+  var kickPopup = document.getElementById("kick");
+  kickPopup.style.display = "flex";
+}
+function hideKickConfirm() {
+  var overlayPopupConfirm = document.getElementById("overlay-popup2");
+  overlayPopupConfirm.style.display = "none";
+  var kickPopupConfirm = document.getElementById("kickConfirm");
+  kickPopupConfirm.style.display = "none"
+}
+function displayKickConfirm() {
+  var overlayPopupConfirm = document.getElementById("overlay-popup2");
+  overlayPopupConfirm.style.display = "flex";
+  var kickPopupConfirm = document.getElementById("kickConfirm");
+  console.log(kickPopupConfirm)
+  kickPopupConfirm.style.display = "flex"
+}
+var playerToKickID = null;
+function kickPlayer(element) {
+  var playerContainer = element.parentElement;
+  var playerBubble = playerContainer.children[0];
+  if (playerBubble.id !== null || playerBubble.id !== undefined) {
+    displayKickConfirm();
+    document.getElementById("playerToKick").innerText = "Kick " + playerBubble.innerText + " from lobby?"
+    playerToKickID = playerBubble.id;
+  }
+}
+function kickConfirm() {
+  if (playerToKickID !== null) {
+    socket.emit("kickPlayer", getPlayerID(), playerToKickID)
+    hideKick();
+    setTimeout(() => {
+      socket.emit("fetchHostRoom", getPlayerID());
+      socket.on("hostRoom", (roomCode) => {
+
+        socket.emit("checkRoomCode", roomCode, getPlayerID(), "press");
+          socket.on("roomCodeResponsePress", (status) => {
+            if (status == "full") {
+              displayKick();
+            } else {
+              setLocation(`lobby/${roomCode}`, false);
+            }
+          });
+      })
+    }, 100)
+  }
+  playerToKickID = null;
+}
+
+
 function showChangeUsername(toShow = false) {
   if (toShow == true) {
     document.getElementById("changeUsername").style.display = "flex";
@@ -254,7 +370,14 @@ function displayHost() {
         window.location.reload();
       } else {
         console.log(roomCode);
-        setLocation(`lobby/${roomCode}`, false);
+        socket.emit("checkRoomCode", roomCode, getPlayerID(), "press");
+        socket.on("roomCodeResponsePress", (status) => {
+          if (status == "full") {
+            displayKick();
+          } else {
+            setLocation(`lobby/${roomCode}`, false);
+          }
+        });
       }
     });
   }
