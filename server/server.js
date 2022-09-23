@@ -300,7 +300,7 @@ io.on("connection", async (socket) => {
           // if user has an evil role, add them to evil
           if (users[i].getPlayer(roomCode).role.team == "evil") {
             room.getGame().addEvil(users[i]);
-            // if there is atleast one evil role, create evil room code
+            // if there is at least one evil role, create evil room code
             game.setEvilRoom("evil-" + roomCode);
             console.log("evil room created", game.getEvilRoom());
           }
@@ -1373,7 +1373,7 @@ io.on("connection", async (socket) => {
       }
       if (rooms.has(roomCode)) {
         // ! CHANGE THIS TO 14
-        if (rooms.get(roomCode).userCount() >= 3) {
+        if (rooms.get(roomCode).userCount() >= maxPlayers) {
           socket.emit(emitTo, "full");
           
         } else {

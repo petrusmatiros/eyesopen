@@ -136,7 +136,7 @@ function checkIfSessionExists() {
 function hideUser() {
   document.getElementById("overlay").style.display = "none";
   document.getElementById("user").style.display = "none";
-  document.getElementById("user-help").style.display = "none";
+  document.getElementById("join-help").style.display = "none";
   document.getElementById("inputUser").value = "";
   document.getElementById("inputUser").style.border = "2px solid #b1b1b1";
 }
@@ -149,26 +149,26 @@ function roomFull() {
   document.getElementById("join-help").style.display = "flex";
   document.getElementById("inputUser").style.border =
     "2px solid hsl(0, 100%, 45%)";
-  document.getElementById("user-help").innerText = "The room is full";
+  document.getElementById("join-help").innerText = "The room is full";
 }
 function roomInProgress() {
   document.getElementById("join-help").style.display = "flex";
   document.getElementById("inputUser").style.border =
     "2px solid hsl(0, 100%, 45%)";
-  document.getElementById("user-help").innerText =
+  document.getElementById("join-help").innerText =
     "The room is currently in progress";
 }
 
 function userNameShortError() {
-  document.getElementById("user-help").style.display = "flex";
+  document.getElementById("join-help").style.display = "flex";
   document.getElementById("inputUser").style.border =
     "2px solid hsl(0, 100%, 45%)";
-  document.getElementById("user-help").innerText =
-    "Username needs to be atleast 1 character(s) long";
+  document.getElementById("join-help").innerText =
+    "Username needs to be at least 1 character(s) long";
 }
 
 function userNameCorrect() {
-  document.getElementById("user-help").style.display = "none";
+  document.getElementById("join-help").style.display = "none";
   document.getElementById("inputUser").style.border =
     "2px solid hsl(123, 100%, 45%)";
 }
