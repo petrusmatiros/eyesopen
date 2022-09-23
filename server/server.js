@@ -543,6 +543,7 @@ io.on("connection", async (socket) => {
         if (room.getHost() == playerID) {
           if (room.getGame().getProgress() == false) {
             if (inputType == "actions") {
+              inputValue = Math.round(inputValue);
               if (inputValue >= MIN_SECONDS || inputValue <= MAX_SECONDS) {
                 game.settings[inputType]["isDefault"] = false;
                 game.settings[inputType]["value"] = inputValue;
