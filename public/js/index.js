@@ -66,6 +66,10 @@ function loadPlayersInLobby(slots) {
   }
 }
 
+socket.on("updateLobbyPlayers", (slots) => {
+  loadPlayersInLobby(slots);
+})
+
 function hideKick() {
   var overlayPopup = document.getElementById("overlay-popup1");
   overlayPopup.style.display = "none";
@@ -97,7 +101,6 @@ function displayKickConfirm() {
   var overlayPopupConfirm = document.getElementById("overlay-popup2");
   overlayPopupConfirm.style.display = "flex";
   var kickPopupConfirm = document.getElementById("kickConfirm");
-  console.log(kickPopupConfirm)
   kickPopupConfirm.style.display = "flex"
 }
 var playerToKickID = null;

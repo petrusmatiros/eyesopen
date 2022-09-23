@@ -1193,9 +1193,11 @@ io.on("connection", async (socket) => {
             }
           }
         }
+        io.to(room.getHost()).emit("updateLobbyPlayers", room.slots);
       }
     }
   });
+
 
   socket.on("requestLobbyPlayers", (playerID) => {
     if (checkUserExist(playerID)) {
@@ -1238,6 +1240,7 @@ io.on("connection", async (socket) => {
           proxyIdenfication.get(room.getHost()),
           room.slots
         );
+        
       }
 
     }
@@ -1262,6 +1265,7 @@ io.on("connection", async (socket) => {
             break;
           }
         }
+        io.to(room.getHost()).emit("updateLobbyPlayers", room.slots);
       }
     }
   }

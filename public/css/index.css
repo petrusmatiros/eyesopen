@@ -595,7 +595,7 @@ p {
 .players {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   flex-direction: row;
   gap: 1.5rem;
 }

@@ -48,7 +48,13 @@
         <div id="player-count" class="lobby-help"></div>
         <div id="player-card" class="lobby-card">
           <div class="lobby-card-title-container">
-            <div class="lobby-card-title">Players</div>
+            <div class="lobby-card-title-wrapper">
+              <div class="lobby-card-title">
+                Players
+              </div>
+              <img class="lobby-kickpanel-icon" id="lobby-kickpanel-icon" onclick="displayKick()" src="/assets/icons/verticaldots_settings.svg"
+                alt="kick panel icon" />
+            </div>
             <div class="lobby-req">
               Requirement: 3 minimum
               <div class="lobby-icon-container">
@@ -249,6 +255,116 @@
           Start
         </div>
       </div>
+
+
+      <div class="overlay" id="overlay-popup1" onclick="hideKick()"></div>
+      
+
+      <!-- Kick -->
+      <div class="popup shadow-light" id="kick">
+        <div class="close">
+          <img
+            class="close-button"
+            id="popup-close"
+            onclick="hideKick()"
+            src="/assets/icons/close.svg"
+            alt="close x icon"
+          />
+        </div>
+        <div class="popup-text">
+          <div class="popup-title" id="popup-title">Host player panel</div>
+          <div class="popup-subtitle" id="popup-subtitle">Press X to kick a player ᕕ(⌐■_■)ᕗ</div>
+        </div>
+
+        <div class="players" id="players">
+          <div class="players-col" id="players-col1">
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+          </div>
+          <div class="players-col" id="players-col2">
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+            <div class="player-container" id="player-hidden">
+              <div class="player-bubble">--</div>
+              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="overlay" id="overlay-popup2" onclick="hideKickConfirm()"></div>
+      <!-- Kick confirm -->
+      <div class="popup shadow-light" id="kickConfirm">
+        <div class="close">
+          <img
+            class="close-button"
+            id="popup-close"
+            onclick="hideKickConfirm()"
+            src="/assets/icons/close.svg"
+            alt="close x icon"
+          />
+        </div>
+        <div class="popup-text">
+          <div class="popup-title" id="playerToKick">Kick</div>
+        </div>
+        <img class="popup-icon" alt="devil emoji" src="/assets/icons/devil.svg">
+        <div class="popup-buttons">
+          <div class="popup-nobutton" onclick="hideKickConfirm()">Nope</div>
+          <div class="popup-yesbutton" onclick="kickConfirm()">Yeet them!</div>
+        </div>
+      </div>
+
+
 
       <!-- Game settings -->
       <div class="overlay" id="overlay-gamesettings" onclick="hideGameSettings()"></div>
