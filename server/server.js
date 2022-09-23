@@ -1410,7 +1410,7 @@ io.on("connection", async (socket) => {
       }
       if (rooms.has(roomCode)) {
         // ! CHANGE THIS TO 14
-        if (rooms.get(roomCode).userCount() >= 2) {
+        if (rooms.get(roomCode).userCount() >= maxPlayers) {
           socket.emit(emitTo, "full");
           
         } else {
