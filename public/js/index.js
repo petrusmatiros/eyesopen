@@ -126,7 +126,9 @@ function kickConfirm() {
             if (status == "full") {
               displayKick();
             } else {
-              setLocation(`lobby/${roomCode}`, false);
+              setTimeout(() => {
+                setLocation(`lobby/${roomCode}`, false);
+              }, 100)
             }
           });
       })
@@ -378,7 +380,9 @@ function displayHost() {
           if (status == "full") {
             displayKick();
           } else {
-            setLocation(`lobby/${roomCode}`, false);
+            setTimeout(() => {
+              setLocation(`lobby/${roomCode}`, false);
+            }, 100)
           }
         });
       }
