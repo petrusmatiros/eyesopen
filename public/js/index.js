@@ -336,7 +336,7 @@ function join(inputVal) {
 function checkRoomCode() {
   requestID();
   var inputVal = document.getElementById("code").value.toUpperCase();
-  socket.emit("checkRoomCode", inputVal, getPlayerID());
+  socket.emit("checkRoomCode", inputVal, getPlayerID(), "press");
   if (inputVal.length !== 5) {
     roomCodeError();
   } else {
@@ -347,7 +347,7 @@ function checkRoomCode() {
         join(inputVal);
       }
     });
-    socket.on("roomCodeResponse", (status) => {
+    socket.on("roomCodeResponsePress", (status) => {
       if (status == "valid") {
         roomCodeCorrect();
         join(inputVal);

@@ -1360,17 +1360,26 @@ io.on("connection", async (socket) => {
   });
 
   // handling room joining
-  socket.on("checkRoomCode", (roomCode, playerID) => {
+  socket.on("checkRoomCode", (roomCode, playerID, state) => {
     console.log("this player", playerID);
     if (checkUserExist(playerID)) {
       console.log(playerID, "trying roomcode", roomCode);
+      var emitTo = ""
+      if (state.includes("first")) {
+        emitTo = "roomCodeResponseFirst"
+      }
+      else if (state.includes("press")) {
+        emitTo = "roomCodeResponsePress"
+      }
       if (rooms.has(roomCode)) {
-        if (rooms.get(roomCode).userCount() == maxPlayers) {
-          socket.emit("roomCodeResponse", "full");
+        // ! CHANGE THIS TO 14
+        if (rooms.get(roomCode).userCount() >= 3) {
+          socket.emit(emitTo, "full");
+          
         } else {
           console.log("room code", roomCode, "is valid");
           console.log(socket.rooms);
-          socket.emit("roomCodeResponse", "valid");
+          socket.emit(emitTo, "valid");
           if (connectedUsers.get(playerID).getCurrentRoom() !== roomCode) {
             if (rooms.get(roomCode).getUsers().includes(playerID)) {
               console.log("user already in room");
@@ -1380,7 +1389,7 @@ io.on("connection", async (socket) => {
           }
         }
       } else {
-        socket.emit("roomCodeResponse", "invalid");
+        socket.emit(emitTo, "invalid");
       }
       console.log(rooms.get(roomCode));
     }

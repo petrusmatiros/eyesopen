@@ -40,9 +40,28 @@ socket.on("connect", () => {
       resetCookie();
       window.location.href = window.location.href + "/join";
     } else {
-      revealLobby();
       var URL = "";
       var room = "";
+
+
+      if (window.location.href.endsWith("/")) {
+        URL = window.location.href.replace("http://", "");
+        room = URL.split("/")[URL.split("/").length - 2];
+        socket.emit("checkRoomCode", room, getPlayerID(), "press");
+      } else if (!window.location.href.endsWith("/")) {
+        URL = window.location.href.replace("http://", "");
+        room = URL.split("/")[URL.split("/").length - 1];
+        socket.emit("checkRoomCode", room, getPlayerID(), "press");
+      }
+      socket.on("roomCodeResponsePress", (status) => {
+        if (status == "full") {
+          window.location.href = domain;
+        }
+      });
+
+      
+      
+      
       if (window.location.href.endsWith("/")) {
         URL = window.location.href.replace("http://", "");
         room = URL.split("/")[URL.split("/").length - 2];
@@ -56,6 +75,10 @@ socket.on("connect", () => {
         socket.emit("setRoom", getPlayerID());
         socket.emit("directJoin", getPlayerID(), room, "lobby");
       }
+
+
+      revealLobby();
+
       socket.emit("checkUserApartOfGame", getPlayerID(), room, "app");
       socket.on("apartOfGameApp", (apartOfGame, inProgress, code) => {
         if (apartOfGame && inProgress == true) {

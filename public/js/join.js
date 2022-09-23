@@ -12,7 +12,14 @@ socket.on("connect", () => {
       socket.emit("setRoom", getPlayerID());
       var URL = window.location.href.replace("http://", "");
       var room = URL.split("/")[URL.split("/").length - 2];
-      window.location.href = lobby + room;
+      socket.emit("checkRoomCode", room, getPlayerID(), "first");
+      socket.on("roomCodeResponseFirst", (status) => {
+        if (status == "full") {
+          window.location.href = domain;
+        } else if (status == "valid") {
+          window.location.href = lobby + room;
+        }
+      });
     }
   });
   addEventListeners();
@@ -87,12 +94,11 @@ function requestID(inputVal) {
       socket.emit("createUser", inputVal, getPlayerID());
       var URL = window.location.href.replace("http://", "");
       var room = URL.split("/")[URL.split("/").length - 2];
-      socket.emit("checkRoomCode", room, getPlayerID());
-      socket.on("roomCodeResponse", (status) => {
+      socket.emit("checkRoomCode", room, getPlayerID(), "press");
+      socket.on("roomCodeResponsePress", (status) => {
         if (status == "full") {
           roomFull();
-          full = true;
-        } else {
+        } else if (status == "valid") {
           join(room);
         }
       });
