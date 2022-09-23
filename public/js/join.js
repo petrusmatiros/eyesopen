@@ -1,5 +1,5 @@
 const domain = "https://eyesopen.ml/";
-const socket = io(domain, {secure: true});
+const socket = io(domain, { secure: true });
 
 const lobby = domain + "lobby/";
 
@@ -15,31 +15,28 @@ socket.on("connect", () => {
       window.location.href = lobby + room;
     }
   });
-  addEventListeners()
+  addEventListeners();
   setFocus();
 });
 
-
 function addEventListeners() {
   var theUserInput = document.getElementById("inputUser");
-  theUserInput.addEventListener('keydown', (e) => {
+  theUserInput.addEventListener("keydown", (e) => {
     if (!e.repeat) {
       if (e.key !== null) {
         if (e.key == "Enter") {
           checkDirectName();
         }
       }
-    } 
+    }
   });
-  
 }
 
 function setFocus() {
   var user = document.getElementById("user");
-  user.style.display = "flex"
+  user.style.display = "flex";
   document.getElementById("inputUser").focus();
 }
-
 
 /**
  * [resetCookie resets the playerID cookie to null]
@@ -69,14 +66,12 @@ function resetCookie(override = false) {
  *
  */
 function setLocation(URL) {
-  setTimeout(() => {
-    window.location.href = URL;
-  }, 500);
+  window.location.href = URL;
 }
 
 const fiveHours = 60 * 60 * 5;
 
-function requestID() {
+function requestID(inputVal) {
   console.log("You connect with id", socket.id);
   socket.emit("requestID", socket.id, getPlayerID());
   socket.on("playerID", (playerID) => {
@@ -88,6 +83,19 @@ function requestID() {
         document.cookie = `eyesopenID=${playerID}; path=/; max-age=${fiveHours}; SameSite=Lax`;
         socket.emit("completedID", getPlayerID());
       }
+
+      socket.emit("createUser", inputVal, getPlayerID());
+      var URL = window.location.href.replace("http://", "");
+      var room = URL.split("/")[URL.split("/").length - 2];
+      socket.emit("checkRoomCode", room, getPlayerID());
+      socket.on("roomCodeResponse", (status) => {
+        if (status == "full") {
+          roomFull();
+          full = true;
+        } else {
+          join(room);
+        }
+      });
     }
   });
 }
@@ -170,24 +178,7 @@ function checkDirectName() {
   if (inputVal.length < 1) {
     userNameShortError();
   } else {
-    var full = false;
-    requestID();
-    var URL = window.location.href.replace("http://", "");
-    var room = URL.split("/")[URL.split("/").length - 2];
-    setTimeout(() => {
-      socket.emit("createUser", inputVal, getPlayerID());
-      socket.emit("checkRoomCode", room, getPlayerID());
-    }, 500);
-
-    socket.on("roomCodeResponse", (status) => {
-      if (status == "full") {
-        roomFull();
-        full = true;
-      }
-    });
-    if (full == false) {
-      join(room);
-    }
+    requestID(inputVal);
   }
   // check if room exists (has been created)
 }
