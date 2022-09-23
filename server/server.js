@@ -325,7 +325,7 @@ io.on("connection", async (socket) => {
           var rand = random(0, users.length - 1);
           if (!seen.includes(rand)) {
             if (
-              roles.length == 3 &&
+              roles.length == minRoles &&
               roles.includes("lawyer") &&
               roles.includes("executioner") &&
               roles.includes("jester")
@@ -542,10 +542,6 @@ io.on("connection", async (socket) => {
         var game = room.getGame();
         if (room.getHost() == playerID) {
           if (room.getGame().getProgress() == false) {
-            var MIN_SECONDS = 10;
-            var MAX_SECONDS = 300;
-            console.log(inputValue);
-            console.log(inputType);
             if (inputType == "actions") {
               if (inputValue >= MIN_SECONDS || inputValue <= MAX_SECONDS) {
                 game.settings[inputType]["isDefault"] = false;

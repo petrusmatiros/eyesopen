@@ -323,7 +323,7 @@ function gameSettingError(type) {
   theElement.classList.add("lobby-gamesetting-error");
   theElement.style.border = "2px solid hsl(0, 100%, 45%)";
   document.getElementById("lobby-gamesettings-help").innerText =
-    "The duration must be between 10s and 300s";
+    "The duration must be between 5s and 300s";
 }
 
 function selectShowRole() {
@@ -395,7 +395,7 @@ function checkNumber(element) {
     element.id == "discussionInput" ||
     element.id == "votingInput"
   ) {
-    var MIN_SECONDS = 10;
+    var MIN_SECONDS = 5;
     var MAX_SECONDS = 300;
     var inputType = "";
     var durationToChange = "";
