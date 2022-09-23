@@ -205,8 +205,8 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  max-width: 6rem;
-  min-width: 6rem;
+  width: 6rem;
+  height: 7.109rem;
   border-radius: 0.7rem;
   margin-right: 1rem;
 }
@@ -398,7 +398,8 @@
   justify-content: center;
   align-items: center;
   vertical-align: text-top;
-  width: 1.55rem;
+  width: 1.563rem;
+  height: 1.563rem;
   margin-bottom: 0.15rem;
   margin-right: 0.25rem;
 }
