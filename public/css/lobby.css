@@ -845,6 +845,26 @@ input[type=number]::-webkit-inner-spin-button {
   background-color: var(--slot-joined-other);
 }
 
+.joined-host {
+  background-color: var(--slot-joined) !important;
+  border: 2px solid var(--slot-border-joined) !important;
+}
+
+.joined-self {
+  background-color: var(--slot-joined) !important;
+  border: 2px dashed var(--slot-border-joined) !important;
+}
+
+.joined-other {
+  background-color: var(--slot-joined-other) !important;
+  border: 2px solid var(--slot-border-other) !important;
+}
+
+.empty {
+  background-color: var(--slot-empty) !important;
+  border: 2px solid var(--slot-border-empty) !important;
+}
+
 .lobby-player-wrapper {
   display: flex;
   justify-content: center;
