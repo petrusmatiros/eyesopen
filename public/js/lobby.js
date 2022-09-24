@@ -492,7 +492,7 @@ function loadPlayersInLobby(slots) {
     var playerElement = currentColumn[colCount];
     if (value.userID !== undefined) {
       playerElement.id = "";
-      playerElement.children[0].id = value.userID;
+      playerElement.children[0].id = "kick+" + value.userID;
       playerElement.children[0].innerText = value.userName;
 
       if (currentColumn == col1) {
@@ -560,6 +560,7 @@ function kickPlayer(element) {
 }
 function kickConfirm() {
   if (playerToKickID !== null) {
+    playerToKickID = playerToKickID.replace("kick+", "")
     socket.emit("kickPlayer", getPlayerID(), playerToKickID)
     hideKickConfirm();
   }
