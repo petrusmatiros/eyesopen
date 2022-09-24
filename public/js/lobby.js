@@ -466,7 +466,7 @@ function hideGameSettings() {
 }
 
 function loadPlayersInLobby(slots) {
-  var thePlayers = document.getElementById("players");
+  var thePlayers = document.getElementById("kick-players");
   var columns = thePlayers.children;
   for (var col = 0; col < columns.length; col++) {
     var array = columns[col];
@@ -481,6 +481,7 @@ function loadPlayersInLobby(slots) {
   var colCount = 0;
   var col1 = document.getElementById("players-col1").children
   var col2 = document.getElementById("players-col2").children
+  var playersInLobby = 0;
   var currentColumn = col1;
   for (var [key, value] of Object.entries(slots)) {
     
@@ -494,7 +495,7 @@ function loadPlayersInLobby(slots) {
       playerElement.id = "";
       playerElement.children[0].id = "kick+" + value.userID;
       playerElement.children[0].innerText = value.userName;
-
+      playersInLobby++;
       if (currentColumn == col1) {
         currentColumn = col2
         playerCount++;
@@ -508,6 +509,12 @@ function loadPlayersInLobby(slots) {
       playerElement.children[0].id = "";
       playerElement.children[0].innerText = "";
     }
+  }
+
+  if (playersInLobby == 1) {
+    thePlayers.classList.add("no-gap");
+  } else {
+    thePlayers.classList.remove("no-gap");
   }
 }
 

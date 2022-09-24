@@ -81,6 +81,10 @@
   margin-left: -0.75rem;
 }
 
+.no-gap {
+  gap: 0 !important;
+}
+
 
 .no-margin {
   margin: 0 !important;
