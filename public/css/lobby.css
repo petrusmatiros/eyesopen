@@ -1080,6 +1080,7 @@ input[type=number]::-webkit-inner-spin-button {
   flex-direction: row;
   width: 75%;
   max-width: 19rem;
+  margin-bottom: 1rem;
 }
 
 .lobby-button {
@@ -1143,6 +1144,7 @@ input[type=number]::-webkit-inner-spin-button {
     flex-direction: row;
     width: 75%;
     max-width: 19rem;
+    margin-bottom: 1rem;
   }
   .lobby-rolecard-container {
     min-width: 21rem;
