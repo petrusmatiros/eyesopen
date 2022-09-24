@@ -188,11 +188,13 @@ socket.on("connect", () => {
                 "inline";
               document.getElementById("lobby-req-cross-players").style.display =
                 "none";
+                document.getElementById("player-req").style.color = "var(--good-bg)"
             } else if (totalUsers < minPlayers) {
               document.getElementById("lobby-req-check-players").style.display =
                 "none";
               document.getElementById("lobby-req-cross-players").style.display =
                 "inline";
+                document.getElementById("player-req").style.color = "var(--evil-bg)"
             }
             if (!hostExists) {
               document.getElementById("player-count").style.color =
@@ -855,10 +857,12 @@ function roleReqHandler(roles, users) {
     socket.emit("reqHandler", getPlayerID(), "rolesEqualUsers", true);
     document.getElementById("lobby-req-check-roles").style.display = "inline";
     document.getElementById("lobby-req-cross-roles").style.display = "none";
+    document.getElementById("role-req").style.color = "var(--good-bg)"
   } else {
     socket.emit("reqHandler", getPlayerID(), "rolesEqualUsers", false);
     document.getElementById("lobby-req-check-roles").style.display = "none";
     document.getElementById("lobby-req-cross-roles").style.display = "inline";
+    document.getElementById("role-req").style.color = "var(--evil-bg)"
   }
 }
 
