@@ -97,6 +97,9 @@ app.get("/lobby/:id/join", (req, res) => {
     res.sendFile(__dirname + "404.html");
   }
 });
+app.get("/sitemap.xml", (req, res) => {
+  res.sendFile(__dirname + "sitemap.xml");
+});
 
 // Catch all
 app.get("*", (req, res) => {
