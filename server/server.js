@@ -51,6 +51,7 @@ function checkClearData() {
     rooms.clear();
     // Clear connected users
     connectedUsers.clear();
+    io.emit("hostKick");
   }
 }
 setInterval(checkClearData, 1000);
