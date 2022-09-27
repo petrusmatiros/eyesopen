@@ -23,9 +23,9 @@
   --slot-border-empty: rgba(38, 38, 38, 0);
   /* Not ready and ready */
   --ready-fg: hsl(100, 100%, 100%);
-  --ready-bg: hsl(150, 50%, 35%);
+  --ready-bg: hsl(150, 70%, 35%);
   --not-ready-fg: hsl(0, 0%, 0%);
-  --not-ready-bg: hsl(0, 100%, 70%);
+  --not-ready-bg: hsl(0, 100%, 65%);
   /* Role tags */
   /* Good */
   --good-fg: var(--dark-fg);
