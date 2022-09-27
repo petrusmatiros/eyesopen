@@ -245,8 +245,8 @@ p {
   align-items: center;
   width: 21.875rem;
   margin: 1rem 0 1rem 0;
-  min-height: 7.75rem;
-  max-height: 7.75rem;
+  height: 7.75rem;
+  width: 21.875rem;
 }
 
 .title-dark {
