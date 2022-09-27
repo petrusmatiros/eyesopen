@@ -100,6 +100,9 @@ app.get("/lobby/:id/join", (req, res) => {
 app.get("/sitemap.xml", (req, res) => {
   res.sendFile(__dirname + "sitemap.xml");
 });
+app.get("/robots.txt", (req, res) => {
+  res.sendFile(__dirname + "robots.txt");
+});
 
 // Catch all
 app.get("*", (req, res) => {
