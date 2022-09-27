@@ -383,12 +383,13 @@ input[type="number"] {
   font-family: "League Spartan", sans-serif;
   text-align: center;
   font-size: 0.75rem;
+  font-weight: 600;
   margin: 0.5rem 0 0 0;
   padding: 0.5em;
   outline: none;
   border-radius: 0.5rem;
   border: 2px solid #b1b1b1;
-  width: 5rem;
+  width: 7rem;
 }
 
 input[type="number"]:focus {
@@ -405,7 +406,6 @@ input[type=number]::-webkit-inner-spin-button {
 
 }
 
-
 #checkbox-check {
   opacity: 0%;
   width: 1rem;
@@ -418,7 +418,7 @@ input[type=number]::-webkit-inner-spin-button {
   align-items: center;
   vertical-align: center;
   cursor: pointer;
-  padding: 0.35rem;
+  padding: 0.25rem;
   border-radius: 0.45rem;
   outline: 2px solid var(--dark-fg);
 }
@@ -428,8 +428,8 @@ input[type=number]::-webkit-inner-spin-button {
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  margin-top: 0.35rem;
-  gap: 2.5rem;
+  margin-top: 1rem;
+  gap: 1rem;
 }
 
 .lobby-gamesettings-radio {
@@ -439,8 +439,6 @@ input[type=number]::-webkit-inner-spin-button {
   flex-direction: column;
   gap: 0.5rem;
 }
-
-
 
 .lobby-gamesettings-radio-button-container {
   display: flex;
@@ -462,8 +460,8 @@ input[type=number]::-webkit-inner-spin-button {
   align-items: center;
   vertical-align: center;
   cursor: pointer;
-  width: 1.15rem;
-  height: 1.15rem;
+  width: 1rem;
+  height: 1rem;
   border-radius: 1rem;
   background-color: var(--game-setting-hover);
 }
@@ -476,10 +474,9 @@ input[type=number]::-webkit-inner-spin-button {
   vertical-align: center;
   display: inline;
   color: var(--dark-fg);
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: 400;
 }
-
 
 #adjusted-close3 {
   margin-right: 0;
@@ -504,8 +501,6 @@ input[type=number]::-webkit-inner-spin-button {
   min-width: 21rem;
   max-width: 21rem;
 }
-
-
 
 .lobby-gamesettings-buttons {
   user-select: none;
@@ -559,21 +554,31 @@ input[type=number]::-webkit-inner-spin-button {
   max-height: 0.5rem;
 }
 
+.lobby-gamesettings-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--dark-fg);
+  font-size: 1.75rem;
+  font-weight: 650;
+  margin-bottom: 0.5rem;
+}
+
 .lobby-gamesettings-durations {
   padding: 1em;
   border-radius: 0.75rem;
   margin-top: 0.35rem;
   border: 2px dashed var(--dark-fg);
-  min-width: 16.5rem;
-  max-width: 16.5rem;
+  min-width: 17.5rem;
+  max-width: 17.5rem;
 }
 
 .lobby-gamesettings-messages {
   padding: 1em;
   border-radius: 0.75rem;
   border: 2px dashed var(--dark-fg);
-  min-width: 16.5rem;
-  max-width: 16.5rem;
+  min-width: 17.5rem;
+  max-width: 17.5rem;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 }
@@ -584,16 +589,16 @@ input[type=number]::-webkit-inner-spin-button {
 
 .lobby-gamesettings-title {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   color: var(--dark-fg);
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 550;
   margin-bottom: 1rem;
 }
 .lobby-gamesettings-subtitle {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   color: var(--dark-fg);
   font-size: 1rem;
@@ -602,11 +607,10 @@ input[type=number]::-webkit-inner-spin-button {
 }
 .lobby-gamesettings-setting {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: row;
-  margin: 0 0.5rem 0.5rem 0.5rem;
-  gap: 7rem;
+  gap: 1rem;
 }
 
 .lobby-gamesettings-spacebetween {
@@ -619,9 +623,8 @@ input[type=number]::-webkit-inner-spin-button {
   margin: 0 0 0.5rem 0.75rem !important
 }
 
-.lobby-gamesettings-column {
-  flex-direction: column !important;
-  gap: 0.5rem;
+.lobby-gamesettings-gap {
+  gap: 2.85rem !important;
 }
 
 .lobby-gamesettings-row {
@@ -642,8 +645,6 @@ input[type=number]::-webkit-inner-spin-button {
   color: var(--dark-fg);
   font-size: 1rem;
   font-weight: 500;
-  margin-right: 1rem;
-  gap: 0.35rem;
 }
 
 .lobby-gamesettings-icon {
@@ -685,6 +686,8 @@ input[type=number]::-webkit-inner-spin-button {
 #copy-button {
   display: "inline";
   margin-left: 0.5rem;
+  width: 1.563rem;
+  height: 1.563rem;
 }
 
 #check-circle-icon {
