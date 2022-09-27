@@ -3419,6 +3419,22 @@ io.on("connection", async (socket) => {
       }
     }
 
+    var winState = Object.values(checkWinState(game, roomCode))
+    
+    if (winState[0] == true)
+    setTimeout(
+      endGame,
+      7500,
+      game,
+      roomCode,
+      winState[0],
+      winState[1],
+      winState[2],
+      winState[3]
+    );
+  }
+
+  function checkWinState(game, roomCode) {
     var win = false;
     var winType = "";
     var lawyerWin = false;
@@ -3486,25 +3502,18 @@ io.on("connection", async (socket) => {
     // IMPORTANT TO JUST SEND WIN TO JUST THAT USER, SINCE THERE CAN BE 2 JESTERS
     // ALSO HANDLE CHECK PREVIOUS
 
+    var toSend = [];
     if (win) {
-      var toSend = [];
       for (var i = 0; i < game.getWinners().length; i++) {
         var theID = proxyIdenfication.get(game.getWinners()[i].winnerID);
         var theName = game.getWinners()[i].winnerName;
         var winner = { theID, theName };
         toSend.push(winner);
       }
-      setTimeout(
-        endGame,
-        7500,
-        game,
-        roomCode,
-        win,
-        winType,
-        lawyerWin,
-        toSend
-      );
     }
+
+    var winState = {win, winType, lawyerWin, toSend}
+    return winState;
   }
 
   socket.on("leaveGame", (playerID) => {
@@ -3535,6 +3544,26 @@ io.on("connection", async (socket) => {
       }
     }
   });
+
+  socket.on("endGameRefresh", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (game.getProgress()) {
+          if (game.getUsers().includes(connectedUsers.get(playerID))) {
+            var winState = Object.values(checkWinState(game, roomCode))
+
+            if (winState[0] == true) {
+              io.to(roomCode).emit("endGameRefreshed", winState[0], winState[1], winState[2], winState[3]);
+            }
+          }
+        }
+        
+      }
+    }
+  })
 
   function endGame(game, roomCode, win, winType, lawyerWin, toSend) {
     io.to(roomCode).emit("endGame", win, winType, lawyerWin, toSend);

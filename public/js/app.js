@@ -81,6 +81,15 @@ socket.on("connect", () => {
             checkIfDead(phase, isDead);
           });
 
+          socket.emit("endGameRefresh", getPlayerID());
+          socket.on("endGameRefreshed", (win, winType, lawyerWin, winners) => {
+            console.log("ending game");
+            socket.emit("requestProxy", getPlayerID(), "app");
+            socket.on("fetchedProxyApp", (proxyID) => {
+              endGame(proxyID, win, winType, lawyerWin, winners);
+            });
+          });
+
           socket.emit("fetchMessages", getPlayerID());
           socket.on("savedMessages", (messages, cycle) => {
             loadSavedMessages(messages, cycle);
