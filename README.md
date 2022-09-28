@@ -174,8 +174,6 @@ npm build
 
 **Icons** <br> <a href="https://www.untitledui.com/icons" target="_blank">Untitled UI</a>
 
-**Eyes lottie animation** <br> <a href="https://lottiefiles.com/51493-blinking-eyes" target="_blank">Blinking Eyes</a>
-
 ## Notes
 
 This game is in it's production phase - still in development :D
