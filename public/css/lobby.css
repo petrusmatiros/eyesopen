@@ -218,6 +218,7 @@
   align-items: center;
   animation: fadeIn 0.2s 1;
   width: 12.5rem;
+  height: 14.786rem;
   padding: 0.15em;
   margin: 1rem;
   border-radius: 1rem;
@@ -279,6 +280,7 @@
 
 .lobby-rolecard-image {
   width: 3.15rem;
+  height: 3.75rem;
   border-radius: 0.5rem;
   background-color: var(--light-bg);
   box-shadow: 0 0.5rem 0.5rem rgba(0, 0, 0, 0.12);

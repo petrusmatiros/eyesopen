@@ -685,7 +685,6 @@ function showInfo() {
   document.getElementById("overlay-rolecards").style.display = "block";
   document.getElementById("lobby-rolecard-container").style.display = "block";
   // overlay should close everything
-  // show caroseul with scroll snap of all role cards
 }
 function hideCard() {
   document
