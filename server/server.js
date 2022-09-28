@@ -843,7 +843,8 @@ io.on("connection", async (socket) => {
       // About 2.17 billion possible users and proxy IDs ((26+10)^6)
       // Keep checking for unique player ID
       var notUniqueID = true;
-      while (notUniqueID) {
+      var toBreakID = 0;
+      while (notUniqueID && toBreakID < BREAK_LIMIT) {
         var playerID = randomstring.generate({
           length: 6,
           charset: "alphanumeric",
@@ -851,10 +852,12 @@ io.on("connection", async (socket) => {
         if (!checkUserExist(playerID)) {
           notUniqueID = false;
         }
+        toBreakID++;
       }
       // Keep checking for unique proxy ID
       var notUniqueProxy = true;
-      while (notUniqueProxy) {
+      var toBreakProxy = 0;
+      while (notUniqueProxy && toBreakProxy < BREAK_LIMIT) {
         var proxyID = randomstring.generate({
           length: 6,
           charset: "alphanumeric",
@@ -864,13 +867,14 @@ io.on("connection", async (socket) => {
             notUniqueProxy = false;
           }
         }
+        toBreakProxy++;
       }
 
       if (!notUniqueID && !notUniqueProxy) {
         console.log("Proxy created");
         proxyIdenfication.set(playerID, proxyID);
         socket.emit("playerID", playerID);
-      } else if (notUniqueID && notUniqueProxy) {
+      } else if (notUniqueID || notUniqueProxy) {
         socket.emit("playerID", null);
       }
     }
@@ -1355,7 +1359,8 @@ io.on("connection", async (socket) => {
         if (checkAlreadyHost(rooms, playerID) == false) {
           // About 60.4 million possible rooms((26+10)^5)
           var notUniqueRoom = true;
-          while (notUniqueRoom) {
+          var toBreak = 0;
+          while (notUniqueRoom && toBreak < BREAK_LIMIT) {
             var roomCode = randomstring.generate({
               length: 5,
               charset: "alphanumeric",
@@ -1365,6 +1370,7 @@ io.on("connection", async (socket) => {
             if (!rooms.has(roomCode)) {
               notUniqueRoom = false;
             }
+            toBreak++;
           }
           if (!notUniqueRoom) {
             // Setting up room
