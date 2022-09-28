@@ -114,7 +114,10 @@ const { Console } = require("console");
 
 // establish server connection with socket
 io.on("connection", async (socket) => {
-  console.log("a user connected, with socket id:", socket.id);
+  var today = new Date();
+  var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  console.log(date, time, "- a user connected, with socket id:", socket.id);
   // reassign sockets to their playerID rooms (if they have a playerID)
   socket.on("setRoom", (playerID) => {
     console.log(`player ${playerID} is joining their own room`);
