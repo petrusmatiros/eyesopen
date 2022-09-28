@@ -776,8 +776,6 @@ function showCard(element) {
   displayImage.style.display = "flex";
   displayMission.style.display = "flex";
   document.getElementById("overlay-rolecardinfo").style.display = "block";
-  // overlay should close everything
-  // show caroseul with scroll snap of all role cards
 }
 
 socket.on("beginClearEvilRoom", (roomToClear) => {
@@ -793,10 +791,6 @@ socket.on("enterGame", () => {
 });
 
 function startGame() {
-  // if user = inGame true, menu display none
-  // if user ingame false, menu display flex
-  // navbar, remove lobby code, display none
-  // navbar change theme depending on cycle
   socket.emit("checkIfHost", getPlayerID(), "start");
   socket.on("isHostStart", (isHost) => {
     if (isHost) {
