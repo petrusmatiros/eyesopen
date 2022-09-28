@@ -18,11 +18,9 @@
   --popup-yes-button--hover: hsl(0, 100%, 75%);
   --popup-yes-button--active: hsl(0, 100%, 65%);
 }
-
 .abs-pos {
   position: absolute;
 }
-
 .eye1 {
   top: 5rem;
   left: 1.5rem;
@@ -83,7 +81,6 @@
   width: 3rem;
   transform: rotate(204deg);
 }
-
 .animated-eyes-container {
   position: fixed;
   display: flex;
@@ -98,13 +95,10 @@
   max-height: 46.25rem;
   z-index: -1;
 }
-
 .animated-eye {
   opacity: 35%;
   display: flex;
 }
-
-
 .index-notification {
   position: fixed;
   display: none;
@@ -124,7 +118,6 @@
   -webkit-backdrop-filter: blur(0.25rem);
   box-shadow: 0 0.5rem 1rem var(--main-shadow);
 }
-
 body {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
@@ -136,16 +129,12 @@ body {
   font-family: "League Spartan", sans-serif;
   margin: 0;
   min-width: 100%;
-  
 }
-
 .shadow-light {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
 }
-
 .body-main {
   color: var(--light-fg);
-  /* background-color: var(--dark-bg);*/
   background: radial-gradient(
     50% 50% at 50% 50%,
     var(--main-highlight) 0%,
@@ -153,21 +142,9 @@ body {
   );
   background-attachment: fixed;
 }
-
-.body-dark {
-  color: var(--light-fg);
-  background-color: var(--dark-bg);
-}
-
-.body-light {
-  color: var(--dark-fg);
-  background-color: var(--light-bg);
-}
-
 p {
   margin: 0;
 }
-
 .header {
   display: block;
   text-align: center;
@@ -176,22 +153,18 @@ p {
   color: #000000;
   margin: 1em;
 }
-
 #index-with-eyes {
   margin-top: 5rem;
 }
-
 #without-eyes {
   margin-top: 0;
 }
-
 .menu {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
-
 /* Animations  */
 .pop-light1 {
   animation: pop-light 0.5s 1;
@@ -208,15 +181,12 @@ p {
 .pop-light5 {
   animation: pop-light 2.5s 1;
 }
-
 @keyframes pop-light {
   from, to { transform: scale(1); }
   25% { transform: scale(0.98); }
   50% { transform: scale(1.03); }
   75% { transform: scale(1); }
 }
-
-
 .gelatine-light {
   animation: gelatine-light 0.5s 1;
 }
@@ -226,25 +196,6 @@ p {
   50% { transform: scale(1.05, 0.95); }
   75% { transform: scale(0.98, 1.02); }
 }
-.gelatine-medium {
-  animation: gelatine-medium 0.5s 1;
-}
-@keyframes gelatine-medium {
-  from, to { transform: scale(1, 1); }
-  25% { transform: scale(0.9, 1.1); }
-  50% { transform: scale(1.1, 0.9); }
-  75% { transform: scale(0.95, 1.05); }
-}
-.gelatine-hard {
-  animation: gelatine-hard 0.5s 1;
-}
-@keyframes gelatine-hard {
-  from, to { transform: scale(1, 1); }
-  25% { transform: scale(0.75, 1.15); }
-  50% { transform: scale(1.15, 0.75); }
-  75% { transform: scale(0.85, 1.15); }
-}
-
 .title-eyesopen {
   display: flex;
   justify-content: center;
@@ -254,7 +205,6 @@ p {
   height: 7.75rem;
   width: 21.875rem;
 }
-
 .title-dark {
   display: flex;
   justify-content: center;
@@ -271,32 +221,25 @@ p {
   color: var(--dark-fg);
   margin: 1rem 0 1rem 0;
 }
-
 .animation-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* background-color: var(--dark-bg); */
   height: 100%;
   width: 100%;
-  
 }
-
 .eyes {
   margin-top: -7rem;
   margin-bottom: -7rem;
   width: 18.75rem;
   height: 18.75rem;
 }
-
 .title-button-container {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
-
-
 #changeUsername {
   display: none;
   font-size: 1rem !important;
@@ -304,7 +247,6 @@ p {
   animation: fadeIn 0.3s 1, pop-light 1s 1;
   margin-bottom: 0 !important;
 }
-
 .title-button {
   user-select: none;
   cursor: pointer;
@@ -321,42 +263,23 @@ p {
   border-radius: 1rem;
   text-decoration: none;
 }
-
-
 .title-button:hover {
   color: var(--menu-button-hover-fg);
   background-color: var(--menu-button-hover-bg);
 }
-
 .title-button:active {
   color: var(--menu-button-active-fg);
   background-color: var(--menu-button-active-bg);
   transition: all 0s;
   transform: scale(0.9);
 }
-
 .navbar-main {
-  /* background-color: var(--dark-bg); */
   width: auto;
   height: auto;
 }
-
-.navbar-dark {
-  background-color: var(--dark-bg);
-  width: auto;
-  height: auto;
-}
-
-.navbar-light {
-  background-color: var(--light-bg);
-  width: auto;
-  height: auto;
-}
-
 .drop-shadow {
   box-shadow: 0 0.1rem 0.5rem rgb(0 0 0 / 12%);
 }
-
 .navbar-container {
   display: flex;
   flex-wrap: wrap;
@@ -366,17 +289,14 @@ p {
   height: auto;
   padding: 0.5em;
 }
-
 .author-dark {
   font-weight: 600;
   color: var(--light-fg);
 }
-
 .author-light {
   font-weight: 600;
   color: var(--dark-fg);
 }
-
 .links {
   display: flex;
   justify-content: center;
@@ -385,86 +305,22 @@ p {
   font-size: 1rem;
   margin-top: 5rem;
 }
-
-@media screen and (max-width: 600px) {
-  .navbar-main {
-    /* background-color: var(--dark-bg); */
-    width: auto;
-    height: auto;
-  }
-
-  .navbar-dark {
-    background-color: var(--dark-bg);
-    width: auto;
-    height: auto;
-  }
-
-  .navbar-light {
-    background-color: var(--light-bg);
-    width: auto;
-    height: auto;
-  }
-
-  .navbar-container {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    width: auto;
-    height: auto;
-    padding: 0.5em;
-  }
-
-  #without-eyes {
-    margin-top: 0;
-  }
-
-  .title-button {
-    user-select: none;
-    cursor: pointer;
-    display: inline-block;
-    justify-content: center;
-    align-items: center;
-    font-size: 2rem;
-    font-weight: 600;
-    color: var(--light-fg);
-    background-color: var(--dark-fg);
-    margin-bottom: 1.5rem;
-    padding: 0.6em 1em 0.6em 1em;
-    border: none;
-    border-radius: 1rem;
-    text-decoration: none;
-  }
-  .links {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    font-size: 1rem;
-    margin-top: 5rem;
-  }
-}
-
 .designed-by {
   margin: 0 0 0.5em 0;
 }
-
 .logo {
   width: 2rem;
   height: 2rem;
   padding: 0.25em;
 }
-
 #github-dark {
   margin-top: 0.5rem;
   color: var(--light-bg);
 }
-
 #github-light {
   margin-top: 0.5rem;
   color: #000000;
 }
-
 .linkto-dark {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
@@ -475,7 +331,6 @@ p {
   user-select: none;
   color: var(--light-fg);
 }
-
 .linkto-light {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
@@ -486,14 +341,12 @@ p {
   user-select: none;
   color: var(--dark-fg);
 }
-
 .linkto-dark:focus {
   outline: none !important;
 }
 .linkto-light:focus {
   outline: none !important;
 }
-
 .github {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
@@ -504,16 +357,13 @@ p {
   user-select: none;
   margin-top: 0.5rem;
 }
-
 .github-icon {
   width: 2rem;
   height: 2rem;
 }
-
 .github:focus {
   outline: none !important;
 }
-
 .logo-link {
   display: flex;
   justify-content: flex-start !important;
@@ -525,17 +375,13 @@ p {
   -ms-user-select: none;
   user-select: none;
 }
-
 .logo-link:focus {
   outline: none !important;
 }
-
-
 @keyframes fadeIn {
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
-
 .overlay {
   position: fixed;
   display: none;
@@ -550,9 +396,7 @@ p {
   backdrop-filter: blur(0.25rem);
   -webkit-backdrop-filter: blur(0.25rem);
 }
-
 /* Popup */
-
 .popup {
   display: none;
   justify-content: center;
@@ -570,7 +414,6 @@ p {
   min-width: 17.5rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
 }
-
 .popup-text {
   display: flex;
   justify-content: center;
@@ -580,7 +423,6 @@ p {
   margin-bottom: 1.5rem;
   margin-top: 1rem;
 }
-
 .popup-title {
   user-select: none;
   color: var(--dark-fg);
@@ -599,7 +441,6 @@ p {
   font-size: 1rem;
   font-weight: 500;
 }
-
 .players {
   display: flex;
   justify-content: center;
@@ -614,7 +455,6 @@ p {
   flex-direction: column;
   gap: 1.25rem;
 }
-
 .player-container {
   display: flex;
   justify-content: center;
@@ -622,11 +462,9 @@ p {
   flex-direction: row;
   gap: 0.5rem;
 }
-
 #player-hidden {
   display: none;
 }
-
 .player-bubble {
   display: flex;
   justify-content: center;
@@ -639,7 +477,6 @@ p {
   color: var(--dark-fg);
   background-color: hsl(0, 0%, 90%);
 }
-
 .player-kick {
   display: flex;
   justify-content: center;
@@ -656,19 +493,16 @@ p {
 .player-kick:active {
   background-color: hsl(0, 100%, 68%);
 }
-
 #popup-close {
   margin-top: -0.25rem !important;
   margin-right: 0.25rem !important;
 }
-
 .popup-icon {
   user-select: none;
   width: 5rem;
   height: 5rem;
   margin-bottom: 1.5rem;
 }
-
 .popup-buttons {
   display: flex;
   justify-content: center;
@@ -678,7 +512,6 @@ p {
   font-weight: 500;
   gap: 1rem;
 }
-
 .popup-yesbutton {
   user-select: none;
   cursor: pointer;
@@ -695,7 +528,6 @@ p {
   color: var(--dark-fg);
   background-color: var(--popup-yes-button--active);
 }
-
 .popup-nobutton {
   user-select: none;
   cursor: pointer;
@@ -712,7 +544,6 @@ p {
   color: var(--dark-fg);
   background-color: var(--popup-button--active);
 }
-
 .card-input {
   position: fixed;
   display: none;
@@ -726,10 +557,8 @@ p {
   background: var(--light-bg);
   padding: 1.85em;
   border-radius: 1rem;
-
   width: 17em;
 }
-
 .close {
   display: flex;
   width: 100%;
@@ -737,7 +566,6 @@ p {
   margin-top: -1rem;
   justify-content: right;
 }
-
 .close-button {
   cursor: pointer;
   width: 2rem;
@@ -745,15 +573,12 @@ p {
   vertical-align: bottom;
   border-radius: 0.5rem;
 }
-
 .close-button:hover {
   background-color: hsl(0, 0%, 95%);
 }
-
 .close-button:active {
   background-color: hsl(0, 0%, 85%);
 }
-
 .join-help {
   display: none;
   text-align: center;
@@ -762,7 +587,6 @@ p {
   color: #000000;
   margin: 0.3em 1em 0.3em 1em;
 }
-
 .join-info {
   text-align: center;
   font-weight: 600;
@@ -770,11 +594,9 @@ p {
   color: #000000;
   margin: 0.5em 1em 0.5em 1em;
 }
-
 #code {
   text-transform: uppercase;
 }
-
 input[type="text"] {
   background-color: #ffffff;
   font-family: "League Spartan", sans-serif;
@@ -786,12 +608,10 @@ input[type="text"] {
   border-radius: 0.55rem;
   border: 2px solid #b1b1b1;
 }
-
 input[type="text"]:focus {
   outline: none;
   border: 2px solid #000000;
 }
-
 .confirm-button {
   user-select: none;
   cursor: pointer;
@@ -808,12 +628,10 @@ input[type="text"]:focus {
   border-radius: 0.5rem;
   text-decoration: none;
 }
-
 .confirm-button:hover {
   color: var(--menu-button-hover-fg);
   background-color: var(--menu-button-hover-bg);
 }
-
 .confirm-button:active {
   color: var(--menu-button-active-fg);
   background-color: var(--menu-button-active-bg);

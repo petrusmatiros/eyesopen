@@ -1371,14 +1371,14 @@ socket.on("fetchedPlayerCardPress", (name, team, mission) => {
 
 function showGameUI(toShow) {
   if (toShow) {
-    var body = document.getElementsByClassName("body-light")[0];
+    var body = document.getElementById("game-body");
     body.classList.add("game-background");
-    var game = document.getElementsByClassName("game")[0];
+    var game = document.getElementById("game");
     game.style.display = "flex";
   } else {
-    var body = document.getElementsByClassName("body-light")[0];
+    var body = document.getElementById("game-body");
     body.classList.remove("game-background");
-    var game = document.getElementsByClassName("game")[0];
+    var game = document.getElementById("game");
     game.style.display = "none";
   }
 }
@@ -1462,7 +1462,6 @@ function showRoleCard(
 
 
 function changeUI(theme) {
-  var navbar = document.getElementById("game-navbar");
   var body = document.getElementById("game-body");
   var playerCard = document.getElementById("game-player-card");
   var playerCardQuestionMark = document.getElementById(
@@ -1478,7 +1477,6 @@ function changeUI(theme) {
   var scrollDown = document.getElementById("game-messagebox-scrolldown");
 
   if (theme.includes("Night")) {
-    navbar.className = "navbar-dark";
     body.classList.remove("game-background-day");
     body.classList.add("game-background-night");
     playerCard.classList.remove("game-day-bg", "game-day-fg");
@@ -1545,7 +1543,6 @@ function changeUI(theme) {
     scrollDown.classList.remove("game-day-fg");
     scrollDown.classList.add("game-night-fg");
   } else if (theme.includes("Day")) {
-    navbar.className = "navbar-light";
     body.classList.remove("game-background-night");
     body.classList.add("game-background-day");
     playerCard.classList.remove("game-night-bg", "game-night-fg");
