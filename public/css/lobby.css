@@ -775,9 +775,7 @@ input[type=number]::-webkit-inner-spin-button {
   text-align: center;
   color: var(--light-fg);
   font-size: 1rem;
-  margin-top: 0.75rem;
   max-width: 19rem;
-  min-height: 1.3rem;
   line-height: 1;
 }
 .lobby-card-container {
@@ -821,20 +819,14 @@ input[type=number]::-webkit-inner-spin-button {
   flex-direction: row;
 }
 
-.lobby-card-title {
-  user-select: none;
-  opacity: 100% !important;
-  display: flex;
-  border-radius: 50rem;
-  color: var(--dark-fg);
-  font-size: 1.4rem;
-  font-weight: 600;
-  align-items: center;
+.align-baseline {
+  align-items: baseline !important;
 }
 
 .lobby-card-title {
   user-select: none;
   display: flex;
+  align-items: center;
   color: var(--light-fg);
   font-size: 1.4rem;
   font-weight: 600;
@@ -867,6 +859,11 @@ input[type=number]::-webkit-inner-spin-button {
   vertical-align: middle;
   margin-bottom: 0.15rem;
 }
+
+#player-container {
+  margin-top: 0.25rem;
+}
+
 .lobby-player-container {
   display: flex;
   justify-content: center;
@@ -1072,7 +1069,7 @@ input[type=number]::-webkit-inner-spin-button {
 
 .lobby-role-tag {
   user-select: none;
-  padding: 0.35rem;
+  padding: 0.35rem 0.35rem 0.35rem 0.35rem;
   border-radius: 0.45em;
   font-size: 0.85rem;
   font-weight: 400;
