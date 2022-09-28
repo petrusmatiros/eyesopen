@@ -208,7 +208,7 @@ socket.on("connect", () => {
                 document.getElementById("player-card").style.border =
                   "2px solid var(--good-bg)";
                 document.getElementById("player-count").innerText =
-                  "Everyone is ready, " + host;
+                  "Everyone is ready";
                 document.getElementById("player-count").style.color =
                   "var(--good-bg)";
               } else {
