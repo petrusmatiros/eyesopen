@@ -496,6 +496,12 @@ p {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  margin-top: 0.5rem;
+}
+
+.github-icon {
+  width: 2rem;
+  height: 2rem;
 }
 
 .github:focus {
@@ -649,7 +655,6 @@ p {
   margin-top: -0.25rem !important;
   margin-right: 0.25rem !important;
 }
-
 
 .popup-icon {
   user-select: none;
