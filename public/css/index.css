@@ -54,8 +54,8 @@
   transform: rotate(30deg);
 }
 .eye6 {
-  bottom: 27rem;
-  right: 1.5rem;
+  bottom: 29rem;
+  right: 0.5rem;
   width: 2.5rem;
   transform: rotate(30deg);
 }
@@ -171,8 +171,8 @@ p {
   margin: 1em;
 }
 
-#with-eyes {
-  margin-top: 3rem;
+#index-with-eyes {
+  margin-top: 5rem;
 }
 
 #without-eyes {
@@ -407,10 +407,6 @@ p {
     width: auto;
     height: auto;
     padding: 0.5em;
-  }
-
-  #with-eyes {
-    margin-top: 3rem;
   }
 
   #without-eyes {
