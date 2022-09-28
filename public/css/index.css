@@ -77,6 +77,12 @@
   width: 1.563rem;
   transform: rotate(65deg);
 }
+.eye10 {
+  top: 5.5rem;
+  right: 8.5rem;
+  width: 3rem;
+  transform: rotate(204deg);
+}
 
 .animated-eyes-container {
   position: fixed;
