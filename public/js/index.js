@@ -17,9 +17,6 @@ socket.on("connect", () => {
   addEventListeners();
 });
 
-
-
-
 function loadPlayersInLobby(slots) {
   var thePlayers = document.getElementById("players");
   var columns = thePlayers.children;
