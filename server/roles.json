@@ -42,7 +42,7 @@
             "name": "Trapper",
             "description": "a sneaky and experienced trapper",
             "team": "good",
-            "mission": "trap players, blocking their ability",
+            "mission": "trap players, blocking their ability at night",
             "hasNightAbility": true,
             "hasDayAbility": false,
             "voteCount": 1
