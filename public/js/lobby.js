@@ -43,7 +43,6 @@ socket.on("connect", () => {
       var URL = "";
       var room = "";
 
-
       if (window.location.href.endsWith("/")) {
         URL = window.location.href.replace("http://", "");
         room = URL.split("/")[URL.split("/").length - 2];
@@ -58,9 +57,6 @@ socket.on("connect", () => {
           window.location.href = domain;
         }
       });
-
-      
-      
       
       if (window.location.href.endsWith("/")) {
         URL = window.location.href.replace("http://", "");
@@ -75,10 +71,7 @@ socket.on("connect", () => {
         socket.emit("setRoom", getPlayerID());
         socket.emit("directJoin", getPlayerID(), room, "lobby");
       }
-
-
       revealLobby();
-
       socket.emit("checkUserApartOfGame", getPlayerID(), room, "app");
       socket.on("apartOfGameApp", (apartOfGame, inProgress, code) => {
         if (apartOfGame && inProgress == true) {
@@ -104,12 +97,6 @@ socket.on("connect", () => {
           socket.emit("setRoom", getPlayerID());
           socket.emit("directJoin", getPlayerID(), room, "lobby");
         }
-
-        // socket.emit("checkInGame", getPlayerID());
-        // socket.on("isInGame", (inGame) => {
-
-        // })
-        // Copy URL to clipboard
 
         socket.on("viewRoom", (roomCode) => {
           document.getElementById("roomcode-copy").innerText = roomCode;
