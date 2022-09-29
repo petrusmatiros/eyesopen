@@ -1697,11 +1697,24 @@ socket.on("showGameFirst", (allReady) => {
 socket.on("clock", (counter, phase, cycle, cycleCount) => {
   var clock = document.getElementById("game-time");
   var gameCycle = document.getElementById("game-cycle-text");
-  if (counter < 10) {
-    clock.innerText = "00:0" + counter;
-  } else if (counter >= 10) {
-    clock.innerText = "00:" + counter;
-  }
+  var minutes = Math.floor(counter/60);
+  var seconds = counter - (minutes * 60)
+  if (minutes < 10 && seconds < 10) {
+    // 0M:0S
+    clock.innerText = "0" + minutes + ":0" + seconds;
+  } 
+  else if (minutes >= 10 && seconds >= 10) {
+    // MM:SS
+    clock.innerText = minutes + ":" + seconds;
+  } 
+  else if (minutes >= 10 && seconds < 10) {
+    // MM:0S
+    clock.innerText = minutes + ":0" + seconds;
+  } 
+  else if (minutes < 10 && seconds >= 10) {
+    // 0M:SS
+    clock.innerText = "0" + minutes + ":" + seconds;
+  } 
   if (cycle.includes("Night")) {
     document.getElementById("game-cycle-icon").src = "/assets/icons/night.svg";
   } else if (cycle.includes("Day")) {
