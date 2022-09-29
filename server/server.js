@@ -115,8 +115,10 @@ const { Console } = require("console");
 // establish server connection with socket
 io.on("connection", async (socket) => {
   var today = new Date();
-  var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var date =
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+  var time =
+    today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
   console.log(date, time, "- a user connected, with socket id:", socket.id);
   // reassign sockets to their playerID rooms (if they have a playerID)
   socket.on("setRoom", (playerID) => {
@@ -1209,33 +1211,26 @@ io.on("connection", async (socket) => {
     }
   });
 
-
   socket.on("requestLobbyPlayers", (playerID) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         var room = rooms.get(roomCode);
         if (room.getHost() == playerID) {
-          console.log("showing lobby players")
-          socket.emit(
-            "fetchLobbyPlayers",
-            room.slots
-          );
+          console.log("showing lobby players");
+          socket.emit("fetchLobbyPlayers", room.slots);
         }
       }
-
     }
   });
   socket.on("kickPlayer", (playerID, proxyID) => {
     if (checkUserExist(playerID)) {
-      var roomCode = getHostRoom(rooms, playerID)
+      var roomCode = getHostRoom(rooms, playerID);
       if (roomCode !== null) {
         var room = rooms.get(roomCode);
         if (room.getHost() == playerID) {
           var playerToKick = getKeyFromValue(proxyIdenfication, proxyID);
-          io.to(playerToKick).emit(
-            "hostKick",
-          );
+          io.to(playerToKick).emit("hostKick");
         }
       }
     }
@@ -1251,17 +1246,14 @@ io.on("connection", async (socket) => {
           proxyIdenfication.get(room.getHost()),
           room.slots
         );
-        
       }
-
     }
   }
   function clearPlayerSlot(playerID) {
     if (checkUserExist(playerID)) {
-      
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-  
+
         var room = rooms.get(roomCode);
         for (var [key, value] of Object.entries(room.slots)) {
           if (value.userID == proxyIdenfication.get(playerID)) {
@@ -1418,18 +1410,16 @@ io.on("connection", async (socket) => {
     console.log("this player", playerID);
     if (checkUserExist(playerID)) {
       console.log(playerID, "trying roomcode", roomCode);
-      var emitTo = ""
+      var emitTo = "";
       if (state.includes("first")) {
-        emitTo = "roomCodeResponseFirst"
-      }
-      else if (state.includes("press")) {
-        emitTo = "roomCodeResponsePress"
+        emitTo = "roomCodeResponseFirst";
+      } else if (state.includes("press")) {
+        emitTo = "roomCodeResponsePress";
       }
       if (rooms.has(roomCode)) {
         // ! CHANGE THIS TO 14
         if (rooms.get(roomCode).userCount() >= maxPlayers) {
           socket.emit(emitTo, "full");
-          
         } else {
           console.log("room code", roomCode, "is valid");
           console.log(socket.rooms);
@@ -2637,6 +2627,7 @@ io.on("connection", async (socket) => {
               game.getCycle(),
               game.getPhase(),
               isDead,
+              socketPlayer,
               socketRole,
               proxyIdenfication.get(playerID)
             );
@@ -3435,19 +3426,19 @@ io.on("connection", async (socket) => {
       }
     }
 
-    var winState = Object.values(checkWinState(game, roomCode))
-    
+    var winState = Object.values(checkWinState(game, roomCode));
+
     if (winState[0] == true)
-    setTimeout(
-      endGame,
-      7500,
-      game,
-      roomCode,
-      winState[0],
-      winState[1],
-      winState[2],
-      winState[3]
-    );
+      setTimeout(
+        endGame,
+        7500,
+        game,
+        roomCode,
+        winState[0],
+        winState[1],
+        winState[2],
+        winState[3]
+      );
   }
 
   function checkWinState(game, roomCode) {
@@ -3528,7 +3519,7 @@ io.on("connection", async (socket) => {
       }
     }
 
-    var winState = {win, winType, lawyerWin, toSend}
+    var winState = { win, winType, lawyerWin, toSend };
     return winState;
   }
 
@@ -3569,17 +3560,22 @@ io.on("connection", async (socket) => {
         var game = room.getGame();
         if (game.getProgress()) {
           if (game.getUsers().includes(connectedUsers.get(playerID))) {
-            var winState = Object.values(checkWinState(game, roomCode))
+            var winState = Object.values(checkWinState(game, roomCode));
 
             if (winState[0] == true) {
-              io.to(roomCode).emit("endGameRefreshed", winState[0], winState[1], winState[2], winState[3]);
+              io.to(roomCode).emit(
+                "endGameRefreshed",
+                winState[0],
+                winState[1],
+                winState[2],
+                winState[3]
+              );
             }
           }
         }
-        
       }
     }
-  })
+  });
 
   function endGame(game, roomCode, win, winType, lawyerWin, toSend) {
     io.to(roomCode).emit("endGame", win, winType, lawyerWin, toSend);
@@ -4058,8 +4054,48 @@ io.on("connection", async (socket) => {
         var player = user.getPlayer(roomCode);
         var role = player.getRole();
         if (game.getProgress()) {
-          if (game.getUsers().includes(connectedUsers.get(playerID))) {
+          if (game.getUsers().includes(user)) {
             if (role.type.includes("mayor")) {
+              if (player.voteTarget !== null) {
+                var theVoteTargetPlayer = connectedUsers
+                  .get(getKeyFromValue(proxyIdenfication, player.voteTarget))
+                  .getPlayer(roomCode);
+                theVoteTargetPlayer.dayVotes -= role.voteCount;
+
+                if (game.settings.voteMessages.value == "anonymous") {
+                  sendMessage(
+                    playerID,
+                    room,
+                    roomCode,
+                    game,
+                    "all",
+                    `${player.getPlayerName()} removed their vote`,
+                    "Day"
+                  );
+                } else if (game.settings.voteMessages.value == "visible") {
+                  sendMessage(
+                    playerID,
+                    room,
+                    roomCode,
+                    game,
+                    "all",
+                    `${player.getPlayerName()} removed their vote from ${theVoteTargetPlayer.getPlayerName()} (${
+                      theVoteTargetPlayer.dayVotes
+                    })`,
+                    "Day"
+                  );
+                }
+                player.voteTarget = null;
+                sendMessage(
+                  playerID,
+                  room,
+                  roomCode,
+                  game,
+                  "socket",
+                  `Your vote has been reset, because of your new found voting rights`,
+                  "info"
+                );
+              }
               role.voteCount = 3;
               role.revealed = true;
               sendMessage(
@@ -4078,6 +4114,24 @@ io.on("connection", async (socket) => {
       }
     }
   }
+
+  socket.on("fetchCurrentPlayerTargets", (playerID) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (game.getProgress()) {
+          if (game.getUsers().includes(connectedUsers.get(playerID))) {
+            var user = connectedUsers.get(playerID);
+            var player = user.getPlayer(roomCode);
+            console.log("current player targets")
+            socket.emit("fetchedCurrentPlayerTargets", player.abilityTarget, player.voteTarget, player)
+          }
+        }
+      }
+    }
+  })
 
   function executeNightActions(playerID, room, roomCode, game) {
     // Ability order:

@@ -72,8 +72,8 @@ socket.on("connect", () => {
           socket.emit("setPlayers", getPlayerID(), "refresh");
           socket.on(
             "setPlayersRefresh",
-            (players, cycle, phase, isDead, socketRole, proxyID) => {
-              setPlayers(players, cycle, phase, isDead, socketRole, proxyID);
+            (players, cycle, phase, isDead, socketPlayer, socketRole, proxyID) => {
+              setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, proxyID);
             }
           );
           socket.emit("checkIfDead", getPlayerID(), "refresh");
@@ -560,13 +560,14 @@ socket.on(
 );
 
 function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
+  console.log("player target handler")
   var allPlayers = document.getElementById("game-players-container").children;
 
   var players = Array.from(allPlayers[0].children).concat(
     Array.from(allPlayers[1].children)
   );
   for (var i = 0; i < players.length; i++) {
-    // var playerElement = document.getElementById(players[i].id);
+
     var playerElement = players[i];
     var nameContainer = playerElement.children[0];
     var buttons = playerElement.children[1];
@@ -584,11 +585,8 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
       abilityButton.style.fontWeight = "400";
       voteButton.style.fontWeight = "400";
     } else if (players[i].id !== socketPlayer.abilityTarget) {
-      // nameContainer.classList.remove("game-player-selection-ability");
       playerElement.classList.remove("game-player-selection-ability");
       nameContainer.classList.remove("game-player-selection-vote");
-
-      // nameContainer.classList.remove("game-player-selection-both");
       abilityButton.innerText = "ability";
       abilityButton.style.fontWeight = "400";
       voteButton.style.fontWeight = "700";
@@ -596,7 +594,6 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
     } else if (players[i].id !== socketPlayer.voteTarget) {
       nameContainer.classList.remove("game-player-selection-vote");
       playerElement.classList.remove("game-player-selection-ability");
-      // nameContainer.classList.remove("game-player-selection-both");
       abilityButton.innerText = "undo";
       abilityButton.style.fontWeight = "700";
       voteButton.style.fontWeight = "400";
@@ -607,7 +604,6 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
       players[i].id == socketPlayer.abilityTarget &&
       players[i].id == socketPlayer.voteTarget
     ) {
-      // nameContainer.classList.add("game-player-selection-both");
       nameContainer.classList.add("game-player-selection-vote");
       playerElement.classList.add("game-player-selection-ability");
       abilityButton.innerText = "undo";
@@ -618,7 +614,6 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
       players[i].id == socketPlayer.abilityTarget &&
       players[i].id !== socketPlayer.voteTarget
     ) {
-      // nameContainer.classList.add("game-player-selection-ability");
       playerElement.classList.add("game-player-selection-ability");
       abilityButton.innerText = "undo";
       abilityButton.style.fontWeight = "700";
@@ -653,15 +648,25 @@ function actionHandler(element) {
 
 socket.on("updateSetPlayers", () => {
   updateSetPlayers();
+  
 });
+
+function fetchCurrentPlayerTargets() {
+  socket.emit("fetchCurrentPlayerTargets", getPlayerID());
+  socket.on("fetchedCurrentPlayerTargets", (theAbilityTarget, theVoteTarget, socketPlayer) => {
+    playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer);
+  })
+}
+
 function updateSetPlayers() {
   socket.emit("setPlayers", getPlayerID(), "clock");
 }
 
 socket.on(
   "setPlayersClock",
-  (players, cycle, phase, isDead, socketRole, proxyID) => {
-    setPlayers(players, cycle, phase, isDead, socketRole, proxyID);
+  (players, cycle, phase, isDead, socketPlayer, socketRole, proxyID) => {
+    setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, proxyID);
+    // fetchCurrentPlayerTargets();
   }
 );
 
@@ -694,7 +699,7 @@ function removeActionsOnPhase(phase) {
   }
 }
 
-function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
+function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, proxyID) {
   console.log("Setting players");
   var playersContainer = document.getElementById("game-players-container");
   var slots = playersContainer.children;
@@ -729,11 +734,21 @@ function setPlayers(players, cycle, phase, isDead, socketRole, proxyID) {
     var voteButton = buttons.children[2];
     element.children[1].innerText = players[i].userName;
 
-    element.classList.remove(
-      "game-player-selection-ability",
-      "game-player-selection-vote",
-      "game-player-selection-both"
-    );
+    if (players[i].userID !== socketPlayer.abilityTarget && players[i].userID !== socketPlayer.voteTarget) {
+      currentElement.classList.remove("game-player-selection-ability")
+      element.classList.remove("game-player-selection-vote");
+    } else if (players[i].userID == socketPlayer.abilityTarget && players[i].userID == socketPlayer.voteTarget) {
+      currentElement.classList.add("game-player-selection-ability")
+      element.classList.add("game-player-selection-vote");
+    }
+     else if (players[i].userID == socketPlayer.abilityTarget && players[i].userID !== socketPlayer.voteTarget) {
+      currentElement.classList.add("game-player-selection-ability")
+      element.classList.remove("game-player-selection-vote");
+    } else if (players[i].userID !== socketPlayer.abilityTarget && players[i].userID == socketPlayer.voteTarget) {
+      currentElement.classList.remove("game-player-selection-ability")
+      element.classList.add("game-player-selection-vote");
+    }
+
     abilityButton.classList.remove("game-button-ability-norounding");
     voteButton.classList.remove("game-button-vote-norounding");
     if (players[i].userID == proxyID) {
@@ -1661,8 +1676,8 @@ function showGame(allReady) {
     socket.emit("setPlayers", getPlayerID(), "first");
     socket.on(
       "setPlayersFirst",
-      (players, cycle, phase, isDead, socketRole, proxyID) => {
-        setPlayers(players, cycle, phase, isDead, socketRole, proxyID);
+      (players, cycle, phase, isDead, socketPlayer, socketRole, proxyID) => {
+        setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, proxyID);
       }
     );
 
