@@ -102,7 +102,7 @@
             "name": "Jester",
             "description": "the joke's on YOU!",
             "team": "neutral",
-            "mission": "make yourself get voted out",
+            "mission": "get voted out to win",
             "hasNightAbility": false,
             "hasDayAbility": false,
             "voteCount": 1
