@@ -406,8 +406,6 @@
   display: inline;
   margin-right: 0.25rem;
   margin-left: 0.15rem;
-  min-width: 0.5rem;
-  max-width: 0.5rem;
 }
 #game-time-seconds {
   display: flex;
