@@ -1696,24 +1696,34 @@ socket.on("showGameFirst", (allReady) => {
 
 socket.on("clock", (counter, phase, cycle, cycleCount) => {
   var clock = document.getElementById("game-time");
+  var theMinutes = document.getElementById("game-time-minutes");
+  var theSeconds = document.getElementById("game-time-seconds");
   var gameCycle = document.getElementById("game-cycle-text");
   var minutes = Math.floor(counter/60);
   var seconds = counter - (minutes * 60)
   if (minutes < 10 && seconds < 10) {
     // 0M:0S
-    clock.innerText = "0" + minutes + ":0" + seconds;
+    theMinutes.innerText = "0" + minutes;
+    theSeconds.innerText = "0" + seconds;
+    // clock.innerText = "0" + minutes + ":0" + seconds;
   } 
   else if (minutes >= 10 && seconds >= 10) {
     // MM:SS
-    clock.innerText = minutes + ":" + seconds;
+    theMinutes.innerText = minutes;
+    theSeconds.innerText = seconds;
+    // clock.innerText = minutes + ":" + seconds;
   } 
   else if (minutes >= 10 && seconds < 10) {
     // MM:0S
-    clock.innerText = minutes + ":0" + seconds;
+    theMinutes.innerText = minutes;
+    theSeconds.innerText = "0" + seconds;
+    // clock.innerText = minutes + ":0" + seconds;
   } 
   else if (minutes < 10 && seconds >= 10) {
     // 0M:SS
-    clock.innerText = "0" + minutes + ":" + seconds;
+    theMinutes.innerText = "0" + minutes;
+    theSeconds.innerText = seconds;
+    // clock.innerText = "0" + minutes + ":" + seconds;
   } 
   if (cycle.includes("Night")) {
     document.getElementById("game-cycle-icon").src = "/assets/icons/night.svg";
