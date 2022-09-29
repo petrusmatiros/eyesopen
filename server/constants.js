@@ -9,6 +9,7 @@ global.SHOWROLES = true;
 global.VOTEMESSAGES = "visible"
 global.MIN_SECONDS = 5;
 global.MAX_SECONDS = 300;
+global.BREAK_LIMIT = 100;
 global.minRoles = 3;
 global.minPlayers = 3;
 global.maxPlayers = 14;
