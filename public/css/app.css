@@ -397,7 +397,7 @@
 #game-time-minutes {
   display: flex;
   justify-content: flex-end;
-  margin-right: 0.15rem;
+  margin-right: 0.1rem;
   min-width: 1.5rem;
   max-width: 1.5rem;
 }
@@ -407,7 +407,7 @@
 #game-time-seconds {
   display: flex;
   justify-content: flex-start;
-  margin-left: 0.15rem;
+  margin-left: 0.1rem;
   min-width: 2rem;
   max-width: 2rem;
 }
