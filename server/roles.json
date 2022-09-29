@@ -69,7 +69,7 @@
         },
         "surgeon": {
             "name": "Surgeon",
-            "description": "you are a master of disguise, but just not with clothes",
+            "description": "a master of disguise, but just not with clothes",
             "team": "evil",
             "mission": "disguise evil players (or yourself once), making them look good to the investigator",
             "hasNightAbility": true,
@@ -90,7 +90,7 @@
         },
         "framer": {
             "name": "Framer",
-            "description": "you always tell the truth, just some parts of it ;)",
+            "description": "always telling the truth, just some parts of it ;)",
             "team": "evil",
             "mission": "frame players, making them look evil to the investigator",
             "hasNightAbility": true,
