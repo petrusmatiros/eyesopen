@@ -397,15 +397,13 @@
 }
 #game-time-minutes {
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   margin-right: 0.15rem;
   min-width: 1.5rem;
   max-width: 1.5rem;
 }
 #game-time-divisor {
   display: inline;
-  margin-left: 0.25rem;
-  margin-right: 0.15rem;
 }
 #game-time-seconds {
   display: flex;
