@@ -674,6 +674,8 @@ input[type=number]::-webkit-inner-spin-button {
   flex-direction: row;
   color: var(--light-fg);
   background-color: var(--dark-fg-opaque);
+  animation: fadeIn 0.3s 1;
+  animation-timing-function: ease-in-out;
   padding: 0.35em;
   font-size: 1rem;
   font-weight: 600;
@@ -713,6 +715,8 @@ input[type=number]::-webkit-inner-spin-button {
   align-items: center;
   flex-direction: column;
   background-color: var(--dark-fg-opaque);
+  animation: fadeIn 0.3s 1;
+  animation-timing-function: ease-in-out;
   padding: 0.9em 1em 0.9em 1em;
   border-radius: 0.5em;
   margin-top: 0.25rem;
@@ -970,6 +974,8 @@ input[type=number]::-webkit-inner-spin-button {
   justify-content: space-evenly;
   align-items: center;
   flex-direction: row;
+  animation: fadeIn 0.3s 1;
+  animation-timing-function: ease-in-out;
   width: 75%;
   max-width: 19rem;
   margin-bottom: 1rem;
