@@ -148,7 +148,6 @@
   100% {
     transform: rotateY(0) rotateX(0) translateZ(0) translateX(0) translateY(0) opacity(1)
   }
- 
 }
 .lobby-rolecard-display-container {
   user-select: none;
@@ -607,14 +606,14 @@ input[type=number]::-webkit-inner-spin-button {
   margin-right: -0.5rem;
 }
 .lobby-gamesettings-icon:active {
-  background-color: hsl(0, 0%, 15%);
+  background-color: hsl(0, 0%, 25%);
   margin-right: -0.5rem;
 }
 .info-button:hover {
   background-color: hsl(0, 0%, 20%);
 }
 .info-button:active {
-  background-color: hsl(0, 0%, 15%);
+  background-color: hsl(0, 0%, 25%);
 }
 #copy-button {
   display: "inline";
