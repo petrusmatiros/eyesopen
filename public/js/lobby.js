@@ -720,7 +720,7 @@ function showCard(element) {
     displayDescription.innerText = description;
     displayMission.innerText = mission;
     displayMission.style.backgroundColor = `var(--${team}-bg-mission`;
-    theSrc = "/assets/rolecards/" + name + ".jpg";
+    theSrc = "/assets/rolecards/" + name + ".webp";
     displayImage.src = theSrc;
     if (team.includes("good")) {
       displayRole.classList.add("good-selected-color");

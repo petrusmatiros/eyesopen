@@ -43,28 +43,28 @@
 
 ### Good
 <p>
-<img src="public/assets/rolecards/Villager.jpg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Doctor.jpg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Investigator.jpg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Mayor.jpg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Trapper.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Villager.webp" alt="role-card" width=150>
+<img src="public/assets/rolecards/Doctor.webp" alt="role-card" width=150>
+<img src="public/assets/rolecards/Investigator.webp" alt="role-card" width=150>
+<img src="public/assets/rolecards/Mayor.webp" alt="role-card" width=150>
+<img src="public/assets/rolecards/Trapper.webp" alt="role-card" width=150>
 </p>
 
 ### Evil
 <p>
-<img src="public/assets/rolecards/Godfather.jpg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Mafioso.jpg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Surgeon.jpg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Witch.jpg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Framer.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Godfather.webp" alt="role-card" width=150>
+<img src="public/assets/rolecards/Mafioso.webp" alt="role-card" width=150>
+<img src="public/assets/rolecards/Surgeon.webp" alt="role-card" width=150>
+<img src="public/assets/rolecards/Witch.webp" alt="role-card" width=150>
+<img src="public/assets/rolecards/Framer.webp" alt="role-card" width=150>
 </p>
 
 ### Neutral
 <p>
-<img src="public/assets/rolecards/Jester.jpg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Serial Killer.jpg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Executioner.jpg" alt="role-card" width=150>
-<img src="public/assets/rolecards/Lawyer.jpg" alt="role-card" width=150>
+<img src="public/assets/rolecards/Jester.webp" alt="role-card" width=150>
+<img src="public/assets/rolecards/Serial Killer.webp" alt="role-card" width=150>
+<img src="public/assets/rolecards/Executioner.webp" alt="role-card" width=150>
+<img src="public/assets/rolecards/Lawyer.webp" alt="role-card" width=150>
 </p>
 
 
@@ -74,23 +74,23 @@
   <div style="display:flex; justify-content:center; align-items:center; flex-direction:row; font-size: 1.5rem; font-weight: 700">Good</div>
   <div style="display:flex; justify-content:center; align-items:center; flex-direction:row; gap:0.5rem;">
     <div style="display:flex; justify-content:center; align-items: center; flex-direction:column; width:20%; padding:1rem; border-radius:1rem; background-color:hsl(0,0%,100%); color:hsl(0,0%,0%); font-weight:500; ">
-    <img src="public/assets/rolecards/Villager.jpg" alt="role-card" width=150>
+    <img src="public/assets/rolecards/Villager.webp" alt="role-card" width=150>
     Villager
     </div>
     <div style="display:flex; justify-content:center; align-items: center; flex-direction:column; width:20%; padding:1rem; border-radius:1rem; background-color:hsl(0,0%,100%); color:hsl(0,0%,0%); font-weight:500; ">
-    <img src="public/assets/rolecards/Investigator.jpg" alt="role-card" width=150>
+    <img src="public/assets/rolecards/Investigator.webp" alt="role-card" width=150>
     Investigator
     </div>
     <div style="display:flex; justify-content:center; align-items: center; flex-direction:column; width:20%; padding:1rem; border-radius:1rem; background-color:hsl(0,0%,100%); color:hsl(0,0%,0%); font-weight:500; ">
-    <img src="public/assets/rolecards/Doctor.jpg" alt="role-card" width=150>
+    <img src="public/assets/rolecards/Doctor.webp" alt="role-card" width=150>
     Doctor
     </div>
     <div style="display:flex; justify-content:center; align-items: center; flex-direction:column; width:20%; padding:1rem; border-radius:1rem; background-color:hsl(0,0%,100%); color:hsl(0,0%,0%); font-weight:500; ">
-    <img src="public/assets/rolecards/Mayor.jpg" alt="role-card" width=150>
+    <img src="public/assets/rolecards/Mayor.webp" alt="role-card" width=150>
     Mayor
     </div>
     <div style="display:flex; justify-content:center; align-items: center; flex-direction:column; width:20%; padding:1rem; border-radius:1rem; background-color:hsl(0,0%,100%); color:hsl(0,0%,0%); font-weight:500 ">
-    <img src="public/assets/rolecards/Trapper.jpg" alt="role-card" width=150>
+    <img src="public/assets/rolecards/Trapper.webp" alt="role-card" width=150>
     Trapper
     </div>
   </div>
@@ -98,42 +98,42 @@
   <div style="display:flex; justify-content:center; align-items:center; flex-direction:row; font-size: 1.5rem; font-weight: 700">Evil</div>
   <div style="display:flex; justify-content:center; align-items:center; flex-direction:row; gap:0.5rem;">
     <div style="display:flex; justify-content:center; align-items: center; flex-direction:column; width:20%; padding:1rem; border-radius:1rem; background-color:hsl(0,0%,100%); color:hsl(0,0%,0%); font-weight:500; ">
-    <img src="public/assets/rolecards/Godfather.jpg" alt="role-card" width=150>
+    <img src="public/assets/rolecards/Godfather.webp" alt="role-card" width=150>
     Godfather
     </div>
     <div style="display:flex; justify-content:center; align-items: center; flex-direction:column; width:20%; padding:1rem; border-radius:1rem; background-color:hsl(0,0%,100%); color:hsl(0,0%,0%); font-weight:500; ">
-    <img src="public/assets/rolecards/Mafioso.jpg" alt="role-card" width=150>
+    <img src="public/assets/rolecards/Mafioso.webp" alt="role-card" width=150>
     Mafioso
     </div>
     <div style="display:flex; justify-content:center; align-items: center; flex-direction:column; width:20%; padding:1rem; border-radius:1rem; background-color:hsl(0,0%,100%); color:hsl(0,0%,0%); font-weight:500; ">
-    <img src="public/assets/rolecards/Surgeon.jpg" alt="role-card" width=150>
+    <img src="public/assets/rolecards/Surgeon.webp" alt="role-card" width=150>
     Surgeon
     </div>
     <div style="display:flex; justify-content:center; align-items: center; flex-direction:column; width:20%; padding:1rem; border-radius:1rem; background-color:hsl(0,0%,100%); color:hsl(0,0%,0%); font-weight:500; ">
-    <img src="public/assets/rolecards/Witch.jpg" alt="role-card" width=150>
+    <img src="public/assets/rolecards/Witch.webp" alt="role-card" width=150>
     Witch
     </div>
     <div style="display:flex; justify-content:center; align-items: center; flex-direction:column; width:20%; padding:1rem; border-radius:1rem; background-color:hsl(0,0%,100%); color:hsl(0,0%,0%); font-weight:500; ">
-    <img src="public/assets/rolecards/Framer.jpg" alt="role-card" width=150>
+    <img src="public/assets/rolecards/Framer.webp" alt="role-card" width=150>
     Framer
     </div>
   </div>
   <div style="display:flex; justify-content:center; align-items:center; flex-direction:row; font-size: 1.5rem; font-weight: 700">Neutral</div>
   <div style="display:flex; justify-content:center; align-items:center; flex-direction:row; gap:0.5rem;">
     <div style="display:flex; justify-content:center; align-items: center; flex-direction:column; width:20%; padding:1rem; border-radius:1rem; background-color:hsl(0,0%,100%); color:hsl(0,0%,0%); font-weight:500; ">
-    <img src="public/assets/rolecards/Jester.jpg" alt="role-card" width=150>
+    <img src="public/assets/rolecards/Jester.webp" alt="role-card" width=150>
     Jester
     </div>
     <div style="display:flex; justify-content:center; align-items: center; flex-direction:column; width:20%; padding:1rem; border-radius:1rem; background-color:hsl(0,0%,100%); color:hsl(0,0%,0%); font-weight:500; ">
-    <img src="public/assets/rolecards/Serial Killer.jpg" alt="role-card" width=150>
+    <img src="public/assets/rolecards/Serial Killer.webp" alt="role-card" width=150>
     Serial Killer
     </div>
     <div style="display:flex; justify-content:center; align-items: center; flex-direction:column; width:20%; padding:1rem; border-radius:1rem; background-color:hsl(0,0%,100%); color:hsl(0,0%,0%); font-weight:500; ">
-    <img src="public/assets/rolecards/Executioner.jpg" alt="role-card" width=150>
+    <img src="public/assets/rolecards/Executioner.webp" alt="role-card" width=150>
     Executioner
     </div>
     <div style="display:flex; justify-content:center; align-items: center; flex-direction:column; width:20%; padding:1rem; border-radius:1rem; background-color:hsl(0,0%,100%); color:hsl(0,0%,0%); font-weight:500; ">
-    <img src="public/assets/rolecards/Lawyer.jpg" alt="role-card" width=150>
+    <img src="public/assets/rolecards/Lawyer.webp" alt="role-card" width=150>
     Lawyer
     </div>
   </div>
