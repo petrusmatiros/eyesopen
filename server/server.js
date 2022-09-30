@@ -3300,8 +3300,8 @@ io.on("connection", async (socket) => {
           // SERIAL KILLER WINS
           if (neutralCount == 1) {
             if (
-              !theSerialKiller.getPlayer(roomCode).getIsKilled() &&
-              !theSerialKiller.getPlayer(roomCode).getIsLynched()
+              !theSerialKiller?.getPlayer(roomCode).getIsKilled() &&
+              !theSerialKiller?.getPlayer(roomCode).getIsLynched()
             ) {
               if (theSerialKiller !== null) {
                 var serialKillerMessages = [
@@ -3345,8 +3345,8 @@ io.on("connection", async (socket) => {
                 }
               }
             } else if (
-              !theLawyer.getPlayer(roomCode).getIsKilled() &&
-              !theLawyer.getPlayer(roomCode).getIsLynched()
+              !theLawyer?.getPlayer(roomCode).getIsKilled() &&
+              !theLawyer?.getPlayer(roomCode).getIsLynched()
             ) {
               if (theLawyer !== null) {
                 // Lawyer does not win, since their target is dead, so just a neutral win.
@@ -3357,8 +3357,8 @@ io.on("connection", async (socket) => {
                 game.addWinner(winner);
               }
             } else if (
-              !theExecutioner.getPlayer(roomCode).getIsKilled() &&
-              !theExecutioner.getPlayer(roomCode).getIsLynched()
+              !theExecutioner?.getPlayer(roomCode).getIsKilled() &&
+              !theExecutioner?.getPlayer(roomCode).getIsLynched()
             ) {
               if (theExecutioner !== null) {
                 game.setNeutralWin(true);
@@ -3386,10 +3386,10 @@ io.on("connection", async (socket) => {
                 }
               }
             } else if (
-              (!theJester.getPlayer(roomCode).getIsKilled() &&
-                !theJester.getPlayer(roomCode).getIsLynched()) ||
-              (!secondJester.getPlayer(roomCode).getIsKilled() &&
-                !secondJester.getPlayer(roomCode).getIsLynched())
+              (!theJester?.getPlayer(roomCode).getIsKilled() &&
+                !theJester?.getPlayer(roomCode).getIsLynched()) ||
+              (!secondJester?.getPlayer(roomCode).getIsKilled() &&
+                !secondJester?.getPlayer(roomCode).getIsLynched())
             ) {
               if (theJester !== null || secondJester !== null) {
                 game.setNeutralWin(true);
@@ -3443,8 +3443,8 @@ io.on("connection", async (socket) => {
             }
           } else if (neutralCount == 2) {
             if (
-              !theSerialKiller.getPlayer(roomCode).getIsKilled() &&
-              !theSerialKiller.getPlayer(roomCode).getIsLynched()
+              !theSerialKiller?.getPlayer(roomCode).getIsKilled() &&
+              !theSerialKiller?.getPlayer(roomCode).getIsLynched()
             ) {
               if (theSerialKiller !== null) {
                 if (theLawyer !== null) {
@@ -3486,8 +3486,8 @@ io.on("connection", async (socket) => {
                 }
               }
             } else if (
-              !theExecutioner.getPlayer(roomCode).getIsKilled() &&
-              !theExecutioner.getPlayer(roomCode).getIsLynched()
+              !theExecutioner?.getPlayer(roomCode).getIsKilled() &&
+              !theExecutioner?.getPlayer(roomCode).getIsLynched()
             ) {
               if (theExecutioner !== null) {
                 if (theLawyer !== null) {
@@ -3514,10 +3514,10 @@ io.on("connection", async (socket) => {
                 }
               }
             } else if (
-              (!theJester.getPlayer(roomCode).getIsKilled() &&
-                !theJester.getPlayer(roomCode).getIsLynched()) ||
-              (!secondJester.getPlayer(roomCode).getIsKilled() &&
-                !secondJester.getPlayer(roomCode).getIsLynched())
+              (!theJester?.getPlayer(roomCode).getIsKilled() &&
+                !theJester?.getPlayer(roomCode).getIsLynched()) ||
+              (!secondJester?.getPlayer(roomCode).getIsKilled() &&
+                !secondJester?.getPlayer(roomCode).getIsLynched())
             ) {
               if (theJester !== null && secondJester == null) {
                 if (theLawyer !== null) {
@@ -3772,9 +3772,11 @@ io.on("connection", async (socket) => {
     for (var i = 0; i < game.getUsers().length; i++) {
       let user = game.getUsers()[i];
       if (user.getCurrentRoom() == roomCode) {
-        user.reset();
-        user.getPlayer(roomCode).setReadyGame(false);
-        user.getPlayer(roomCode).setDisconnected(true);
+        if (user.getInGame()) {
+          user.reset();
+          user.getPlayer(roomCode).setReadyGame(false);
+          user.getPlayer(roomCode).setDisconnected(true);
+        }
       }
       if (user.getPrevious().includes(roomCode)) {
         user.removePrevious(roomCode);
