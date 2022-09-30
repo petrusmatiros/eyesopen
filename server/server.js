@@ -3774,10 +3774,9 @@ io.on("connection", async (socket) => {
       let user = game.getUsers()[i];
       if (user.getInGame()) { 
         if (user.getCurrentRoom() == roomCode) {
-            user.reset();
-            user.getPlayer(roomCode).setReadyGame(false);
-            user.getPlayer(roomCode).setDisconnected(true);
-          
+          user.reset();
+          user.getPlayer(roomCode).setReadyGame(false);
+          user.getPlayer(roomCode).setDisconnected(true);
         }
         if (user.getPrevious().includes(roomCode)) {
           user.removePrevious(roomCode);
