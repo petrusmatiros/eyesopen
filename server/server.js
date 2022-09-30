@@ -490,6 +490,7 @@ io.on("connection", async (socket) => {
         // RESET PREVIOUS USER
         user.getPlayer(previousRoom).setIsKilled(true);
         user.getPlayer(previousRoom).setDisconnected(true);
+        user.getPlayer(previousRoom).setReadyGame(false);
         user.getPlayer(previousRoom).addKiller("Server");
         sendMessage(
           playerID,
