@@ -444,8 +444,8 @@
   color: var(--dark-fg);
   /* top-left | top-right | bottom-right | bottom-left */
   border-radius: 0.75rem;
-  min-width: 8.5rem;
-  max-width: 8.5rem;
+  min-width: 9rem;
+  max-width: 9rem;
 }
 /* Game buttons */
 .game-player-buttons-container {
@@ -549,14 +549,14 @@
 /* Target, briefcase, mayor */
 .game-player-mark {
   display: none;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.15rem;
+  height: 1.15rem;
   opacity: 0%;
   vertical-align: text-top;
 }
 .game-player-name {
   user-select: none;
-  margin-left: 0.25rem;
+  margin-left: 0.15rem;
 }
 /* Cemetery */
 .game-cemetery {

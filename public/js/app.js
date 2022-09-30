@@ -732,7 +732,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
     var abilityButton = buttons.children[0];
     var stateButton = buttons.children[1];
     var voteButton = buttons.children[2];
-    element.children[1].innerText = players[i].userName;
+    element.children[2].innerText = players[i].userName;
 
     if (players[i].userID !== socketPlayer.abilityTarget && players[i].userID !== socketPlayer.voteTarget) {
       currentElement.classList.remove("game-player-selection-ability")
@@ -773,14 +773,16 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             );
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
-          } else if (players[i].type == "mayor+dead") {
-            element.children[0].id = "game-show-mark";
-            element.children[0].src = "/assets/icons/megaphone.svg";
+          } 
+          else if (players[i].type == "mayor+dead") {
+            element.children[1].id = "game-show-mark";
+            element.children[1].src = "/assets/icons/megaphone.svg";
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove("game-player-evil");
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
-          } else {
+          }  
+          else {
             // dead everyone else
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove("game-player-evil");
@@ -838,7 +840,8 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               stateButton.classList.remove("game-button-dead");
               stateButton.classList.remove("game-button-unselectable");
             }
-          } else if (socketRole.type.includes("mayor")) {
+          } 
+          else if (socketRole.type.includes("mayor")) {
             if (players[i].type == "mayor") {
               element.classList.add("game-player-unselectable");
               abilityButton.setAttribute("onclick", "");
@@ -849,8 +852,8 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               stateButton.classList.remove("game-button-dead");
               stateButton.classList.add("game-button-unselectable");
               stateButton.innerText = "unselectable";
-              element.children[0].id = "game-show-mark";
-              element.children[0].src = "/assets/icons/megaphone.svg";
+              element.children[1].id = "game-show-mark";
+              element.children[1].src = "/assets/icons/megaphone.svg";
             } else if (players[i].type == "none") {
               element.classList.add("game-player-unselectable");
               abilityButton.setAttribute("onclick", "");
@@ -864,7 +867,8 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               element.children[0].id = "";
               element.children[0].src = "";
             }
-          } else {
+          } 
+          else {
             // NOT SPECIAL roles
             // Evil, None
             if (players[i].type == "evil+unselectable") {
@@ -935,8 +939,8 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
           } else if (players[i].type == "mayor+dead") {
-            element.children[0].id = "game-show-mark";
-            element.children[0].src = "/assets/icons/megaphone.svg";
+            element.children[1].id = "game-show-mark";
+            element.children[1].src = "/assets/icons/megaphone.svg";
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove("game-player-evil");
             element.classList.add("game-player-dead");
@@ -973,8 +977,8 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
                   abilityButton.style.display = "flex";
                   abilityButton.classList.add("game-button-ability-norounding");
                   voteButton.classList.add("game-button-vote-norounding");
-                  element.children[0].id = "";
-                  element.children[0].src = "";
+                  element.children[1].id = "";
+                  element.children[1].src = "";
                 } else if (socketRole.revealed == true) {
                   abilityButton.setAttribute("onclick", "");
                   abilityButton.style.display = "none";
@@ -982,8 +986,8 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
                     "game-button-ability-norounding"
                   );
                   voteButton.classList.remove("game-button-vote-norounding");
-                  element.children[0].id = "game-show-mark";
-                  element.children[0].src = "/assets/icons/megaphone.svg";
+                  element.children[1].id = "game-show-mark";
+                  element.children[1].src = "/assets/icons/megaphone.svg";
                 }
                 element.classList.remove("game-player-unselectable");
               }
@@ -1030,14 +1034,26 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             currentElement.classList.remove("game-player-evil");
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
-          } else if (players[i].type == "mayor+dead") {
-            element.children[0].id = "game-show-mark";
-            element.children[0].src = "/assets/icons/megaphone.svg";
+          } 
+          else if (players[i].type == "mayor+dead") {
+            element.children[1].id = "game-show-mark";
+            element.children[1].src = "/assets/icons/megaphone.svg";
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove("game-player-evil");
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
-          } else {
+          } 
+          else if (players[i].type == "mayor+dead+target") {
+            element.children[0].id = "game-show-mark";
+            element.children[0].src = "/assets/icons/target.svg";
+            element.children[1].id = "game-show-mark";
+            element.children[1].src = "/assets/icons/megaphone.svg";
+            currentElement.classList.add("game-player-dead");
+            currentElement.classList.remove("game-player-evil");
+            element.classList.add("game-player-dead");
+            element.classList.remove("game-player-unselectable");
+          } 
+          else {
             // dead everyone else
             element.children[0].id = "";
             element.children[0].src = "";
@@ -1092,14 +1108,26 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               currentElement.classList.remove("game-player-evil");
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
-            } else if (players[i].type == "mayor+dead") {
-              element.children[0].id = "game-show-mark";
-              element.children[0].src = "/assets/icons/megaphone.svg";
+            } 
+            else if (players[i].type == "mayor+dead") {
+              element.children[1].id = "game-show-mark";
+              element.children[1].src = "/assets/icons/megaphone.svg";
               currentElement.classList.add("game-player-dead");
               currentElement.classList.remove("game-player-evil");
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
-            } else {
+            } 
+            else if (players[i].type == "mayor+dead+target") {
+              element.children[0].id = "game-show-mark";
+            element.children[0].src = "/assets/icons/target.svg";
+              element.children[1].id = "game-show-mark";
+              element.children[1].src = "/assets/icons/megaphone.svg";
+              currentElement.classList.add("game-player-dead");
+              currentElement.classList.remove("game-player-evil");
+              element.classList.add("game-player-dead");
+              element.classList.remove("game-player-unselectable");
+            } 
+            else {
               // dead everyone else
               element.children[0].id = "";
               element.children[0].src = "";
@@ -1269,10 +1297,18 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             } else if (players[i].type == "target") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/target.svg";
-            } else if (players[i].type == "mayor") {
+            } 
+            else if (players[i].type == "mayor") {
+              element.children[1].id = "game-show-mark";
+              element.children[1].src = "/assets/icons/megaphone.svg";
+            } 
+            else if (players[i].type == "mayor+target") {
               element.children[0].id = "game-show-mark";
-              element.children[0].src = "/assets/icons/megaphone.svg";
-            } else {
+              element.children[0].src = "/assets/icons/target.svg";
+              element.children[1].id = "game-show-mark";
+              element.children[1].src = "/assets/icons/megaphone.svg";
+            } 
+            else {
               element.children[0].id = "";
               element.children[0].src = "";
             }
@@ -1311,14 +1347,26 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               currentElement.classList.remove("game-player-evil");
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
-            } else if (players[i].type == "mayor+dead") {
-              element.children[0].id = "game-show-mark";
-              element.children[0].src = "/assets/icons/megaphone.svg";
+            } 
+            else if (players[i].type == "mayor+dead") {
+              element.children[1].id = "game-show-mark";
+              element.children[1].src = "/assets/icons/megaphone.svg";
               currentElement.classList.add("game-player-dead");
               currentElement.classList.remove("game-player-evil");
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
-            } else {
+            } 
+            else if (players[i].type == "mayor+dead+target") {
+              element.children[0].id = "game-show-mark";
+              element.children[0].src = "/assets/icons/target.svg";
+              element.children[1].id = "game-show-mark";
+              element.children[1].src = "/assets/icons/megaphone.svg";
+              currentElement.classList.add("game-player-dead");
+              currentElement.classList.remove("game-player-evil");
+              element.classList.add("game-player-dead");
+              element.classList.remove("game-player-unselectable");
+            } 
+            else {
               // dead everyone else
               element.children[0].id = "";
               element.children[0].src = "";
@@ -1346,10 +1394,18 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             } else if (players[i].type == "target") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/target.svg";
-            } else if (players[i].type == "mayor") {
+            } 
+            else if (players[i].type == "mayor") {
+              element.children[1].id = "game-show-mark";
+              element.children[1].src = "/assets/icons/megaphone.svg";
+            } 
+            else if (players[i].type == "mayor+target") {
               element.children[0].id = "game-show-mark";
-              element.children[0].src = "/assets/icons/megaphone.svg";
-            } else if (players[i].type == "evil") {
+              element.children[0].src = "/assets/icons/target.svg";
+              element.children[1].id = "game-show-mark";
+              element.children[1].src = "/assets/icons/megaphone.svg";
+            } 
+            else if (players[i].type == "evil") {
               element.children[0].id = "";
               element.children[0].src = "";
               currentElement.classList.add("game-player-evil");
