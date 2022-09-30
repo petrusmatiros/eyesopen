@@ -3772,15 +3772,16 @@ io.on("connection", async (socket) => {
     // Reset players, reset game
     for (var i = 0; i < game.getUsers().length; i++) {
       let user = game.getUsers()[i];
-      if (user.getCurrentRoom() == roomCode) {
-        if (user.getInGame()) {
-          user.reset();
-          user.getPlayer(roomCode).setReadyGame(false);
-          user.getPlayer(roomCode).setDisconnected(true);
+      if (user.getInGame()) { 
+        if (user.getCurrentRoom() == roomCode) {
+            user.reset();
+            user.getPlayer(roomCode).setReadyGame(false);
+            user.getPlayer(roomCode).setDisconnected(true);
+          
         }
-      }
-      if (user.getPrevious().includes(roomCode)) {
-        user.removePrevious(roomCode);
+        if (user.getPrevious().includes(roomCode)) {
+          user.removePrevious(roomCode);
+        }
       }
     }
     io.to(roomCode).emit("returnToLobby");
