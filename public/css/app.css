@@ -246,6 +246,7 @@
   user-select: none;
   cursor: pointer;
   position: absolute;
+  top: 49%;
   margin-bottom: 1rem;
   display: none;
   justify-content: center;
