@@ -287,10 +287,12 @@ function resetGameSettingsError(type = "") {
     if (actionInput.className.includes("lobby-gamesetting-error")) {
       actionInput.style.border = "2px solid #b1b1b1";
       actionInput.classList.remove("lobby-gamesetting-error");
-    } else if (discussionInput.className.includes("lobby-gamesetting-error")) {
+    } 
+    if (discussionInput.className.includes("lobby-gamesetting-error")) {
       discussionInput.style.border = "2px solid #b1b1b1";
       discussionInput.classList.remove("lobby-gamesetting-error");
-    } else if (votingInput.className.includes("lobby-gamesetting-error")) {
+    } 
+    if (votingInput.className.includes("lobby-gamesetting-error")) {
       votingInput.style.border = "2px solid #b1b1b1";
       votingInput.classList.remove("lobby-gamesetting-error");
     }
