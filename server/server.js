@@ -514,12 +514,14 @@ io.on("connection", async (socket) => {
         //   gameToLeave.removeUser(user)
         // }
         io.to(previousRoom).emit("updateSetPlayers");
-        checkForWin(
-          playerID,
-          rooms.get(previousRoom),
-          previousRoom,
-          gameToLeave
-        );
+        if (gameToLeave.getProgress() && gameToLeave.getDone() == false) {
+          checkForWin(
+            playerID,
+            rooms.get(previousRoom),
+            previousRoom,
+            gameToLeave
+          );
+        }
       }
     }
   }
@@ -3110,41 +3112,44 @@ io.on("connection", async (socket) => {
     var roomCode = connectedUsers.get(playerID).getCurrentRoom();
     var room = rooms.get(roomCode);
     var game = room.getGame();
-    if (game.getCycle() == "Night") {
-      if (game.getPhase() == "nightMessages") {
-        if (game.getNightMessagesOnce() == 0) {
-          console.log("EXECUTING NIGHT ACTIONS");
-          executeNightActions(playerID, room, roomCode, game);
-          voteHandlerEvil(playerID, room, roomCode, game);
-          io.to(roomCode).emit("updateSetPlayers");
-          game.setNightMessagesOnce(1);
+    if (game.getProgress() && game.getDone() == false) {
+      if (game.getCycle() == "Night") {
+        if (game.getPhase() == "nightMessages") {
+          if (game.getNightMessagesOnce() == 0) {
+            console.log("EXECUTING NIGHT ACTIONS");
+            executeNightActions(playerID, room, roomCode, game);
+            voteHandlerEvil(playerID, room, roomCode, game);
+            io.to(roomCode).emit("updateSetPlayers");
+            game.setNightMessagesOnce(1);
+            resetAllActions(playerID, room, roomCode, game);
+          }
+        }
+      } else if (game.getCycle() == "Day") {
+        if (game.getPhase() == "dayMessages") {
+          if (game.getDayMessagesOnce() == 0) {
+            console.log("VOTE GLOBAL");
+            voteHandlerGlobal(playerID, room, roomCode, game);
+            console.log("DEATH HANDLER VOTE");
+            deathHandler(playerID, room, roomCode, game);
+            io.to(roomCode).emit("updateSetPlayers");
+            checkForWin(playerID, room, roomCode, game);
+            game.setDayMessagesOnce(1);
+            resetAllActions(playerID, room, roomCode, game);
+          }
+        } else if (game.getPhase() == "discussion") {
           resetAllActions(playerID, room, roomCode, game);
+        } else if (game.getPhase() == "recap") {
+          if (game.getRecapOnce() == 0) {
+            console.log("DEATH HANDLER RECAP");
+            deathHandler(playerID, room, roomCode, game);
+            io.to(roomCode).emit("updateSetPlayers");
+            checkForWin(playerID, room, roomCode, game);
+            game.setRecapOnce(1);
+            resetAllActions(playerID, room, roomCode, game);
+          }
         }
       }
-    } else if (game.getCycle() == "Day") {
-      if (game.getPhase() == "dayMessages") {
-        if (game.getDayMessagesOnce() == 0) {
-          console.log("VOTE GLOBAL");
-          voteHandlerGlobal(playerID, room, roomCode, game);
-          console.log("DEATH HANDLER VOTE");
-          deathHandler(playerID, room, roomCode, game);
-          io.to(roomCode).emit("updateSetPlayers");
-          checkForWin(playerID, room, roomCode, game);
-          game.setDayMessagesOnce(1);
-          resetAllActions(playerID, room, roomCode, game);
-        }
-      } else if (game.getPhase() == "discussion") {
-        resetAllActions(playerID, room, roomCode, game);
-      } else if (game.getPhase() == "recap") {
-        if (game.getRecapOnce() == 0) {
-          console.log("DEATH HANDLER RECAP");
-          deathHandler(playerID, room, roomCode, game);
-          io.to(roomCode).emit("updateSetPlayers");
-          checkForWin(playerID, room, roomCode, game);
-          game.setRecapOnce(1);
-          resetAllActions(playerID, room, roomCode, game);
-        }
-      }
+      
     }
   }
 

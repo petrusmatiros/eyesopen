@@ -173,11 +173,15 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
   theWinners.innerText = "";
   var victory = false;
   var listOfWinners = "";
+  var seen = [];
   if (win) {
     for (var i = 0; i < winners.length; i++) {
-      listOfWinners += winners[i].theName + ", ";
-      if (winners[i].theID == proxyID) {
-        victory = true;
+      if (!seen.includes(winners[i].theID)) {
+        if (winners[i].theID == proxyID) {
+          victory = true;
+        }
+        listOfWinners += winners[i].theName + ", ";
+        seen.push(winners[i].theID)
       }
     }
 
