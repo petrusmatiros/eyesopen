@@ -1760,7 +1760,7 @@ io.on("connection", async (socket) => {
                         game,
                         "evil",
                         abilityMessage,
-                        "Night"
+                        "bold"
                       );
                     } else {
                       var abilityMessage = "";
@@ -4842,13 +4842,20 @@ io.on("connection", async (socket) => {
         }
         // WHAT WAS THEIR ROLE
         if (game.settings.showRoles.value == true) {
+          var thePlayerName = "";
+          if (player?.getPlayerName().endsWith("s")) {
+            thePlayerName = player.getPlayerName() + "'"
+          }
+          else if (!player?.getPlayerName().endsWith("s")) {
+            thePlayerName = player.getPlayerName() + "'s"
+          }
           sendMessage(
             playerID,
             room,
             roomCode,
             game,
             "all",
-            `${player.getPlayerName()} role was: ${player.getRole().name}`,
+            `${thePlayerName} role was: ${player.getRole().name}`,
             "important"
           );
         }
@@ -4914,13 +4921,20 @@ io.on("connection", async (socket) => {
         // lynched
         // WHAT WAS THEIR ROLE
         if (game.settings.showRoles.value == true) {
+          var thePlayerName = "";
+          if (player?.getPlayerName().endsWith("s")) {
+            thePlayerName = player.getPlayerName() + "'"
+          }
+          else if (!player?.getPlayerName().endsWith("s")) {
+            thePlayerName = player.getPlayerName() + "'s"
+          }
           sendMessage(
             playerID,
             room,
             roomCode,
             game,
             "all",
-            `${player.getPlayerName()} role was: ${player.getRole().name}`,
+            `${thePlayerName} role was: ${player.getRole().name}`,
             "important"
           );
         }
