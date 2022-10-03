@@ -465,9 +465,7 @@
   align-items: center;
   flex-direction: row;
   font-size: 1rem;
-  height: 1.5rem;
-  min-height: 1.5rem;
-  max-height: 1.5rem;
+  height: 100%;
   font-weight: 400;
 }
 .game-button {
