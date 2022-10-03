@@ -246,7 +246,6 @@
   user-select: none;
   cursor: pointer;
   position: absolute;
-  top: 49%;
   margin-bottom: 1rem;
   display: none;
   justify-content: center;
@@ -269,6 +268,7 @@
   min-width: 16rem;
   max-width: 16rem;
   font-size: 0.75rem;
+  font-weight: 300;
   padding: 0.25rem 0.5rem 0.25rem 0.5rem;
   margin-bottom: 0.35rem;
   border-radius: 0.35rem;
@@ -276,34 +276,44 @@
 /* Message types */
 /* Day */
 .game-message-alert-day {
+  font-weight: 400 !important;
   background-color: hsl(360, 100%, 70%) !important;
 }
 .game-message-info-day {
+  font-weight: 400 !important;
   background-color: hsl(43, 100%, 60%) !important;
 }
 .game-message-confirm-day {
+  font-weight: 400 !important;
   background-color: hsl(97, 100%, 50%) !important;
 }
 .game-message-important-day {
+  font-weight: 400 !important;
   background-color: hsl(280, 100%, 75%) !important;
 }
 .game-message-extra-day {
+  font-weight: 400 !important;
   background-color: hsl(197, 100%, 60%) !important;
 }
 /* Night */
 .game-message-alert-night {
+  font-weight: 400 !important;
   background-color: hsl(360, 100%, 60%) !important;
 }
 .game-message-info-night {
+  font-weight: 400 !important;
   background-color: hsl(43, 100%, 50%) !important;
 }
 .game-message-confirm-night {
+  font-weight: 400 !important;
   background-color: hsl(97, 100%, 40%) !important;
 }
 .game-message-important-night {
+  font-weight: 400 !important;
   background-color: hsl(280, 100%, 60%) !important;
 }
 .game-message-extra-night {
+  font-weight: 400 !important;
   background-color: hsl(197, 100%, 50%) !important;
 }
 /* Standard */
