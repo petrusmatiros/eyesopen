@@ -103,6 +103,9 @@ app.get("/sitemap.xml", (req, res) => {
 app.get("/robots.txt", (req, res) => {
   res.sendFile(__dirname + "robots.txt");
 });
+app.get("/eyesopen.svg", (req, res) => {
+  res.sendFile(__dirname + "/assets/icons/eyesopen.svg");
+});
 
 // Catch all
 app.get("*", (req, res) => {
