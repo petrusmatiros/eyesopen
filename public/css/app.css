@@ -453,11 +453,11 @@
   user-select: none;
   cursor: pointer;
   color: var(--dark-fg);
-  background-color: var(--light-bg);
   /* top-left | top-right | bottom-right | bottom-left */
   border-radius: 0.75rem;
   min-width: 9rem;
   max-width: 9rem;
+  height: 100%;
 }
 /* Game buttons */
 .game-player-buttons-container {
@@ -480,7 +480,7 @@
   text-align: center;
   color: var(--dark-fg);
   width: 100%;
-  height: 100%;
+  height: 1.15rem;
   border-radius: 0 0 0.75rem 0.75rem;
   padding: 0.35em;
 }
@@ -527,12 +527,13 @@
   padding: 0.5em 0.35em 0.5em 0.35em;
   /* top-left | top-right | bottom-right | bottom-left */
   border-radius: 0.75rem 0.75rem 0 0;
-  height: 100%;
+  height: 1.25rem;
   font-size: 0.95rem;
   box-shadow: none;
 }
 .game-player-selection-ability {
-  box-shadow: 0 0 0 0.25rem var(--ability-button-bg--active) !important;
+  /* box-shadow: 0 0 0 0.25rem var(--ability-button-bg--active) !important; */
+  outline: 4px solid var(--ability-button-bg--active) !important;
 }
 .game-player-selection-vote {
   background-color: var(--vote-button-bg--active) !important;

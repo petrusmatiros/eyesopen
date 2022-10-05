@@ -124,7 +124,7 @@ socket.on("connect", () => {
           });
         }
 
-        showNotification("copy");
+        
 
         socket.emit("checkIfHost", getPlayerID(), "visibility");
         socket.on("isHost", (isHost) => {
@@ -141,6 +141,7 @@ socket.on("connect", () => {
               document.getElementsByClassName("lobby-button start");
             startButton[0].style.display = "inline";
             revealSettingsButtons();
+            showNotification("copy");
           } else {
             console.log("REMOVING HOST VISIBILITY");
             document.getElementById("roles").classList.remove("selectable");
@@ -234,14 +235,6 @@ socket.on("connect", () => {
         });
 
         socket.emit("checkRoleCount", getPlayerID());
-        // socket.on("roleCountBefore", (roleAmount, amountOfUsers) => {
-        //   roleCount = roleAmount;
-        //   userCount = amountOfUsers;
-        // });
-
-        // // socket.on("roleCountAfter", (userAmount, roleAmount) => {
-        // //   roleReqHandler(roleAmount, userAmount);
-        // // });
 
         socket.on("rolePickCondition", (valid) => {
           rolePickConditionHandler(valid);
