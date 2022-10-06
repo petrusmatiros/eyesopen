@@ -3770,7 +3770,7 @@ io.on("connection", async (socket) => {
     io.to(roomCode).emit("endGame", win, winType, lawyerWin, toSend);
     // CLEAR INTERVAL (game.setDone(true))
     game.setDone(true);
-    console.log(game.getDone());
+    console.log("game is done:", game.getDone());
     // Send players back to lobby after 10 seconds
     setTimeout(endGameClear, 10000, game, roomCode);
   }
