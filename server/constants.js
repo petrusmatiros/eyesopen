@@ -13,7 +13,7 @@ global.BREAK_LIMIT = 100;
 global.minRoles = 3;
 global.minPlayers = 3;
 global.maxPlayers = 14;
-global.maxNoDeaths = 20;
+global.maxNoDeaths = 10;
 global.roleTypes = {
   Villager: "villager",
   Investigator: "investigator",
