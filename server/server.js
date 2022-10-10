@@ -3128,7 +3128,10 @@ io.on("connection", async (socket) => {
           }
         }
       } else if (game.getCycle() == "Day") {
-        if (game.getPhase() == "dayMessages") {
+        if (game.getPhase() == "voting") {
+          checkAllHaveVoted(playerID, room, roomCode, game)
+        }
+        else if (game.getPhase() == "dayMessages") {
           if (game.getDayMessagesOnce() == 0) {
             console.log("VOTE GLOBAL");
             voteHandlerGlobal(playerID, room, roomCode, game);
@@ -4095,6 +4098,44 @@ io.on("connection", async (socket) => {
             game.addWinner(winner);
           }
         }
+      }
+    }
+  }
+
+  function checkAllHaveVoted(playerID, room, roomCode, game) {
+    if (game.getCycle() == "Day") {
+      if (game.getPhase() == "voting") {
+        var hasVoted = 0;
+        var users = game.getAlive();
+        for (var i = 0; i < users.length; i++) {
+          if (users[i].getPlayer(roomCode).voteTarget !== null) {
+            var theVoteTarget = getKeyFromValue(
+              proxyIdenfication,
+              users[i].getPlayer(roomCode).voteTarget
+            );
+            var voteTargetPlayer = connectedUsers
+              .get(theVoteTarget)
+              .getPlayer(roomCode);
+            if (
+              voteTargetPlayer.getIsKilled() == false &&
+              voteTargetPlayer.getIsLynched() == false
+            ) {
+              hasVoted++;
+            }
+          }
+        }
+
+        if (hasVoted == users.length) {
+          concludeVote(playerID, room, roomCode, game);
+        }
+      }
+    }
+  }
+
+  function concludeVote(playerID, room, roomCode, game) {
+    if (game.getCycle() == "Day") {
+      if (game.getPhase() == "voting") {
+        game.getTimer().setCounter(0);
       }
     }
   }
