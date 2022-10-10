@@ -3240,7 +3240,7 @@ io.on("connection", async (socket) => {
             }
           }
         } else if (
-          goodCount == 0 &&
+          (goodCount >= 0 && goodCount < evilCount) &&
           (neutralCount == 0 || neutralCount == 1) &&
           evilCount > 0
         ) {
@@ -3272,23 +3272,7 @@ io.on("connection", async (socket) => {
               }
             }
           } else if (neutralCount == 1) {
-            if (theLawyer !== null) {
-              if (
-                theLawyer
-                  .getPlayer(roomCode)
-                  .getRole()
-                  .client.getPlayer(roomCode)
-                  .getRole()
-                  .team.includes("evil")
-              ) {
-                game.setEvilWin(true);
-                game.setLawyerWin(true);
-                var winnerID = theLawyer.getPlayerID();
-                var winnerName = theLawyer.getPlayer(roomCode).getPlayerName();
-                var winner = { winnerID, winnerName };
-                game.addWinner(winner);
-              }
-            }
+            game.setEvilWin(true);
             if (game.getEvilWin()) {
               for (var i = 0; i < game.getUsers().length; i++) {
                 let user = game.getUsers()[i];
@@ -3301,6 +3285,22 @@ io.on("connection", async (socket) => {
                   var winner = { winnerID, winnerName };
                   game.addWinner(winner);
                 }
+              }
+            }
+            if (theLawyer !== null) {
+              if (
+                theLawyer
+                  .getPlayer(roomCode)
+                  .getRole()
+                  .client.getPlayer(roomCode)
+                  .getRole()
+                  .team.includes("evil")
+              ) {
+                game.setLawyerWin(true);
+                var winnerID = theLawyer.getPlayerID();
+                var winnerName = theLawyer.getPlayer(roomCode).getPlayerName();
+                var winner = { winnerID, winnerName };
+                game.addWinner(winner);
               }
             }
           }
@@ -5104,7 +5104,8 @@ io.on("connection", async (socket) => {
         game.getCurrentPhase()
       ]
     );
-
+    // Check once from beginning
+    checkForWin(playerID, room, roomCode, game);
     // time is equal to intervalID
     game.setGameInterval(
       setInterval(function () {
