@@ -61,6 +61,7 @@ function playClockWarning() {
   }
 }
 
+
 socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
   socket.on("userExists", (userExists) => {
