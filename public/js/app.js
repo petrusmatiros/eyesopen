@@ -47,7 +47,7 @@ function playDealCard() {
     }
   }
 }
-function playTick() {
+function playClockWarning() {
   var audio = document.getElementById("tickAudio");
   if (audio.paused) {
     audio.volume = 1;
@@ -59,7 +59,6 @@ function playTick() {
       });
     }
   }
-  
 }
 
 socket.on("connect", () => {
@@ -1787,13 +1786,13 @@ socket.on("clock", (counter, phase, cycle, cycleCount) => {
   var theMinutes = document.getElementById("game-time-minutes");
   var theSeconds = document.getElementById("game-time-seconds");
   var gameCycle = document.getElementById("game-cycle-text");
-  if (counter <= 5) {
-    if (!theSeconds.innerText.endsWith(counter)) {
-      if (phase == "voting" || phase == "actions") {
-        playTick();
-      }
+
+  if (phase == "voting" || phase == "actions") {
+    if (counter == 10) {
+      playClockWarning();
     }
   }
+  
   var minutes = Math.floor(counter/60);
   var seconds = counter - (minutes * 60)
   if (minutes < 10 && seconds < 10) {

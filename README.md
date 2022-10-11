@@ -101,7 +101,7 @@ npm build
 
 **BGM & SFX**
 <br>
-"Ticking Clock, A.wav" by InspectorJ (<a href="https://www.jshaw.co.uk" target="_blank">www.jshaw.co.uk</a>) of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+"Countdown" by sonically_sound of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
 <br>
 "Suspense Mystery Entry" by Tyops of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
 
