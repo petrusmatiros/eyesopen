@@ -3370,21 +3370,23 @@ io.on("connection", async (socket) => {
                 } else {
                   game.setEvilWin(true);
                 }
-              }
-              if (game.getEvilWin()) {
-                for (var i = 0; i < game.getUsers().length; i++) {
-                  let user = game.getUsers()[i];
-                  let player = user.getPlayer(roomCode);
-                  let role = player.getRole();
-  
-                  if (role.team.includes("evil")) {
-                    var winnerID = user.getPlayerID();
-                    var winnerName = player.getPlayerName();
-                    var winner = { winnerID, winnerName };
-                    game.addWinner(winner);
-                  }
+            } else {
+              game.setEvilWin(true);
+            }
+            if (game.getEvilWin()) {
+              for (var i = 0; i < game.getUsers().length; i++) {
+                let user = game.getUsers()[i];
+                let player = user.getPlayer(roomCode);
+                let role = player.getRole();
+
+                if (role.team.includes("evil")) {
+                  var winnerID = user.getPlayerID();
+                  var winnerName = player.getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
                 }
               }
+            }
           }
         } else if (
           evilCount == 0 &&
