@@ -3,6 +3,7 @@ const socket = io(domain, { secure: true });
 
 const lobby = domain + "lobby/";
 
+
 socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
   socket.on("userExists", (userExists) => {
@@ -16,6 +17,22 @@ socket.on("connect", () => {
   });
   addEventListeners();
 });
+
+
+function playIntro() {
+  var audio = document.getElementById("introAudio");
+  if (audio.paused) {
+    audio.volume = 0.6;
+    audio.loop = true;
+    var playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.then(_ => {
+      })
+      .catch(error => {
+      });
+    }
+  }
+}
 
 function loadPlayersInLobby(slots) {
   var thePlayers = document.getElementById("players");

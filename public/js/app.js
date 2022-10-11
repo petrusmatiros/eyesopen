@@ -34,6 +34,34 @@ function getPlayerID() {
   }
 }
 
+function playDealCard() {
+  var audio = document.getElementById("dealCardAudio");
+  if (audio.paused) {
+    audio.volume = 1;
+    var playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.then(_ => {
+      })
+      .catch(error => {
+      });
+    }
+  }
+}
+function playTick() {
+  var audio = document.getElementById("tickAudio");
+  if (audio.paused) {
+    audio.volume = 1;
+    var playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.then(_ => {
+      })
+      .catch(error => {
+      });
+    }
+  }
+  
+}
+
 socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
   socket.on("userExists", (userExists) => {
@@ -1759,6 +1787,13 @@ socket.on("clock", (counter, phase, cycle, cycleCount) => {
   var theMinutes = document.getElementById("game-time-minutes");
   var theSeconds = document.getElementById("game-time-seconds");
   var gameCycle = document.getElementById("game-cycle-text");
+  if (counter <= 5) {
+    if (!theSeconds.innerText.endsWith(counter)) {
+      if (phase == "voting" || phase == "actions") {
+        playTick();
+      }
+    }
+  }
   var minutes = Math.floor(counter/60);
   var seconds = counter - (minutes * 60)
   if (minutes < 10 && seconds < 10) {
@@ -1799,6 +1834,7 @@ socket.on(
     if (!playerIsReady) {
       showGameUI(false);
       showRoleCard(true, role, name, team, description, mission);
+      playDealCard();
       showWaiting(false);
     } else if (playerIsReady && !allReady) {
       showGameUI(false);
