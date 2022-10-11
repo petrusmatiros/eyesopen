@@ -3272,37 +3272,40 @@ io.on("connection", async (socket) => {
               }
             }
           } else if (neutralCount == 1) {
-            game.setEvilWin(true);
-            if (game.getEvilWin()) {
-              for (var i = 0; i < game.getUsers().length; i++) {
-                let user = game.getUsers()[i];
-                let player = user.getPlayer(roomCode);
-                let role = player.getRole();
-
-                if (role.team.includes("evil")) {
-                  var winnerID = user.getPlayerID();
-                  var winnerName = player.getPlayerName();
-                  var winner = { winnerID, winnerName };
-                  game.addWinner(winner);
-                }
-              }
-            }
+            
             if (theLawyer !== null) {
               if (
                 theLawyer
-                  .getPlayer(roomCode)
-                  .getRole()
-                  .client.getPlayer(roomCode)
-                  .getRole()
-                  .team.includes("evil")
-              ) {
-                game.setLawyerWin(true);
-                var winnerID = theLawyer.getPlayerID();
-                var winnerName = theLawyer.getPlayer(roomCode).getPlayerName();
-                var winner = { winnerID, winnerName };
-                game.addWinner(winner);
+                .getPlayer(roomCode)
+                .getRole()
+                .client.getPlayer(roomCode)
+                .getRole()
+                .team.includes("evil")
+                ) {
+                  game.setEvilWin(true);
+                  game.setLawyerWin(true);
+                  var winnerID = theLawyer.getPlayerID();
+                  var winnerName = theLawyer.getPlayer(roomCode).getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
+                } else {
+                  game.setEvilWin(true);
+                }
               }
-            }
+              if (game.getEvilWin()) {
+                for (var i = 0; i < game.getUsers().length; i++) {
+                  let user = game.getUsers()[i];
+                  let player = user.getPlayer(roomCode);
+                  let role = player.getRole();
+  
+                  if (role.team.includes("evil")) {
+                    var winnerID = user.getPlayerID();
+                    var winnerName = player.getPlayerName();
+                    var winner = { winnerID, winnerName };
+                    game.addWinner(winner);
+                  }
+                }
+              }
           }
         } else if (
           evilCount == 0 &&
