@@ -1,3 +1,10 @@
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v8.4.14,
+* Autoprefixer: v10.4.7
+* Browsers: last 4 version
+*/
+
 :root {
   --menu-button-bg: hsl(280, 100%, 90%);
   --menu-button-hover-bg: hsl(280, 100%, 50%);
@@ -25,10 +32,17 @@ body {
   min-width: 100%;
 }
 .shadow-light {
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+          box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
 }
 .body-main {
   color: var(--light-fg);
+  background: -o-radial-gradient(
+    50% 50%,
+    50% 50%,
+    var(--main-highlight) 0%,
+    var(--main-shadow) 100%
+  );
   background: radial-gradient(
     50% 50% at 50% 50%,
     var(--main-highlight) 0%,
@@ -54,23 +68,44 @@ p {
   margin-top: 1rem;
 }
 .menu {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 .title-dark {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   font-size: 3.7rem;
   color: var(--light-fg);
   margin: 1rem 0 1rem 0;
 }
 .title-light {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   font-size: 3.7rem;
   color: var(--dark-fg);
   margin: 1rem 0 1rem 0;
@@ -80,10 +115,17 @@ p {
   height: auto;
 }
 .navbar-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: start;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
   width: auto;
   height: auto;
   padding: 0.5em;
@@ -97,13 +139,16 @@ p {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
 .logo-link:focus {
   outline: none !important;
+}
+@-webkit-keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 @keyframes fadeIn {
   0% { opacity: 0; }
@@ -113,7 +158,8 @@ p {
   position: fixed;
   display: block;
   background-color: rgba(0, 0, 0, 0.35);
-  animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn 0.3s 1;
+          animation: fadeIn 0.3s 1;
   top: 0;
   left: 0;
   bottom: 0;
@@ -127,13 +173,23 @@ p {
 .card-input {
   position: fixed;
   display: none;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  animation: fadeIn 0.3s 1;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-animation: fadeIn 0.3s 1;
+          animation: fadeIn 0.3s 1;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
   align-items: center;
   background: var(--light-bg);
   padding: 1.85em;
@@ -174,11 +230,18 @@ input[type="text"]:focus {
   border: 2px solid #000000;
 }
 .confirm-button {
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   cursor: pointer;
   display: inline-block;
-  justify-content: center;
-  align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   font-size: 1rem;
   font-weight: 600;
   color: var(--light-fg);
@@ -196,6 +259,10 @@ input[type="text"]:focus {
 .confirm-button:active {
   color: var(--menu-button-active-fg);
   background-color: var(--menu-button-active-bg);
+  -webkit-transition: all 0s;
+  -o-transition: all 0s;
   transition: all 0s;
-  transform: scale(0.9);
+  -webkit-transform: scale(0.9);
+      -ms-transform: scale(0.9);
+          transform: scale(0.9);
 }
