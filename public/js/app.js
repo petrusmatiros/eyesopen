@@ -34,8 +34,8 @@ function getPlayerID() {
   }
 }
 
-function playDealCard() {
-  var audio = document.getElementById("dealCardAudio");
+function playAudio(toPlay) {
+  var audio = document.getElementById(toPlay);
   if (audio.paused) {
     audio.volume = 1;
     var playPromise = audio.play();
@@ -47,20 +47,6 @@ function playDealCard() {
     }
   }
 }
-function playClockWarning() {
-  var audio = document.getElementById("clockAudio");
-  if (audio.paused) {
-    audio.volume = 1;
-    var playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.then(_ => {
-      })
-      .catch(error => {
-      });
-    }
-  }
-}
-
 
 socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
@@ -221,9 +207,11 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
       // VICTORY AND DEFEAT
       if (victory) {
         state = "VICTORY";
+        playAudio("victoryAudio");
         // display victory
       } else {
         state = "DEFEAT";
+        playAudio("defeatAudio");
         // display defeat
       }
 
@@ -437,6 +425,7 @@ socket.on("recieveMessage", (message, type, cycle) => {
   if (!manualScroll) {
     messages.scrollTop = messages.scrollHeight;
   }
+  playAudio("messageAudio");
 });
 
 socket.on("cemetery", (burried) => {
@@ -1783,7 +1772,22 @@ socket.on("clock", (counter, phase, cycle, cycleCount) => {
 
   if (phase == "voting" || phase == "actions") {
     if (counter == 10) {
-      playClockWarning();
+      playAudio("clockAudio");
+    }
+  }
+  if (phase == "discussion") {
+    if (counter == 1) {
+      playAudio("votingAudio");
+    }
+  }
+  if (phase == "dayMessages") {
+    if (counter == 1) {
+      playAudio("nightAudio");
+    }
+  }
+  if (phase == "nightMessages") {
+    if (counter == 1) {
+      playAudio("dayAudio");
     }
   }
   
@@ -1827,7 +1831,7 @@ socket.on(
     if (!playerIsReady) {
       showGameUI(false);
       showRoleCard(true, role, name, team, description, mission);
-      playDealCard();
+      playAudio("dealCardAudio");
       showWaiting(false);
     } else if (playerIsReady && !allReady) {
       showGameUI(false);

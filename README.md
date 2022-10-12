@@ -101,7 +101,22 @@ npm build
 
 **BGM & SFX**
 <br>
-"Suspense Mystery Entry" by Tyops of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<a href="https://freesound.org/people/tyops/sounds/423208/" target="_blank">"Suspense Mystery Entry"</a> by Tyops of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<br>
+<a href="https://freesound.org/people/Sheyvan/sounds/470083/" target="_blank">"Music: Orchestral Victory Fanfare"</a> by Sheyvan of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<br>
+<a href="https://freesound.org/people/ryusa/sounds/531132/" target="_blank">"Bass drum snare roll victorious victory positive percussion.wav"</a> by ryusa of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<br>
+<a href="https://freesound.org/people/LittleRobotSoundFactory/sounds/270467/" target="_blank">"Jingle_Lose_00.wav"</a> by LittleRobotSoundFactory of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<br>
+<a href="https://freesound.org/people/InspectorJ/sounds/384188/" target="_blank">"Rooster, Crowing, A.wav"</a> by InspectorJ of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<br>
+<a href="https://freesound.org/people/PhonosUPF/sounds/499699/" target="_blank">"howling"</a> by PhonosUPF of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<br>
+<a href="https://freesound.org/people/greenvwbeetle/sounds/328117/" target="_blank">"Pop 8"</a> by greenvwbeetle of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<br>
+<a href="https://freesound.org/people/igroglaz/sounds/633208/" target="_blank">"Old Church Bell (no noise)"</a> by igroglaz of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+
 
 ## Notes
 

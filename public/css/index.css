@@ -73,11 +73,11 @@
 }
 @-webkit-keyframes fall {
   0% { -webkit-transform: translateY(-50rem); transform: translateY(-50rem); }
-  100% { -webkit-transform: translateY(80rem); transform: translateY(80rem); }
+  100% { -webkit-transform: translateY(60rem); transform: translateY(60rem); }
 }
 @keyframes fall {
   0% { -webkit-transform: translateY(-50rem); transform: translateY(-50rem); }
-  100% { -webkit-transform: translateY(80rem); transform: translateY(80rem); }
+  100% { -webkit-transform: translateY(60rem); transform: translateY(60rem); }
 }
 .animated-cards {
   display: -webkit-box;
