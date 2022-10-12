@@ -208,7 +208,7 @@ function addEventListeners() {
     }
   });
 }
-function animateCards() {
+async function animateCards() {
   var cards = ["Villager", "Investigator", "Doctor", "Mayor", "Trapper", "Godfather", "Mafioso", "Surgeon", "Witch", "Framer", "Jester", "Serial Killer", "Executioner", "Lawyer"];
   var container = document.getElementsByClassName("animated-cards-container")[0];
   for (var row = 0; row < container.children.length; row++) {
@@ -234,7 +234,7 @@ function animateCards() {
   }
 }
 
-function animateTitle() {
+async function animateTitle() {
   var title = document.getElementsByClassName("title-eyesopen")[0];
 
   setInterval(() => {
