@@ -72,11 +72,11 @@
   gap: 1.5rem;
 }
 @-webkit-keyframes fall {
-  0% { -webkit-transform: translateY(-80rem); transform: translateY(-80rem); }
+  0% { -webkit-transform: translateY(-50rem); transform: translateY(-50rem); }
   100% { -webkit-transform: translateY(80rem); transform: translateY(80rem); }
 }
 @keyframes fall {
-  0% { -webkit-transform: translateY(-80rem); transform: translateY(-80rem); }
+  0% { -webkit-transform: translateY(-50rem); transform: translateY(-50rem); }
   100% { -webkit-transform: translateY(80rem); transform: translateY(80rem); }
 }
 .animated-cards {
@@ -105,6 +105,12 @@
   width: 14rem;
   height: 16.56rem;
   border-radius: 0.7rem;
+}
+@media screen and (max-width: 600px) { 
+  .animated-card {
+    width: 10rem;
+    height: 11.829rem;
+  }
 }
 .index-notification {
   position: fixed;
