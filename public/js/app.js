@@ -48,7 +48,7 @@ function playDealCard() {
   }
 }
 function playClockWarning() {
-  var audio = document.getElementById("tickAudio");
+  var audio = document.getElementById("clockAudio");
   if (audio.paused) {
     audio.volume = 1;
     var playPromise = audio.play();
