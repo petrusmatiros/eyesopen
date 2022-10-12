@@ -1473,7 +1473,7 @@ io.on("connection", async (socket) => {
       goodRoles == totalRoles ||
       evilRoles == totalRoles ||
       (goodRoles == totalRoles - 1 && lawyerPicked) ||
-      (evilRoles == totalRoles - 1 && lawyerPicked)
+      (evilRoles == totalRoles - 1 && lawyerPicked) || evilRoles > goodRoles
     ) {
       rooms.get(roomCode).requirements.validPick = false;
       reqHandler(playerID);
