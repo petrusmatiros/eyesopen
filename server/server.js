@@ -718,22 +718,26 @@ io.on("connection", async (socket) => {
   // add all Users to game alive, evil to evil array
   // ?check for user readyGame
   socket.on("startGame", (playerID) => {
-    console.log("starting game");
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
         var room = rooms.get(roomCode);
-        if (room.getGame().getProgress() == false) {
-          // Clear each player before joining another game
-          for (var i = 0; i < room.getUsers().length; i++) {
-            let user = room.getUsers()[i];
-            clearPrevious(user.getPlayerID());
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            if (checkReq(playerID)) {
+              console.log("starting game");
+              // Clear each player before joining another game
+              for (var i = 0; i < room.getUsers().length; i++) {
+                let user = room.getUsers()[i];
+                clearPrevious(user.getPlayerID());
+              }
+              io.to(roomCode).emit("enterGame");
+              setUp(roomCode);
+              // set game in progress
+              room.getGame().setProgress(true);
+              // io.to(roomCode).emit("rolesAssigned");
+            }
           }
-          io.to(roomCode).emit("enterGame");
-          setUp(roomCode);
-          // set game in progress
-          room.getGame().setProgress(true);
-          // io.to(roomCode).emit("rolesAssigned");
         }
       }
     }
@@ -743,18 +747,36 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        // if (!connectedUsers.get(playerID).getInGame()) {
         var room = rooms.get(roomCode);
         var totalReq = Object.keys(room.requirements).length;
-        // console.log("totalReq", totalReq);
         var count = 0;
         for (var value of Object.values(room.requirements)) {
           if (value == true) {
             count++;
           }
         }
-        // console.log("count", count);
-        // console.log("requirements", room.requirements);
+        if (count == totalReq) {
+          console.log("everything satisfied");
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  }
+
+  function checkReqSend(playerID) {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var totalReq = Object.keys(room.requirements).length;
+        var count = 0;
+        for (var value of Object.values(room.requirements)) {
+          if (value == true) {
+            count++;
+          }
+        }
         if (count == totalReq) {
           console.log("everything satisfied");
           //!! should this emit to everybody?
@@ -768,7 +790,6 @@ io.on("connection", async (socket) => {
             false
           );
         }
-        // }
       }
     }
   }
@@ -777,13 +798,11 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        // if (!connectedUsers.get(playerID).getInGame()) {
         var room = rooms.get(roomCode);
         if (req.includes("rolesEqualUsers")) {
           rooms.get(roomCode).requirements.rolesEqualUsers = isValid;
         }
-        checkReq(playerID);
-        // }
+        checkReqSend(playerID);
       }
     }
   });
@@ -792,7 +811,6 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-        // if (!connectedUsers.get(playerID).getInGame()) {
         var room = rooms.get(roomCode);
 
         if (rooms.get(roomCode).getUsers().length >= minPlayers) {
@@ -810,8 +828,7 @@ io.on("connection", async (socket) => {
         } else {
           rooms.get(roomCode).requirements.hostExist = false;
         }
-        checkReq(playerID);
-        // }
+        checkReqSend(playerID);
       }
     }
   }
@@ -1547,25 +1564,28 @@ io.on("connection", async (socket) => {
     if (checkUserExist(playerID)) {
       if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
         var roomCode = connectedUsers.get(playerID).getCurrentRoom();
-
-        if (rooms.get(roomCode).getGame().getProgress() == false) {
-          if (op.includes("add")) {
-            if (!rooms.get(roomCode).getRoles().includes(role)) {
-              rooms.get(roomCode).addRole(role);
+        var room = rooms.get(roomCode);
+        if (room.getHost() == playerID) {
+          if (room.getGame().getProgress() == false) {
+            if (op.includes("add")) {
+              if (!room.getRoles().includes(role)) {
+                room.addRole(role);
+              }
+            } else if (op.includes("remove")) {
+              if (room.getRoles().includes(role)) {
+                room.removeRole(role);
+              }
             }
-          } else if (op.includes("remove")) {
-            if (rooms.get(roomCode).getRoles().includes(role)) {
-              rooms.get(roomCode).removeRole(role);
-            }
+            console.log(room.getRoles());
+            reqHandler(playerID);
+            io.to(roomCode).emit(
+              "currentRoleCount",
+              room.getRoles().length,
+              room.getUsers().length
+            );
           }
-          console.log(rooms.get(roomCode).getRoles());
-          reqHandler(playerID);
-          io.to(roomCode).emit(
-            "currentRoleCount",
-            rooms.get(roomCode).getRoles().length,
-            rooms.get(roomCode).getUsers().length
-          );
         }
+
       }
     }
   });

@@ -439,10 +439,6 @@ socket.on("recieveMessage", (message, type, cycle) => {
   }
 });
 
-function messageBoxHandler() {
-  // used for action messages
-}
-
 socket.on("cemetery", (burried) => {
   loadCemetery(burried);
 });
@@ -461,7 +457,6 @@ function loadCemetery(burried) {
         i
       ].innerText = `${burried[i].burriedPlayerName} (${burried[i].burriedPlayerRole})`;
     }
-    
   }
 }
 
@@ -570,8 +565,6 @@ function loadSavedMessages(messages, cycle) {
     messageScroller.scrollTop = messageScroller.scrollHeight;
   }
 }
-
-// ! FIX THIS
 
 function resetActionsOnRefresh() {
   socket.emit("resetSocketActions", getPlayerID());
