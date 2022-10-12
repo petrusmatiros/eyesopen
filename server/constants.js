@@ -2,8 +2,8 @@
 global.ACTIONS = 40;
 global.NIGHTMESSAGES = 5;
 global.RECAP = 7;
-global.DISCUSSION = 45;
-global.VOTING = 30;
+global.DISCUSSION = 15;
+global.VOTING = 129;
 global.DAYMESSAGES = 7;
 global.SHOWROLES = true;
 global.VOTEMESSAGES = "visible"
