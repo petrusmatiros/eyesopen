@@ -26,7 +26,7 @@ function resetCookie(override = false) {
 }
 
 function revealLobby() {
-  var theLobby = document.getElementById("lobby-without-eyes");
+  var theLobby = document.getElementById("lobby-without-logo");
   var theLobbyCode = document.getElementById("lobby-code-container");
   theLobby.style.display = "flex";
   theLobbyCode.style.display = "flex";

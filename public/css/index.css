@@ -5,6 +5,13 @@
 * Browsers: last 4 version
 */
 
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v8.4.14,
+* Autoprefixer: v10.4.7
+* Browsers: last 4 version
+*/
+
 :root {
   --menu-button-bg: hsl(280, 100%, 90%);
   --menu-button-hover-bg: hsl(280, 100%, 50%);
@@ -25,90 +32,7 @@
   --popup-yes-button--hover: hsl(0, 100%, 75%);
   --popup-yes-button--active: hsl(0, 100%, 65%);
 }
-.abs-pos {
-  position: absolute;
-}
-.eye1 {
-  top: 5rem;
-  left: 1.5rem;
-  width: 4.063rem;
-  -webkit-transform: rotate(-30deg);
-      -ms-transform: rotate(-30deg);
-          transform: rotate(-30deg);
-}
-.eye2 {
-  top: 4rem;
-  right: 1.5rem;
-  width: 3.125rem;
-  -webkit-transform: rotate(70deg);
-      -ms-transform: rotate(70deg);
-          transform: rotate(70deg);
-}
-.eye3 {
-  bottom: 10rem;
-  right: 2rem;
-  width: 5rem;
-  -webkit-transform: rotate(-30deg);
-      -ms-transform: rotate(-30deg);
-          transform: rotate(-30deg);
-}
-.eye4 {
-  bottom: 3rem;
-  right: 1.5rem;
-  width: 1.563rem;
-  -webkit-transform: rotate(16deg);
-      -ms-transform: rotate(16deg);
-          transform: rotate(16deg);
-}
-.eye5 {
-  bottom: 11rem;
-  left: 4rem;
-  width: 3.75rem;
-  -webkit-transform: rotate(30deg);
-      -ms-transform: rotate(30deg);
-          transform: rotate(30deg);
-}
-.eye6 {
-  bottom: 29rem;
-  right: 0.5rem;
-  width: 2.5rem;
-  -webkit-transform: rotate(30deg);
-      -ms-transform: rotate(30deg);
-          transform: rotate(30deg);
-}
-.eye7 {
-  bottom: 3rem;
-  left: 3rem;
-  width: 2.188rem;
-  -webkit-transform: rotate(-8deg);
-      -ms-transform: rotate(-8deg);
-          transform: rotate(-8deg);
-}
-.eye8 {
-  bottom: 17.5rem;
-  left: 1.5rem;
-  width: 1.563rem;
-  -webkit-transform: rotate(-30deg);
-      -ms-transform: rotate(-30deg);
-          transform: rotate(-30deg);
-}
-.eye9 {
-  bottom: 18.5rem;
-  right: 1.5rem;
-  width: 1.563rem;
-  -webkit-transform: rotate(65deg);
-      -ms-transform: rotate(65deg);
-          transform: rotate(65deg);
-}
-.eye10 {
-  top: 5.5rem;
-  right: 8.5rem;
-  width: 3rem;
-  -webkit-transform: rotate(204deg);
-      -ms-transform: rotate(204deg);
-          transform: rotate(204deg);
-}
-.animated-eyes-container {
+.animations-container {
   position: fixed;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -127,17 +51,59 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  min-width: 22.5rem;
-  max-width: 22.5rem;
-  min-height: 46.25rem;
-  max-height: 46.25rem;
+  width: 100%;
+  height: 100%;
   z-index: -1;
 }
-.animated-eye {
-  opacity: 35%;
+.animated-cards-container {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  gap: 1.5rem;
+}
+@-webkit-keyframes fall {
+  0% { -webkit-transform: translateY(-80rem); transform: translateY(-80rem); }
+  100% { -webkit-transform: translateY(80rem); transform: translateY(80rem); }
+}
+@keyframes fall {
+  0% { -webkit-transform: translateY(-80rem); transform: translateY(-80rem); }
+  100% { -webkit-transform: translateY(80rem); transform: translateY(80rem); }
+}
+.animated-cards {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-animation: fall 300s infinite linear;
+  animation: fall 300s infinite linear;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 1rem;
+}
+.animated-card {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  opacity: 15%;
+  width: 14rem;
+  border-radius: 0.7rem;
 }
 .index-notification {
   position: fixed;
@@ -206,10 +172,10 @@ p {
   color: #000000;
   margin: 1em;
 }
-#index-with-eyes {
+#index-with-logo {
   margin-top: 5rem;
 }
-#without-eyes {
+#without-logo {
   margin-top: 0;
 }
 .menu {
@@ -331,12 +297,6 @@ p {
           align-items: center;
   height: 100%;
   width: 100%;
-}
-.eyes {
-  margin-top: -7rem;
-  margin-bottom: -7rem;
-  width: 18.75rem;
-  height: 18.75rem;
 }
 .title-button-container {
   display: -webkit-box;

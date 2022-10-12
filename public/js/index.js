@@ -208,6 +208,31 @@ function addEventListeners() {
     }
   });
 }
+function animateCards() {
+  var cards = ["Villager", "Investigator", "Doctor", "Mayor", "Trapper", "Godfather", "Mafioso", "Surgeon", "Witch", "Framer", "Jester", "Serial Killer", "Executioner", "Lawyer"];
+  var container = document.getElementsByClassName("animated-cards-container")[0];
+  for (var row = 0; row < container.children.length; row++) {
+    var seen = [];
+    var i = 0;
+    while (true) {
+      if (i == cards.length) {
+        break;
+      }
+      var rand = random(0, cards.length - 1);
+      if (!seen.includes(cards[rand])) {
+        seen.push(cards[rand]);
+        var element = document.createElement("img");
+        element.alt = cards[rand] + " card"
+        var imgClass = "animated-card";
+        element.classList.add(imgClass)
+        var imgSrc = "/assets/rolecards/";
+        element.src = imgSrc + cards[rand] + ".webp";
+        i++;
+        container.children[row].append(element);
+      }
+    }
+  }
+}
 
 function animateTitle() {
   var title = document.getElementsByClassName("title-eyesopen")[0];
@@ -226,36 +251,8 @@ function animateTitle() {
   }, 200);
 }
 
-animateEyes();
-function animateEyes() {
-  animateTitle();
-  var eyes = document.getElementsByClassName("animated-eye");
-  for (let i = 0; i < eyes.length; i++) {
-    let rand = random(250, 750);
-    let eye = eyes[i];
-    setInterval(() => {
-      if (eye.id == "eye-frame1") {
-        eye.src = "/assets/icons/eye2.svg";
-        eye.id = "eye-frame2";
-      } else if (eye.id == "eye-frame2") {
-        eye.src = "/assets/icons/eye3.svg";
-        eye.id = "eye-frame3";
-      } else if (eye.id == "eye-frame3") {
-        eye.src = "/assets/icons/eye4.svg";
-        eye.id = "eye-frame4";
-      } else if (eye.id == "eye-frame4") {
-        eye.src = "/assets/icons/eye5.svg";
-        eye.id = "eye-frame5";
-      } else if (eye.id == "eye-frame5") {
-        eye.src = "/assets/icons/eye6.svg";
-        eye.id = "eye-frame6";
-      } else if (eye.id == "eye-frame6") {
-        eye.src = "/assets/icons/eye1.svg";
-        eye.id = "eye-frame1";
-      }
-    }, rand);
-  }
-}
+animateTitle();
+animateCards();
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;

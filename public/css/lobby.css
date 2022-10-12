@@ -63,7 +63,7 @@
   --main-shadow: hsl(320, 49%, 17%);
   --main-highlight: hsl(320, 49%, 35%);
 }
-#lobby-without-eyes {
+#lobby-without-logo {
   display: none;
   margin-top: 0;
 }
