@@ -1,5 +1,5 @@
 
-global.ACTIONS = 40;
+global.ACTIONS = 30;
 global.NIGHTMESSAGES = 5;
 global.RECAP = 7;
 global.DISCUSSION = 15;
