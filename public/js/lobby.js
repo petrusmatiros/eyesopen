@@ -276,18 +276,39 @@ function resetGameSettingsError(type = "") {
 
     votingInput.style.border = "2px solid #b1b1b1";
     votingInput.classList.remove("lobby-gamesetting-error");
-  } else {
-    if (actionInput.className.includes("lobby-gamesetting-error")) {
-      actionInput.style.border = "2px solid #b1b1b1";
-      actionInput.classList.remove("lobby-gamesetting-error");
-    } 
-    if (discussionInput.className.includes("lobby-gamesetting-error")) {
-      discussionInput.style.border = "2px solid #b1b1b1";
-      discussionInput.classList.remove("lobby-gamesetting-error");
-    } 
-    if (votingInput.className.includes("lobby-gamesetting-error")) {
-      votingInput.style.border = "2px solid #b1b1b1";
-      votingInput.classList.remove("lobby-gamesetting-error");
+  }
+  else {
+    if (type == "action") {
+      if (actionInput.className.includes("lobby-gamesetting-error")) {
+        actionInput.style.border = "2px solid #b1b1b1";
+        actionInput.classList.remove("lobby-gamesetting-error");
+      } 
+    }
+    else if (type == "discussion") {
+      if (discussionInput.className.includes("lobby-gamesetting-error")) {
+        discussionInput.style.border = "2px solid #b1b1b1";
+        discussionInput.classList.remove("lobby-gamesetting-error");
+      } 
+    }
+    else if (type == "voting") {
+      if (discussionInput.className.includes("lobby-gamesetting-error")) {
+        discussionInput.style.border = "2px solid #b1b1b1";
+        discussionInput.classList.remove("lobby-gamesetting-error");
+      } 
+    }
+    else {
+      if (actionInput.className.includes("lobby-gamesetting-error")) {
+        actionInput.style.border = "2px solid #b1b1b1";
+        actionInput.classList.remove("lobby-gamesetting-error");
+      } 
+      if (discussionInput.className.includes("lobby-gamesetting-error")) {
+        discussionInput.style.border = "2px solid #b1b1b1";
+        discussionInput.classList.remove("lobby-gamesetting-error");
+      } 
+      if (votingInput.className.includes("lobby-gamesetting-error")) {
+        votingInput.style.border = "2px solid #b1b1b1";
+        votingInput.classList.remove("lobby-gamesetting-error");
+      }
     }
   }
 }
@@ -398,7 +419,7 @@ function checkNumber(element) {
       gameSettingError(inputType);
       return false;
     } else {
-      resetGameSettingsError();
+      resetGameSettingsError(inputType);
       document.getElementById(inputType + "Input").style.border =
         "2px solid #b1b1b1";
         socket.emit(
@@ -555,8 +576,6 @@ function kickConfirm() {
   }
   playerToKickID = null;
 }
-
-
 
 function revealSettingsButtons() {
   document.getElementById("lobby-gamesettings-icon").style.display = "flex";
