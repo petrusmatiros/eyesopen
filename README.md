@@ -101,8 +101,6 @@ npm build
 
 **BGM & SFX**
 <br>
-"Countdown" by sonically_sound of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
-<br>
 "Suspense Mystery Entry" by Tyops of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
 
 ## Notes
