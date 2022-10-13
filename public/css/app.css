@@ -1254,7 +1254,7 @@
   cursor: pointer;
   color: var(--dark-fg);
   background-color: var(--popup-leave-button);
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   padding: 0.6em;
 }
 .game-popup-leavebutton:hover {
@@ -1273,7 +1273,7 @@
   cursor: pointer;
   color: var(--dark-fg);
   background-color: var(--popup-button);
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   padding: 0.6em;
 }
 /* Conditionals */

@@ -254,7 +254,7 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
         state = "VICTORY";
         playSFX("victoryAudio");
         // display victory
-      } else {
+      } else if (!victory) {
         state = "DEFEAT";
         playSFX("defeatAudio");
         // display defeat

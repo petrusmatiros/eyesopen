@@ -3859,7 +3859,7 @@ io.on("connection", async (socket) => {
             var winState = Object.values(checkWinState(game, roomCode));
 
             if (winState[0] == true) {
-              io.to(roomCode).emit(
+              socket.emit(
                 "endGameRefreshed",
                 winState[0],
                 winState[1],
