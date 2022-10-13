@@ -34,10 +34,30 @@ function getPlayerID() {
   }
 }
 
-function playAudio(toPlay) {
+function pauseAudio(toPause) {
+  var audio = document.getElementById(toPause);
+  var pausePromise = audio.pause();
+  if (pausePromise !== undefined) {
+    pausePromise.then(_ => {
+    })
+    .catch(error => {
+    });
+  }
+}
+function playMusic(toPlay, vol=1, wait=false) {
+  if (musicToggle) {
+    playAudio(toPlay, vol, wait);
+  }
+}
+function playSFX(toPlay, vol=1, wait=false) {
+  if (audioToggle) {
+    playAudio(toPlay, vol, wait);
+  }
+}
+function playAudio(toPlay, vol=1, wait=false) {
   var audio = document.getElementById(toPlay);
-  if (audio.paused) {
-    audio.volume = 1;
+  audio.volume = vol;
+  if (!wait) {
     var playPromise = audio.play();
     if (playPromise !== undefined) {
       playPromise.then(_ => {
@@ -45,7 +65,18 @@ function playAudio(toPlay) {
       .catch(error => {
       });
     }
+  } else {
+    if (audio.paused) {
+      var playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(_ => {
+        })
+        .catch(error => {
+        });
+      }
+    }
   }
+  
 }
 
 socket.on("connect", () => {
@@ -207,11 +238,11 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
       // VICTORY AND DEFEAT
       if (victory) {
         state = "VICTORY";
-        playAudio("victoryAudio");
+        playSFX("victoryAudio");
         // display victory
       } else {
         state = "DEFEAT";
-        playAudio("defeatAudio");
+        playSFX("defeatAudio");
         // display defeat
       }
 
@@ -425,11 +456,12 @@ socket.on("recieveMessage", (message, type, cycle) => {
   if (!manualScroll) {
     messages.scrollTop = messages.scrollHeight;
   }
-  playAudio("messageAudio");
+  playSFX("messageAudio");
 });
 
 socket.on("cemetery", (burried) => {
   loadCemetery(burried);
+  playSFX("deathAudio");
 });
 
 function loadCemetery(burried) {
@@ -1764,30 +1796,74 @@ socket.on("showGameFirst", (allReady) => {
   showGame(allReady);
 });
 
-socket.on("clock", (counter, phase, cycle, cycleCount) => {
+audioToggle = true;
+musicToggle = true;
+function toggleAudio() {
+  var audio = document.getElementById("game-audio-toggle");
+  if (audioToggle) {
+    audioToggle = false;
+    audio.src = "/assets/icons/audio_off.svg";
+    pauseAudio("messageAudio");
+    pauseAudio("votingAudio");
+    pauseAudio("clockAudio");
+    pauseAudio("deathAudio");
+    pauseAudio("lynchAudio");
+    pauseAudio("dayAudio");
+    pauseAudio("nightAudio");
+    pauseAudio("victoryAudio");
+    pauseAudio("defeatAudio");
+  } else {
+    audioToggle = true;
+    audio.src = "/assets/icons/audio_on.svg";
+  }
+}
+function toggleMusic() {
+  var music = document.getElementById("game-music-toggle");
+  if (musicToggle) {
+    musicToggle = false;
+    music.src = "/assets/icons/music_off.svg";
+    pauseAudio("nightMusic");
+    pauseAudio("dayMusic");
+  } else {
+    musicToggle = true;
+    music.src = "/assets/icons/music_on.svg";
+  }
+}
+ 
+socket.on("clock", (counter, phase, cycle, cycleCount, theDurations) => {
   var clock = document.getElementById("game-time");
   var theMinutes = document.getElementById("game-time-minutes");
   var theSeconds = document.getElementById("game-time-seconds");
   var gameCycle = document.getElementById("game-cycle-text");
-
+  var durations = Object.values(theDurations);
   if (phase == "voting" || phase == "actions") {
     if (counter == 10) {
-      playAudio("clockAudio");
+      playSFX("clockAudio");
     }
   }
-  if (phase == "discussion") {
-    if (counter == 1) {
-      playAudio("votingAudio");
+  if (cycle == "Day") {
+    playMusic("dayMusic", 0.5, true)
+    if (phase == "voting") {
+      if (counter == durations[1].voting) {
+        playSFX("votingAudio");
+      }
     }
+  } else {
+    pauseAudio("dayMusic");
   }
-  if (phase == "dayMessages") {
-    if (counter == 1) {
-      playAudio("nightAudio");
+  if (cycle == "Night") {
+    playMusic("nightMusic", 0.5, true)
+    if (phase == "actions") {
+      if (counter == durations[0].actions) {
+        playSFX("nightAudio");
+      }
     }
+  } else {
+    pauseAudio("nightMusic")
   }
-  if (phase == "nightMessages") {
-    if (counter == 1) {
-      playAudio("dayAudio");
+  if (phase == "recap") {
+    if (counter == durations[1].recap) {
+      playSFX("dayAudio");
     }
   }
   
@@ -1831,7 +1907,7 @@ socket.on(
     if (!playerIsReady) {
       showGameUI(false);
       showRoleCard(true, role, name, team, description, mission);
-      playAudio("dealCardAudio");
+      playSFX("dealCardAudio");
       showWaiting(false);
     } else if (playerIsReady && !allReady) {
       showGameUI(false);

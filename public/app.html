@@ -96,12 +96,15 @@
       </div>
     </div>
 
+    <audio id="deathAudio" src="/assets/audio/death.mp3"></audio>
+    <audio id="lynchAudio" src="/assets/audio/lynch.mp3"></audio>
     <audio id="nightAudio" src="/assets/audio/night.mp3"></audio>
+    <audio id="nightMusic" src="/assets/audio/nightMusic.mp3"></audio>
     <audio id="dayAudio" src="/assets/audio/day.mp3"></audio>
+    <audio id="dayMusic" src="/assets/audio/dayMusic.mp3"></audio>
     <audio id="victoryAudio" src="/assets/audio/victory.mp3"></audio>
     <audio id="defeatAudio" src="/assets/audio/defeat.mp3"></audio>
     <audio id="votingAudio" src="/assets/audio/voting.mp3"></audio>
-    <audio id="messageAudio" src="/assets/audio/message-pop.mp3"></audio>
     <audio id="messageAudio" src="/assets/audio/message-pop.mp3"></audio>
     <audio id="dealCardAudio" src="/assets/audio/deal_card.mp3"></audio>
     <audio id="clockAudio" src="/assets/audio/eyesopen-clock.mp3"></audio>
@@ -410,6 +413,16 @@
         </div>
 
       </div>
+    </div>
+
+    <!-- Audio buttons -->
+    <div class="game-audio-buttons pop-light4" id="game-audio-buttons">
+      <div class="game-audio-button" onclick="toggleAudio()">
+        <img class="game-audio-toggle" id="game-audio-toggle" alt="audio toggle button" src="/assets/icons/audio_on.svg"></img>
+      </div>
+      <div class="game-audio-button" onclick="toggleMusic()">
+        <img class="game-music-toggle" id="game-music-toggle" alt="music toggle button" src="/assets/icons/music_on.svg"></img>
+      </div> 
     </div>
 
     <!-- Leave button -->

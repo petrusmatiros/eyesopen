@@ -932,6 +932,49 @@
   color: var(--light-fg);
   margin: 0 0.5rem 0.5rem 0.5rem;
 }
+.game-audio-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  max-width: 12.5rem;
+  max-width: 12.5rem;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.game-audio-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 12.5rem;
+  max-width: 12.5rem;
+  padding: 1rem;
+  border-radius: 0.5rem;;
+  background-color: hsl(0, 0%, 45%);
+
+}
+.game-audio-button:hover {
+  background-color: hsl(0, 0%, 35%);
+}
+.game-audio-button:active {
+  background-color: hsl(0, 0%, 25%);
+}
+.game-audio-toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.game-music-toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+}
 /* Leave button */
 .game-leavebutton {
   -webkit-user-select: none;

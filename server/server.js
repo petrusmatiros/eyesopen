@@ -5230,7 +5230,8 @@ io.on("connection", async (socket) => {
             game.getTimer().getCounter(),
             game.getPhase(),
             game.getCycle(),
-            game.getCycleCount()
+            game.getCycleCount(),
+            game.getTheDurations()
           );
 
           messageHandlerForCycles(

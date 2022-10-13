@@ -116,6 +116,14 @@ npm build
 <a href="https://freesound.org/people/greenvwbeetle/sounds/328117/" target="_blank">"Pop 8"</a> by greenvwbeetle of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
 <br>
 <a href="https://freesound.org/people/igroglaz/sounds/633208/" target="_blank">"Old Church Bell (no noise)"</a> by igroglaz of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<br>
+<a href="https://freesound.org/people/Glaneur%20de%20sons/sounds/30187/" target="_blank">"Guillottine test 02.ogg"</a> by Glaneur de sons of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<br>
+<a href="https://freesound.org/people/MadPanCake/sounds/567848/" target="_blank">"Kill impact"</a> by MadPanCake of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<br>
+<a href="https://freesound.org/people/kickhat/sounds/341794/" target="_blank">"pizzicato"</a> by kickhat of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<br>
+<a href="https://freesound.org/people/kickhat/sounds/341796/" target="_blank">"freesound strings attack 2"</a> by kickhat of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
 
 
 ## Notes
