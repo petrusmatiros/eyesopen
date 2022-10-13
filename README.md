@@ -119,6 +119,12 @@ npm build
 <br>
 <a href="https://freesound.org/people/greenvwbeetle/sounds/244654/" target="_blank">"Pop 2"</a> by greenvwbeetle of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
 <br>
+<a href="https://freesound.org/people/suntemple/sounds/253168/" target="_blank">"SFX UI Button Click"</a> by suntemple of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<br>
+<a href="https://freesound.org/people/plasterbrain/sounds/423166/" target="_blank">"Minimalist Sci-Fi UI Error"</a> by plasterbrain of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<br>
+<a href="https://freesound.org/people/Aesterial-Arts/sounds/638029/" target="_blank">"UI Denied"</a> by Aesterial-Arts of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
+<br>
 <a href="https://freesound.org/people/igroglaz/sounds/633208/" target="_blank">"Old Church Bell (no noise)"</a> by igroglaz of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
 <br>
 <a href="https://freesound.org/people/Glaneur%20de%20sons/sounds/30187/" target="_blank">"Guillottine test 02"</a> by Glaneur de sons of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
