@@ -192,6 +192,7 @@ function showLeave() {
   var leaveOverlay = document.getElementById("overlay-leave");
   leavePopup.style.display = "flex";
   leaveOverlay.style.display = "flex";
+  playSFX("popAudio", 0.25);
 }
 
 function hideLeave() {
@@ -199,10 +200,12 @@ function hideLeave() {
   var leaveOverlay = document.getElementById("overlay-leave");
   leavePopup.style.display = "none";
   leaveOverlay.style.display = "none";
+  playSFX("popAudio", 0.25);
 }
 
 function leaveGame() {
   socket.emit("leaveGame", getPlayerID());
+  playSFX("popAudio", 0.25);
 }
 
 function returnToLobby() {
@@ -341,6 +344,7 @@ function togglePlayerCard(element) {
     questionMark.style.display = "flex";
   }
   socket.emit("requestPlayerCard", getPlayerID(), "press");
+  playSFX("dealCardAudio", 0.35);
 }
 
 var manualScroll = false;
@@ -357,6 +361,7 @@ function autoScroll() {
   scrollDown.style.display = "none";
   var messages = document.getElementById("game-message-scroller");
   messages.scrollTop = messages.scrollHeight;
+  playSFX("popAudio", 0.25);
 }
 
 // Remove top margin from the first message recieved
@@ -467,7 +472,7 @@ socket.on("recieveMessage", (message, type, cycle) => {
   if (!manualScroll) {
     messages.scrollTop = messages.scrollHeight;
   }
-  playSFX("messageAudio");
+  playSFX("messageAudio", 0.75);
 });
 
 socket.on("cemetery", (burried) => {
@@ -1810,12 +1815,14 @@ socket.on("showGameFirst", (allReady) => {
 audioToggle = true;
 musicToggle = true;
 function toggleAudio() {
+  playSFX("popAudio", 0.25);
   var audio = document.getElementById("game-audio-toggle");
   if (audioToggle) {
     audioToggle = false;
     audio.src = "/assets/icons/audio_off.svg";
     pauseAudio("dealCardAudio");
     pauseAudio("messageAudio");
+    pauseAudio("popAudio");
     pauseAudio("votingAudio");
     pauseAudio("clockAudio");
     pauseAudio("deathAudio");
@@ -1830,6 +1837,7 @@ function toggleAudio() {
   }
 }
 function toggleMusic() {
+  playSFX("popAudio", 0.25);
   var music = document.getElementById("game-music-toggle");
   if (musicToggle) {
     musicToggle = false;
@@ -1845,6 +1853,7 @@ function toggleMusic() {
 function pauseAll() {
   pauseAudio("dealCardAudio");
   pauseAudio("messageAudio");
+  pauseAudio("popAudio");
   pauseAudio("votingAudio");
   pauseAudio("clockAudio");
   pauseAudio("deathAudio");

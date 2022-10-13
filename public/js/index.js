@@ -19,7 +19,7 @@ socket.on("connect", () => {
 });
 
 function playIntro() {
-  playAudio("introAudio", 0.6, true);
+  playMusic("introAudio", 0.6, true);
 }
 function playMusic(toPlay, vol=1, wait=false) {
   playAudio(toPlay, vol, wait);
@@ -269,6 +269,9 @@ async function animateCards() {
         element.alt = cards[rand] + " card"
         var imgClass = "animated-card";
         element.classList.add(imgClass)
+        element.loading = "lazy";
+        element.fetchPriority = "low";
+        element.decoding = "async";
         var imgSrc = "/assets/rolecards/";
         element.src = imgSrc + cards[rand] + ".webp";
         i++;

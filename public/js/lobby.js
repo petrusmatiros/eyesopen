@@ -124,8 +124,6 @@ socket.on("connect", () => {
           });
         }
 
-        
-
         socket.emit("checkIfHost", getPlayerID(), "visibility");
         socket.on("isHost", (isHost) => {
           if (isHost) {
@@ -251,9 +249,73 @@ socket.on("connect", () => {
           updateRoles(roles);
         });
       });
+      addEventListeners();
     }
   });
 });
+
+function addEventListeners() {
+  document.addEventListener("visibilitychange", (e) => {
+    if (document.visibilityState === 'visible') {
+      playLobby();
+    } else {
+      pauseAll();
+    }
+  });
+}
+
+function playLobby() {
+  playMusic("lobbyAudio", 0.1, true);
+}
+function playMusic(toPlay, vol=1, wait=false, loop=false) {
+  playAudio(toPlay, vol, wait, loop);
+}
+function playSFX(toPlay, vol=1, wait=false, loop=false) {
+  playAudio(toPlay, vol, wait, loop);
+}
+
+function pauseAll() {
+  pauseAudio("lobbyAudio");
+  pauseAudio("popAudio");
+}
+
+function pauseAudio(toPause) {
+  var audio = document.getElementById(toPause);
+  var pausePromise = audio.pause();
+  if (pausePromise !== undefined) {
+    pausePromise.then(_ => {
+    })
+    .catch(error => {
+    });
+  }
+}
+
+function playAudio(toPlay, vol=1, wait=false, loop=false) {
+  var audio = document.getElementById(toPlay);
+  if (wait) {
+    audio.volume = vol;
+    audio.loop = loop;
+    var playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.then(_ => {
+      })
+      .catch(error => {
+      });
+    }
+  } else {
+    if (audio.paused) {
+      audio.volume = vol;
+      audio.loop = loop;
+      var playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(_ => {
+        })
+        .catch(error => {
+        });
+      }
+    }
+  }
+}
 
 socket.on("hostKick", () => {
   console.log("kicked")
@@ -777,6 +839,7 @@ function showCard(element) {
   displayImage.style.display = "flex";
   displayMission.style.display = "flex";
   document.getElementById("overlay-rolecardinfo").style.display = "block";
+  playSFX("dealCardAudio", 0.5);
 }
 
 socket.on("beginClearEvilRoom", (roomToClear) => {
@@ -816,11 +879,13 @@ function readyStatusLobby(users) {
           .children[1];
         status.innerText = "ready";
         status.id = "status-ready";
+        playSFX("popAudio", 0.25);
       } else if (!users[i].readyLobby) {
         var status = document.getElementById(users[i].thePlayerID).parentElement
-          .children[1];
+        .children[1];
         status.innerText = "not ready";
         status.id = "status-notready";
+        playSFX("popAudio", 0.25);
       }
     }
   }

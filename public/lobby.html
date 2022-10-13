@@ -44,7 +44,7 @@
   </noscript>
 </head>
 
-<body class="body-main">
+<body class="body-main" ontouchstart="playLobby()" onclick="playLobby()">
   <nav class="navbar-main">
     <div class="navbar-container drop-shadow">
       <div class="logo-link-container">
@@ -60,6 +60,10 @@
       <div class="dummy"></div>
     </div>
   </nav>
+
+  <audio id="lobbyAudio" src="/assets/audio/lobby.mp3"></audio>
+  <audio id="popAudio" src="/assets/audio/pop.mp3"></audio>
+  <audio id="dealCardAudio" src="/assets/audio/dealCard.mp3"></audio>
 
   <div class="lobby">
     <div class="lobby-menu" id="lobby-without-logo">
