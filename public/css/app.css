@@ -71,26 +71,26 @@
   background-attachment: fixed;
 }
 .game-background-night {
-  background: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.55)), to(rgba(0, 0, 0, 0.55))),
-    url(/assets/images/game_background.jpg);
   background: -o-linear-gradient(bottom, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+    url(/assets/images/game_background.jpg);
+  background: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.55)), to(rgba(0, 0, 0, 0.55))),
     url(/assets/images/game_background.jpg);
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
     url(/assets/images/game_background.jpg);
   background-attachment: fixed;
 }
 .game-background-day {
+  background: -o-linear-gradient(
+      bottom,
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.5)
+    ),
+    url(/assets/images/game_background.jpg);
   background: -webkit-gradient(
       linear,
       left bottom, left top,
       from(rgba(255, 255, 255, 0.5)),
       to(rgba(255, 255, 255, 0.5))
-    ),
-    url(/assets/images/game_background.jpg);
-  background: -o-linear-gradient(
-      bottom,
-      rgba(255, 255, 255, 0.5),
-      rgba(255, 255, 255, 0.5)
     ),
     url(/assets/images/game_background.jpg);
   background: linear-gradient(
@@ -102,13 +102,6 @@
   background-attachment: fixed;
 }
 .game-background-dead {
-  background: radial-gradient(
-      50% 50% at 50% 50%,
-      rgba(255, 2, 2, 0) 0%,
-      rgba(255, 13, 13, 0.25) 100%
-    ),
-    -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.5)), to(rgba(0, 0, 0, 0.5))),
-    url(/assets/images/game_background.jpg) !important;
   background: -o-radial-gradient(
       50% 50%,
       50% 50%,
@@ -116,6 +109,13 @@
       rgba(255, 13, 13, 0.25) 100%
     ),
     -o-linear-gradient(bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(/assets/images/game_background.jpg) !important;
+  background: radial-gradient(
+      50% 50% at 50% 50%,
+      rgba(255, 2, 2, 0) 0%,
+      rgba(255, 13, 13, 0.25) 100%
+    ),
+    -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.5)), to(rgba(0, 0, 0, 0.5))),
     url(/assets/images/game_background.jpg) !important;
   background: radial-gradient(
       50% 50% at 50% 50%,
@@ -933,10 +933,19 @@
   margin: 0 0.5rem 0.5rem 0.5rem;
 }
 .game-audio-buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
   width: 100%;
   max-width: 12.5rem;
   max-width: 12.5rem;
@@ -944,9 +953,15 @@
   margin-bottom: 2rem;
 }
 .game-audio-button {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   width: 100%;
   max-width: 12.5rem;
   max-width: 12.5rem;
@@ -958,16 +973,28 @@
 
 }
 .game-audio-toggle {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   width: 1.25rem;
   height: 1.25rem;
 }
 .game-music-toggle {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   width: 1.25rem;
   height: 1.25rem;
 }

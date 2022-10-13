@@ -5,13 +5,6 @@
 * Browsers: last 4 version
 */
 
-/*
-* Prefixed by https://autoprefixer.github.io
-* PostCSS: v8.4.14,
-* Autoprefixer: v10.4.7
-* Browsers: last 4 version
-*/
-
 :root {
   --menu-button-bg: hsl(280, 100%, 90%);
   --menu-button-hover-bg: hsl(280, 100%, 50%);
