@@ -272,8 +272,6 @@ function playSFX(toPlay, vol=1, wait=false, loop=false) {
 }
 
 function pauseAll() {
-  pauseAudio("enterAudio");
-  pauseAudio("leaveAudio");
   pauseAudio("readyAudio");
   pauseAudio("unreadyAudio");
   pauseAudio("popAudio");
