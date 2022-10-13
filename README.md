@@ -123,11 +123,7 @@ npm build
 <br>
 <a href="https://freesound.org/people/plasterbrain/sounds/423166/" target="_blank">"Minimalist Sci-Fi UI Error"</a> by plasterbrain of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
 <br>
-<a href="https://freesound.org/people/Aesterial-Arts/sounds/638029/" target="_blank">"UI Denied"</a> by Aesterial-Arts of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
-<br>
 <a href="https://freesound.org/people/igroglaz/sounds/633208/" target="_blank">"Old Church Bell (no noise)"</a> by igroglaz of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
-<br>
-<a href="https://freesound.org/people/Glaneur%20de%20sons/sounds/30187/" target="_blank">"Guillottine test 02"</a> by Glaneur de sons of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
 <br>
 <a href="https://freesound.org/people/MadPanCake/sounds/567848/" target="_blank">"Kill impact"</a> by MadPanCake of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
 <br>
