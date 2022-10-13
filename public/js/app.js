@@ -1842,7 +1842,7 @@ socket.on("clock", (counter, phase, cycle, cycleCount, theDurations) => {
     }
   }
   if (cycle == "Day") {
-    playMusic("dayMusic", 0.5, true)
+    playMusic("dayMusic", 0.4, true)
     if (phase == "voting") {
       if (counter == durations[1].voting) {
         playSFX("votingAudio");
@@ -1852,7 +1852,7 @@ socket.on("clock", (counter, phase, cycle, cycleCount, theDurations) => {
     pauseAudio("dayMusic");
   }
   if (cycle == "Night") {
-    playMusic("nightMusic", 0.5, true)
+    playMusic("nightMusic", 0.4, true)
     if (phase == "actions") {
       if (counter == durations[0].actions) {
         playSFX("nightAudio");
