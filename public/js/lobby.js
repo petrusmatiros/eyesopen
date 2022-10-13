@@ -264,9 +264,6 @@ function addEventListeners() {
   });
 }
 
-function playLobby() {
-  playMusic("lobbyAudio", 0.1, true);
-}
 function playMusic(toPlay, vol=1, wait=false, loop=false) {
   playAudio(toPlay, vol, wait, loop);
 }
@@ -275,8 +272,12 @@ function playSFX(toPlay, vol=1, wait=false, loop=false) {
 }
 
 function pauseAll() {
-  pauseAudio("lobbyAudio");
+  pauseAudio("enterAudio");
+  pauseAudio("leaveAudio");
+  pauseAudio("readyAudio");
+  pauseAudio("unreadyAudio");
   pauseAudio("popAudio");
+  pauseAudio("dealCardAudio");
 }
 
 function pauseAudio(toPause) {
@@ -879,13 +880,12 @@ function readyStatusLobby(users) {
           .children[1];
         status.innerText = "ready";
         status.id = "status-ready";
-        playSFX("popAudio", 0.25);
+        
       } else if (!users[i].readyLobby) {
         var status = document.getElementById(users[i].thePlayerID).parentElement
         .children[1];
         status.innerText = "not ready";
         status.id = "status-notready";
-        playSFX("popAudio", 0.25);
       }
     }
   }
@@ -1024,9 +1024,11 @@ function toggleLobbyButton(element) {
     if (element.classList.toggle("not-ready")) {
       element.innerText = "Unready";
       socket.emit("player-ready", getPlayerID(), "lobby");
+      playSFX("readyAudio");
     } else {
       element.innerText = "Ready";
       socket.emit("player-unready", getPlayerID(), "lobby");
+      playSFX("unreadyAudio");
     }
   }
 }
