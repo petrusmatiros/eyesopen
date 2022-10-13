@@ -88,7 +88,7 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 .animated-card {
   display: -webkit-box;
