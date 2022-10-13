@@ -143,6 +143,8 @@ socket.on("connect", () => {
           socket.on("savedCemetery", (burried) => {
             loadCemetery(burried);
           });
+
+          addEventListeners();
         } else if (
           (apartOfGame == false && inProgress == true) ||
           (apartOfGame == false && inProgress == false)
@@ -158,6 +160,16 @@ socket.on("connect", () => {
     }
   });
 });
+
+function addEventListeners() {
+  document.addEventListener("visibilitychange", (e) => {
+    if (document.visibilityState === 'visible') {
+
+    } else {
+      pauseAll();
+    }
+  });
+}
 
 function readyCardButton() {
   socket.emit("player-ready", getPlayerID(), "game");
@@ -1803,6 +1815,7 @@ function toggleAudio() {
   if (audioToggle) {
     audioToggle = false;
     audio.src = "/assets/icons/audio_off.svg";
+    pauseAudio("dealCardAudio");
     pauseAudio("messageAudio");
     pauseAudio("votingAudio");
     pauseAudio("clockAudio");
@@ -1829,7 +1842,22 @@ function toggleMusic() {
     music.src = "/assets/icons/music_on.svg";
   }
 }
- 
+
+function pauseAll() {
+  pauseAudio("dealCardAudio");
+  pauseAudio("messageAudio");
+  pauseAudio("votingAudio");
+  pauseAudio("clockAudio");
+  pauseAudio("deathAudio");
+  pauseAudio("lynchAudio");
+  pauseAudio("dayAudio");
+  pauseAudio("nightAudio");
+  pauseAudio("victoryAudio");
+  pauseAudio("defeatAudio");
+
+  pauseAudio("nightMusic");
+  pauseAudio("dayMusic");
+} 
 socket.on("clock", (counter, phase, cycle, cycleCount, theDurations) => {
   var clock = document.getElementById("game-time");
   var theMinutes = document.getElementById("game-time-minutes");
@@ -1842,7 +1870,7 @@ socket.on("clock", (counter, phase, cycle, cycleCount, theDurations) => {
     }
   }
   if (cycle == "Day") {
-    playMusic("dayMusic", 0.4, true)
+    playMusic("dayMusic", 0.6, true)
     if (phase == "voting") {
       if (counter == durations[1].voting) {
         playSFX("votingAudio");

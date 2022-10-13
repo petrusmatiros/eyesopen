@@ -18,11 +18,35 @@ socket.on("connect", () => {
   addEventListeners();
 });
 
-
 function playIntro() {
-  var audio = document.getElementById("introAudio");
-  if (audio.paused) {
-    audio.volume = 0.6;
+  playAudio("introAudio", 0.6, true);
+}
+function playMusic(toPlay, vol=1, wait=false) {
+  playAudio(toPlay, vol, wait);
+}
+function playSFX(toPlay, vol=1, wait=false) {
+  playAudio(toPlay, vol, wait);
+}
+
+function pauseAll() {
+  pauseAudio("introAudio");
+}
+
+function pauseAudio(toPause) {
+  var audio = document.getElementById(toPause);
+  var pausePromise = audio.pause();
+  if (pausePromise !== undefined) {
+    pausePromise.then(_ => {
+    })
+    .catch(error => {
+    });
+  }
+}
+
+function playAudio(toPlay, vol=1, wait=false) {
+  var audio = document.getElementById(toPlay);
+  if (wait) {
+    audio.volume = vol;
     audio.loop = true;
     var playPromise = audio.play();
     if (playPromise !== undefined) {
@@ -30,6 +54,18 @@ function playIntro() {
       })
       .catch(error => {
       });
+    }
+  } else {
+    if (audio.paused) {
+      audio.volume = vol;
+      audio.loop = true;
+      var playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(_ => {
+        })
+        .catch(error => {
+        });
+      }
     }
   }
 }
@@ -166,11 +202,19 @@ socket.on("showChangeUsername", (toShow) => {
   showChangeUsername(toShow);
 });
 
+
 function addEventListeners() {
   var theCodeInput = document.getElementById("code");
   var theUserInput = document.getElementById("inputUser");
   var theChangeNameInput = document.getElementById("inputChangeName");
   var theHostInput = document.getElementById("inputHost");
+  document.addEventListener("visibilitychange", (e) => {
+    if (document.visibilityState === 'visible') {
+      playIntro();
+    } else {
+      pauseAll();
+    }
+  });
   theCodeInput.addEventListener("keydown", (e) => {
     if (!e.repeat) {
       if (e.key !== null) {
