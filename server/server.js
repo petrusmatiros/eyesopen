@@ -1490,7 +1490,7 @@ io.on("connection", async (socket) => {
       goodRoles == totalRoles ||
       evilRoles == totalRoles ||
       (goodRoles == totalRoles - 1 && lawyerPicked) ||
-      (evilRoles == totalRoles - 1 && lawyerPicked) || evilRoles > goodRoles
+      (evilRoles == totalRoles - 1 && lawyerPicked) || (goodRoles > 0 && evilRoles > goodRoles)
     ) {
       rooms.get(roomCode).requirements.validPick = false;
       reqHandler(playerID);
@@ -3260,6 +3260,102 @@ io.on("connection", async (socket) => {
             }
           }
         }
+        else if (aliveCount == 1) {
+          var theNeutralUser = null;
+          if (game.getAlive()[0].getPlayer(roomCode).getRole().type.includes("serial killer")) {
+            theNeutralUser = game.getAlive()[0];
+          }
+          if (game.getAlive()[0].getPlayer(roomCode).getRole().team.includes("good")) {
+            game.setGoodWin(true);
+            for (var i = 0; i < game.getUsers().length; i++) {
+              let user = game.getUsers()[i];
+              if (user.getPlayer(roomCode).getRole().team.includes("good")) {
+                var winnerID = user.getPlayerID();
+                var winnerName = user.getPlayer(roomCode).getPlayerName();
+                var winner = { winnerID, winnerName };
+                game.addWinner(winner);
+              }
+            }
+          }
+          if (game.getAlive()[0].getPlayer(roomCode).getRole().team.includes("evil")) {
+            game.setEvilWin(true);
+            for (var i = 0; i < game.getUsers().length; i++) {
+              let user = game.getUsers()[i];
+              let player = user.getPlayer(roomCode);
+              let role = player.getRole();
+
+              if (role.team.includes("evil")) {
+                var winnerID = user.getPlayerID();
+                var winnerName = player.getPlayerName();
+                var winner = { winnerID, winnerName };
+                game.addWinner(winner);
+              }
+              if (theLawyer !== null) {
+                if (
+                  theLawyer
+                    .getPlayer(roomCode)
+                    .getRole()
+                    .client.getPlayer(roomCode)
+                    .getRole()
+                    .team.includes("evil")
+                ) {
+                  game.setLawyerWin(true);
+                }
+              }
+            }
+          }
+          else if (game.getAlive()[1].getPlayer(roomCode).getRole().team.includes("neutral")) {
+            if (theNeutralUser != null) {
+              var serialKillerMessages = [
+                "DIE, DIE, DIE!",
+                "*diabolical screech* WHO'S NEXT?!",
+                "Show me...your FLESH!",
+              ];
+              var rand = random(0, serialKillerMessages.length - 1);
+              console.log(serialKillerMessages[rand]);
+              sendMessage(
+                playerID,
+                room,
+                roomCode,
+                game,
+                "all",
+                serialKillerMessages[rand],
+                "info"
+              );
+              game.setSerialKillerWin(true);
+              var winnerID = theNeutralUser.getPlayerID();
+              var winnerName = theNeutralUser
+                .getPlayer(roomCode)
+                .getPlayerName();
+              var winner = { winnerID, winnerName };
+              game.addWinner(winner);
+
+              if (theLawyer !== null) {
+                if (
+                  theLawyer.getPlayer(roomCode).getRole().client ==
+                  theNeutralUser
+                ) {
+                  game.setLawyerWin(true);
+                  var winnerID = theLawyer.getPlayerID();
+                  var winnerName = theLawyer
+                    .getPlayer(roomCode)
+                    .getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
+                  // LAYWER ALSO WINS
+                }
+              }
+            } else {
+              game.setNeutralWin(true);
+              let user = game.getAlive()[0];
+              let player = user.getPlayer(roomCode);
+              var winnerID = user.getPlayerID();
+              var winnerName = player.getPlayerName();
+              var winner = { winnerID, winnerName };
+              game.addWinner(winner);
+            }
+          }
+        }
         else if (aliveCount == 2) {
           var theGoodUser = null;
           var theNeutralUser = null;
@@ -3334,6 +3430,8 @@ io.on("connection", async (socket) => {
                 var winner = { winnerID, winnerName };
                 game.addWinner(winner);
               }
+            } else if (theNeutralUser == null) {
+              game.setDraw(true);
             }
 
           }
