@@ -3300,11 +3300,17 @@ io.on("connection", async (socket) => {
                     .team.includes("evil")
                 ) {
                   game.setLawyerWin(true);
+                  var winnerID = theLawyer.getPlayerID();
+                  var winnerName = theLawyer
+                    .getPlayer(roomCode)
+                    .getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
                 }
               }
             }
           }
-          else if (game.getAlive()[1].getPlayer(roomCode).getRole().team.includes("neutral")) {
+          else if (game.getAlive()[0].getPlayer(roomCode).getRole().team.includes("neutral")) {
             if (theNeutralUser != null) {
               var serialKillerMessages = [
                 "DIE, DIE, DIE!",
