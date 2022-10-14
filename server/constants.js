@@ -1,4 +1,3 @@
-
 global.ACTIONS = 30;
 global.NIGHTMESSAGES = 5;
 global.RECAP = 7;
