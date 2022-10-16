@@ -3247,17 +3247,32 @@ io.on("connection", async (socket) => {
           // Return immediately (this means everybody has LEFT, one by one)
           // game.setDone(true)
           endGameClear(game, roomCode);
-        } else if (evilCount == 0 && neutralCount == 0 && goodCount > 0) {
+        } else if (evilCount == 0 && (neutralCount >= 0 && neutralCount < goodCount) && goodCount > 0) {
           // GOOD TEAM WINS
-          game.setGoodWin(true);
-          for (var i = 0; i < game.getUsers().length; i++) {
-            let user = game.getUsers()[i];
-            if (user.getPlayer(roomCode).getRole().team.includes("good")) {
-              var winnerID = user.getPlayerID();
-              var winnerName = user.getPlayer(roomCode).getPlayerName();
-              var winner = { winnerID, winnerName };
-              game.addWinner(winner);
+          if (theSerialKiller !== null) {
+            if (theSerialKiller.getPlayer(roomCode).getIsKilled() || theSerialKiller.getPlayer(roomCode).getIsLynched()) {
+              game.setGoodWin(true);
+              for (var i = 0; i < game.getUsers().length; i++) {
+                let user = game.getUsers()[i];
+                if (user.getPlayer(roomCode).getRole().team.includes("good")) {
+                  var winnerID = user.getPlayerID();
+                  var winnerName = user.getPlayer(roomCode).getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
+                }
+              }
             }
+          } else {
+            game.setGoodWin(true);
+              for (var i = 0; i < game.getUsers().length; i++) {
+                let user = game.getUsers()[i];
+                if (user.getPlayer(roomCode).getRole().team.includes("good")) {
+                  var winnerID = user.getPlayerID();
+                  var winnerName = user.getPlayer(roomCode).getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
+                }
+              }
           }
         }
         else if (aliveCount == 1) {
@@ -3410,7 +3425,65 @@ io.on("connection", async (socket) => {
               }
             }
             
-          } else if (neutralCount == 1 && goodCount == 1) {
+          } else if (evilCount == 1 && neutralCount == 1) {
+            
+              if (!theLawyer?.getPlayer(roomCode).getIsKilled() && !theLawyer?.getPlayer(roomCode).getIsLynched()) {
+                if (theLawyer?.getPlayer(roomCode).getRole().client.getPlayer(roomCode).getRole().team.includes("evil")) {
+                  game.setLawyerWin(true);
+                  var winnerID = theLawyer.getPlayerID();
+                  var winnerName = theLawyer.getPlayer(roomCode).getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
+                  game.setEvilWin(true);
+                  for (var i = 0; i < game.getUsers().length; i++) {
+                    let user = game.getUsers()[i];
+                    let player = user.getPlayer(roomCode);
+                    let role = player.getRole();
+
+                    if (role.team.includes("evil")) {
+                      var winnerID = user.getPlayerID();
+                      var winnerName = player.getPlayerName();
+                      var winner = { winnerID, winnerName };
+                      game.addWinner(winner);
+                    }
+                  }
+                } {
+                  game.setEvilWin(true);
+                  for (var i = 0; i < game.getUsers().length; i++) {
+                    let user = game.getUsers()[i];
+                    let player = user.getPlayer(roomCode);
+                    let role = player.getRole();
+
+                    if (role.team.includes("evil")) {
+                      var winnerID = user.getPlayerID();
+                      var winnerName = player.getPlayerName();
+                      var winner = { winnerID, winnerName };
+                      game.addWinner(winner);
+                    }
+                  }
+                }
+              } else {
+                if (!theSerialKiller?.getPlayer(roomCode).getIsKilled() && !theSerialKiller?.getPlayer(roomCode).getIsLynched()) {
+                  game.setDraw();
+                } else {
+                  game.setEvilWin(true);
+                  for (var i = 0; i < game.getUsers().length; i++) {
+                    let user = game.getUsers()[i];
+                    let player = user.getPlayer(roomCode);
+                    let role = player.getRole();
+
+                    if (role.team.includes("evil")) {
+                      var winnerID = user.getPlayerID();
+                      var winnerName = player.getPlayerName();
+                      var winner = { winnerID, winnerName };
+                      game.addWinner(winner);
+                    }
+                  }
+                }
+              }
+            
+          }
+          else if (neutralCount == 1 && goodCount == 1) {
             if (theGoodUser != null && theNeutralUser != null) {
               let theGoodRole = theGoodUser.getPlayer(roomCode).getRole();
               if (theGoodRole.type.includes("mayor") == false) {
