@@ -2139,6 +2139,99 @@ io.on("connection", async (socket) => {
 
       // Fix this, seenAll, seenAll
 
+      if (socketPlayer.getIsKilled() || socketPlayer.getIsLynched()) {
+        if (userRole.team.includes("evil")) {
+          type = "evil";
+          isEvil = true;
+          pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+        } else if (userRole.team.includes("good")) {
+          type = "good";
+          isEvil = false;
+          pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+        } else if (userRole.team.includes("neutral")) {
+          type = "neutral";
+          isEvil = false;
+          pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+        }
+
+        if (userRole.type.includes("mayor")) {
+          if (userRole.hasOwnProperty("revealed")) {
+            if (userRole.revealed == true) {
+              if (
+                socketRole.type.includes("executioner") ||
+                (socketRole.type.includes("jester") &&
+                  socketPlayer.getOldRole() !== null)
+              ) {
+                if (socketRole.type.includes("executioner")) {
+                  if (user == socketRole.target) {
+                    isEvil = null;
+                    type = "mayor+target";
+                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  } else {
+                    isEvil = null;
+                    type = "mayor";
+                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  }
+                } else if (
+                  socketRole.type.includes("jester") &&
+                  socketPlayer.getOldRole().includes("executioner")
+                ) {
+                  if (user == socketPlayer.getOldTarget()) {
+                    isEvil = null;
+                    type = "mayor+target";
+                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  } else {
+                    isEvil = null;
+                    type = "mayor";
+                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  }
+                }
+              } else {
+                type = "mayor";
+                isEvil = null;
+                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+              }
+            } else {
+              if (
+                socketRole.type.includes("executioner") ||
+                (socketRole.type.includes("jester") &&
+                  socketPlayer.getOldRole() !== null)
+              ) {
+                if (socketRole.type.includes("executioner")) {
+                  if (user == socketRole.target) {
+                    isEvil = null;
+                    type = "target";
+                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  } else {
+                    isEvil = null;
+                    type = "none";
+                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  }
+                } else if (
+                  socketRole.type.includes("jester") &&
+                  socketPlayer.getOldRole().includes("executioner")
+                ) {
+                  if (user == socketPlayer.getOldTarget()) {
+                    isEvil = null;
+                    type = "target";
+                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  } else {
+                    isEvil = null;
+                    type = "none";
+                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  }
+                }
+              } else {
+                type = "none";
+                isEvil = null;
+                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+              }
+            }
+          }
+        }
+        
+      }
+
       if (game.getCycle().includes("Night")) {
         // Night
         if (
@@ -2824,9 +2917,8 @@ io.on("connection", async (socket) => {
             } else if (state.includes("refresh")) {
               emitTo = "setPlayersRefresh";
             }
-            if (socketRole.type.includes("executioner")) {
-              console.log(generateValidPlayerList(playerID))
-            }
+            console.log(socketRole.type, socketPlayer.getPlayerName(), "sees:")
+            console.log(generateValidPlayerList(playerID))
             socket.emit(
               emitTo,
               generateValidPlayerList(playerID),
