@@ -11,8 +11,8 @@
   },
   "repository": "git@github-personal:petrusmatiros/eyesopen.git",
   "author": "petrus matiros",
-  "license": "ISC",
-  "keywords": [],
+  "license": "UNLICENSED",
+  "keywords": ["eyes open", "Eyes Open", "Eyes open", "Eyes Open Game", "eyes open game", "eyes open mafia", "eyes open Town Of Salem", "eyes open werewolf", "eyes open online", "eyes open petrus matiros"],
   "dependencies": {
     "express": "^4.18.1",
     "express-session": "^1.17.3",
