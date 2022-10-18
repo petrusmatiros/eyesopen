@@ -1340,6 +1340,12 @@
 /* Rolecard */
 .game-rolecard-container {
   display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -1350,7 +1356,6 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  margin-top: 2rem;
 }
 .game-title-night {
   opacity: 75%;
@@ -1410,22 +1415,22 @@
 }
 @-webkit-keyframes fly-in {
   0% {
-    -webkit-transform: rotateY(25deg) rotateX(50deg) translateZ(50px) translateX(40px) translateY(0);
-            transform: rotateY(25deg) rotateX(50deg) translateZ(50px) translateX(40px) translateY(0);
+    -webkit-transform: rotate(50deg) translateX(1000px) translateY(0);
+            transform: rotate(50deg) translateX(1000px) translateY(0);
   }
   100% {
-    -webkit-transform: rotateY(0) rotateX(0) translateZ(0) translateX(0) translateY(0) opacity(1);
-            transform: rotateY(0) rotateX(0) translateZ(0) translateX(0) translateY(0) opacity(1)
+    -webkit-transform: rotate(0) translateX(0) translateY(0) opacity(1);
+            transform: rotate(0) translateX(0) translateY(0) opacity(1)
   }
 }
 @keyframes fly-in {
   0% {
-    -webkit-transform: rotateY(25deg) rotateX(50deg) translateZ(50px) translateX(40px) translateY(0);
-            transform: rotateY(25deg) rotateX(50deg) translateZ(50px) translateX(40px) translateY(0);
+    -webkit-transform: rotate(50deg) translateX(1000px) translateY(0);
+            transform: rotate(50deg) translateX(1000px) translateY(0);
   }
   100% {
-    -webkit-transform: rotateY(0) rotateX(0) translateZ(0) translateX(0) translateY(0) opacity(1);
-            transform: rotateY(0) rotateX(0) translateZ(0) translateX(0) translateY(0) opacity(1)
+    -webkit-transform: rotate(0) translateX(0) translateY(0) opacity(1);
+            transform: rotate(0) translateX(0) translateY(0) opacity(1)
   }
 }
 .game-rolecard {
@@ -1446,10 +1451,10 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  -webkit-animation: fadeIn 0.3s 1, fly-in 0.75s 1;
-          animation: fadeIn 0.3s 1, fly-in 0.75s 1;
-  -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-          animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  -webkit-animation: fadeIn 0.3s 1, fly-in 0.6s 1;
+          animation: fadeIn 0.3s 1, fly-in 0.6s 1;
+  -webkit-animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
+          animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
   background-color: var(--light-bg);
   padding: 2.5em 1.5em 2.5em 1.5em;
   border-radius: 1rem;
