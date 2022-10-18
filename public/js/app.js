@@ -695,17 +695,25 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
 // press respective button to set player target
 // click at the same area, remove it, click on new, set new target
 // display green ,red or gradient depending on choice
-function actionHandler(element) {
-  var button = element;
-  var buttonsContainer = element.parentElement;
-  var playerElement = buttonsContainer.parentElement;
-  var playerNameContainer = playerElement.children[0];
-  var playerName = playerNameContainer.children[1];
-  console.log("action", button.innerText, "taken on", playerName.innerText);
-
-  if (!button.id.includes("game-button-state")) {
-    socket.emit("playerAction", getPlayerID(), element.id, playerElement.id);
+function actionHandler(element, skip=false) {
+  if (!skip) {
+    var button = element;
+    var buttonsContainer = element.parentElement;
+    var playerElement = buttonsContainer.parentElement;
+    var playerNameContainer = playerElement.children[0];
+    var playerName = playerNameContainer.children[1];
+    console.log("action", button.innerText, "taken on", playerName.innerText);
+    if (!button.id.includes("game-button-state")) {
+      socket.emit("playerAction", getPlayerID(), element.id, playerElement.id);
+    }
+  } else if (skip) {
+    if (element.parentElement.classList.contains("game-skip-button-container")) {
+      socket.emit("playerAction", getPlayerID(), "skip", "skip");
+    }
   }
+  
+  
+
 }
 
 socket.on("updateSetPlayers", () => {
@@ -776,7 +784,17 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
       playerElement.classList.add("game-player-hidden");
     }
   }
-
+  var skipButton = document.getElementById("game-skip-button");
+  var skipButtonContainer = skipButton.parentElement;
+  if (cycle == "Day" && phase == "voting") {
+    skipButtonContainer.style.display = "flex";
+    skipButtonContainer.id = "skip";
+    skipButton.setAttribute("onclick", "actionHandler(this, true)")
+  } else {
+    skipButtonContainer.style.display = "none";
+    skipButtonContainer.id = "";
+    skipButton.setAttribute("onclick", "")
+  }
   for (var i = 0; i < players.length; i++) {
     if (checkCount == 2) {
       playerSlot++;

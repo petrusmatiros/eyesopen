@@ -73,6 +73,8 @@ class Game {
     this.dead = [];
     // Array for cemetery
     this.cemetery = [];
+    // Vote skips
+    this.skipVotes = 0;
     // Win information
     this.jesterWin = false;
     this.executionerWin = false;
@@ -111,6 +113,8 @@ class Game {
     this.dead = [];
     // Array for cemetery
     this.cemetery = [];
+    // Vote skips
+    this.skipVotes = 0;
     // Win information
     this.jesterWin = false;
     this.executionerWin = false;
@@ -125,6 +129,10 @@ class Game {
     this.noDeaths = 0;
     // Booleans for inProgress and finished
     this.inProgress = false;
+  }
+  resetSkipVotes() {
+    // Vote skips
+    this.skipVotes = 0;
   }
   resetGameDone() {
     this.isDone = false;
@@ -182,7 +190,12 @@ class Game {
       }
     }
   }
-
+  getSkipVotes() {
+    return this.skipVotes;
+  }
+  setSkipVotes(skipVotes) {
+    this.skipVotes = skipVotes;
+  }
   getSettingsDefault() {
     return this.settingsDefault;
   }

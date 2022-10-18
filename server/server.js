@@ -2051,6 +2051,15 @@ io.on("connection", async (socket) => {
                 player.voteTarget
               );
             } else {
+              if (elementID == "skip" && targetID == "skip") {
+                // dayVotes for skip
+                // sendMessage when skip
+                // handle when first vote, change vote, remove vote skip
+                // handle so it actually can be voted on
+                // if (player.voteTarget == null) {
+                //   player.voteTarget = "skip";
+                // }
+              }
               console.log(
                 "--INVALID target selected",
                 "abilityTarget:",
@@ -5604,6 +5613,7 @@ io.on("connection", async (socket) => {
                 game.setEmitCycleOnce(true);
                 // Increment cycle count
                 game.setCycleCount(game.getCycleCount() + 1);
+                game.resetSkipVotes();
                 // io.to(roomCode).emit("changeUI", game.getCycle());
               }
 
