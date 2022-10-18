@@ -2140,10 +2140,12 @@ io.on("connection", async (socket) => {
       // Fix this, seenAll, seenAll
 
       if (socketPlayer.getIsKilled() || socketPlayer.getIsLynched()) {
-        if (userRole.team.includes("evil")) {
-          type = "evil";
-          isEvil = true;
-          pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+        if (!socketRole.team.includes("evil")) {
+          if (userRole.team.includes("evil")) {
+            type = "evil";
+            isEvil = true;
+            pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+          }
         }
 
         if (userRole.type.includes("mayor")) {
