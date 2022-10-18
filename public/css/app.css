@@ -55,6 +55,8 @@
 
   /* Player colors */
   --evilteam: hsl(360, 100%, 45%);
+  --goodteam: hsl(120, 100%, 35%);
+  --neutralteam: hsl(0, 0%, 0%);
   --dead: hsl(0, 0%, 50%);
   --unselectable: hsl(0, 0%, 80%);
   --ability-target-bg: hsl(360, 100%, 80%);

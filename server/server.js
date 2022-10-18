@@ -2144,14 +2144,6 @@ io.on("connection", async (socket) => {
           type = "evil";
           isEvil = true;
           pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
-        } else if (userRole.team.includes("good")) {
-          type = "good";
-          isEvil = false;
-          pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
-        } else if (userRole.team.includes("neutral")) {
-          type = "neutral";
-          isEvil = false;
-          pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
         }
 
         if (userRole.type.includes("mayor")) {
