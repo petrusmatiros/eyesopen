@@ -845,16 +845,6 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
           stateButton.classList.remove("game-button-unselectable");
           stateButton.innerText = "dead";
           // if dead
-          if (players[i].theTeam == "evil") {
-            currentElement.classList.add("game-player-evil");
-          } 
-          else if (players[i].theTeam == "good") {
-            currentElement.classList.add("game-player-good");
-          } 
-          else if (players[i].theTeam == "neutral") {
-            currentElement.classList.add("game-player-neutral");
-          } 
-          
           if (players[i].type == "evil+dead") {
             // dead evil
             currentElement.classList.add(
@@ -879,6 +869,15 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
           }
+          if (players[i].theTeam == "evil") {
+            currentElement.classList.add("game-player-evil");
+          } 
+          else if (players[i].theTeam == "good") {
+            currentElement.classList.add("game-player-good");
+          } 
+          else if (players[i].theTeam == "neutral") {
+            currentElement.classList.add("game-player-neutral");
+          } 
         } else {
           // not dead
 
@@ -1043,6 +1042,15 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
           }
+          if (players[i].theTeam == "evil") {
+            currentElement.classList.add("game-player-evil");
+          } 
+          else if (players[i].theTeam == "good") {
+            currentElement.classList.add("game-player-good");
+          } 
+          else if (players[i].theTeam == "neutral") {
+            currentElement.classList.add("game-player-neutral");
+          } 
         } else {
           abilityButton.setAttribute("onclick", "");
           voteButton.setAttribute("onclick", "actionHandler(this)");
