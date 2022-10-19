@@ -2101,8 +2101,8 @@ io.on("connection", async (socket) => {
     }
   });
 
-  function pushPlayer(toSend, seen, userID, userName, type, isEvil) {
-    var user = { userID, userName, type, isEvil };
+  function pushPlayer(toSend, seen, userID, userName, type, theTeam) {
+    var user = { userID, userName, type, theTeam };
     if (!seen.includes(userID)) {
       seen.push(userID);
       toSend.push(user);
@@ -2136,7 +2136,7 @@ io.on("connection", async (socket) => {
 
     for (var i = 0; i < game.getUsers().length; i++) {
       var type = "none";
-      var isEvil = null;
+      var theTeam = null;
 
       var user = game.getUsers()[i];
       // TOOD: Change it so the USER ID, is not the same as the user id for the cookie
@@ -2152,8 +2152,8 @@ io.on("connection", async (socket) => {
         if (!socketRole.team.includes("evil")) {
           if (userRole.team.includes("evil")) {
             type = "evil";
-            isEvil = true;
-            pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+            theTeam = "evil";
+            pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
           }
         }
 
@@ -2167,32 +2167,32 @@ io.on("connection", async (socket) => {
               ) {
                 if (socketRole.type.includes("executioner")) {
                   if (user == socketRole.target) {
-                    isEvil = null;
+                    theTeam = null;
                     type = "mayor+target";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "mayor";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   }
                 } else if (
                   socketRole.type.includes("jester") &&
                   socketPlayer.getOldRole().includes("executioner")
                 ) {
                   if (user == socketPlayer.getOldTarget()) {
-                    isEvil = null;
+                    theTeam = null;
                     type = "mayor+target";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "mayor";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   }
                 }
               } else {
                 type = "mayor";
-                isEvil = null;
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                theTeam = null;
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             } else {
               if (
@@ -2202,32 +2202,32 @@ io.on("connection", async (socket) => {
               ) {
                 if (socketRole.type.includes("executioner")) {
                   if (user == socketRole.target) {
-                    isEvil = null;
+                    theTeam = null;
                     type = "target";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "none";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   }
                 } else if (
                   socketRole.type.includes("jester") &&
                   socketPlayer.getOldRole().includes("executioner")
                 ) {
                   if (user == socketPlayer.getOldTarget()) {
-                    isEvil = null;
+                    theTeam = null;
                     type = "target";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "none";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   }
                 }
               } else {
                 type = "none";
-                isEvil = null;
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                theTeam = null;
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             }
           }
@@ -2245,20 +2245,20 @@ io.on("connection", async (socket) => {
           if (socketRole.team.includes("evil")) {
             if (userRole.team.includes("evil")) {
               type = "evil+dead";
-              isEvil = true;
+              theTeam = "evil";
             } else {
               if (userRole.type.includes("mayor")) {
                 if (userRole.hasOwnProperty("revealed")) {
                   if (userRole.revealed == true) {
                     type = "mayor+dead";
-                    isEvil = false;
+                    theTeam = null;
                   } else {
                     type = "dead";
-                    isEvil = false;
+                    theTeam = null;
                   }
                 }
               } else {
-                isEvil = false;
+                theTeam = null;
                 type = "dead";
               }
             }
@@ -2270,19 +2270,19 @@ io.on("connection", async (socket) => {
             ) {
               if (socketRole.type.includes("executioner")) {
                 if (user == socketRole.target) {
-                  isEvil = null;
+                  theTeam = null;
                   if (userRole.type.includes("mayor")) {
                     if (userRole.hasOwnProperty("revealed")) {
                       if (userRole.revealed == true) {
                         type = "mayor+dead+target";
-                        isEvil = null;
+                        theTeam = null;
                       } else {
                         type = "target+dead";
-                        isEvil = null;
+                        theTeam = null;
                       }
                     }
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "target+dead";
                   }
                 } else {
@@ -2290,14 +2290,14 @@ io.on("connection", async (socket) => {
                     if (userRole.hasOwnProperty("revealed")) {
                       if (userRole.revealed == true) {
                         type = "mayor+dead";
-                        isEvil = null;
+                        theTeam = null;
                       } else {
                         type = "dead";
-                        isEvil = null;
+                        theTeam = null;
                       }
                     }
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "dead";
                   }
                 }
@@ -2306,19 +2306,19 @@ io.on("connection", async (socket) => {
                 socketPlayer.getOldRole().includes("executioner")
               ) {
                 if (user == socketPlayer.getOldTarget()) {
-                  isEvil = null;
+                  theTeam = null;
                   if (userRole.type.includes("mayor")) {
                     if (userRole.hasOwnProperty("revealed")) {
                       if (userRole.revealed == true) {
                         type = "mayor+dead+target";
-                        isEvil = null;
+                        theTeam = null;
                       } else {
                         type = "target+dead";
-                        isEvil = null;
+                        theTeam = null;
                       }
                     }
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "target+dead";
                   }
                 } else {
@@ -2326,35 +2326,35 @@ io.on("connection", async (socket) => {
                     if (userRole.hasOwnProperty("revealed")) {
                       if (userRole.revealed == true) {
                         type = "mayor+dead";
-                        isEvil = null;
+                        theTeam = null;
                       } else {
                         type = "dead";
-                        isEvil = null;
+                        theTeam = null;
                       }
                     }
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "dead";
                   }
                 }
               }
             } else if (socketRole.type.includes("lawyer")) {
               if (user == socketRole.client) {
-                isEvil = null;
+                theTeam = null;
                 type = "client+dead";
               } else {
                 if (userRole.type.includes("mayor")) {
                   if (userRole.hasOwnProperty("revealed")) {
                     if (userRole.revealed == true) {
                       type = "mayor+dead";
-                      isEvil = null;
+                      theTeam = null;
                     } else {
                       type = "dead";
-                      isEvil = null;
+                      theTeam = null;
                     }
                   }
                 } else {
-                  isEvil = null;
+                  theTeam = null;
                   type = "dead";
                 }
               }
@@ -2362,17 +2362,17 @@ io.on("connection", async (socket) => {
               if (userRole.hasOwnProperty("revealed")) {
                 if (userRole.revealed == true) {
                   type = "mayor+dead";
-                  isEvil = null;
+                  theTeam = null;
                 } else {
                   type = "dead";
-                  isEvil = null;
+                  theTeam = null;
                 }
               }
             } else {
-              isEvil = null;
+              theTeam = null;
             }
           }
-          pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+          pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
         }
 
         if (userRole.type.includes("mayor")) {
@@ -2385,32 +2385,32 @@ io.on("connection", async (socket) => {
               ) {
                 if (socketRole.type.includes("executioner")) {
                   if (user == socketRole.target) {
-                    isEvil = null;
+                    theTeam = null;
                     type = "mayor+target";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "mayor";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   }
                 } else if (
                   socketRole.type.includes("jester") &&
                   socketPlayer.getOldRole().includes("executioner")
                 ) {
                   if (user == socketPlayer.getOldTarget()) {
-                    isEvil = null;
+                    theTeam = null;
                     type = "mayor+target";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "mayor";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   }
                 }
               } else {
                 type = "mayor";
-                isEvil = null;
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                theTeam = null;
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             } else {
               if (
@@ -2420,32 +2420,32 @@ io.on("connection", async (socket) => {
               ) {
                 if (socketRole.type.includes("executioner")) {
                   if (user == socketRole.target) {
-                    isEvil = null;
+                    theTeam = null;
                     type = "target";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "none";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   }
                 } else if (
                   socketRole.type.includes("jester") &&
                   socketPlayer.getOldRole().includes("executioner")
                 ) {
                   if (user == socketPlayer.getOldTarget()) {
-                    isEvil = null;
+                    theTeam = null;
                     type = "target";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "none";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   }
                 }
               } else {
                 type = "none";
-                isEvil = null;
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                theTeam = null;
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             }
           }
@@ -2459,71 +2459,71 @@ io.on("connection", async (socket) => {
               if (userRole.type.includes("surgeon")) {
                 if (userRole.selfUsage > 0) {
                   type = "evil";
-                  isEvil = true;
-                  pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  theTeam = "evil";
+                  pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                 } else if (userRole.selfUsage == 0) {
                   type = "evil+unselectable";
-                  isEvil = true;
-                  pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  theTeam = "evil";
+                  pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                 }
               } else {
                 type = "evil+unselectable";
-                isEvil = true;
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                theTeam = "evil";
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             } else {
               if (userRole.type.includes("doctor")) {
                 if (userRole.selfUsage > 0) {
                   type = "none";
-                  isEvil = null;
-                  pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  theTeam = null;
+                  pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                 } else if (userRole.selfUsage == 0) {
                   type = "unselectable";
-                  isEvil = null;
-                  pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  theTeam = null;
+                  pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                 }
               } else {
-                isEvil = null;
+                theTeam = null;
                 type = "unselectable";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             }
           } else {
             // everyone else
             if (socketRole.type.includes("surgeon")) {
               if (userRole.team.includes("evil")) {
-                isEvil = true;
+                theTeam = "evil";
                 type = "evil";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               } else {
-                isEvil = false;
+                theTeam = null;
                 type = "none";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             } else if (socketRole.type.includes("witch")) {
               if (userRole.team.includes("evil")) {
-                isEvil = true;
+                theTeam = "evil";
                 type = "evil+unselectable";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               } else {
-                isEvil = false;
+                theTeam = null;
                 type = "none";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             } else if (socketRole.type.includes("framer")) {
               if (userRole.team.includes("evil")) {
-                isEvil = true;
+                theTeam = "evil";
                 type = "evil+unselectable";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               } else {
-                isEvil = false;
+                theTeam = null;
                 type = "none";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             } else {
-              isEvil = null;
+              theTeam = null;
               type = "none";
-              pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+              pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
             }
           }
         } else {
@@ -2531,24 +2531,24 @@ io.on("connection", async (socket) => {
           if (user == socketUser) {
             // yourself
             if (userRole.team.includes("evil")) {
-              isEvil = true;
+              theTeam = "evil";
               type = "evil+unselectable";
-              pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+              pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
             } else {
-              isEvil = null;
+              theTeam = null;
               type = "none";
-              pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+              pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
             }
           } else {
             if (socketRole.team.includes("evil")) {
               if (userRole.team.includes("evil")) {
-                isEvil = true;
+                theTeam = "evil";
                 type = "evil+unselectable";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               } else {
-                isEvil = false;
+                theTeam = null;
                 type = "none";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             }
             // if socket is executioner
@@ -2559,44 +2559,44 @@ io.on("connection", async (socket) => {
             ) {
               if (socketRole.type.includes("executioner")) {
                 if (user == socketRole.target) {
-                  isEvil = null;
+                  theTeam = null;
                   type = "target";
-                  pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                 } else {
-                  isEvil = null;
+                  theTeam = null;
                   type = "none";
-                  pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                 }
               } else if (
                 socketRole.type.includes("jester") &&
                 socketPlayer.getOldRole().includes("executioner")
               ) {
                 if (user == socketPlayer.getOldTarget()) {
-                  isEvil = null;
+                  theTeam = null;
                   type = "target";
-                  pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                 } else {
-                  isEvil = null;
+                  theTeam = null;
                   type = "none";
-                  pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                  pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                 }
               }
             }
             // if socket is lawyer
             else if (socketRole.type.includes("lawyer")) {
               if (user == socketRole.client) {
-                isEvil = null;
+                theTeam = null;
                 type = "client";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               } else {
-                isEvil = null;
+                theTeam = null;
                 type = "none";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             } else {
-              isEvil = null;
+              theTeam = null;
               type = "none";
-              pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+              pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
             }
           }
         }
@@ -2610,20 +2610,20 @@ io.on("connection", async (socket) => {
           if (socketRole.team.includes("evil")) {
             if (userRole.team.includes("evil")) {
               type = "evil+dead";
-              isEvil = true;
+              theTeam = "evil";
             } else {
               if (userRole.type.includes("mayor")) {
                 if (userRole.hasOwnProperty("revealed")) {
                   if (userRole.revealed == true) {
                     type = "mayor+dead";
-                    isEvil = false;
+                    theTeam = null;
                   } else {
                     type = "dead";
-                    isEvil = false;
+                    theTeam = null;
                   }
                 }
               } else {
-                isEvil = false;
+                theTeam = null;
                 type = "dead";
               }
             }
@@ -2635,19 +2635,19 @@ io.on("connection", async (socket) => {
             ) {
               if (socketRole.type.includes("executioner")) {
                 if (user == socketRole.target) {
-                  isEvil = null;
+                  theTeam = null;
                   if (userRole.type.includes("mayor")) {
                     if (userRole.hasOwnProperty("revealed")) {
                       if (userRole.revealed == true) {
                         type = "mayor+dead+target";
-                        isEvil = null;
+                        theTeam = null;
                       } else {
                         type = "target+dead";
-                        isEvil = null;
+                        theTeam = null;
                       }
                     }
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "target+dead";
                   }
                 } else {
@@ -2655,14 +2655,14 @@ io.on("connection", async (socket) => {
                     if (userRole.hasOwnProperty("revealed")) {
                       if (userRole.revealed == true) {
                         type = "mayor+dead";
-                        isEvil = null;
+                        theTeam = null;
                       } else {
                         type = "dead";
-                        isEvil = null;
+                        theTeam = null;
                       }
                     }
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "dead";
                   }
                 }
@@ -2671,19 +2671,19 @@ io.on("connection", async (socket) => {
                 socketPlayer.getOldRole().includes("executioner")
               ) {
                 if (user == socketPlayer.getOldTarget()) {
-                  isEvil = null;
+                  theTeam = null;
                   if (userRole.type.includes("mayor")) {
                     if (userRole.hasOwnProperty("revealed")) {
                       if (userRole.revealed == true) {
                         type = "mayor+dead+target";
-                        isEvil = null;
+                        theTeam = null;
                       } else {
                         type = "target+dead";
-                        isEvil = null;
+                        theTeam = null;
                       }
                     }
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "target+dead";
                   }
                 } else {
@@ -2691,35 +2691,35 @@ io.on("connection", async (socket) => {
                     if (userRole.hasOwnProperty("revealed")) {
                       if (userRole.revealed == true) {
                         type = "mayor+dead";
-                        isEvil = null;
+                        theTeam = null;
                       } else {
                         type = "dead";
-                        isEvil = null;
+                        theTeam = null;
                       }
                     }
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "dead";
                   }
                 }
               }
             } else if (socketRole.type.includes("lawyer")) {
               if (user == socketRole.client) {
-                isEvil = null;
+                theTeam = null;
                 type = "client+dead";
               } else {
                 if (userRole.type.includes("mayor")) {
                   if (userRole.hasOwnProperty("revealed")) {
                     if (userRole.revealed == true) {
                       type = "mayor+dead";
-                      isEvil = null;
+                      theTeam = null;
                     } else {
                       type = "dead";
-                      isEvil = null;
+                      theTeam = null;
                     }
                   }
                 } else {
-                  isEvil = null;
+                  theTeam = null;
                   type = "dead";
                 }
               }
@@ -2727,17 +2727,17 @@ io.on("connection", async (socket) => {
               if (userRole.hasOwnProperty("revealed")) {
                 if (userRole.revealed == true) {
                   type = "mayor+dead";
-                  isEvil = null;
+                  theTeam = null;
                 } else {
                   type = "dead";
-                  isEvil = null;
+                  theTeam = null;
                 }
               }
             } else {
-              isEvil = null;
+              theTeam = null;
             }
           }
-          pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+          pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
         }
 
         if (userRole.type.includes("mayor")) {
@@ -2750,32 +2750,32 @@ io.on("connection", async (socket) => {
               ) {
                 if (socketRole.type.includes("executioner")) {
                   if (user == socketRole.target) {
-                    isEvil = null;
+                    theTeam = null;
                     type = "mayor+target";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "mayor";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   }
                 } else if (
                   socketRole.type.includes("jester") &&
                   socketPlayer.getOldRole().includes("executioner")
                 ) {
                   if (user == socketPlayer.getOldTarget()) {
-                    isEvil = null;
+                    theTeam = null;
                     type = "mayor+target";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "mayor";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   }
                 }
               } else {
                 type = "mayor";
-                isEvil = null;
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                theTeam = null;
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             } else {
               if (
@@ -2785,32 +2785,32 @@ io.on("connection", async (socket) => {
               ) {
                 if (socketRole.type.includes("executioner")) {
                   if (user == socketRole.target) {
-                    isEvil = null;
+                    theTeam = null;
                     type = "target";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "none";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   }
                 } else if (
                   socketRole.type.includes("jester") &&
                   socketPlayer.getOldRole().includes("executioner")
                 ) {
                   if (user == socketPlayer.getOldTarget()) {
-                    isEvil = null;
+                    theTeam = null;
                     type = "target";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   } else {
-                    isEvil = null;
+                    theTeam = null;
                     type = "none";
-                    pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
                   }
                 }
               } else {
                 type = "none";
-                isEvil = null;
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                theTeam = null;
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             }
           }
@@ -2819,25 +2819,25 @@ io.on("connection", async (socket) => {
         if (user == socketUser) {
           // yourself
           if (userRole.team.includes("evil")) {
-            isEvil = true;
+            theTeam = "evil";
             type = "evil";
-            pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+            pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
           } else {
-            isEvil = null;
+            theTeam = null;
             type = "none";
-            pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+            pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
           }
         } else {
           // everyone else
           if (socketRole.team.includes("evil")) {
             if (userRole.team.includes("evil")) {
-              isEvil = true;
+              theTeam = "evil";
               type = "evil";
-              pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+              pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
             } else {
-              isEvil = false;
+              theTeam = null;
               type = "none";
-              pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+              pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
             }
           }
           // if socket is executioner
@@ -2848,44 +2848,44 @@ io.on("connection", async (socket) => {
           ) {
             if (socketRole.type.includes("executioner")) {
               if (user == socketRole.target) {
-                isEvil = null;
+                theTeam = null;
                 type = "target";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               } else {
-                isEvil = null;
+                theTeam = null;
                 type = "none";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             } else if (
               socketRole.type.includes("jester") &&
               socketPlayer.getOldRole().includes("executioner")
             ) {
               if (user == socketPlayer.getOldTarget()) {
-                isEvil = null;
+                theTeam = null;
                 type = "target";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               } else {
-                isEvil = null;
+                theTeam = null;
                 type = "none";
-                pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
               }
             }
           }
           // if socket is lawyer
           else if (socketRole.type.includes("lawyer")) {
             if (user == socketRole.client) {
-              isEvil = null;
+              theTeam = null;
               type = "client";
-              pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+              pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
             } else {
-              isEvil = null;
+              theTeam = null;
               type = "none";
-              pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+              pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
             }
           } else {
-            isEvil = null;
+            theTeam = null;
             type = "none";
-            pushPlayer(toSend, seenAll, userID, userName, type, isEvil);
+            pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
           }
         }
       }
