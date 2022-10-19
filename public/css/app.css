@@ -1057,6 +1057,10 @@
   height: 1.25rem;
 }
 /* Leave button */
+#game-leave-preready {
+  display: none;
+  margin-top: 2rem;
+}
 .game-leavebutton {
   -webkit-user-select: none;
      -moz-user-select: none;
