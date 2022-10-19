@@ -2165,7 +2165,7 @@ io.on("connection", async (socket) => {
                           roomCode,
                           game,
                           "all",
-                          `${player.getPlayerName()} removed their vote from SKIP (${game.getSkipVotes()})`,
+                          `${player.getPlayerName()} removed their vote to SKIP (${game.getSkipVotes()})`,
                           "Day"
                         );
                       }
@@ -4876,7 +4876,7 @@ io.on("connection", async (socket) => {
             if (role.type.includes("mayor")) {
               if (player.voteTarget !== null) {
                 if (player.voteTarget == "skip") {
-                  game.setSkipVotes(game.getSkipVotes() + role.voteCount);
+                  game.setSkipVotes(game.getSkipVotes() - role.voteCount);
                   if (game.settings.voteMessages.value == "anonymous") {
                     sendMessage(
                       playerID,
@@ -4894,7 +4894,7 @@ io.on("connection", async (socket) => {
                       roomCode,
                       game,
                       "all",
-                      `${player.getPlayerName()} removed their vote from SKIP ${game.getSkipVotes()}`,
+                      `${player.getPlayerName()} removed their vote to SKIP (${game.getSkipVotes()})`,
                       "Day"
                     );
                   }

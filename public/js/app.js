@@ -628,6 +628,18 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
   var players = Array.from(allPlayers[0].children).concat(
     Array.from(allPlayers[1].children)
   );
+  var skipButton = document.getElementById("game-skip-button");
+
+  if (socketPlayer.voteTarget == "skip") {
+    skipButton.innerText = "undo SKIP";
+    skipButton.classList.add("game-player-selection-vote");
+    skipButton.style.fontWeight = "700";
+  }
+  else if (socketPlayer.voteTarget !== "skip") {
+    skipButton.innerText = "SKIP";
+    skipButton.classList.remove("game-player-selection-vote");
+    skipButton.style.fontWeight = "400";
+  }
   for (var i = 0; i < players.length; i++) {
 
     var playerElement = players[i];
@@ -635,7 +647,6 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
     var buttons = playerElement.children[1];
     var abilityButton = buttons.children[0];
     var voteButton = buttons.children[2];
-    var skipButton = document.getElementById("game-skip-button");
 
     if (
       players[i].id !== socketPlayer.abilityTarget &&
@@ -655,6 +666,9 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
       abilityButton.style.fontWeight = "400";
       voteButton.style.fontWeight = "700";
       voteButton.innerText = "undo";
+      skipButton.innerText = "SKIP";
+      skipButton.classList.remove("game-player-selection-vote");
+      skipButton.style.fontWeight = "400";
     } else if (players[i].id !== socketPlayer.voteTarget) {
       nameContainer.classList.remove("game-player-selection-vote");
       playerElement.classList.remove("game-player-selection-ability");
@@ -674,6 +688,9 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
       voteButton.innerText = "undo";
       abilityButton.style.fontWeight = "700";
       voteButton.style.fontWeight = "700";
+      skipButton.innerText = "SKIP";
+      skipButton.classList.remove("game-player-selection-vote");
+      skipButton.style.fontWeight = "400";
     } else if (
       players[i].id == socketPlayer.abilityTarget &&
       players[i].id !== socketPlayer.voteTarget
@@ -690,6 +707,9 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
       voteButton.innerText = "undo";
       abilityButton.style.fontWeight = "400";
       voteButton.style.fontWeight = "700";
+      skipButton.innerText = "SKIP";
+      skipButton.classList.remove("game-player-selection-vote");
+      skipButton.style.fontWeight = "400";
     }
   }
 }
