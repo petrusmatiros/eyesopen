@@ -786,7 +786,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
   }
   var skipButton = document.getElementById("game-skip-button");
   var skipButtonContainer = skipButton.parentElement;
-  if (cycle == "Day" && phase == "voting") {
+  if (cycle == "Day" && phase == "voting" && !isDead) {
     skipButtonContainer.style.display = "flex";
     skipButtonContainer.id = "skip";
     skipButton.setAttribute("onclick", "actionHandler(this, true)")
@@ -845,6 +845,16 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
           stateButton.classList.remove("game-button-unselectable");
           stateButton.innerText = "dead";
           // if dead
+          if (players[i].theTeam == "evil") {
+            currentElement.classList.add("game-player-evil");
+          } 
+          else if (players[i].theTeam == "good") {
+            currentElement.classList.add("game-player-good");
+          } 
+          else if (players[i].theTeam == "neutral") {
+            currentElement.classList.add("game-player-neutral");
+          } 
+          
           if (players[i].type == "evil+dead") {
             // dead evil
             currentElement.classList.add(
@@ -1143,29 +1153,36 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             element.classList.remove("game-player-unselectable");
           }
         } else {
-          if (players[i].type == "evil") {
+          if (players[i].theTeam == "evil") {
             currentElement.classList.add("game-player-evil");
-          } else {
-            if (players[i].type == "client") {
-              element.children[0].id = "game-show-mark";
-              element.children[0].src = "/assets/icons/briefcase.svg";
-            } 
-            else if (players[i].type == "target") {
-              element.children[0].id = "game-show-mark";
-              element.children[0].src = "/assets/icons/target.svg";
-            } 
-            else if (players[i].type == "mayor") {
-              element.children[1].id = "game-show-mark";
-              element.children[1].src = "/assets/icons/megaphone.svg";
-            } 
-            else if (players[i].type == "mayor+target") {
-              element.children[0].id = "game-show-mark";
-              element.children[0].src = "/assets/icons/target.svg";
-              element.children[1].id = "game-show-mark";
-              element.children[1].src = "/assets/icons/megaphone.svg";
-            }
-            currentElement.classList.remove("game-player-evil"); 
+          } 
+          else if (players[i].theTeam == "good") {
+            currentElement.classList.add("game-player-good");
+          } 
+          else if (players[i].theTeam == "neutral") {
+            currentElement.classList.add("game-player-neutral");
+          } 
+          
+          if (players[i].type == "client") {
+            element.children[0].id = "game-show-mark";
+            element.children[0].src = "/assets/icons/briefcase.svg";
+          } 
+          else if (players[i].type == "target") {
+            element.children[0].id = "game-show-mark";
+            element.children[0].src = "/assets/icons/target.svg";
+          } 
+          else if (players[i].type == "mayor") {
+            element.children[1].id = "game-show-mark";
+            element.children[1].src = "/assets/icons/megaphone.svg";
+          } 
+          else if (players[i].type == "mayor+target") {
+            element.children[0].id = "game-show-mark";
+            element.children[0].src = "/assets/icons/target.svg";
+            element.children[1].id = "game-show-mark";
+            element.children[1].src = "/assets/icons/megaphone.svg";
           }
+            
+          
           abilityButton.setAttribute("onclick", "");
           voteButton.setAttribute("onclick", "");
           abilityButton.style.display = "none";

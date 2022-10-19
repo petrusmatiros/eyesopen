@@ -886,6 +886,12 @@
 .game-player-evil {
   color: var(--evilteam) !important;
 }
+.game-player-good {
+  color: var(--goodteam) !important;
+}
+.game-player-neutral {
+  color: var(--neutralteam) !important;
+}
 .game-player-dead {
   cursor: not-allowed;
   background-color: var(--dead);
