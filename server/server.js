@@ -1689,6 +1689,7 @@ io.on("connection", async (socket) => {
             var user = connectedUsers.get(playerID);
             var player = user.getPlayer(roomCode);
             var isValidTarget = false;
+            var isDead = false;
             var validTargets = generateValidPlayerList(playerID);
 
             for (var i = 0; i < validTargets.length; i++) {
@@ -1701,7 +1702,10 @@ io.on("connection", async (socket) => {
                 isValidTarget = true;
               }
             }
-            if (isValidTarget) {
+            if (player.getIsKilled() || player.getIsLynched()) {
+              isDead = true;
+            }
+            if (isValidTarget && !isDead) {
               if (elementID == "game-button-ability") {
                 if (game.getPhase() == "actions") {
                   if (game.getTimer().getCounter() >= 0) {
