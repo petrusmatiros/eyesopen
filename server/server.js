@@ -1874,9 +1874,11 @@ io.on("connection", async (socket) => {
                 }
               } else if (elementID == "game-button-vote") {
                 if (player.voteTarget !== null) {
-                  var previousVoteTargetPlayer = connectedUsers
-                    .get(getKeyFromValue(proxyIdenfication, player.voteTarget))
-                    .getPlayer(roomCode);
+                  if (player.voteTarget !== "skip") {
+                    var previousVoteTargetPlayer = connectedUsers
+                      .get(getKeyFromValue(proxyIdenfication, player.voteTarget))
+                      .getPlayer(roomCode);
+                  }
                 }
                 var theVoteTargetPlayer = connectedUsers
                   .get(getKeyFromValue(proxyIdenfication, targetID))
@@ -1906,9 +1908,13 @@ io.on("connection", async (socket) => {
                           player.voteTarget !== targetID &&
                           player.voteTarget !== null
                         ) {
+                          if (player.voteTarget == "skip") {
+                            game.setSkipVotes(game.getSkipVotes() - player.getRole().voteCount);
+                          } else {
+                            previousVoteTargetPlayer.nightVotes -=
+                              player.getRole().killVoteCount;
+                          }
                           player.voteTarget = targetID;
-                          previousVoteTargetPlayer.nightVotes -=
-                            player.getRole().killVoteCount;
                           theVoteTargetPlayer.nightVotes +=
                             player.getRole().killVoteCount;
                           sendMessage(
@@ -1980,8 +1986,12 @@ io.on("connection", async (socket) => {
                         player.voteTarget !== targetID &&
                         player.voteTarget !== null
                       ) {
-                        previousVoteTargetPlayer.dayVotes -=
-                          player.getRole().voteCount;
+                        if (player.voteTarget == "skip") {
+                          game.setSkipVotes(game.getSkipVotes() - player.getRole().voteCount);
+                        } else {
+                          previousVoteTargetPlayer.dayVotes -=
+                            player.getRole().voteCount;
+                        }
 
                         player.voteTarget = targetID;
                         theVoteTargetPlayer.dayVotes +=
@@ -2061,18 +2071,126 @@ io.on("connection", async (socket) => {
                 // sendMessage when skip
                 // handle when first vote, change vote, remove vote skip
                 // handle so it actually can be voted on
-                // if (player.voteTarget == null) {
-                //   player.voteTarget = "skip";
-                // }
+                if (game.getPhase() == "voting") {
+                  if (player.voteTarget !== null) {
+                    if (player.voteTarget !== "skip") {
+                      var previousVoteTargetPlayer = connectedUsers
+                        .get(getKeyFromValue(proxyIdenfication, player.voteTarget))
+                        .getPlayer(roomCode);
+                    }
+                  }
+                  if (game.getTimer().getCounter() >= 0) {
+                    if (player.voteTarget == null) {
+                      player.voteTarget = "skip";
+                      game.setSkipVotes(game.getSkipVotes() + player.getRole().voteCount);
+                      if (game.settings.voteMessages.value == "anonymous") {
+                        sendMessage(
+                          playerID,
+                          room,
+                          roomCode,
+                          game,
+                          "all",
+                          `${player.getPlayerName()} have cast their vote`,
+                          "Day"
+                        );
+                      } else if (
+                        game.settings.voteMessages.value == "visible"
+                      ) {
+                        sendMessage(
+                          playerID,
+                          room,
+                          roomCode,
+                          game,
+                          "all",
+                          `${player.getPlayerName()} is voting to SKIP (${game.getSkipVotes()})`,
+                          "Day"
+                        );
+                      }
+                    } else if (
+                      player.voteTarget !== targetID &&
+                      player.voteTarget !== null
+                    ) {
+                      if (player.voteTarget !== "skip") {
+                        previousVoteTargetPlayer.dayVotes -=
+                          player.getRole().voteCount;
+                      }
+
+                      player.voteTarget = "skip";
+                      game.setSkipVotes(game.getSkipVotes() + player.getRole().voteCount);
+                      if (game.settings.voteMessages.value == "anonymous") {
+                        sendMessage(
+                          playerID,
+                          room,
+                          roomCode,
+                          game,
+                          "all",
+                          `${player.getPlayerName()} has changed their vote`,
+                          "Day"
+                        );
+                      } else if (
+                        game.settings.voteMessages.value == "visible"
+                      ) {
+                        sendMessage(
+                          playerID,
+                          room,
+                          roomCode,
+                          game,
+                          "all",
+                          `${player.getPlayerName()} has changed their vote to SKIP (${game.getSkipVotes()})`,
+                          "Day"
+                        );
+                      }
+                    } else if (
+                      player.voteTarget == targetID &&
+                      player.voteTarget !== null
+                    ) {
+                      player.voteTarget = null;
+                      game.setSkipVotes(game.getSkipVotes() - player.getRole().voteCount);
+                      if (game.settings.voteMessages.value == "anonymous") {
+                        sendMessage(
+                          playerID,
+                          room,
+                          roomCode,
+                          game,
+                          "all",
+                          `${player.getPlayerName()} removed their vote`,
+                          "Day"
+                        );
+                      } else if (
+                        game.settings.voteMessages.value == "visible"
+                      ) {
+                        sendMessage(
+                          playerID,
+                          room,
+                          roomCode,
+                          game,
+                          "all",
+                          `${player.getPlayerName()} removed their vote from SKIP (${game.getSkipVotes()})`,
+                          "Day"
+                        );
+                      }
+                    }
+                  }
+                }
+                console.log(
+                  "--SKIP selected",
+                  "abilityTarget:",
+                  player.abilityTarget,
+                  "voteTarget:",
+                  player.voteTarget,
+                  "--"
+                );
+              } else {
+
+                console.log(
+                  "--INVALID target selected",
+                  "abilityTarget:",
+                  player.abilityTarget,
+                  "voteTarget:",
+                  player.voteTarget,
+                  "--"
+                );
               }
-              console.log(
-                "--INVALID target selected",
-                "abilityTarget:",
-                player.abilityTarget,
-                "voteTarget:",
-                player.voteTarget,
-                "--"
-              );
             }
 
             socket.emit(
@@ -4530,16 +4648,18 @@ io.on("connection", async (socket) => {
         var users = game.getAlive();
         for (var i = 0; i < users.length; i++) {
           if (users[i].getPlayer(roomCode).voteTarget !== null) {
-            var theVoteTarget = getKeyFromValue(
-              proxyIdenfication,
-              users[i].getPlayer(roomCode).voteTarget
-            );
-            var voteTargetPlayer = connectedUsers
-              .get(theVoteTarget)
-              .getPlayer(roomCode);
+            if (users[i].getPlayer(roomCode).voteTarget !== "skip") {
+              var theVoteTarget = getKeyFromValue(
+                proxyIdenfication,
+                users[i].getPlayer(roomCode).voteTarget
+              );
+              var voteTargetPlayer = connectedUsers
+                .get(theVoteTarget)
+                .getPlayer(roomCode);
+            }
             if (
-              voteTargetPlayer.getIsKilled() == false &&
-              voteTargetPlayer.getIsLynched() == false
+              (voteTargetPlayer?.getIsKilled() == false &&
+              voteTargetPlayer?.getIsLynched() == false) || users[i].getPlayer(roomCode).voteTarget == "skip"
             ) {
               hasVoted++;
             }
@@ -4569,29 +4689,46 @@ io.on("connection", async (socket) => {
       var targets = new Map();
       for (var i = 0; i < users.length; i++) {
         if (users[i].getPlayer(roomCode).voteTarget !== null) {
-          var theVoteTarget = getKeyFromValue(
-            proxyIdenfication,
-            users[i].getPlayer(roomCode).voteTarget
-          );
-          var voteTargetPlayer = connectedUsers
-            .get(theVoteTarget)
-            .getPlayer(roomCode);
+          if (users[i].getPlayer(roomCode).voteTarget !== "skip") {
+            var theVoteTarget = getKeyFromValue(
+              proxyIdenfication,
+              users[i].getPlayer(roomCode).voteTarget
+            );
+            var voteTargetPlayer = connectedUsers
+              .get(theVoteTarget)
+              .getPlayer(roomCode);
+          }
           if (
-            voteTargetPlayer.getIsKilled() == false &&
-            voteTargetPlayer.getIsLynched() == false
+            (voteTargetPlayer?.getIsKilled() == false &&
+            voteTargetPlayer?.getIsLynched() == false) || users[i].getPlayer(roomCode).voteTarget == "skip"
           ) {
             console.log(users[i].getPlayer(roomCode).voteTarget);
-            if (targets.has(theVoteTarget)) {
-              targets.set(
-                theVoteTarget,
-                targets.get(theVoteTarget) +
+            if (users[i].getPlayer(roomCode).voteTarget == "skip") {
+              if (targets.has("skip")) {
+                targets.set(
+                  "skip",
+                  targets.get("skip") +
+                    users[i].getPlayer(roomCode).getRole().voteCount
+                );
+              } else if (!targets.has("skip")) {
+                targets.set(
+                  "skip",
                   users[i].getPlayer(roomCode).getRole().voteCount
-              );
-            } else if (!targets.has(theVoteTarget)) {
-              targets.set(
-                theVoteTarget,
-                users[i].getPlayer(roomCode).getRole().voteCount
-              );
+                );
+              }
+            } else {
+              if (targets.has(theVoteTarget)) {
+                targets.set(
+                  theVoteTarget,
+                  targets.get(theVoteTarget) +
+                    users[i].getPlayer(roomCode).getRole().voteCount
+                );
+              } else if (!targets.has(theVoteTarget)) {
+                targets.set(
+                  theVoteTarget,
+                  users[i].getPlayer(roomCode).getRole().voteCount
+                );
+              }
             }
           }
         }
@@ -4602,6 +4739,7 @@ io.on("connection", async (socket) => {
       var topVotes = [];
       var gotLynched = false;
       var voteTie = false;
+      var voteSkipped = false;
       for (var i = 0; i < targetCount.length; i++) {
         var majority = aliveUsersCount / 2;
 
@@ -4620,7 +4758,11 @@ io.on("connection", async (socket) => {
         console.log("majority: " + voteOne.voteValue);
         gotLynched = true;
         voteTie = false;
-        globalVote(playerID, room, roomCode, game, voteOne.mostVoted);
+        if (voteOne.mostVoted == "skip") {
+          voteSkipped = true;
+        } else {
+          globalVote(playerID, room, roomCode, game, voteOne.mostVoted);
+        }
       } else if (topVotes.length > 1) {
         // Handle if votes are ABOVE majority but SAME VALUE --> tie
         // Handle if votes are ABOVE majority but one has HIGHER value --> vote
@@ -4650,11 +4792,34 @@ io.on("connection", async (socket) => {
           gotLynched = true;
           voteTie = false;
           // VOTE
-          console.log("VOTE between majority votes", topVotes);
-          globalVote(playerID, room, roomCode, game, theHighestVote.mostVoted);
+          if (theHighestVote.mostVoted == "skip") {
+            voteSkipped = true;
+          } else {
+            console.log("VOTE between majority votes", topVotes);
+            globalVote(playerID, room, roomCode, game, theHighestVote.mostVoted);
+          }
         }
       }
-
+      if (voteSkipped) {
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          `The vote has been skipped`,
+          "info"
+        );
+        sendMessage(
+          playerID,
+          room,
+          roomCode,
+          game,
+          "all",
+          `No one was lynched - hope it was the right decision`,
+          "info"
+        );
+      }
       if (!gotLynched && !voteTie) {
         sendMessage(
           playerID,
@@ -4710,44 +4875,79 @@ io.on("connection", async (socket) => {
           if (game.getUsers().includes(user)) {
             if (role.type.includes("mayor")) {
               if (player.voteTarget !== null) {
-                var theVoteTargetPlayer = connectedUsers
-                  .get(getKeyFromValue(proxyIdenfication, player.voteTarget))
-                  .getPlayer(roomCode);
-                theVoteTargetPlayer.dayVotes -= role.voteCount;
-
-                if (game.settings.voteMessages.value == "anonymous") {
+                if (player.voteTarget == "skip") {
+                  game.setSkipVotes(game.getSkipVotes() + role.voteCount);
+                  if (game.settings.voteMessages.value == "anonymous") {
+                    sendMessage(
+                      playerID,
+                      room,
+                      roomCode,
+                      game,
+                      "all",
+                      `${player.getPlayerName()} removed their vote`,
+                      "Day"
+                    );
+                  } else if (game.settings.voteMessages.value == "visible") {
+                    sendMessage(
+                      playerID,
+                      room,
+                      roomCode,
+                      game,
+                      "all",
+                      `${player.getPlayerName()} removed their vote from SKIP ${game.getSkipVotes()}`,
+                      "Day"
+                    );
+                  }
+                  player.voteTarget = null;
                   sendMessage(
                     playerID,
                     room,
                     roomCode,
                     game,
-                    "all",
-                    `${player.getPlayerName()} removed their vote`,
-                    "Day"
+                    "socket",
+                    `Your vote has been reset, because of your new found voting rights`,
+                    "info"
                   );
-                } else if (game.settings.voteMessages.value == "visible") {
+                } else {
+                  var theVoteTargetPlayer = connectedUsers
+                    .get(getKeyFromValue(proxyIdenfication, player.voteTarget))
+                    .getPlayer(roomCode);
+                  theVoteTargetPlayer.dayVotes -= role.voteCount;
+  
+                  if (game.settings.voteMessages.value == "anonymous") {
+                    sendMessage(
+                      playerID,
+                      room,
+                      roomCode,
+                      game,
+                      "all",
+                      `${player.getPlayerName()} removed their vote`,
+                      "Day"
+                    );
+                  } else if (game.settings.voteMessages.value == "visible") {
+                    sendMessage(
+                      playerID,
+                      room,
+                      roomCode,
+                      game,
+                      "all",
+                      `${player.getPlayerName()} removed their vote from ${theVoteTargetPlayer.getPlayerName()} (${
+                        theVoteTargetPlayer.dayVotes
+                      })`,
+                      "Day"
+                    );
+                  }
+                  player.voteTarget = null;
                   sendMessage(
                     playerID,
                     room,
                     roomCode,
                     game,
-                    "all",
-                    `${player.getPlayerName()} removed their vote from ${theVoteTargetPlayer.getPlayerName()} (${
-                      theVoteTargetPlayer.dayVotes
-                    })`,
-                    "Day"
+                    "socket",
+                    `Your vote has been reset, because of your new found voting rights`,
+                    "info"
                   );
                 }
-                player.voteTarget = null;
-                sendMessage(
-                  playerID,
-                  room,
-                  roomCode,
-                  game,
-                  "socket",
-                  `Your vote has been reset, because of your new found voting rights`,
-                  "info"
-                );
               }
               role.voteCount = 3;
               role.revealed = true;
@@ -5161,13 +5361,20 @@ io.on("connection", async (socket) => {
     var game = room.getGame();
     var player = connectedUsers.get(playerID).getPlayer(roomCode);
     if (player.voteTarget !== null) {
-      theVoteTarget = getKeyFromValue(proxyIdenfication, player.voteTarget);
-      theVoteTargetPlayer = connectedUsers
-        .get(theVoteTarget)
-        .getPlayer(roomCode);
+      if (player.voteTarget !== "skip") {
+        theVoteTarget = getKeyFromValue(proxyIdenfication, player.voteTarget);
+        theVoteTargetPlayer = connectedUsers
+          .get(theVoteTarget)
+          .getPlayer(roomCode);
+      }
       if (game.getCycle() == "Day") {
-        theVoteTargetPlayer.dayVotes -= player.getRole().voteCount;
+        if (player.voteTarget == "skip") {
+          game.setSkipVotes(game.getSkipVotes() - player.getRole().voteCount);
+        } else {
+          theVoteTargetPlayer.dayVotes -= player.getRole().voteCount;
+        }
       } else if (game.getCycle() == "Night") {
+        // No vote skip during night
         theVoteTargetPlayer.nightVotes -= player.getRole().killVoteCount;
       }
     }

@@ -635,11 +635,13 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
     var buttons = playerElement.children[1];
     var abilityButton = buttons.children[0];
     var voteButton = buttons.children[2];
+    var skipButton = document.getElementById("game-skip-button");
 
     if (
       players[i].id !== socketPlayer.abilityTarget &&
       players[i].id !== socketPlayer.voteTarget
     ) {
+
       nameContainer.classList.remove("game-player-selection-vote");
       playerElement.classList.remove("game-player-selection-ability");
       abilityButton.innerText = "ability";
