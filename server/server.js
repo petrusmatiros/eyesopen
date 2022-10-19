@@ -3661,43 +3661,42 @@ io.on("connection", async (socket) => {
             
           } else if (evilCount == 1 && neutralCount == 1) {
             if (theLawyer !== null) {
-              if (!theLawyer.getPlayer(roomCode).getIsKilled() && !theLawyer.getPlayer(roomCode).getIsLynched()) {
-                if (theLawyer.getPlayer(roomCode).getRole().client.getPlayer(roomCode).getRole().team.includes("evil")) {
-                  game.setLawyerWin(true);
-                  var winnerID = theLawyer.getPlayerID();
-                  var winnerName = theLawyer.getPlayer(roomCode).getPlayerName();
-                  var winner = { winnerID, winnerName };
-                  game.addWinner(winner);
-                  game.setEvilWin(true);
-                  for (var i = 0; i < game.getUsers().length; i++) {
-                    let user = game.getUsers()[i];
-                    let player = user.getPlayer(roomCode);
-                    let role = player.getRole();
+              if (theLawyer.getPlayer(roomCode).getRole().client.getPlayer(roomCode).getRole().team.includes("evil")) {
+                game.setLawyerWin(true);
+                var winnerID = theLawyer.getPlayerID();
+                var winnerName = theLawyer.getPlayer(roomCode).getPlayerName();
+                var winner = { winnerID, winnerName };
+                game.addWinner(winner);
+                game.setEvilWin(true);
+                for (var i = 0; i < game.getUsers().length; i++) {
+                  let user = game.getUsers()[i];
+                  let player = user.getPlayer(roomCode);
+                  let role = player.getRole();
 
-                    if (role.team.includes("evil")) {
-                      var winnerID = user.getPlayerID();
-                      var winnerName = player.getPlayerName();
-                      var winner = { winnerID, winnerName };
-                      game.addWinner(winner);
-                    }
-                  }
-                } else {
-                  game.setEvilWin(true);
-                  for (var i = 0; i < game.getUsers().length; i++) {
-                    let user = game.getUsers()[i];
-                    let player = user.getPlayer(roomCode);
-                    let role = player.getRole();
-
-                    if (role.team.includes("evil")) {
-                      var winnerID = user.getPlayerID();
-                      var winnerName = player.getPlayerName();
-                      var winner = { winnerID, winnerName };
-                      game.addWinner(winner);
-                    }
+                  if (role.team.includes("evil")) {
+                    var winnerID = user.getPlayerID();
+                    var winnerName = player.getPlayerName();
+                    var winner = { winnerID, winnerName };
+                    game.addWinner(winner);
                   }
                 }
-              } 
-            } else {
+              } else {
+                game.setEvilWin(true);
+                for (var i = 0; i < game.getUsers().length; i++) {
+                  let user = game.getUsers()[i];
+                  let player = user.getPlayer(roomCode);
+                  let role = player.getRole();
+
+                  if (role.team.includes("evil")) {
+                    var winnerID = user.getPlayerID();
+                    var winnerName = player.getPlayerName();
+                    var winner = { winnerID, winnerName };
+                    game.addWinner(winner);
+                  }
+                }
+              }
+            } 
+            else {
                 if (theSerialKiller !== null) {
                   if (!theSerialKiller.getPlayer(roomCode).getIsKilled() && !theSerialKiller.getPlayer(roomCode).getIsLynched()) {
                     game.setDraw(true);
@@ -3763,6 +3762,42 @@ io.on("connection", async (socket) => {
               game.setDraw(true);
             }
 
+          } else if (neutralCount == 2) {
+            if (theNeutralUser != null) {
+              var serialKillerMessages = [
+                "DIE, DIE, DIE!",
+                "*diabolical screech* WHO'S NEXT?!",
+                "Show me...your FLESH!",
+              ];
+              var rand = random(0, serialKillerMessages.length - 1);
+              console.log(serialKillerMessages[rand]);
+              sendMessage(
+                playerID,
+                room,
+                roomCode,
+                game,
+                "all",
+                serialKillerMessages[rand],
+                "info"
+              );
+              game.setSerialKillerWin(true);
+              var winnerID = theNeutralUser.getPlayerID();
+              var winnerName = theNeutralUser.getPlayer(roomCode).getPlayerName();
+              var winner = { winnerID, winnerName };
+              game.addWinner(winner);
+
+              if (theLawyer !== null) {
+                if (theLawyer.getPlayer(roomCode).getRole().client.getPlayer(roomCode).getRole().type.includes("serial killer")) {
+                  game.setLawyerWin(true);
+                  var winnerID = theLawyer.getPlayerID();
+                  var winnerName = theLawyer.getPlayer(roomCode).getPlayerName();
+                  var winner = { winnerID, winnerName };
+                  game.addWinner(winner);
+                }
+              }
+            } else if (theNeutralUser == null) {
+              game.setDraw(true);
+            }
           }
         }
         else if (
