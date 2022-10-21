@@ -122,7 +122,7 @@ socket.on("connect", () => {
               setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, proxyID);
             }
           );
-          socket.emit("checkIfDead", getPlayerID(), "refresh");
+          socket.emit("checkIfDead", getPlayerID(), "refresh", "dead");
           socket.on("isPlayerDeadRefresh", (phase, isDead) => {
             checkIfDead(phase, isDead);
           });
@@ -175,6 +175,10 @@ function readyCardButton() {
   socket.emit("player-ready", getPlayerID(), "game");
   socket.emit("checkForRoleCard", getPlayerID(), "press");
 }
+
+socket.on("settingCemeteryRoom", () => {
+  socket.emit("setCemeteryRoom", getPlayerID());
+})
 
 socket.on("showGamePress", (allReady) => {
   showGame(allReady);
@@ -468,16 +472,16 @@ socket.on("receiveMessage", (sender, team, message, type, cycle) => {
       messageType += "night";
       newMessage.classList.add(messageType);
     }
-    newMessage.style.opacity = "50%";
+    newMessage.style.opacity = "75%";
     if (sender !== null) {
       if (team == "good") {
-        newMessage.style.color = "var(--evilteam) !important";
+        newMessage.style.color = "var(--goodteam)";
       }
       else if (team == "evil") {
-        newMessage.style.color = "var(--goodteam) !important";
+        newMessage.style.color = "var(--evilteam)";
       }
       else if (team == "neutral") {
-        newMessage.style.color = "var(--neutralteam) !important";
+        newMessage.style.color = "var(--neutralteam)";
       }
     }
   }
@@ -489,10 +493,8 @@ socket.on("receiveMessage", (sender, team, message, type, cycle) => {
   }
 
   if (sender !== null) {
-    console.log("special")
     newMessage.innerText = sender + ": " + message;
   } else if (sender == null) {
-    console.log("normal")
     newMessage.innerText = message;
   }
   messages.appendChild(newMessage);
@@ -522,6 +524,14 @@ function loadCemetery(burried) {
       ].innerText = `${burried[i].burriedPlayerName} (${burried[i].burriedPlayerRole})`;
     }
   }
+  socket.emit("checkIfDead", getPlayerID(), "after", "cemetery");
+  socket.on("isPlayerDeadAfter", (phase, isDead) => {
+    if (isDead) {
+      showDeathChat(true);
+    } else {
+      showDeathChat(false);
+    }
+  });
 }
 
 function loadSavedMessages(messages, cycle) {
@@ -625,16 +635,16 @@ function loadSavedMessages(messages, cycle) {
         messageType += "night";
         newMessage.classList.add(messageType);
       }
-      newMessage.style.opacity = "50%";
+      newMessage.style.opacity = "75%";
       if (messages[i].sender !== null) {
         if (messages[i].team == "good") {
-          newMessage.style.color = "var(--evilteam) !important";
+          newMessage.style.color = "var(--goodteam)";
         }
         else if (messages[i].team == "evil") {
-          newMessage.style.color = "var(--goodteam) !important";
+          newMessage.style.color = "var(--evilteam)";
         }
         else if (messages[i].team == "neutral") {
-          newMessage.style.color = "var(--neutralteam) !important";
+          newMessage.style.color = "var(--neutralteam)";
         }
       }
     }
@@ -1928,7 +1938,6 @@ function checkIfDead(phase, isDead) {
     var body = document.getElementById("game-body");
     body.classList.add("game-background-dead");
     playersContainer.style.opacity = "100%";
-    showDeathChat(true);
   } else if (!isDead) {
     if (phase == "voting" || phase == "actions") {
       playersContainer.style.opacity = "100%";
@@ -1942,13 +1951,12 @@ function checkIfDead(phase, isDead) {
       }
       var body = document.getElementById("game-body");
       body.classList.remove("game-background-dead");
-      showDeathChat(false);
   }
 }
 
 socket.on("changeUI", (theme) => {
   changeUI(theme);
-  socket.emit("checkIfDead", getPlayerID(), "clock");
+  socket.emit("checkIfDead", getPlayerID(), "clock", "dead");
   socket.on("isPlayerDeadClock", (phase, isDead) => {
     checkIfDead(phase, isDead);
   });
