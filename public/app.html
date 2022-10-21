@@ -94,6 +94,21 @@
         <div class="game-messagebox-scrolldown game-night-fg" id="game-messagebox-scrolldown" onclick="autoScroll()">
           Scroll for me</div>
       </div>
+      <div class="game-messagebox-chat game-night-fg" id="game-messagebox-chat">
+        <input
+        type="text"
+        class=""
+        id="game-chat"
+        name="game-chat"
+        placeholder="Write messages to dead players here"
+        autocomplete="off"
+        autofocus
+        enterkeyhint="done"
+        minlength="1"
+        maxlength="300"
+        />
+        <img class="game-messagebox-chat-send" id="game-messagebox-chat-send" alt="send button" >
+      </div>
     </div>
 
     <audio id="deathAudio" src="/assets/audio/death.mp3"></audio>

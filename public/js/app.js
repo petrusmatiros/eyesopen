@@ -364,9 +364,9 @@ function autoScroll() {
   playSFX("popAudio", 0.25);
 }
 
-// Remove top margin from the first message recieved
+// Remove top margin from the first message received
 var firstMessageRecieved = false;
-socket.on("recieveMessage", (message, type, cycle) => {
+socket.on("receiveMessage", (sender, team, message, type, cycle) => {
   var messages = document.getElementById("game-message-scroller");
   var messageType = "game-message-";
   var newMessage = document.createElement("div");
@@ -459,6 +459,26 @@ socket.on("recieveMessage", (message, type, cycle) => {
       newMessage.classList.add(messageType);
     }
     newMessage.style.fontWeight = "475";
+  } else if (type.includes("dead")) {
+    if (cycle.includes("Day")) {
+      messageType += "day";
+      newMessage.classList.add(messageType);
+    } else if (cycle.includes("Night")) {
+      messageType += "night";
+      newMessage.classList.add(messageType);
+    }
+    newMessage.style.opacity = "50%";
+    if (sender !== undefined && team !== undefined) {
+      if (team == "good") {
+        newMessage.style.color = "var(--evilteam) !important";
+      }
+      else if (team == "evil") {
+        newMessage.style.color = "var(--goodteam) !important";
+      }
+      else if (team == "neutral") {
+        newMessage.style.color = "var(--neutralteam) !important";
+      }
+    }
   }
 
   // Set margin top to be 0 for the first message
@@ -466,8 +486,11 @@ socket.on("recieveMessage", (message, type, cycle) => {
     newMessage.style.marginTop = "0";
     firstMessageRecieved = true;
   }
-
-  newMessage.innerText = message;
+  if (sender !== undefined && team !== undefined) {
+    newMessage.innerText = sender + ": " + message;
+  } else {
+    newMessage.innerText = message;
+  }
   messages.appendChild(newMessage);
   if (!manualScroll) {
     messages.scrollTop = messages.scrollHeight;
@@ -590,6 +613,26 @@ function loadSavedMessages(messages, cycle) {
         newMessage.classList.add(messageType);
       }
       newMessage.style.fontWeight = "475";
+    } else if (messages[i].type.includes("dead")) {
+      if (cycle.includes("Day")) {
+        messageType += "day";
+        newMessage.classList.add(messageType);
+      } else if (cycle.includes("Night")) {
+        messageType += "night";
+        newMessage.classList.add(messageType);
+      }
+      newMessage.style.opacity = "50%";
+      if (messages[i].sender !== undefined && messages[i].team !== undefined) {
+        if (messages[i].team == "good") {
+          newMessage.style.color = "var(--evilteam) !important";
+        }
+        else if (messages[i].team == "evil") {
+          newMessage.style.color = "var(--goodteam) !important";
+        }
+        else if (messages[i].team == "neutral") {
+          newMessage.style.color = "var(--neutralteam) !important";
+        }
+      }
     }
 
     // Remove top margin from the first message
@@ -597,7 +640,12 @@ function loadSavedMessages(messages, cycle) {
       newMessage.style.marginTop = "0";
     }
 
-    newMessage.innerText = messages[i].message;
+    if (messages[i].sender !== undefined && messages[i].team !== undefined) {
+      newMessage.innerText = messages[i].sender + ": " + messages[i].message;
+    } else {
+      newMessage.innerText = messages[i].message;
+    }
+    
     messageScroller.appendChild(newMessage);
     messageScroller.scrollTop = messageScroller.scrollHeight;
   }
@@ -1696,6 +1744,9 @@ function changeUI(theme) {
   var gameClockDivider = document.getElementById("game-clock-divider");
   var messages = document.getElementById("game-message-scroller").children;
   var scrollDown = document.getElementById("game-messagebox-scrolldown");
+  var chat = document.getElementById("game-messagebox-chat");
+  var chatInput = document.getElementById("game-chat");
+  var chatSend = document.getElementById("game-messagebox-chat-send");
 
   if (theme.includes("Night")) {
     body.classList.remove("game-background-day");
@@ -1763,6 +1814,13 @@ function changeUI(theme) {
     }
     scrollDown.classList.remove("game-day-fg");
     scrollDown.classList.add("game-night-fg");
+    chat.classList.remove("game-day-bg", "game-day-fg");
+    chat.classList.add("game-night-bg", "game-night-fg");
+    chatInput.classList.remove("game-day-bg", "game-day-fg");
+    chatInput.classList.add("game-night-bg", "game-night-fg");
+    chatSend.classList.remove("game-day-bg", "game-day-fg");
+    chatSend.classList.add("game-night-bg", "game-night-fg");
+    chatSend.src = "/assets/icons/send_night.svg";
   } else if (theme.includes("Day")) {
     body.classList.remove("game-background-night");
     body.classList.add("game-background-day");
@@ -1829,6 +1887,33 @@ function changeUI(theme) {
     }
     scrollDown.classList.add("game-day-fg");
     scrollDown.classList.remove("game-night-fg");
+    chat.classList.add("game-day-bg", "game-day-fg");
+    chat.classList.remove("game-night-bg", "game-night-fg");
+    chatInput.classList.add("game-day-bg", "game-day-fg");
+    chatInput.classList.remove("game-night-bg", "game-night-fg");
+    chatSend.classList.add("game-day-bg", "game-day-fg");
+    chatSend.classList.remove("game-night-bg", "game-night-fg");
+    chatSend.src = "/assets/icons/send_day.svg";
+  }
+}
+
+function sendMessageInDeathChat() {
+  var chatInput = document.getElementById("game-chat");
+  if (chatInput.value.length > 0) {
+    socket.emit("sendChatMessageDead", getPlayerID(), chatInput.value);
+  }
+}
+
+function showDeathChat(toShow=false) {
+  var chat = document.getElementById("game-messagebox-chat");
+  var chatInput = document.getElementById("game-chat");
+  var chatSend = document.getElementById("game-messagebox-chat-send");
+  if (toShow) {
+    chat.style.display = "flex";
+    chatSend.setAttribute("onclick", "sendMessageInDeathChat()");
+  } else {
+    chat.style.display = "none";
+    chatSend.setAttribute("onclick", "")
   }
 }
 
@@ -1838,6 +1923,7 @@ function checkIfDead(phase, isDead) {
     var body = document.getElementById("game-body");
     body.classList.add("game-background-dead");
     playersContainer.style.opacity = "100%";
+    showDeathChat(true);
   } else if (!isDead) {
     if (phase == "voting" || phase == "actions") {
       playersContainer.style.opacity = "100%";
@@ -1846,11 +1932,12 @@ function checkIfDead(phase, isDead) {
       phase == "discussion" ||
       phase == "recap" ||
       phase == "dayMessages"
-    ) {
-      playersContainer.style.opacity = "35%";
-    }
-    var body = document.getElementById("game-body");
-    body.classList.remove("game-background-dead");
+      ) {
+        playersContainer.style.opacity = "35%";
+      }
+      var body = document.getElementById("game-body");
+      body.classList.remove("game-background-dead");
+      showDeathChat(false);
   }
 }
 

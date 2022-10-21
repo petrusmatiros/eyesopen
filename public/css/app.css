@@ -383,6 +383,32 @@
 .game-messagebox-scrolldown:active {
   background-color: rgba(120, 120, 120, 0.85);
 }
+.game-messagebox-chat {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  margin: 1rem 0.5rem 0 0 !important;
+}
+#game-chat {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  width: 100%;
+  margin: 0 !important
+}
+.game-messagebox-chat-send {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1rem;
+  height: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  margin-left: 0.5rem;
+  background-color: var(--light-bg);
+}
 /* ! Two versions */
 .game-message {
   -webkit-user-select: none;

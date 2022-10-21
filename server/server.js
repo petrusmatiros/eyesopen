@@ -3277,6 +3277,28 @@ io.on("connection", async (socket) => {
     game.setEmitCycleOnce(false);
   }
 
+  socket.on("sendChatMessageDead", (playerID, message) => {
+    if (checkUserExist(playerID)) {
+      if (connectedUsers.get(playerID).getCurrentRoom() !== null) {
+        var roomCode = connectedUsers.get(playerID).getCurrentRoom();
+        var room = rooms.get(roomCode);
+        var game = room.getGame();
+        if (game.getProgress()) {
+          if (game.getUsers().includes(connectedUsers.get(playerID))) {
+            let user = connectedUsers.get(playerID);
+            let player = user.getPlayer(roomCode);
+            let role = player.getRole();
+            if (!game.getAlive().includes(user)) {
+              for (var i = 0; i < game.getCemetery(); i++) {
+                sendMessage(game.getCemetery()[i].getPlayerID(), room, roomCode, game, player.getPlayerName(), role.team, "target", message, "dead");
+              }
+            }
+          }
+        }
+      }
+    }
+  })
+
   // be able to send toAll, to player, and to target
 
   function sendMessage(
@@ -3284,6 +3306,8 @@ io.on("connection", async (socket) => {
     room,
     roomCode,
     game,
+    sender = undefined,
+    team = undefined,
     sendTo = "",
     message = "",
     type = ""
@@ -3291,20 +3315,19 @@ io.on("connection", async (socket) => {
     if (sendTo == "all") {
       for (var i = 0; i < game.getUsers().length; i++) {
         if (game.getUsers()[i].getInGame()) {
-          game.getUsers()[i].getPlayer(roomCode).addMessage({ message, type });
+          game.getUsers()[i].getPlayer(roomCode).addMessage({ sender, team, message, type });
         }
       }
-      io.to(roomCode).emit("recieveMessage", message, type, game.getCycle());
+      io.to(roomCode).emit("receiveMessage", sender, team, message, type , game.getCycle());
     } else if (sendTo == "evil") {
       for (var i = 0; i < game.getEvil().length; i++) {
         if (game.getEvil()[i].getInGame()) {
-          game.getEvil()[i].getPlayer(roomCode).addMessage({ message, type });
+          game.getEvil()[i].getPlayer(roomCode).addMessage({ sender, team, message, type });
         }
       }
       io.to(game.getEvilRoom()).emit(
-        "recieveMessage",
-        message,
-        type,
+        "receiveMessage",
+        sender, team, message, type,
         game.getCycle()
       );
     } else if (sendTo == "socket") {
@@ -3312,17 +3335,17 @@ io.on("connection", async (socket) => {
         connectedUsers
           .get(playerID)
           .getPlayer(roomCode)
-          .addMessage({ message, type });
+          .addMessage({ sender, team, message, type });
       }
-      io.to(playerID).emit("recieveMessage", message, type, game.getCycle());
+      io.to(playerID).emit("receiveMessage", sender, team, message, type, game.getCycle());
     } else if (sendTo == "target") {
       if (connectedUsers.get(playerID).getInGame()) {
         connectedUsers
           .get(playerID)
           .getPlayer(roomCode)
-          .addMessage({ message, type });
+          .addMessage({ sender, team, message, type });
       }
-      io.to(playerID).emit("recieveMessage", message, type, game.getCycle());
+      io.to(playerID).emit("receiveMessage", sender, team, message, type, game.getCycle());
     }
   }
 
