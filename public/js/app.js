@@ -463,25 +463,23 @@ socket.on("receiveMessage", (sender, team, message, type, cycle) => {
       messageType += "night";
       newMessage.classList.add(messageType);
     }
-    newMessage.style.fontWeight = "475";
+    newMessage.style.fontWeight = "485";
   } else if (type.includes("dead")) {
     if (cycle.includes("Day")) {
       messageType += "day";
       newMessage.classList.add(messageType);
+      newMessage.style.opacity = "60%";
     } else if (cycle.includes("Night")) {
       messageType += "night";
       newMessage.classList.add(messageType);
+      newMessage.style.opacity = "70%";
     }
-    newMessage.style.opacity = "75%";
     if (sender !== null) {
       if (team == "good") {
         newMessage.style.color = "var(--goodteam)";
       }
       else if (team == "evil") {
         newMessage.style.color = "var(--evilteam)";
-      }
-      else if (team == "neutral") {
-        newMessage.style.color = "var(--neutralteam)";
       }
     }
   }
@@ -626,25 +624,23 @@ function loadSavedMessages(messages, cycle) {
         messageType += "night";
         newMessage.classList.add(messageType);
       }
-      newMessage.style.fontWeight = "475";
+      newMessage.style.fontWeight = "485";
     } else if (messages[i].type.includes("dead")) {
       if (cycle.includes("Day")) {
         messageType += "day";
         newMessage.classList.add(messageType);
+        newMessage.style.opacity = "60%";
       } else if (cycle.includes("Night")) {
         messageType += "night";
         newMessage.classList.add(messageType);
+        newMessage.style.opacity = "70%";
       }
-      newMessage.style.opacity = "75%";
       if (messages[i].sender !== null) {
         if (messages[i].team == "good") {
           newMessage.style.color = "var(--goodteam)";
         }
         else if (messages[i].team == "evil") {
           newMessage.style.color = "var(--evilteam)";
-        }
-        else if (messages[i].team == "neutral") {
-          newMessage.style.color = "var(--neutralteam)";
         }
       }
     }
@@ -916,7 +912,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
     abilityButton.classList.remove("game-button-ability-norounding");
     voteButton.classList.remove("game-button-vote-norounding");
     if (players[i].userID == proxyID) {
-      currentElement.style.fontWeight = 800;
+      currentElement.style.fontWeight = "800";
       if (cycle.includes("Night")) {
         // Dead
         if (players[i].type.includes("dead")) {
@@ -1182,7 +1178,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
       }
     } else {
       // EVERYONE
-      currentElement.style.fontWeight = 400;
+      currentElement.style.fontWeight = "400";
       if (isDead) {
         if (players[i].type.includes("dead")) {
           abilityButton.setAttribute("onclick", "");
