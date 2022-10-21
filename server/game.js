@@ -65,6 +65,8 @@ class Game {
     this.evil = [];
     // Evil room code
     this.evilRoom = "";
+    // Cemetery room code
+    this.cemeteryRoom = "";
     // in game users
     this.users = [];
     // Keeping track of total players for voting
@@ -105,6 +107,8 @@ class Game {
     this.evil = [];
     // Evil room code
     this.evilRoom = "";
+    // Cemetery room code
+    this.cemeteryRoom = "";
     // in game users
     this.users = [];
     // Keeping track of total players for voting
@@ -320,6 +324,13 @@ class Game {
 
   setEvilRoom(evilRoom) {
     this.evilRoom = evilRoom;
+  }
+  getCemeteryRoom() {
+    return this.cemeteryRoom;
+  }
+
+  setCemeteryRoom(cemeteryRoom) {
+    this.cemeteryRoom = cemeteryRoom;
   }
 
   addEvil(evilPlayer) {

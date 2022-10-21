@@ -844,9 +844,15 @@ function showCard(element) {
 socket.on("beginClearEvilRoom", (roomToClear) => {
   clearEvilRoom(roomToClear);
 });
+socket.on("beginClearCemeteryRoom", (roomToClear) => {
+  clearEvilRoom(roomToClear);
+});
 
 function clearEvilRoom() {
-  socket.emit("clearEvilRoom", getPlayerID(), roomToClear);
+  socket.emit("clearSpecificRoom", getPlayerID(), roomToClear);
+}
+function clearCemeteryRoom() {
+  socket.emit("clearSpecificRoom", getPlayerID(), roomToClear);
 }
 
 socket.on("enterGame", () => {

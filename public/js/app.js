@@ -113,6 +113,7 @@ socket.on("connect", () => {
             showGame(allReady);
           });
           socket.emit("setEvilRoom", getPlayerID());
+          socket.emit("setCemeteryRoom", getPlayerID());
 
           socket.emit("setPlayers", getPlayerID(), "refresh");
           socket.on(
@@ -468,7 +469,7 @@ socket.on("receiveMessage", (sender, team, message, type, cycle) => {
       newMessage.classList.add(messageType);
     }
     newMessage.style.opacity = "50%";
-    if (sender !== undefined && team !== undefined) {
+    if (sender !== null) {
       if (team == "good") {
         newMessage.style.color = "var(--evilteam) !important";
       }
@@ -486,9 +487,12 @@ socket.on("receiveMessage", (sender, team, message, type, cycle) => {
     newMessage.style.marginTop = "0";
     firstMessageRecieved = true;
   }
-  if (sender !== undefined && team !== undefined) {
+
+  if (sender !== null) {
+    console.log("special")
     newMessage.innerText = sender + ": " + message;
-  } else {
+  } else if (sender == null) {
+    console.log("normal")
     newMessage.innerText = message;
   }
   messages.appendChild(newMessage);
@@ -622,7 +626,7 @@ function loadSavedMessages(messages, cycle) {
         newMessage.classList.add(messageType);
       }
       newMessage.style.opacity = "50%";
-      if (messages[i].sender !== undefined && messages[i].team !== undefined) {
+      if (messages[i].sender !== null) {
         if (messages[i].team == "good") {
           newMessage.style.color = "var(--evilteam) !important";
         }
@@ -640,9 +644,9 @@ function loadSavedMessages(messages, cycle) {
       newMessage.style.marginTop = "0";
     }
 
-    if (messages[i].sender !== undefined && messages[i].team !== undefined) {
+    if (messages[i].sender !== null) {
       newMessage.innerText = messages[i].sender + ": " + messages[i].message;
-    } else {
+    } else if (messages[i].sender == null) {
       newMessage.innerText = messages[i].message;
     }
     
@@ -1901,6 +1905,7 @@ function sendMessageInDeathChat() {
   var chatInput = document.getElementById("game-chat");
   if (chatInput.value.length > 0) {
     socket.emit("sendChatMessageDead", getPlayerID(), chatInput.value);
+    chatInput.value = "";
   }
 }
 
