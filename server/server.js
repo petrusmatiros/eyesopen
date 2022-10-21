@@ -2340,99 +2340,238 @@ io.on("connection", async (socket) => {
 
       if (socketPlayer.getIsKilled() || socketPlayer.getIsLynched()) {
         if (socketUser !== user) {
-          if (userRole.type.includes("mayor")) {
-            if (userRole.hasOwnProperty("revealed")) {
-              if (userRole.revealed == true) {
-                if (
-                  socketRole.type.includes("executioner") ||
-                  (socketRole.type.includes("jester") &&
-                    socketPlayer.getOldRole() !== null)
-                ) {
-                  if (socketRole.type.includes("executioner")) {
-                    if (user == socketRole.target) {
-                      theTeam = "good";
-                      type = "mayor+target";
-                      pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
-                    } else {
-                      theTeam = "good";
-                      type = "mayor";
-                      pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
-                    }
-                  } else if (
-                    socketRole.type.includes("jester") &&
-                    socketPlayer.getOldRole().includes("executioner")
-                  ) {
-                    if (user == socketPlayer.getOldTarget()) {
-                      theTeam = "good";
-                      type = "mayor+target";
-                      pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
-                    } else {
-                      theTeam = "good";
-                      type = "mayor";
-                      pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
-                    }
-                  }
-                } else {
-                  type = "mayor";
-                  theTeam = "good";
-                  pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
-                }
+          if (
+            user.getPlayer(roomCode).getIsKilled() ||
+            user.getPlayer(roomCode).getIsLynched()
+          ) {
+            type = "dead";
+            if (socketRole.team.includes("evil")) {
+              if (userRole.team.includes("evil")) {
+                type = "evil+dead";
+                theTeam = "evil";
               } else {
-                if (
-                  socketRole.type.includes("executioner") ||
-                  (socketRole.type.includes("jester") &&
-                    socketPlayer.getOldRole() !== null)
-                ) {
-                  if (socketRole.type.includes("executioner")) {
-                    if (user == socketRole.target) {
-                      theTeam = "good";
-                      type = "target";
-                      pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+                if (userRole.type.includes("mayor")) {
+                  if (userRole.hasOwnProperty("revealed")) {
+                    if (userRole.revealed == true) {
+                      type = "mayor+dead";
+                      theTeam = userRole.team;
                     } else {
-                      theTeam = "good";
-                      type = "none";
-                      pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
-                    }
-                  } else if (
-                    socketRole.type.includes("jester") &&
-                    socketPlayer.getOldRole().includes("executioner")
-                  ) {
-                    if (user == socketPlayer.getOldTarget()) {
-                      theTeam = "good";
-                      type = "target";
-                      pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
-                    } else {
-                      theTeam = "good";
-                      type = "none";
-                      pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+                      type = "dead";
+                      theTeam = userRole.team;
                     }
                   }
                 } else {
-                  type = "none";
-                  theTeam = "good";
-                  pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+                  theTeam = userRole.team;
+                  type = "dead";
                 }
               }
+            } else {
+              if (
+                socketRole.type.includes("executioner") ||
+                (socketRole.type.includes("jester") &&
+                  socketPlayer.getOldRole() !== null)
+              ) {
+                if (socketRole.type.includes("executioner")) {
+                  if (user == socketRole.target) {
+                    theTeam = userRole.team;
+                    if (userRole.type.includes("mayor")) {
+                      if (userRole.hasOwnProperty("revealed")) {
+                        if (userRole.revealed == true) {
+                          type = "mayor+dead+target";
+                          theTeam = userRole.team;
+                        } else {
+                          type = "target+dead";
+                          theTeam = userRole.team;
+                        }
+                      }
+                    } else {
+                      theTeam = userRole.team;
+                      type = "target+dead";
+                    }
+                  } else {
+                    if (userRole.type.includes("mayor")) {
+                      if (userRole.hasOwnProperty("revealed")) {
+                        if (userRole.revealed == true) {
+                          type = "mayor+dead";
+                          theTeam = userRole.team;
+                        } else {
+                          type = "dead";
+                          theTeam = userRole.team;
+                        }
+                      }
+                    } else {
+                      theTeam = userRole.team;
+                      type = "dead";
+                    }
+                  }
+                } else if (
+                  socketRole.type.includes("jester") &&
+                  socketPlayer.getOldRole().includes("executioner")
+                ) {
+                  if (user == socketPlayer.getOldTarget()) {
+                    theTeam = userRole.team;
+                    if (userRole.type.includes("mayor")) {
+                      if (userRole.hasOwnProperty("revealed")) {
+                        if (userRole.revealed == true) {
+                          type = "mayor+dead+target";
+                          theTeam = userRole.team;
+                        } else {
+                          type = "target+dead";
+                          theTeam = userRole.team;
+                        }
+                      }
+                    } else {
+                      theTeam = userRole.team;
+                      type = "target+dead";
+                    }
+                  } else {
+                    if (userRole.type.includes("mayor")) {
+                      if (userRole.hasOwnProperty("revealed")) {
+                        if (userRole.revealed == true) {
+                          type = "mayor+dead";
+                          theTeam = userRole.team;
+                        } else {
+                          type = "dead";
+                          theTeam = userRole.team;
+                        }
+                      }
+                    } else {
+                      theTeam = userRole.team;
+                      type = "dead";
+                    }
+                  }
+                }
+              } else if (socketRole.type.includes("lawyer")) {
+                if (user == socketRole.client) {
+                  theTeam = userRole.team;
+                  type = "client+dead";
+                } else {
+                  if (userRole.type.includes("mayor")) {
+                    if (userRole.hasOwnProperty("revealed")) {
+                      if (userRole.revealed == true) {
+                        type = "mayor+dead";
+                        theTeam = userRole.team;
+                      } else {
+                        type = "dead";
+                        theTeam = userRole.team;
+                      }
+                    }
+                  } else {
+                    theTeam = userRole.team;
+                    type = "dead";
+                  }
+                }
+              } else if (userRole.type.includes("mayor")) {
+                if (userRole.hasOwnProperty("revealed")) {
+                  if (userRole.revealed == true) {
+                    type = "mayor+dead";
+                    theTeam = userRole.team;
+                  } else {
+                    type = "dead";
+                    theTeam = userRole.team;
+                  }
+                }
+              } else {
+                theTeam = userRole.team;
+              }
             }
+            pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
           } else {
-            if (userRole.team.includes("evil")) {
-              type = "evil";
-              theTeam = "evil";
-              pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
-            }
-            else if (userRole.team.includes("good")) {
-              type = "good";
-              theTeam = "good";
-              pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
-            }
-            else if (userRole.team.includes("neutral")) {
-              type = "neutral";
-              theTeam = "neutral";
-              pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+
+            if (userRole.type.includes("mayor")) {
+              if (userRole.hasOwnProperty("revealed")) {
+                if (userRole.revealed == true) {
+                  if (
+                    socketRole.type.includes("executioner") ||
+                    (socketRole.type.includes("jester") &&
+                      socketPlayer.getOldRole() !== null)
+                  ) {
+                    if (socketRole.type.includes("executioner")) {
+                      if (user == socketRole.target) {
+                        theTeam = "good";
+                        type = "mayor+target";
+                        pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+                      } else {
+                        theTeam = "good";
+                        type = "mayor";
+                        pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+                      }
+                    } else if (
+                      socketRole.type.includes("jester") &&
+                      socketPlayer.getOldRole().includes("executioner")
+                    ) {
+                      if (user == socketPlayer.getOldTarget()) {
+                        theTeam = "good";
+                        type = "mayor+target";
+                        pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+                      } else {
+                        theTeam = "good";
+                        type = "mayor";
+                        pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+                      }
+                    }
+                  } else {
+                    type = "mayor";
+                    theTeam = "good";
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+                  }
+                } else {
+                  if (
+                    socketRole.type.includes("executioner") ||
+                    (socketRole.type.includes("jester") &&
+                      socketPlayer.getOldRole() !== null)
+                  ) {
+                    if (socketRole.type.includes("executioner")) {
+                      if (user == socketRole.target) {
+                        theTeam = "good";
+                        type = "target";
+                        pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+                      } else {
+                        theTeam = "good";
+                        type = "none";
+                        pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+                      }
+                    } else if (
+                      socketRole.type.includes("jester") &&
+                      socketPlayer.getOldRole().includes("executioner")
+                    ) {
+                      if (user == socketPlayer.getOldTarget()) {
+                        theTeam = "good";
+                        type = "target";
+                        pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+                      } else {
+                        theTeam = "good";
+                        type = "none";
+                        pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+                      }
+                    }
+                  } else {
+                    type = "none";
+                    theTeam = "good";
+                    pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+                  }
+                }
+              }
+            } else {
+              if (userRole.team.includes("evil")) {
+                type = "evil";
+                theTeam = "evil";
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+              }
+              else if (userRole.team.includes("good")) {
+                type = "good";
+                theTeam = "good";
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+              }
+              else if (userRole.team.includes("neutral")) {
+                type = "neutral";
+                theTeam = "neutral";
+                pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
+              }
             }
           }
         } else {
-          type = "dead";
+          type = "dead"
           theTeam = socketRole.team;
           pushPlayer(toSend, seenAll, userID, userName, type, theTeam);
         }
@@ -3126,8 +3265,8 @@ io.on("connection", async (socket) => {
             } else if (state.includes("refresh")) {
               emitTo = "setPlayersRefresh";
             }
-            // console.log(socketRole.type, socketPlayer.getPlayerName(), "sees:")
-            // console.log(generateValidPlayerList(playerID))
+            console.log(socketRole.type, socketPlayer.getPlayerName(), "sees:")
+            console.log(generateValidPlayerList(playerID))
             socket.emit(
               emitTo,
               generateValidPlayerList(playerID),
