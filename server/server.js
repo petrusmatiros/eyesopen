@@ -1664,11 +1664,11 @@ io.on("connection", async (socket) => {
                 .getRole()
                 .team.includes("evil")
             ) {
-              console.log(
-                connectedUsers.get(playerID) +
-                  " is joining evil room: " +
-                  game.getEvilRoom()
-              );
+              // console.log(
+              //   connectedUsers.get(playerID) +
+              //     " is joining evil room: " +
+              //     game.getEvilRoom()
+              // );
               socket.join(game.getEvilRoom());
               console.log("with evil room", socket.rooms);
             }
@@ -1688,11 +1688,11 @@ io.on("connection", async (socket) => {
         if (game.getProgress()) {
           if (game.getUsers().includes(user)) {
             if (game.getCemetery().includes(user)) {
-              console.log(
-                user +
-                  " is joining cemetery room: " +
-                  game.getCemeteryRoom()
-              );
+              // console.log(
+              //   user +
+              //     " is joining cemetery room: " +
+              //     game.getCemeteryRoom()
+              // );
               socket.join(game.getCemeteryRoom());
               console.log("with cemetery room", socket.rooms);
             }
@@ -1897,7 +1897,7 @@ io.on("connection", async (socket) => {
                           .get(getKeyFromValue(proxyIdenfication, targetID))
                           .getPlayer(roomCode);
                         if (player == theAbilityTargetPlayer) {
-                          console.log("Mayor selected themself");
+                          console.log("Mayor selected themselves");
                           if (player.getRole().revealed == false) {
                             console.log("Mayor not revealed");
                             mayorReveal(playerID, room, roomCode, game);
@@ -3265,8 +3265,8 @@ io.on("connection", async (socket) => {
             } else if (state.includes("refresh")) {
               emitTo = "setPlayersRefresh";
             }
-            console.log(socketRole.type, socketPlayer.getPlayerName(), "sees:")
-            console.log(generateValidPlayerList(playerID))
+            // console.log(socketRole.type, socketPlayer.getPlayerName(), "sees:")
+            // console.log(generateValidPlayerList(playerID))
             socket.emit(
               emitTo,
               generateValidPlayerList(playerID),
@@ -3512,7 +3512,7 @@ io.on("connection", async (socket) => {
         if (game.getProgress()) {
           if (game.getUsers().includes(user)) {
             if (game.getCemetery().includes(user)) {
-              console.log(message);
+              // console.log(message);
               sendMessage(playerID, room, roomCode, game, player.getPlayerName(), role.team, "dead", message, "dead");
             }
           }
@@ -5030,7 +5030,7 @@ io.on("connection", async (socket) => {
             (voteTargetPlayer?.getIsKilled() == false &&
             voteTargetPlayer?.getIsLynched() == false) || users[i].getPlayer(roomCode).voteTarget == "skip"
           ) {
-            console.log(users[i].getPlayer(roomCode).voteTarget);
+            // console.log(users[i].getPlayer(roomCode).voteTarget);
             if (users[i].getPlayer(roomCode).voteTarget == "skip") {
               if (targets.has("skip")) {
                 targets.set(
@@ -6102,8 +6102,6 @@ io.on("connection", async (socket) => {
       // AFTER THAT, ADD THEM TO CEMETERY
       if (!game.getCemetery().includes(toSendToCemetery[i])) {
         game.addCemetery(toSendToCemetery[i]);
-        console.log(toSendToCemetery[i]);
-        console.log(toSendToCemetery[i].getPlayer(roomCode).getRole());
         io.to(toSendToCemetery[i].getPlayerID()).emit("settingCemeteryRoom");
         // REMOVE FROM ALIVE ARRAY
         game.removeAlive(toSendToCemetery[i]);
