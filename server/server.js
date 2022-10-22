@@ -5404,17 +5404,31 @@ io.on("connection", async (socket) => {
                     "info"
                   );
                 } else {
-                  sendMessage(
-                    abilityTarget.playerID,
-                    room,
-                    roomCode,
-                    game,
-                    null,
-                    null,
-                    "target",
-                    `You have been trapped! Your night ability was blocked by the Trapper`,
-                    "info"
-                  );
+                  if (abilityTargetPlayer.getRole().hasNightAbility) {
+                    sendMessage(
+                      abilityTarget.playerID,
+                      room,
+                      roomCode,
+                      game,
+                      null,
+                      null,
+                      "target",
+                      `You have been trapped! Your night ability was blocked by the Trapper`,
+                      "info"
+                    );
+                  } else {
+                    sendMessage(
+                      abilityTarget.playerID,
+                      room,
+                      roomCode,
+                      game,
+                      null,
+                      null,
+                      "target",
+                      `You have been trapped by the Trapper, but it doesn't affect you`,
+                      "info"
+                    );
+                  }
                 }
               } else if (role.type.includes("witch")) {
                 if (!abilityTargetPlayer.getRole().team.includes("evil")) {
@@ -5444,17 +5458,32 @@ io.on("connection", async (socket) => {
                       "info"
                     );
                   } else {
-                    sendMessage(
-                      abilityTarget.playerID,
-                      room,
-                      roomCode,
-                      game,
-                      null,
-                      null,
-                      "target",
-                      `You have been frozen! Your night ability was blocked by the Witch`,
-                      "info"
-                    );
+                    if (abilityTargetPlayer.getRole().hasNightAbility) {
+                      sendMessage(
+                        abilityTarget.playerID,
+                        room,
+                        roomCode,
+                        game,
+                        null,
+                        null,
+                        "target",
+                        `You have been frozen! Your night ability was blocked by the Witch`,
+                        "info"
+                      );
+                    } else {
+                      sendMessage(
+                        abilityTarget.playerID,
+                        room,
+                        roomCode,
+                        game,
+                        null,
+                        null,
+                        "target",
+                        `You have been frozen by the Witch, but it doesn't affect you`,
+                        "info"
+                      );
+                    }
+                    
                   }
                 }
               }
