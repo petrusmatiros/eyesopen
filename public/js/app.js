@@ -255,6 +255,7 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
     var winningMessage = "";
     if (winType !== "timeout" && winType !== "draw") {
       // VICTORY AND DEFEAT
+      pauseAll();
       if (victory) {
         state = "VICTORY";
         playSFX("victoryAudio");
