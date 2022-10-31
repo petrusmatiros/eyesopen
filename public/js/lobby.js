@@ -753,7 +753,7 @@ function hideCard() {
     .getElementById("overlay-rolecards")
     .setAttribute("onclick", "hideInfo()");
   document
-    .getElementById("adjusted-close")
+    .getElementById("adjusted-close-button")
     .setAttribute("onclick", "hideInfo()");
   var displayContainer = document.getElementById(
     "lobby-rolecard-display-container"
