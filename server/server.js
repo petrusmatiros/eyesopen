@@ -56,6 +56,22 @@ function checkClearData() {
 }
 setInterval(checkClearData, 1000);
 
+app.use(function(req, res, next) {
+  var err = null;
+  try {
+      decodeURIComponent(req.path)
+  }
+  catch(e) {
+      err = e;
+  }
+  if (err){
+      console.log(err, req.url);
+      return res.redirect(['https://', req.get('Host'), '/404'].join(''));    
+  }
+  next();
+});
+
+
 // static folder
 app.use(express.static("public"));
 
@@ -63,6 +79,7 @@ app.use((req, res, next) => {
   res.set("Cache-Control", "no-store");
   next();
 });
+
 // app.use(express.urlencoded({ extended: true }));
 
 // serving public file
