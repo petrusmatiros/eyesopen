@@ -374,6 +374,7 @@
   -webkit-transition: background-color 0.2s ease-out;
   -o-transition: background-color 0.2s ease-out;
   transition: background-color 0.2s ease-out;
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .lobby-rolecard:hover {
   background-color: hsl(0, 0%, 90%);
@@ -475,6 +476,7 @@
   border-radius: 0.5rem;
   padding: 0.25em;
   margin-left: 0.25rem;
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 /* Kick panel */
 .lobby-kickpanel-icon {
@@ -492,6 +494,7 @@
   border-radius: 0.5rem;
   padding: 0.25em;
   margin-right: -0.5rem;
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .lobby-kickpanel-icon:hover {
   background-color: hsl(0, 0%, 20%);
@@ -695,6 +698,7 @@ input[type=number]::-webkit-inner-spin-button {
   background-color: hsl(0, 100%, 80%);
   border-radius: 0.6rem;
   padding: 0.6em 1em 0.6em 1em;
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .lobby-gamesettings-resetbutton:hover {
   background-color: hsl(0, 100%, 70%);
@@ -707,6 +711,7 @@ input[type=number]::-webkit-inner-spin-button {
   background-color: hsl(0, 0%, 80%);
   border-radius: 0.6rem;
   padding: 0.6em 1em 0.6em 1em;
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .lobby-gamesettings-donebutton:hover {
   background-color: hsl(0, 0%, 70%);
@@ -874,6 +879,7 @@ input[type=number]::-webkit-inner-spin-button {
   border-radius: 0.5rem;
   padding: 0.25em;
   margin-right: -0.5rem;
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .lobby-gamesettings-icon:hover {
   background-color: hsl(0, 0%, 20%);

@@ -251,6 +251,7 @@ input[type="text"]:focus {
   border: none;
   border-radius: 0.5rem;
   text-decoration: none;
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .confirm-button:hover {
   color: var(--menu-button-hover-fg);

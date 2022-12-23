@@ -343,6 +343,7 @@ p {
   border: none;
   border-radius: 1rem;
   text-decoration: none;
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .title-button:hover {
   color: var(--menu-button-hover-fg);
@@ -666,6 +667,7 @@ p {
   padding: 0.5rem;
   border-radius: 0.75rem;
   background-color: hsl(0, 100%, 80%);
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .player-kick:hover {
   background-color: hsl(0, 100%, 75%);
@@ -714,6 +716,7 @@ p {
   background-color: var(--popup-yes-button);
   border-radius: 1rem;
   padding: 0.6em;
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .popup-yesbutton:hover {
   color: var(--dark-fg);
@@ -733,6 +736,7 @@ p {
   background-color: var(--popup-button);
   border-radius: 1rem;
   padding: 0.6em;
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .popup-nobutton:hover {
   color: var(--dark-fg);
@@ -784,6 +788,7 @@ p {
   height: 2rem;
   vertical-align: bottom;
   border-radius: 0.5rem;
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .close-button:hover {
   background-color: hsl(0, 0%, 95%);
@@ -819,6 +824,7 @@ input[type="text"] {
   outline: none;
   border-radius: 0.55rem;
   border: 2px solid #b1b1b1;
+  transition: border 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 input[type="text"]:focus {
   outline: none;
@@ -846,6 +852,7 @@ input[type="text"]:focus {
   border: none;
   border-radius: 0.5rem;
   text-decoration: none;
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .confirm-button:hover {
   color: var(--menu-button-hover-fg);
