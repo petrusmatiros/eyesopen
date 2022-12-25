@@ -1415,7 +1415,7 @@ input[type="text"]:focus {
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   padding: 0.6em;
   background-color: var(--popup-button);
 }
