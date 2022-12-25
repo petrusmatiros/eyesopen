@@ -158,8 +158,8 @@ p {
   position: fixed;
   display: block;
   background-color: rgba(0, 0, 0, 0.35);
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   top: 0;
   left: 0;
   bottom: 0;
@@ -183,8 +183,8 @@ p {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   top: 50%;
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
@@ -251,6 +251,8 @@ input[type="text"]:focus {
   border: none;
   border-radius: 0.5rem;
   text-decoration: none;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .confirm-button:hover {

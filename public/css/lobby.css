@@ -114,8 +114,8 @@
   -webkit-transform: translate(-50%, -50%);
       -ms-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   padding: 1.5em 0.2em 1.5em 0.2em;
   border-radius: 1rem;
   -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
@@ -232,8 +232,8 @@
   -webkit-transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
       transform: translate(-50%, -50%);
--webkit-animation: fadeIn 0.3s 1, fly-in 0.45s 1;
-      animation: fadeIn 0.3s 1, fly-in 0.45s 1;
+-webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1, fly-in 0.45s 1;
+      animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1, fly-in 0.45s 1;
 -webkit-animation-timing-function: cubic-bezier(0.01,0.66,0.05,1);
       animation-timing-function: cubic-bezier(0.01,0.66,0.05,1);
   -webkit-box-pack: center;
@@ -281,8 +281,8 @@
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-animation: fadeIn 0.2s 1;
-          animation: fadeIn 0.2s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.2s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.2s 1;
   font-size: 3rem;
   font-weight: 700;
 }
@@ -310,8 +310,8 @@
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-animation: fadeIn 0.2s 1;
-          animation: fadeIn 0.2s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.2s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.2s 1;
   width: 12.5rem;
   height: 14.786rem;
   padding: 0.15em;
@@ -374,6 +374,8 @@
   -webkit-transition: background-color 0.2s ease-out;
   -o-transition: background-color 0.2s ease-out;
   transition: background-color 0.2s ease-out;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .lobby-rolecard:hover {
@@ -421,8 +423,8 @@
       -ms-flex-align: center;
           align-items: center;
   font-size: 1rem;
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   font-weight: 500;
   padding: 1em;
   border-radius: 10rem;
@@ -442,8 +444,8 @@
   position: fixed;
   display: none;
   background-color: rgba(0, 0, 0, 0.35);
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   top: 0;
   left: 0;
   bottom: 0;
@@ -476,6 +478,8 @@
   border-radius: 0.5rem;
   padding: 0.25em;
   margin-left: 0.25rem;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 /* Kick panel */
@@ -494,6 +498,8 @@
   border-radius: 0.5rem;
   padding: 0.25em;
   margin-right: -0.5rem;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .lobby-kickpanel-icon:hover {
@@ -660,8 +666,8 @@ input[type=number]::-webkit-inner-spin-button {
   -webkit-transform: translate(-50%, -50%);
       -ms-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   padding: 2em 0.2em 2em 0.2em;
   border-radius: 1rem;
   -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
@@ -698,6 +704,8 @@ input[type=number]::-webkit-inner-spin-button {
   background-color: hsl(0, 100%, 80%);
   border-radius: 0.6rem;
   padding: 0.6em 1em 0.6em 1em;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .lobby-gamesettings-resetbutton:hover {
@@ -711,6 +719,8 @@ input[type=number]::-webkit-inner-spin-button {
   background-color: hsl(0, 0%, 80%);
   border-radius: 0.6rem;
   padding: 0.6em 1em 0.6em 1em;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .lobby-gamesettings-donebutton:hover {
@@ -879,6 +889,8 @@ input[type=number]::-webkit-inner-spin-button {
   border-radius: 0.5rem;
   padding: 0.25em;
   margin-right: -0.5rem;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .lobby-gamesettings-icon:hover {
@@ -1006,8 +1018,8 @@ input[type=number]::-webkit-inner-spin-button {
           flex-direction: row;
   color: var(--light-fg);
   background-color: var(--dark-fg-opaque);
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   -webkit-animation-timing-function: ease-in-out;
           animation-timing-function: ease-in-out;
   padding: 0.35em;
@@ -1072,8 +1084,8 @@ input[type=number]::-webkit-inner-spin-button {
       -ms-flex-direction: column;
           flex-direction: column;
   background-color: var(--dark-fg-opaque);
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   -webkit-animation-timing-function: ease-in-out;
           animation-timing-function: ease-in-out;
   padding: 0.9em 1em 0.9em 1em;
@@ -1401,6 +1413,9 @@ input[type=number]::-webkit-inner-spin-button {
   font-weight: 400;
   margin-top: 0.25rem;
   margin-right: 0.5rem;
+  -webkit-transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 0.15s;
+  -o-transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 0.15s;
+  transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 0.15s;
 }
 .lobby-button {
   display: -webkit-box;
@@ -1437,8 +1452,8 @@ input[type=number]::-webkit-inner-spin-button {
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   -webkit-animation-timing-function: ease-in-out;
           animation-timing-function: ease-in-out;
   width: 75%;

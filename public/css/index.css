@@ -116,8 +116,8 @@
       -ms-flex-align: center;
           align-items: center;
   font-size: 1rem;
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   font-weight: 500;
   padding: 1em;
   border-radius: 10rem;
@@ -317,8 +317,8 @@ p {
   display: none;
   font-size: 1rem !important;
   border-radius: 0.65rem !important;
-  -webkit-animation: fadeIn 0.3s 1, pop-light 1s 1;
-          animation: fadeIn 0.3s 1, pop-light 1s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1, pop-light 1s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1, pop-light 1s 1;
   margin-bottom: 0 !important;
 }
 .title-button {
@@ -343,6 +343,8 @@ p {
   border: none;
   border-radius: 1rem;
   text-decoration: none;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .title-button:hover {
@@ -493,8 +495,8 @@ p {
   position: fixed;
   display: none;
   background-color: rgba(0, 0, 0, 0.35);
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   top: 0;
   left: 0;
   bottom: 0;
@@ -518,8 +520,8 @@ p {
       -ms-flex-direction: column;
           flex-direction: column;
   position: fixed;
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   top: 50%;
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
@@ -667,6 +669,8 @@ p {
   padding: 0.5rem;
   border-radius: 0.75rem;
   background-color: hsl(0, 100%, 80%);
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .player-kick:hover {
@@ -716,6 +720,8 @@ p {
   background-color: var(--popup-yes-button);
   border-radius: 1rem;
   padding: 0.6em;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .popup-yesbutton:hover {
@@ -736,6 +742,8 @@ p {
   background-color: var(--popup-button);
   border-radius: 1rem;
   padding: 0.6em;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .popup-nobutton:hover {
@@ -756,8 +764,8 @@ p {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   top: 50%;
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
@@ -788,6 +796,8 @@ p {
   height: 2rem;
   vertical-align: bottom;
   border-radius: 0.5rem;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .close-button:hover {
@@ -824,6 +834,8 @@ input[type="text"] {
   outline: none;
   border-radius: 0.55rem;
   border: 2px solid #b1b1b1;
+  -webkit-transition: border 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: border 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: border 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 input[type="text"]:focus {
@@ -852,6 +864,8 @@ input[type="text"]:focus {
   border: none;
   border-radius: 0.5rem;
   text-decoration: none;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .confirm-button:hover {

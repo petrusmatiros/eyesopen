@@ -5,7 +5,6 @@
 * Browsers: last 4 version
 */
 
-
 :root {
   /* nighmare bifore krissmas */
   /* Lobby & Game */
@@ -459,6 +458,8 @@ input[type="text"] {
   outline: none;
   border-radius: 0.55rem;
   border: 2px solid #b1b1b1;
+  -webkit-transition: border 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: border 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: border 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 input[type="text"]:focus {
@@ -478,6 +479,8 @@ input[type="text"]:focus {
   font-size: 0.85rem;
   width: 100%;
   margin: 0 !important;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 #game-chat:hover {
@@ -507,6 +510,8 @@ input[type="text"]:focus {
   padding: 0.5rem;
   border-radius: 0.5rem;
   margin-left: 0.5rem;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .game-messagebox-chat-send:hover {
@@ -1216,6 +1221,8 @@ input[type="text"]:focus {
   max-width: 12.5rem;
   max-width: 12.5rem;
   margin: 0 0.5rem 1rem 0.5rem;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .game-leavebutton:hover {
@@ -1239,8 +1246,8 @@ input[type="text"]:focus {
   position: fixed;
   display: block;
   background-color: rgba(0, 0, 0, 0.35);
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   top: 0;
   left: 0;
   bottom: 0;
@@ -1288,8 +1295,8 @@ input[type="text"]:focus {
       -ms-flex-direction: column;
           flex-direction: column;
   position: fixed;
-  -webkit-animation: fadeIn 0.3s 1;
-          animation: fadeIn 0.3s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1;
   top: 50%;
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
@@ -1353,6 +1360,8 @@ input[type="text"]:focus {
   height: 2rem;
   vertical-align: bottom;
   border-radius: 0.5rem;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .game-close-button:hover {
@@ -1386,6 +1395,8 @@ input[type="text"]:focus {
 .game-popup-button {
   color: var(--dark-fg);
   background-color: var(--popup-button);
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .game-popup-button:hover {
@@ -1451,6 +1462,8 @@ input[type="text"]:focus {
   background-color: var(--popup-leave-button);
   border-radius: 0.75rem;
   padding: 0.6em;
+  -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .game-popup-leavebutton:hover {
@@ -1555,8 +1568,8 @@ input[type="text"]:focus {
 }
 .game-title-night {
   opacity: 75%;
-  -webkit-animation: fadeIn75 0.3s 1 ease-in-out;
-          animation: fadeIn75 0.3s 1 ease-in-out;
+  -webkit-animation: fadeIn75 cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1 ease-in-out;
+          animation: fadeIn75 cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1 ease-in-out;
   color: var(--light-fg);
 }
 .game-title-day {
@@ -1647,8 +1660,8 @@ input[type="text"]:focus {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  -webkit-animation: fadeIn 0.3s 1, fly-in 0.45s 1;
-          animation: fadeIn 0.3s 1, fly-in 0.45s 1;
+  -webkit-animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1, fly-in 0.45s 1;
+          animation: fadeIn cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s 1, fly-in 0.45s 1;
   -webkit-animation-timing-function: cubic-bezier(0.01,0.66,0.05,1);
           animation-timing-function: cubic-bezier(0.01,0.66,0.05,1);
   background-color: var(--light-bg);
