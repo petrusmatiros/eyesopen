@@ -398,9 +398,15 @@ function displayUser() {
 }
 function displayChangeUsername() {
   if (checkIfSessionExists()) {
-    document.getElementById("overlay").style.display = "block";
-    document.getElementById("changeName").style.display = "flex";
-    document.getElementById("inputChangeName").focus();
+    socket.emit("requestUsername", getPlayerID());
+    socket.on("fetchedUsername", (username) => {
+      let input = document.getElementById("inputChangeName");
+      document.getElementById("overlay").style.display = "block";
+      document.getElementById("changeName").style.display = "flex";
+      input.focus();
+      input.value = username;
+    });
+    
   }
 }
 function hideUser() {

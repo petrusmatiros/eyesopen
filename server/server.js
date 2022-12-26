@@ -973,6 +973,13 @@ io.on("connection", async (socket) => {
     }
   });
 
+  socket.on("requestUsername", (playerID) => {
+    if (checkUserExist(playerID)) {
+      let user = connectedUsers.get(playerID)
+      socket.emit("fetchedUsername", user.getName());
+    }
+  });
+  
   socket.on("changeUsername", (playerID, newName) => {
     if (checkUserExist(playerID)) {
       console.log("NewName:", newName, ", playerID:", playerID);
