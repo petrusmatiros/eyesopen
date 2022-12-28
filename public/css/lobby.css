@@ -371,24 +371,24 @@
   border-radius: 0.5rem;
   gap: 0.5rem;
   background-color: hsl(0, 0%, 97%);
-  -webkit-transition: background-color 0.2s ease-out;
-  -o-transition: background-color 0.2s ease-out;
-  transition: background-color 0.2s ease-out;
+  -webkit-transition: background-color 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: background-color 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition: background-color 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
   -webkit-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   -o-transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .lobby-rolecard:hover {
   background-color: hsl(0, 0%, 90%);
-  -webkit-transition: background-color 0.2s ease-out;
-  -o-transition: background-color 0.2s ease-out;
-  transition: background-color 0.2s ease-out;
+  -webkit-transition: background-color 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: background-color 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition: background-color 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .lobby-rolecard:active {
   background-color: hsl(0, 0%, 80%);
-  -webkit-transition: background-color 0.2s ease-out;
-  -o-transition: background-color 0.2s ease-out;
-  transition: background-color 0.2s ease-out;
+  -webkit-transition: background-color 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: background-color 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition: background-color 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .lobby-rolecard-role {
   display: -webkit-box;
