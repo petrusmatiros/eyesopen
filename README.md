@@ -2,8 +2,6 @@
 
 ## Mafia/Werewolf/ToS inspired web based game
 
----
-
 ## Table of contents
 <!-- - [Eyes Open <img src="public/assets/icons/eyesopen.svg" alt="Eyes Open logo" width=32 style="vertical-align:middle">](#eyes-open-)
     - [Mafia/Werewolf/ToS inspired web based game](#mafiawerewolftos-inspired-web-based-game)
@@ -67,8 +65,6 @@
 <img src="public/assets/rolecards/Lawyer.webp" alt="role-card" width=150>
 </p>
 
----
-
 ## Dependencies
 ```json
 "dependencies": {
@@ -86,7 +82,6 @@
 npm i
 npm build
 ```
----
 
 ## Assets
 
@@ -130,7 +125,6 @@ npm build
 <a href="https://freesound.org/people/kickhat/sounds/341794/" target="_blank">"pizzicato"</a> by kickhat of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
 <br>
 <a href="https://freesound.org/people/kickhat/sounds/341796/" target="_blank">"freesound strings attack 2"</a> by kickhat of <a href="https://www.freesound.org" target="_blank">Freesound.org</a>
-
 
 ## Notes
 
