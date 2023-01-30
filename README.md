@@ -80,7 +80,7 @@
 
 ```
 npm i
-node src/index.js
+node server/server.js
 ```
 
 ## Assets
