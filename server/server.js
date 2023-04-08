@@ -4760,7 +4760,7 @@ io.on("connection", async (socket) => {
         null,
         null,
         "target",
-        `Someone tried to kill you, but you were protected`,
+        `Someone tried to kill you, but you slipped away!`,
         "info"
       );
       // send message to evil people that it  DID not work
@@ -5771,17 +5771,22 @@ io.on("connection", async (socket) => {
                       "info"
                     );
                   } else {
-                    sendMessage(
-                      abilityTarget.playerID,
-                      room,
-                      roomCode,
-                      game,
-                      null,
-                      null,
-                      "target",
-                      `Someone tried to kill you, but you were protected by the Doctor`,
-                      "info"
-                    );
+                    if (!player.isBlocked) {
+                      sendMessage(
+                        abilityTarget.playerID,
+                        room,
+                        roomCode,
+                        game,
+                        null,
+                        null,
+                        "target",
+                        `Someone tried to kill you, but you were protected by the Doctor`,
+                        "info"
+                      );
+                    } else {
+
+                    }
+                    
                   }
                 }
 
