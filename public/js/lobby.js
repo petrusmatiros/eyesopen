@@ -257,7 +257,7 @@ socket.on("connect", () => {
 function addEventListeners() {
   document.addEventListener("visibilitychange", (e) => {
     if (document.visibilityState === 'visible') {
-      playLobby();
+      // playLobby();
     } else {
       pauseAll();
     }
