@@ -5,10 +5,16 @@ const lobby = domain + "lobby/";
 
 const minPlayers = 3;
 
+setAudioCookie();
+
+setInterval(() => {
+  setAudioCookie();
+}, 1000);
+
 /**
- * [resetCookie resets the playerID cookie to null]
+ * [resetCookiePlayerID resets the playerID cookie to null]
  */
-function resetCookie(override = false) {
+function resetCookiePlayerID(override = false) {
   if (override) {
     console.log("cookie was reset to null");
     document.cookie = "eyesopenID=null; path=/";
@@ -21,6 +27,69 @@ function resetCookie(override = false) {
       document.cookie = "eyesopenID=null; path=/";
     } else if (getPlayerID() == "null") {
       console.log("ID is already null");
+    }
+  }
+}
+
+function setAudioCookie(userAudio=undefined, userMusic=undefined) {
+  const fiveHours = 60 * 60 * 5;
+  const defaultVol = {audio: 50, music: 50};
+  let musicRangeSlider = document.getElementById("musicRangeSlider");
+  let musicRangeSliderLabel = document.getElementById("musicRangeSliderLabel");
+  let sfxRangeSlider = document.getElementById("sfxRangeSlider");
+  let sfxRangeSliderLabel = document.getElementById("sfxRangeSliderLabel");
+  try {
+    if (getCookie("volume") === undefined || getCookie("volume") === null || getCookie("volume") === "null" || getCookie("volume") === "") {
+      document.cookie = `volume=${JSON.stringify(defaultVol)}; path=/; max-age=${fiveHours}; SameSite=Lax`;
+      musicRangeSlider.value = defaultVol.music;
+      musicRangeSliderLabel.textContent = `Music: ${defaultVol.music}%`;
+      sfxRangeSlider.value = defaultVol.audio;
+      sfxRangeSliderLabel.textContent = `SFX: ${defaultVol.audio}%`;
+
+    } else {
+      const vol = JSON.parse(getCookie("volume"));
+      if (userAudio !== undefined) {
+        vol.audio = userAudio;
+      } else {
+        vol.audio = vol.audio ? vol.audio : defaultVol.audio;
+      }
+      if (userMusic !== undefined) {
+        vol.music = userMusic;
+      } else {
+        vol.music = vol.music ? vol.music : defaultVol.music;
+      }
+
+      if (vol.audio === undefined || vol.audio === null || vol.audio === "null" || vol.audio === "") {
+        vol.audio = defaultVol.audio;
+      }
+      if (vol.music === undefined || vol.music === null || vol.music === "null" || vol.music === "") {
+        vol.music = defaultVol.music;
+      }
+
+      const newAudio = vol.audio;
+      const newMusic = vol.music;
+      musicRangeSlider.value = newMusic;
+      musicRangeSliderLabel.textContent = `Music: ${newMusic}%`;
+      sfxRangeSlider.value = newAudio;
+      sfxRangeSliderLabel.textContent = `SFX: ${newAudio}%`;
+      const newVol = {audio: newAudio, music: newMusic};
+      document.cookie = `volume=${JSON.stringify(newVol)}; path=/; SameSite=Lax`;
+
+    }
+  } catch (e) {
+    document.cookie = `volume=${JSON.stringify(defaultVol)}; path=/; max-age=${fiveHours}; SameSite=Lax`;
+    musicRangeSlider.value = defaultVol.music;
+      musicRangeSliderLabel.textContent = `Music: ${defaultVol.music}%`;
+      sfxRangeSlider.value = defaultVol.audio;
+      sfxRangeSliderLabel.textContent = `SFX: ${defaultVol.audio}%`;
+  }
+}
+
+function getCookie(cookie) {
+  var cookies = document.cookie.split(";");
+  for (var i = 0; i < cookies.length; i++) {
+    if (cookies[i].includes(cookie)) {
+      return cookies[i].split("=")[1];
     }
   }
 }
@@ -44,18 +113,58 @@ function pauseAudio(toPause) {
     });
   }
 }
-function playMusic(toPlay, vol=1, wait=false) {
-  if (musicToggle) {
-    playAudio(toPlay, vol, wait);
-  }
+
+function changeMusicVolume(el) {
+  const musicVol = el.value;
+  setAudioCookie(undefined, musicVol);
 }
-function playSFX(toPlay, vol=1, wait=false) {
-  if (audioToggle) {
-    playAudio(toPlay, vol, wait);
-  }
+function changeSFXVolume(el) {
+  const sfxVol = el.value;
+  setAudioCookie(sfxVol, undefined);
 }
-function playAudio(toPlay, vol=1, wait=false) {
+
+function playMusic(toPlay, vol=100, wait=false) {
+  // if (musicToggle) {
+  // }
+  setAudioCookie();
+  try {
+    vol = JSON.parse(getCookie("volume")).music;
+  } catch (e) {
+    vol = 100;
+  }
+  playAudio(toPlay, vol, wait);
+}
+function playSFX(toPlay, vol=100, wait=false) {
+  // if (audioToggle) {
+  // }
+  setAudioCookie();
+  try {
+    vol = JSON.parse(getCookie("volume")).audio;
+  } catch (e) {
+    vol = 100;
+  }
+  playAudio(toPlay, vol, wait);
+}
+
+function handleVol(vol) {
+  let num = Number(vol);
+  
+  if (isNaN(num) || num < 0 || num > 100) {
+    num = 0.5;
+  }
+  
+  num = Math.round(num * 10) / 10;
+  
+  if (num >= 1 && num <= 100) {
+    num /= 100;
+  }
+  
+  return num;
+}
+
+function playAudio(toPlay, vol=100, wait=false) {
   var audio = document.getElementById(toPlay);
+  vol = handleVol(vol);
   audio.volume = vol;
   if (!wait) {
     var playPromise = audio.play();
@@ -85,7 +194,7 @@ socket.on("connect", () => {
     if (!userExists) {
       var URL = window.location.href.replace("/game", "");
       window.location.href = URL;
-      resetCookie();
+      resetCookiePlayerID();
     } else {
       console.log("user exists");
       var URL = "";
@@ -197,7 +306,7 @@ function showLeave() {
   var leaveOverlay = document.getElementById("overlay-leave");
   leavePopup.style.display = "flex";
   leaveOverlay.style.display = "flex";
-  playSFX("popAudio", 0.25);
+  playSFX("popAudio", 25);
 }
 
 function hideLeave() {
@@ -205,12 +314,12 @@ function hideLeave() {
   var leaveOverlay = document.getElementById("overlay-leave");
   leavePopup.style.display = "none";
   leaveOverlay.style.display = "none";
-  playSFX("popAudio", 0.25);
+  playSFX("popAudio", 25);
 }
 
 function leaveGame() {
   socket.emit("leaveGame", getPlayerID());
-  playSFX("popAudio", 0.25);
+  playSFX("popAudio", 25);
 }
 
 function returnToLobby() {
@@ -258,11 +367,11 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
       pauseAll();
       if (victory) {
         state = "VICTORY";
-        playSFX("victoryAudio");
+        playSFX("victoryAudio", 50);
         // display victory
       } else {
         state = "DEFEAT";
-        playSFX("defeatAudio");
+        playSFX("defeatAudio", 50);
         // display defeat
       }
 
@@ -350,7 +459,7 @@ function togglePlayerCard(element) {
     questionMark.style.display = "flex";
   }
   socket.emit("requestPlayerCard", getPlayerID(), "press");
-  playSFX("dealCardAudio", 0.35);
+  playSFX("dealCardAudio", 35);
 }
 
 var manualScroll = false;
@@ -367,7 +476,7 @@ function autoScroll() {
   scrollDown.style.display = "none";
   var messages = document.getElementById("game-message-scroller");
   messages.scrollTop = messages.scrollHeight;
-  playSFX("popAudio", 0.25);
+  playSFX("popAudio", 25);
 }
 
 // Remove top margin from the first message received
@@ -500,12 +609,12 @@ socket.on("receiveMessage", (sender, team, message, type, cycle) => {
   if (!manualScroll) {
     messages.scrollTop = messages.scrollHeight;
   }
-  playSFX("messageAudio", 0.75);
+  playSFX("messageAudio", 75);
 });
 
 socket.on("cemetery", (burried) => {
   loadCemetery(burried);
-  playSFX("deathAudio");
+  playSFX("deathAudio", 50);
 });
 
 function loadCemetery(burried) {
@@ -1787,6 +1896,8 @@ function changeUI(theme) {
   var chat = document.getElementById("game-messagebox-chat");
   var chatInput = document.getElementById("game-chat");
   var chatSend = document.getElementById("game-messagebox-chat-send");
+  var musicRangeSliderLabel = document.getElementById("musicRangeSliderLabel");
+  var sfxRangeSliderLabel = document.getElementById("sfxRangeSliderLabel");
 
   if (theme.includes("Night")) {
     body.classList.remove("game-background-day");
@@ -1807,6 +1918,10 @@ function changeUI(theme) {
     gameClock.classList.add("game-night-bg", "game-night-fg");
     gameClockDivider.classList.remove("game-day-border");
     gameClockDivider.classList.add("game-night-border");
+    sfxRangeSliderLabel.classList.add("game-night-fg");
+    sfxRangeSliderLabel.classList.remove("game-day-fg");
+    musicRangeSliderLabel.classList.add("game-night-fg");
+    musicRangeSliderLabel.classList.remove("game-day-fg");
     for (var i = 0; i < messages.length; i++) {
       messages[i].classList.add("game-message-night");
       messages[i].classList.remove("game-message-day");
@@ -1880,6 +1995,10 @@ function changeUI(theme) {
     gameClock.classList.add("game-day-bg", "game-day-fg");
     gameClockDivider.classList.remove("game-night-border");
     gameClockDivider.classList.add("game-day-border");
+    sfxRangeSliderLabel.classList.remove("game-night-fg");
+    sfxRangeSliderLabel.classList.add("game-day-fg");
+    musicRangeSliderLabel.classList.remove("game-night-fg");
+    musicRangeSliderLabel.classList.add("game-day-fg");
     for (var i = 0; i < messages.length; i++) {
       messages[i].classList.remove("game-message-night");
       messages[i].classList.add("game-message-day");
@@ -2026,10 +2145,10 @@ socket.on("showGameFirst", (allReady) => {
   showGame(allReady);
 });
 
-audioToggle = true;
-musicToggle = true;
+// audioToggle = true;
+// musicToggle = true;
 function toggleAudio() {
-  playSFX("popAudio", 0.25);
+  playSFX("popAudio", 25);
   var audio = document.getElementById("game-audio-toggle");
   if (audioToggle) {
     audioToggle = false;
@@ -2051,7 +2170,7 @@ function toggleAudio() {
   }
 }
 function toggleMusic() {
-  playSFX("popAudio", 0.25);
+  playSFX("popAudio", 25);
   var music = document.getElementById("game-music-toggle");
   if (musicToggle) {
     musicToggle = false;
@@ -2088,24 +2207,24 @@ socket.on("clock", (counter, phase, cycle, cycleCount, theDurations) => {
   var durations = Object.values(theDurations);
   if (phase == "voting" || phase == "actions") {
     if (counter == 10) {
-      playSFX("clockAudio");
+      playSFX("clockAudio", 50);
     }
   }
   if (cycle == "Day") {
-    playMusic("dayMusic", 0.6, true)
+    playMusic("dayMusic", 40, true)
     if (phase == "voting") {
       if (counter == durations[1].voting) {
-        playSFX("votingAudio");
+        playSFX("votingAudio", 50);
       }
     }
   } else {
     pauseAudio("dayMusic");
   }
   if (cycle == "Night") {
-    playMusic("nightMusic", 0.4, true)
+    playMusic("nightMusic", 40, true)
     if (phase == "actions") {
       if (counter == durations[0].actions) {
-        playSFX("nightAudio");
+        playSFX("nightAudio", 50);
       }
     }
   } else {
@@ -2113,7 +2232,7 @@ socket.on("clock", (counter, phase, cycle, cycleCount, theDurations) => {
   }
   if (phase == "recap") {
     if (counter == durations[1].recap) {
-      playSFX("dayAudio");
+      playSFX("dayAudio", 50);
     }
   }
   
@@ -2157,7 +2276,7 @@ socket.on(
     if (!playerIsReady) {
       showGameUI(false);
       showRoleCard(true, role, name, team, description, mission);
-      playSFX("dealCardAudio");
+      playSFX("dealCardAudio", 60);
       showWaiting(false);
     } else if (playerIsReady && !allReady) {
       showGameUI(false);

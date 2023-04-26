@@ -9,7 +9,7 @@ socket.on("connect", () => {
   socket.on("userExists", (userExists) => {
     if (!userExists) {
       showChangeUsername(false);
-      resetCookie();
+      resetCookiePlayerID();
     } else {
       showChangeUsername(true);
       socket.emit("setRoom", getPlayerID());
@@ -19,12 +19,12 @@ socket.on("connect", () => {
 });
 
 function playIntro() {
-  playMusic("introAudio", 0.6, true);
+  playMusic("introAudio", 60, true);
 }
-function playMusic(toPlay, vol=1, wait=false) {
+function playMusic(toPlay, vol=100, wait=false) {
   playAudio(toPlay, vol, wait);
 }
-function playSFX(toPlay, vol=1, wait=false) {
+function playSFX(toPlay, vol=100, wait=false) {
   playAudio(toPlay, vol, wait);
 }
 
@@ -43,8 +43,25 @@ function pauseAudio(toPause) {
   }
 }
 
-function playAudio(toPlay, vol=1, wait=false) {
+function handleVol(vol) {
+  let num = Number(vol);
+  
+  if (isNaN(num) || num < 0 || num > 100) {
+    num = 0.5;
+  }
+  
+  num = Math.round(num * 10) / 10;
+  
+  if (num >= 1 && num <= 100) {
+    num /= 100;
+  }
+  
+  return num;
+}
+
+function playAudio(toPlay, vol=100, wait=false) {
   var audio = document.getElementById(toPlay);
+  vol = handleVol(vol);
   if (wait) {
     audio.volume = vol;
     audio.loop = true;
@@ -306,9 +323,9 @@ function random(min, max) {
 }
 
 /**
- * [resetCookie resets the playerID cookie to null]
+ * [resetCookiePlayerID resets the playerID cookie to null]
  */
-function resetCookie(override = false) {
+function resetCookiePlayerID(override = false) {
   if (override) {
     console.log("cookie was reset to null");
     document.cookie = "eyesopenID=null; path=/";
@@ -334,7 +351,7 @@ function resetCookie(override = false) {
  */
 function setLocation(URL, reset = false) {
   if (reset) {
-    resetCookie();
+    resetCookiePlayerID();
   }
   navigator.clipboard.writeText(domain + URL);
   window.location.href = URL;

@@ -6,9 +6,9 @@ const lobby = domain + "lobby/";
 const minPlayers = 3;
 
 /**
- * [resetCookie resets the playerID cookie to null]
+ * [resetCookiePlayerID resets the playerID cookie to null]
  */
-function resetCookie(override = false) {
+function resetCookiePlayerID(override = false) {
   if (override) {
     console.log("cookie was reset to null");
     document.cookie = "eyesopenID=null; path=/";
@@ -37,7 +37,7 @@ socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
   socket.on("userExists", (userExists) => {
     if (!userExists) {
-      resetCookie();
+      resetCookiePlayerID();
       window.location.href = window.location.href + "/join";
     } else {
       var URL = "";
@@ -264,10 +264,10 @@ function addEventListeners() {
   });
 }
 
-function playMusic(toPlay, vol=1, wait=false, loop=false) {
+function playMusic(toPlay, vol=100, wait=false, loop=false) {
   playAudio(toPlay, vol, wait, loop);
 }
-function playSFX(toPlay, vol=1, wait=false, loop=false) {
+function playSFX(toPlay, vol=100, wait=false, loop=false) {
   playAudio(toPlay, vol, wait, loop);
 }
 
@@ -289,8 +289,25 @@ function pauseAudio(toPause) {
   }
 }
 
-function playAudio(toPlay, vol=1, wait=false, loop=false) {
+function handleVol(vol) {
+  let num = Number(vol);
+  
+  if (isNaN(num) || num < 0 || num > 100) {
+    num = 0.5;
+  }
+  
+  num = Math.round(num * 10) / 10;
+  
+  if (num >= 1 && num <= 100) {
+    num /= 100;
+  }
+  
+  return num;
+}
+
+function playAudio(toPlay, vol=100, wait=false, loop=false) {
   var audio = document.getElementById(toPlay);
+  vol = handleVol(vol);
   if (wait) {
     audio.volume = vol;
     audio.loop = loop;
@@ -838,7 +855,7 @@ function showCard(element) {
   displayImage.style.display = "flex";
   displayMission.style.display = "flex";
   document.getElementById("overlay-rolecardinfo").style.display = "block";
-  playSFX("dealCardAudio", 0.5);
+  playSFX("dealCardAudio", 40);
 }
 
 socket.on("beginClearEvilRoom", (roomToClear) => {

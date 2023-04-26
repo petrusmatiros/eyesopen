@@ -434,12 +434,22 @@
 
     <!-- Audio buttons -->
     <div class="game-audio-buttons pop-light4" id="game-audio-buttons">
-      <div class="game-audio-button" onclick="toggleAudio()">
+      <div>
+        <input type="range" id="musicRangeSlider" name="music"
+               min="0" max="100" step="10" value="50" oninput="changeMusicVolume(this)"> 
+        <label for="music" id="musicRangeSliderLabel">Music:</label>
+      </div>
+      <div>
+        <input type="range" id="sfxRangeSlider" name="sfx"
+               min="0" max="100" step="10" value="50" oninput="changeSFXVolume(this)"> 
+        <label for="sfx" id="sfxRangeSliderLabel">SFX:</label>
+      </div>
+      <!-- <div class="game-audio-button" onclick="toggleAudio()">
         <img class="game-audio-toggle" id="game-audio-toggle" alt="audio toggle button" src="/assets/icons/audio_on.svg"></img>
       </div>
       <div class="game-audio-button" onclick="toggleMusic()">
         <img class="game-music-toggle" id="game-music-toggle" alt="music toggle button" src="/assets/icons/music_on.svg"></img>
-      </div> 
+      </div>  -->
     </div>
 
     <!-- Leave button -->

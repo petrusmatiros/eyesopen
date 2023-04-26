@@ -7,7 +7,7 @@ socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
   socket.on("userExists", (userExists) => {
     if (!userExists) {
-      resetCookie();
+      resetCookiePlayerID();
     } else {
       socket.emit("setRoom", getPlayerID());
       var URL = window.location.href.replace("http://", "");
@@ -46,9 +46,9 @@ function setFocus() {
 }
 
 /**
- * [resetCookie resets the playerID cookie to null]
+ * [resetCookiePlayerID resets the playerID cookie to null]
  */
-function resetCookie(override = false) {
+function resetCookiePlayerID(override = false) {
   if (override) {
     console.log("cookie was reset to null");
     document.cookie = "eyesopenID=null; path=/";
