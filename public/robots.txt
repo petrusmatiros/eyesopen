@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://eyesopen.ml/sitemap.xml
+Sitemap: https://eyesopen-game.web.app/sitemap.xml
