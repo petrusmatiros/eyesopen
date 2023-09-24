@@ -1,4 +1,4 @@
-const domain = "https://eyesopen.ml/";
+const domain = "https://eyesopen.up.railway.app/";
 const socket = io(domain, {secure: true});
 
 const lobby = domain + "lobby/";

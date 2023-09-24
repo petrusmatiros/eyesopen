@@ -7,13 +7,23 @@
     - [Mafia/Werewolf/ToS inspired web based game](#mafiawerewolftos-inspired-web-based-game)
 - [Table of contents](#table-of-contents) -->
   ### Game
+- [Eyes Open ](#eyes-open-)
+  - [Mafia/Werewolf/ToS inspired web based game](#mafiawerewolftos-inspired-web-based-game)
+  - [Table of contents](#table-of-contents)
+    - [Game](#game)
+    - [Project](#project)
+    - [Miscellaneous info](#miscellaneous-info)
   - [Link to website](#link-to-website)
-  - [Game description & objective](#game-description--objective)
+  - [Game description \& objective](#game-description--objective)
   - [Requirements](#requirements)
   - [Role cards](#role-cards)
     - [Good](#good)
     - [Evil](#evil)
     - [Neutral](#neutral)
+  - [Dependencies](#dependencies)
+  - [Install and run](#install-and-run)
+  - [Assets](#assets)
+  - [Notes](#notes)
   ### Project
   - [Dependencies](#dependencies)
   - [Install and build](#install-and-build)
@@ -25,7 +35,7 @@
 
 ## Link to website
 <!-- #### TBD -->
- https://eyesopen.ml
+ https://eyesopen.up.railway.app
  
  Enjoy ^-^
 
