@@ -4,6 +4,11 @@
 # SSL cert
 sslcert
 
+# firebase
+.firebaseConfig.js
+.firebaserc
+.firebase/
+
 # Logs
 logs
 *.log
