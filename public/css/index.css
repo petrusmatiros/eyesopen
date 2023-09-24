@@ -257,6 +257,9 @@ p {
   height: 7.75rem;
   width: 21.875rem;
 }
+.hidden {
+  display: none !important;
+}
 .title-dark {
   display: -webkit-box;
   display: -ms-flexbox;
