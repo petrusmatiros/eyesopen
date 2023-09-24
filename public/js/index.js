@@ -299,20 +299,46 @@ async function animateCards() {
 }
 
 async function animateTitle() {
-  var title = document.getElementsByClassName("title-eyesopen")[0];
-
-  setInterval(() => {
-    if (title.id == "title-frame1") {
-      title.src = "/assets/icons/eyesopen_title2.svg";
-      title.id = "title-frame2";
-    } else if (title.id == "title-frame2") {
-      title.src = "/assets/icons/eyesopen_title3.svg";
-      title.id = "title-frame3";
-    } else if (title.id == "title-frame3") {
-      title.src = "/assets/icons/eyesopen_title1.svg";
-      title.id = "title-frame1";
+  var titles = document.getElementsByClassName("title-eyesopen");
+  if (titles) {
+    var title1 = titles[0];
+    var title2 = titles[1];
+    var title3 = titles[2];
+    title1.classList.remove("hidden");
+    for (var i = 0; i < titles.length; i++) {
+      titles[i].classList.remove("gelatine-light");
     }
-  }, 200);
+    title1.setAttribute("data-label","active_title");
+    if (title1 && title2 && title3) {
+
+      setInterval(() => {
+        if (title1.getAttribute("data-label") === "active_title") {
+          title2.setAttribute("data-label","active_title");
+          title2.classList.remove("hidden");
+          title1.removeAttribute("data-label");
+          title1.classList.add("hidden");
+          title3.removeAttribute("data-label");
+          title3.classList.add("hidden");
+        } 
+        else if (title2.getAttribute("data-label") === "active_title") {
+          title3.setAttribute("data-label","active_title");
+          title3.classList.remove("hidden");
+          title2.removeAttribute("data-label");
+          title2.classList.add("hidden");
+          title1.removeAttribute("data-label");
+          title1.classList.add("hidden");
+        }
+        else if (title3.getAttribute("data-label") === "active_title") {
+          title1.setAttribute("data-label","active_title");
+          title1.classList.remove("hidden");
+          title3.removeAttribute("data-label");
+          title3.classList.add("hidden");
+          title2.removeAttribute("data-label");
+          title2.classList.add("hidden");
+        }
+      }, 200);
+    }
+  }
 }
 
 animateTitle();
