@@ -35,7 +35,7 @@
 
 ## Link to website
 <!-- #### TBD -->
- https://eyesopen.up.railway.app
+https://eyesopen.glitch.me/
  
  Enjoy ^-^
 
