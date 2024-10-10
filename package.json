@@ -14,10 +14,10 @@
   "license": "UNLICENSED",
   "keywords": ["eyes open", "Eyes Open", "Eyes open", "Eyes Open Game", "eyes open game", "eyes open mafia", "eyes open Town Of Salem", "eyes open werewolf", "eyes open online", "eyes open petrus matiros"],
   "dependencies": {
-    "express": "^4.19.2",
-    "express-session": "^1.17.3",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
     "randomstring": "^1.2.2",
-    "socket.io": "^4.7.5",
+    "socket.io": "^4.8.0",
     "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
