@@ -1,7 +1,7 @@
-const domain = "https://eyesopen.up.railway.app/";
+const domain = "http://localhost:3000";
 const socket = io(domain, {secure: true});
 
-const lobby = domain + "lobby/";
+const lobby = `${domain}/lobby/`;
 
 const minPlayers = 3;
 
@@ -22,10 +22,10 @@ function resetCookiePlayerID(override = false) {
     if (getPlayerID() !== "null" && getPlayerID() !== undefined) {
       console.log("ID exists before user, setting to null");
       document.cookie = "eyesopenID=null; path=/";
-    } else if (getPlayerID() == undefined) {
+    } else if (getPlayerID() === undefined) {
       console.log("ID is undefined, setting to null");
       document.cookie = "eyesopenID=null; path=/";
-    } else if (getPlayerID() == "null") {
+    } else if (getPlayerID() === "null") {
       console.log("ID is already null");
     }
   }
@@ -34,10 +34,10 @@ function resetCookiePlayerID(override = false) {
 function setAudioCookie(userAudio=undefined, userMusic=undefined) {
   const fiveHours = 60 * 60 * 5;
   const defaultVol = {audio: 50, music: 50};
-  let musicRangeSlider = document.getElementById("musicRangeSlider");
-  let musicRangeSliderLabel = document.getElementById("musicRangeSliderLabel");
-  let sfxRangeSlider = document.getElementById("sfxRangeSlider");
-  let sfxRangeSliderLabel = document.getElementById("sfxRangeSliderLabel");
+  const musicRangeSlider = document.getElementById("musicRangeSlider");
+  const musicRangeSliderLabel = document.getElementById("musicRangeSliderLabel");
+  const sfxRangeSlider = document.getElementById("sfxRangeSlider");
+  const sfxRangeSliderLabel = document.getElementById("sfxRangeSliderLabel");
   try {
     if (getCookie("volume") === undefined || getCookie("volume") === null || getCookie("volume") === "null" || getCookie("volume") === "") {
       document.cookie = `volume=${JSON.stringify(defaultVol)}; path=/; max-age=${fiveHours}; SameSite=Lax`;
@@ -86,8 +86,8 @@ function setAudioCookie(userAudio=undefined, userMusic=undefined) {
 }
 
 function getCookie(cookie) {
-  var cookies = document.cookie.split(";");
-  for (var i = 0; i < cookies.length; i++) {
+  const cookies = document.cookie.split(";");
+  for (let i = 0; i < cookies.length; i++) {
     if (cookies[i].includes(cookie)) {
       return cookies[i].split("=")[1];
     }
@@ -95,8 +95,8 @@ function getCookie(cookie) {
 }
 
 function getPlayerID() {
-  var cookies = document.cookie.split(";");
-  for (var i = 0; i < cookies.length; i++) {
+  const cookies = document.cookie.split(";");
+  for (let i = 0; i < cookies.length; i++) {
     if (cookies[i].includes("eyesopenID")) {
       return cookies[i].split("=")[1];
     }
@@ -104,8 +104,8 @@ function getPlayerID() {
 }
 
 function pauseAudio(toPause) {
-  var audio = document.getElementById(toPause);
-  var pausePromise = audio.pause();
+  const audio = document.getElementById(toPause);
+  const pausePromise = audio.pause();
   if (pausePromise !== undefined) {
     pausePromise.then(_ => {
     })
@@ -124,32 +124,33 @@ function changeSFXVolume(el) {
 }
 
 function playMusic(toPlay, vol=100, wait=false) {
+  let volume = vol;
   // if (musicToggle) {
   // }
   setAudioCookie();
   try {
-    vol = JSON.parse(getCookie("volume")).music;
+    volume = JSON.parse(getCookie("volumeume")).music;
   } catch (e) {
-    vol = 100;
+    volume = 100;
   }
-  playAudio(toPlay, vol, wait);
+  playAudio(toPlay, volume, wait);
 }
 function playSFX(toPlay, vol=100, wait=false) {
   // if (audioToggle) {
   // }
   setAudioCookie();
   try {
-    vol = JSON.parse(getCookie("volume")).audio;
+    volume = JSON.parse(getCookie("volume")).audio;
   } catch (e) {
-    vol = 100;
+    volume = 100;
   }
-  playAudio(toPlay, vol, wait);
+  playAudio(toPlay, volume, wait);
 }
 
 function handleVol(vol) {
   let num = Number(vol);
   
-  if (isNaN(num) || num < 0 || num > 100) {
+  if (Number.isNaN(num) || num < 0 || num > 100) {
     num = 0.5;
   }
   
@@ -163,11 +164,11 @@ function handleVol(vol) {
 }
 
 function playAudio(toPlay, vol=100, wait=false) {
-  var audio = document.getElementById(toPlay);
-  vol = handleVol(vol);
-  audio.volume = vol;
+  const audio = document.getElementById(toPlay);
+  const volume = handleVol(vol);
+  audio.volume = volume;
   if (!wait) {
-    var playPromise = audio.play();
+    const playPromise = audio.play();
     if (playPromise !== undefined) {
       playPromise.then(_ => {
       })
@@ -176,7 +177,7 @@ function playAudio(toPlay, vol=100, wait=false) {
     }
   } else {
     if (audio.paused) {
-      var playPromise = audio.play();
+      const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.then(_ => {
         })
@@ -192,13 +193,13 @@ socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
   socket.on("userExists", (userExists) => {
     if (!userExists) {
-      var URL = window.location.href.replace("/game", "");
+      const URL = window.location.href.replace("/game", "");
       window.location.href = URL;
       resetCookiePlayerID();
     } else {
       console.log("user exists");
-      var URL = "";
-      var room = "";
+      let URL = "";
+      let room = "";
       if (window.location.href.endsWith("/game")) {
         URL = window.location.href.replace("http://", "");
         room = URL.split("/")[URL.split("/").length - 2];
@@ -207,9 +208,9 @@ socket.on("connect", () => {
       socket.emit("checkUserApartOfGame", getPlayerID(), room, "app");
 
       socket.on("apartOfGameApp", (apartOfGame, inProgress, code) => {
-        console.log("apartOfGame:" + apartOfGame);
-        console.log("inProgress:" + inProgress);
-        if (apartOfGame && inProgress == true) {
+        console.log(`apartOfGame:${apartOfGame}`);
+        console.log(`inProgress:${inProgress}`);
+        if (apartOfGame && inProgress === true) {
           socket.emit("directJoin", getPlayerID(), code, "app");
           resetActionsOnRefresh();
           socket.emit("setActionsOnPhase", getPlayerID(), "refresh");
@@ -256,8 +257,8 @@ socket.on("connect", () => {
 
           addEventListeners();
         } else if (
-          (apartOfGame == false && inProgress == true) ||
-          (apartOfGame == false && inProgress == false)
+          (apartOfGame === false && inProgress === true) ||
+          (apartOfGame === false && inProgress === false)
         ) {
           if (window.location.href.endsWith("/game")) {
             URL = window.location.href.replace("http://", "");
@@ -302,16 +303,16 @@ socket.on("returnToLobby", () => {
 });
 
 function showLeave() {
-  var leavePopup = document.getElementById("leave");
-  var leaveOverlay = document.getElementById("overlay-leave");
+  const leavePopup = document.getElementById("leave");
+  const leaveOverlay = document.getElementById("overlay-leave");
   leavePopup.style.display = "flex";
   leaveOverlay.style.display = "flex";
   playSFX("popAudio", 25);
 }
 
 function hideLeave() {
-  var leavePopup = document.getElementById("leave");
-  var leaveOverlay = document.getElementById("overlay-leave");
+  const leavePopup = document.getElementById("leave");
+  const leaveOverlay = document.getElementById("overlay-leave");
   leavePopup.style.display = "none";
   leaveOverlay.style.display = "none";
   playSFX("popAudio", 25);
@@ -324,8 +325,8 @@ function leaveGame() {
 
 function returnToLobby() {
   if (window.location.href.endsWith("/game")) {
-    var URL = window.location.href.replace("http://", "");
-    var room = URL.split("/")[URL.split("/").length - 2];
+    const URL = window.location.href.replace("http://", "");
+    const room = URL.split("/")[URL.split("/").length - 2];
     window.location.href = lobby + room;
   }
 }
@@ -339,29 +340,29 @@ socket.on("endGame", (win, winType, lawyerWin, winners) => {
 });
 
 function endGame(proxyID, win, winType, lawyerWin, winners) {
-  var theState = document.getElementById("winState");
-  var theWinningMessage = document.getElementById("winningMessage");
-  var theWinners = document.getElementById("winners");
+  const theState = document.getElementById("winState");
+  const theWinningMessage = document.getElementById("winningMessage");
+  const theWinners = document.getElementById("winners");
   // Clear winners so the string doesn't get duplicates
   theWinners.innerText = "";
-  var victory = false;
-  var listOfWinners = "";
-  var seen = [];
+  let victory = false;
+  let listOfWinners = "";
+  const seen = [];
   if (win) {
-    for (var i = 0; i < winners.length; i++) {
+    for (let i = 0; i < winners.length; i++) {
       if (!seen.includes(winners[i].theID)) {
-        if (winners[i].theID == proxyID) {
+        if (winners[i].theID === proxyID) {
           victory = true;
         }
-        listOfWinners += winners[i].theName + ", ";
+        listOfWinners += `${winners[i].theName}, `;
         seen.push(winners[i].theID)
       }
     }
 
     // Remove last comma with whitespace
     listOfWinners = listOfWinners.substring(0, listOfWinners.length - 2);
-    var state = "";
-    var winningMessage = "";
+    let state = "";
+    let winningMessage = "";
     if (winType !== "timeout" && winType !== "draw") {
       // VICTORY AND DEFEAT
       pauseAll();
@@ -375,48 +376,48 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
         // display defeat
       }
 
-      if (winType == "good") {
+      if (winType === "good") {
         winningMessage = "Good team wins";
-      } else if (winType == "evil") {
+      } else if (winType === "evil") {
         if (lawyerWin) {
           winningMessage = "Evil team + Lawyer wins";
         } else {
           winningMessage = "Evil team wins";
         }
-      } else if (winType == "neutral") {
+      } else if (winType === "neutral") {
         winningMessage = "Neutral roles wins";
-      } else if (winType == "jester") {
+      } else if (winType === "jester") {
         if (lawyerWin) {
           winningMessage = "Jester + Lawyer wins";
         } else {
           winningMessage = "Jester wins";
         }
-      } else if (winType == "serial killer") {
+      } else if (winType === "serial killer") {
         if (lawyerWin) {
           winningMessage = "Serial Killer + Lawyer wins";
         } else {
           winningMessage = "Serial Killer wins";
         }
-      } else if (winType == "executioner") {
+      } else if (winType === "executioner") {
         if (lawyerWin) {
           winningMessage = "Executioner + Lawyer wins";
         } else {
           winningMessage = "Executioner wins";
         }
       }
-    } else if (winType == "timeout" && winType !== "draw") {
+    } else if (winType === "timeout" && winType !== "draw") {
       // display timeout
       state = "TIMEOUT";
-    } else if (winType !== "timeout" && winType == "draw") {
+    } else if (winType !== "timeout" && winType === "draw") {
       // display draw
       state = "DRAW";
     }
 
-    if (winType == "good") {
+    if (winType === "good") {
       theWinningMessage.style.color = "var(--good-bg-selected)";
-    } else if (winType == "evil") {
+    } else if (winType === "evil") {
       theWinningMessage.style.color = "var(--evil-bg-selected)";
-    } else if (winType == "neutral") {
+    } else if (winType === "neutral") {
       theWinningMessage.style.color = "var(--neutral-bg-selected)";
     } else {
       theWinningMessage.style.color = "var(--dark-fg)";
@@ -424,9 +425,9 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
     theState.innerText = state;
     theWinningMessage.innerText = winningMessage;
     theWinners.innerText = listOfWinners;
-    var popupWin = document.getElementById("win");
-    var overlayWin = document.getElementById("overlay-win");
-    if (winType == "timeout" || winType == "draw") {
+    const popupWin = document.getElementById("win");
+    const overlayWin = document.getElementById("overlay-win");
+    if (winType === "timeout" || winType === "draw") {
       theState.style.display = "flex";
       theWinningMessage.style.display = "none";
       theWinners.style.display = "none";
@@ -438,8 +439,8 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
     popupWin.style.display = "flex";
     overlayWin.style.display = "flex";
   } else {
-    var popupWin = document.getElementById("win");
-    var overlayWin = document.getElementById("overlay-win");
+    const popupWin = document.getElementById("win");
+    const overlayWin = document.getElementById("overlay-win");
     theState.style.display = "none";
     theWinningMessage.style.display = "none";
     theWinners.style.display = "none";
@@ -449,9 +450,9 @@ function endGame(proxyID, win, winType, lawyerWin, winners) {
 }
 
 function togglePlayerCard(element) {
-  var toHide = element.children[1];
-  var questionMark = element.children[0];
-  if (toHide.style.display == "none") {
+  const toHide = element.children[1];
+  const questionMark = element.children[0];
+  if (toHide.style.display === "none") {
     toHide.style.display = "flex";
     questionMark.style.display = "none";
   } else {
@@ -462,29 +463,29 @@ function togglePlayerCard(element) {
   playSFX("dealCardAudio", 35);
 }
 
-var manualScroll = false;
+let manualScroll = false;
 
 function overrideSroll() {
   manualScroll = true;
-  var scrollDown = document.getElementById("game-messagebox-scrolldown");
+  const scrollDown = document.getElementById("game-messagebox-scrolldown");
   scrollDown.style.display = "flex";
 }
 
 function autoScroll() {
   manualScroll = false;
-  var scrollDown = document.getElementById("game-messagebox-scrolldown");
+  const scrollDown = document.getElementById("game-messagebox-scrolldown");
   scrollDown.style.display = "none";
-  var messages = document.getElementById("game-message-scroller");
+  const messages = document.getElementById("game-message-scroller");
   messages.scrollTop = messages.scrollHeight;
   playSFX("popAudio", 25);
 }
 
 // Remove top margin from the first message received
-var firstMessageRecieved = false;
+let firstMessageRecieved = false;
 socket.on("receiveMessage", (sender, team, message, type, cycle) => {
-  var messages = document.getElementById("game-message-scroller");
-  var messageType = "game-message-";
-  var newMessage = document.createElement("div");
+  const messages = document.getElementById("game-message-scroller");
+  let messageType = "game-message-";
+  const newMessage = document.createElement("div");
   newMessage.classList.add("game-message");
 
   if (type.includes("Day")) {
@@ -497,51 +498,51 @@ socket.on("receiveMessage", (sender, team, message, type, cycle) => {
     messageType += "confirm";
     newMessage.classList.add(messageType);
     if (cycle.includes("Day")) {
-      newMessage.classList.add(messageType + "-day");
-      newMessage.classList.remove(messageType + "-night");
+      newMessage.classList.add(`${messageType}-day`);
+      newMessage.classList.remove(`${messageType}-night`);
     } else if (cycle.includes("Night")) {
-      newMessage.classList.remove(messageType + "-day");
-      newMessage.classList.add(messageType + "-night");
+      newMessage.classList.remove(`${messageType}-day`);
+      newMessage.classList.add(`${messageType}-night`);
     }
   } else if (type.includes("info")) {
     messageType += "info";
     newMessage.classList.add(messageType);
     if (cycle.includes("Day")) {
-      newMessage.classList.add(messageType + "-day");
-      newMessage.classList.remove(messageType + "-night");
+      newMessage.classList.add(`${messageType}-day`);
+      newMessage.classList.remove(`${messageType}-night`);
     } else if (cycle.includes("Night")) {
-      newMessage.classList.remove(messageType + "-day");
-      newMessage.classList.add(messageType + "-night");
+      newMessage.classList.remove(`${messageType}-day`);
+      newMessage.classList.add(`${messageType}-night`);
     }
   } else if (type.includes("alert")) {
     messageType += "alert";
     newMessage.classList.add(messageType);
     if (cycle.includes("Day")) {
-      newMessage.classList.add(messageType + "-day");
-      newMessage.classList.remove(messageType + "-night");
+      newMessage.classList.add(`${messageType}-day`);
+      newMessage.classList.remove(`${messageType}-night`);
     } else if (cycle.includes("Night")) {
-      newMessage.classList.remove(messageType + "-day");
-      newMessage.classList.add(messageType + "-night");
+      newMessage.classList.remove(`${messageType}-day`);
+      newMessage.classList.add(`${messageType}-night`);
     }
   } else if (type.includes("important")) {
     messageType += "important";
     newMessage.classList.add(messageType);
     if (cycle.includes("Day")) {
-      newMessage.classList.add(messageType + "-day");
-      newMessage.classList.remove(messageType + "-night");
+      newMessage.classList.add(`${messageType}-day`);
+      newMessage.classList.remove(`${messageType}-night`);
     } else if (cycle.includes("Night")) {
-      newMessage.classList.remove(messageType + "-day");
-      newMessage.classList.add(messageType + "-night");
+      newMessage.classList.remove(`${messageType}-day`);
+      newMessage.classList.add(`${messageType}-night`);
     }
   } else if (type.includes("extra")) {
     messageType += "extra";
     newMessage.classList.add(messageType);
     if (cycle.includes("Day")) {
-      newMessage.classList.add(messageType + "-day");
-      newMessage.classList.remove(messageType + "-night");
+      newMessage.classList.add(`${messageType}-day`);
+      newMessage.classList.remove(`${messageType}-night`);
     } else if (cycle.includes("Night")) {
-      newMessage.classList.remove(messageType + "-day");
-      newMessage.classList.add(messageType + "-night");
+      newMessage.classList.remove(`${messageType}-day`);
+      newMessage.classList.add(`${messageType}-night`);
     }
   } else if (type.includes("timestamp")) {
     if (cycle.includes("Day")) {
@@ -585,10 +586,10 @@ socket.on("receiveMessage", (sender, team, message, type, cycle) => {
       newMessage.style.opacity = "70%";
     }
     if (sender !== null) {
-      if (team == "good") {
+      if (team === "good") {
         newMessage.style.color = "var(--goodteam)";
       }
-      else if (team == "evil") {
+      else if (team === "evil") {
         newMessage.style.color = "var(--evilteam)";
       }
     }
@@ -601,7 +602,7 @@ socket.on("receiveMessage", (sender, team, message, type, cycle) => {
   }
 
   if (sender !== null) {
-    newMessage.innerText = sender + ": " + message;
+    newMessage.innerText = `${sender}: ${message}`;
   } else if (sender == null) {
     newMessage.innerText = message;
   }
@@ -618,11 +619,11 @@ socket.on("cemetery", (burried) => {
 });
 
 function loadCemetery(burried) {
-  var deceasedElement = document.getElementById("game-deceased");
-  var deceasedList = deceasedElement.children;
+  const deceasedElement = document.getElementById("game-deceased");
+  const deceasedList = deceasedElement.children;
 
-  for (var i = 0; i < burried.length; i++) {
-    if (burried[i].burriedPlayerRole == "") {
+  for (let i = 0; i < burried.length; i++) {
+    if (burried[i].burriedPlayerRole === "") {
       deceasedList[
         i
       ].innerText = `${burried[i].burriedPlayerName}`;
@@ -643,10 +644,10 @@ function loadCemetery(burried) {
 }
 
 function loadSavedMessages(messages, cycle) {
-  var messageScroller = document.getElementById("game-message-scroller");
-  for (var i = 0; i < messages.length; i++) {
-    var messageType = "game-message-";
-    var newMessage = document.createElement("div");
+  const messageScroller = document.getElementById("game-message-scroller");
+  for (let i = 0; i < messages.length; i++) {
+    let messageType = "game-message-";
+    const newMessage = document.createElement("div");
     newMessage.classList.add("game-message");
     if (messages[i].type.includes("Day")) {
       messageType += "day";
@@ -658,51 +659,51 @@ function loadSavedMessages(messages, cycle) {
       messageType += "confirm";
       newMessage.classList.add(messageType);
       if (cycle.includes("Day")) {
-        newMessage.classList.add(messageType + "-day");
-        newMessage.classList.remove(messageType + "-night");
+        newMessage.classList.add(`${messageType}-day`);
+        newMessage.classList.remove(`${messageType}-night`);
       } else if (cycle.includes("Night")) {
-        newMessage.classList.remove(messageType + "-day");
-        newMessage.classList.add(messageType + "-night");
+        newMessage.classList.remove(`${messageType}-day`);
+        newMessage.classList.add(`${messageType}-night`);
       }
     } else if (messages[i].type.includes("info")) {
       messageType += "info";
       newMessage.classList.add(messageType);
       if (cycle.includes("Day")) {
-        newMessage.classList.add(messageType + "-day");
-        newMessage.classList.remove(messageType + "-night");
+        newMessage.classList.add(`${messageType}-day`);
+        newMessage.classList.remove(`${messageType}-night`);
       } else if (cycle.includes("Night")) {
-        newMessage.classList.remove(messageType + "-day");
-        newMessage.classList.add(messageType + "-night");
+        newMessage.classList.remove(`${messageType}-day`);
+        newMessage.classList.add(`${messageType}-night`);
       }
     } else if (messages[i].type.includes("alert")) {
       messageType += "alert";
       newMessage.classList.add(messageType);
       if (cycle.includes("Day")) {
-        newMessage.classList.add(messageType + "-day");
-        newMessage.classList.remove(messageType + "-night");
+        newMessage.classList.add(`${messageType}-day`);
+        newMessage.classList.remove(`${messageType}-night`);
       } else if (cycle.includes("Night")) {
-        newMessage.classList.remove(messageType + "-day");
-        newMessage.classList.add(messageType + "-night");
+        newMessage.classList.remove(`${messageType}-day`);
+        newMessage.classList.add(`${messageType}-night`);
       }
     } else if (messages[i].type.includes("important")) {
       messageType += "important";
       newMessage.classList.add(messageType);
       if (cycle.includes("Day")) {
-        newMessage.classList.add(messageType + "-day");
-        newMessage.classList.remove(messageType + "-night");
+        newMessage.classList.add(`${messageType}-day`);
+        newMessage.classList.remove(`${messageType}-night`);
       } else if (cycle.includes("Night")) {
-        newMessage.classList.remove(messageType + "-day");
-        newMessage.classList.add(messageType + "-night");
+        newMessage.classList.remove(`${messageType}-day`);
+        newMessage.classList.add(`${messageType}-night`);
       }
     } else if (messages[i].type.includes("extra")) {
       messageType += "extra";
       newMessage.classList.add(messageType);
       if (cycle.includes("Day")) {
-        newMessage.classList.add(messageType + "-day");
-        newMessage.classList.remove(messageType + "-night");
+        newMessage.classList.add(`${messageType}-day`);
+        newMessage.classList.remove(`${messageType}-night`);
       } else if (cycle.includes("Night")) {
-        newMessage.classList.remove(messageType + "-day");
-        newMessage.classList.add(messageType + "-night");
+        newMessage.classList.remove(`${messageType}-day`);
+        newMessage.classList.add(`${messageType}-night`);
       }
     } else if (messages[i].type.includes("timestamp")) {
       if (cycle.includes("Day")) {
@@ -746,22 +747,22 @@ function loadSavedMessages(messages, cycle) {
         newMessage.style.opacity = "70%";
       }
       if (messages[i].sender !== null) {
-        if (messages[i].team == "good") {
+        if (messages[i].team === "good") {
           newMessage.style.color = "var(--goodteam)";
         }
-        else if (messages[i].team == "evil") {
+        else if (messages[i].team === "evil") {
           newMessage.style.color = "var(--evilteam)";
         }
       }
     }
 
     // Remove top margin from the first message
-    if (i == 0) {
+    if (i === 0) {
       newMessage.style.marginTop = "0";
     }
 
     if (messages[i].sender !== null) {
-      newMessage.innerText = messages[i].sender + ": " + messages[i].message;
+      newMessage.innerText = `${messages[i].sender}: ${messages[i].message}`;
     } else if (messages[i].sender == null) {
       newMessage.innerText = messages[i].message;
     }
@@ -791,14 +792,14 @@ socket.on(
 
 function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
   console.log("player target handler")
-  var allPlayers = document.getElementById("game-players-container").children;
+  const allPlayers = document.getElementById("game-players-container").children;
 
-  var players = Array.from(allPlayers[0].children).concat(
+  const players = Array.from(allPlayers[0].children).concat(
     Array.from(allPlayers[1].children)
   );
-  var skipButton = document.getElementById("game-skip-button");
+  const skipButton = document.getElementById("game-skip-button");
 
-  if (socketPlayer.voteTarget == "skip") {
+  if (socketPlayer.voteTarget === "skip") {
     skipButton.innerText = "undo SKIP";
     skipButton.classList.add("game-player-selection-vote");
     skipButton.style.fontWeight = "700";
@@ -808,13 +809,13 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
     skipButton.classList.remove("game-player-selection-vote");
     skipButton.style.fontWeight = "400";
   }
-  for (var i = 0; i < players.length; i++) {
+  for (let i = 0; i < players.length; i++) {
 
-    var playerElement = players[i];
-    var nameContainer = playerElement.children[0];
-    var buttons = playerElement.children[1];
-    var abilityButton = buttons.children[0];
-    var voteButton = buttons.children[2];
+    const playerElement = players[i];
+    const nameContainer = playerElement.children[0];
+    const buttons = playerElement.children[1];
+    const abilityButton = buttons.children[0];
+    const voteButton = buttons.children[2];
 
     if (
       players[i].id !== socketPlayer.abilityTarget &&
@@ -847,8 +848,8 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
     }
 
     if (
-      players[i].id == socketPlayer.abilityTarget &&
-      players[i].id == socketPlayer.voteTarget
+      players[i].id === socketPlayer.abilityTarget &&
+      players[i].id === socketPlayer.voteTarget
     ) {
       nameContainer.classList.add("game-player-selection-vote");
       playerElement.classList.add("game-player-selection-ability");
@@ -860,7 +861,7 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
       skipButton.classList.remove("game-player-selection-vote");
       skipButton.style.fontWeight = "400";
     } else if (
-      players[i].id == socketPlayer.abilityTarget &&
+      players[i].id === socketPlayer.abilityTarget &&
       players[i].id !== socketPlayer.voteTarget
     ) {
       playerElement.classList.add("game-player-selection-ability");
@@ -869,7 +870,7 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
       voteButton.style.fontWeight = "400";
     } else if (
       players[i].id !== socketPlayer.abilityTarget &&
-      players[i].id == socketPlayer.voteTarget
+      players[i].id === socketPlayer.voteTarget
     ) {
       nameContainer.classList.add("game-player-selection-vote");
       voteButton.innerText = "undo";
@@ -887,11 +888,11 @@ function playerTargetHandler(theAbilityTarget, theVoteTarget, socketPlayer) {
 // display green ,red or gradient depending on choice
 function actionHandler(element, skip=false) {
   if (!skip) {
-    var button = element;
-    var buttonsContainer = element.parentElement;
-    var playerElement = buttonsContainer.parentElement;
-    var playerNameContainer = playerElement.children[0];
-    var playerName = playerNameContainer.children[1];
+    const button = element;
+    const buttonsContainer = element.parentElement;
+    const playerElement = buttonsContainer.parentElement;
+    const playerNameContainer = playerElement.children[0];
+    const playerName = playerNameContainer.children[1];
     console.log("action", button.innerText, "taken on", playerName.innerText);
     if (!button.id.includes("game-button-state")) {
       socket.emit("playerAction", getPlayerID(), element.id, playerElement.id);
@@ -935,23 +936,23 @@ socket.on("removeActionsOnPhaseClock", (phase) => {
 });
 
 function removeActionsOnPhase(phase) {
-  var playersContainer = document.getElementById("game-players-container");
-  var slots = playersContainer.children;
+  const playersContainer = document.getElementById("game-players-container");
+  const slots = playersContainer.children;
 
-  for (var i = 0; i < slots.length; i++) {
-    for (var j = 0; j < slots[i].length; j++) {
-      var currentElement = slots[i].children[j];
-      var buttons = currentElement.children[1];
-      var abilityButton = buttons.children[0];
-      var voteButton = buttons.children[2];
+  for (let i = 0; i < slots.length; i++) {
+    for (let j = 0; j < slots[i].length; j++) {
+      const currentElement = slots[i].children[j];
+      const buttons = currentElement.children[1];
+      const abilityButton = buttons.children[0];
+      const voteButton = buttons.children[2];
       abilityButton.setAttribute("onclick", "");
-      if (phase == "voting") {
+      if (phase === "voting") {
         voteButton.setAttribute("onclick", "actionHandler(this)");
       } else if (
-        phase == "nightMessages" ||
-        phase == "recap" ||
-        phase == "discussion" ||
-        phase == "dayMessages"
+        phase === "nightMessages" ||
+        phase === "recap" ||
+        phase === "discussion" ||
+        phase === "dayMessages"
       ) {
         voteButton.setAttribute("onclick", "");
       }
@@ -961,22 +962,22 @@ function removeActionsOnPhase(phase) {
 
 function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, proxyID) {
   console.log("Setting players");
-  var playersContainer = document.getElementById("game-players-container");
-  var slots = playersContainer.children;
-  var colCount = 0;
-  var playerSlot = 0;
-  var checkCount = 0;
+  const playersContainer = document.getElementById("game-players-container");
+  const slots = playersContainer.children;
+  let colCount = 0;
+  let playerSlot = 0;
+  let checkCount = 0;
 
-  for (var theCol = 0; theCol < slots.length; theCol++) {
-    var thePlayers = slots[theCol].children;
-    for (var playerDiv = 0; playerDiv < thePlayers.length; playerDiv++) {
-      let playerElement = thePlayers[playerDiv];
+  for (let theCol = 0; theCol < slots.length; theCol++) {
+    const thePlayers = slots[theCol].children;
+    for (let playerDiv = 0; playerDiv < thePlayers.length; playerDiv++) {
+      const playerElement = thePlayers[playerDiv];
       playerElement.classList.add("game-player-hidden");
     }
   }
-  var skipButton = document.getElementById("game-skip-button");
-  var skipButtonContainer = skipButton.parentElement;
-  if (cycle == "Day" && phase == "voting" && !isDead) {
+  const skipButton = document.getElementById("game-skip-button");
+  const skipButtonContainer = skipButton.parentElement;
+  if (cycle === "Day" && phase === "voting" && !isDead) {
     skipButtonContainer.style.display = "flex";
     skipButtonContainer.id = "skip";
     skipButton.setAttribute("onclick", "actionHandler(this, true)")
@@ -985,43 +986,43 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
     skipButtonContainer.id = "";
     skipButton.setAttribute("onclick", "")
   }
-  for (var i = 0; i < players.length; i++) {
-    if (checkCount == 2) {
+  for (let i = 0; i < players.length; i++) {
+    if (checkCount === 2) {
       playerSlot++;
       checkCount = 0;
     }
 
-    var currentElement = slots[colCount].children[playerSlot];
+    const currentElement = slots[colCount].children[playerSlot];
 
     currentElement.classList.remove("game-player-hidden");
     // ID
     currentElement.id = players[i].userID;
     // NAME
-    var element = currentElement.children[0];
-    var buttons = currentElement.children[1];
-    var abilityButton = buttons.children[0];
-    var stateButton = buttons.children[1];
-    var voteButton = buttons.children[2];
+    const element = currentElement.children[0];
+    const buttons = currentElement.children[1];
+    const abilityButton = buttons.children[0];
+    const stateButton = buttons.children[1];
+    const voteButton = buttons.children[2];
     element.children[2].innerText = players[i].userName;
 
     if (players[i].userID !== socketPlayer.abilityTarget && players[i].userID !== socketPlayer.voteTarget) {
       currentElement.classList.remove("game-player-selection-ability")
       element.classList.remove("game-player-selection-vote");
-    } else if (players[i].userID == socketPlayer.abilityTarget && players[i].userID == socketPlayer.voteTarget) {
+    } else if (players[i].userID === socketPlayer.abilityTarget && players[i].userID === socketPlayer.voteTarget) {
       currentElement.classList.add("game-player-selection-ability")
       element.classList.add("game-player-selection-vote");
     }
-     else if (players[i].userID == socketPlayer.abilityTarget && players[i].userID !== socketPlayer.voteTarget) {
+     else if (players[i].userID === socketPlayer.abilityTarget && players[i].userID !== socketPlayer.voteTarget) {
       currentElement.classList.add("game-player-selection-ability")
       element.classList.remove("game-player-selection-vote");
-    } else if (players[i].userID !== socketPlayer.abilityTarget && players[i].userID == socketPlayer.voteTarget) {
+    } else if (players[i].userID !== socketPlayer.abilityTarget && players[i].userID === socketPlayer.voteTarget) {
       currentElement.classList.remove("game-player-selection-ability")
       element.classList.add("game-player-selection-vote");
     }
 
     abilityButton.classList.remove("game-button-ability-norounding");
     voteButton.classList.remove("game-button-vote-norounding");
-    if (players[i].userID == proxyID) {
+    if (players[i].userID === proxyID) {
       currentElement.style.fontWeight = "800";
       if (cycle.includes("Night")) {
         // Dead
@@ -1035,7 +1036,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
           stateButton.classList.remove("game-button-unselectable");
           stateButton.innerText = "dead";
           // if dead
-          if (players[i].type == "evil+dead") {
+          if (players[i].type === "evil+dead") {
             // dead evil
             currentElement.classList.add(
               "game-player-evil",
@@ -1044,7 +1045,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
           } 
-          else if (players[i].type == "mayor+dead") {
+          else if (players[i].type === "mayor+dead") {
             element.children[1].id = "game-show-mark";
             element.children[1].src = "/assets/icons/megaphone.svg";
             currentElement.classList.add("game-player-dead");
@@ -1059,13 +1060,13 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
           }
-          if (players[i].theTeam == "evil") {
+          if (players[i].theTeam === "evil") {
             currentElement.classList.add("game-player-evil");
           } 
-          else if (players[i].theTeam == "good") {
+          else if (players[i].theTeam === "good") {
             currentElement.classList.add("game-player-good");
           } 
-          else if (players[i].theTeam == "neutral") {
+          else if (players[i].theTeam === "neutral") {
             currentElement.classList.add("game-player-neutral");
           } 
         } else {
@@ -1076,7 +1077,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
           currentElement.classList.remove("game-player-dead");
 
           if (socketRole.type.includes("surgeon")) {
-            if (players[i].type == "evil+unselectable") {
+            if (players[i].type === "evil+unselectable") {
               currentElement.classList.add("game-player-evil");
               element.classList.add("game-player-unselectable");
               abilityButton.setAttribute("onclick", "");
@@ -1087,7 +1088,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               stateButton.classList.remove("game-button-dead");
               stateButton.classList.add("game-button-unselectable");
               stateButton.innerText = "unselectable";
-            } else if (players[i].type == "evil") {
+            } else if (players[i].type === "evil") {
               currentElement.classList.add("game-player-evil");
               element.classList.remove("game-player-unselectable");
               abilityButton.setAttribute("onclick", "actionHandler(this)");
@@ -1099,7 +1100,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               stateButton.classList.remove("game-button-unselectable");
             }
           } else if (socketRole.type.includes("doctor")) {
-            if (players[i].type == "unselectable") {
+            if (players[i].type === "unselectable") {
               element.classList.add("game-player-unselectable");
               abilityButton.setAttribute("onclick", "");
               voteButton.setAttribute("onclick", "");
@@ -1109,7 +1110,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               stateButton.classList.remove("game-button-dead");
               stateButton.classList.add("game-button-unselectable");
               stateButton.innerText = "unselectable";
-            } else if (players[i].type == "none") {
+            } else if (players[i].type === "none") {
               element.classList.remove("game-player-unselectable");
               abilityButton.setAttribute("onclick", "actionHandler(this)");
               voteButton.setAttribute("onclick", "");
@@ -1121,7 +1122,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             }
           } 
           else if (socketRole.type.includes("mayor")) {
-            if (players[i].type == "mayor") {
+            if (players[i].type === "mayor") {
               element.classList.add("game-player-unselectable");
               abilityButton.setAttribute("onclick", "");
               voteButton.setAttribute("onclick", "");
@@ -1133,7 +1134,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               stateButton.innerText = "unselectable";
               element.children[1].id = "game-show-mark";
               element.children[1].src = "/assets/icons/megaphone.svg";
-            } else if (players[i].type == "none") {
+            } else if (players[i].type === "none") {
               element.classList.add("game-player-unselectable");
               abilityButton.setAttribute("onclick", "");
               voteButton.setAttribute("onclick", "");
@@ -1150,7 +1151,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
           else {
             // NOT SPECIAL roles
             // Evil, None
-            if (players[i].type == "evil+unselectable") {
+            if (players[i].type === "evil+unselectable") {
               currentElement.classList.add("game-player-evil");
               element.classList.add("game-player-unselectable");
               abilityButton.setAttribute("onclick", "");
@@ -1161,7 +1162,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               stateButton.classList.remove("game-button-dead");
               stateButton.classList.add("game-button-unselectable");
               stateButton.innerText = "unselectable";
-            } else if (players[i].type == "evil") {
+            } else if (players[i].type === "evil") {
               currentElement.classList.add("game-player-evil");
               element.classList.remove("game-player-unselectable");
               abilityButton.setAttribute("onclick", "");
@@ -1172,7 +1173,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               stateButton.classList.remove("game-button-dead");
               stateButton.classList.add("game-button-unselectable");
               stateButton.innerText = "unselectable";
-            } else if (players[i].type == "unselectable") {
+            } else if (players[i].type === "unselectable") {
               currentElement.classList.remove("game-player-evil");
               element.classList.add("game-player-unselectable");
               abilityButton.setAttribute("onclick", "");
@@ -1183,7 +1184,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               stateButton.classList.remove("game-button-dead");
               stateButton.classList.add("game-button-unselectable");
               stateButton.innerText = "unselectable";
-            } else if (players[i].type == "none") {
+            } else if (players[i].type === "none") {
               currentElement.classList.remove("game-player-evil");
               element.classList.add("game-player-unselectable");
               abilityButton.setAttribute("onclick", "");
@@ -1209,7 +1210,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
           stateButton.classList.remove("game-button-unselectable");
           stateButton.innerText = "dead";
           // if dead
-          if (players[i].type == "evil+dead") {
+          if (players[i].type === "evil+dead") {
             // dead evil
             currentElement.classList.add(
               "game-player-evil",
@@ -1217,7 +1218,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             );
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
-          } else if (players[i].type == "mayor+dead") {
+          } else if (players[i].type === "mayor+dead") {
             element.children[1].id = "game-show-mark";
             element.children[1].src = "/assets/icons/megaphone.svg";
             currentElement.classList.add("game-player-dead");
@@ -1232,13 +1233,13 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
           }
-          if (players[i].theTeam == "evil") {
+          if (players[i].theTeam === "evil") {
             currentElement.classList.add("game-player-evil");
           } 
-          else if (players[i].theTeam == "good") {
+          else if (players[i].theTeam === "good") {
             currentElement.classList.add("game-player-good");
           } 
-          else if (players[i].theTeam == "neutral") {
+          else if (players[i].theTeam === "neutral") {
             currentElement.classList.add("game-player-neutral");
           } 
         } else {
@@ -1254,20 +1255,21 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
           currentElement.classList.remove("game-player-dead");
           element.classList.remove("game-player-unselectable");
           // Evil (variations), None
-          if (players[i].type == "evil") {
+          if (players[i].type === "evil") {
             currentElement.classList.add("game-player-evil");
             element.classList.remove("game-player-unselectable");
           } else if (socketRole.type.includes("mayor")) {
+            // biome-ignore lint/suspicious/noPrototypeBuiltins: <explanation>
             if (socketRole.hasOwnProperty("hasDayAbility")) {
-              if (socketRole.hasDayAbility == true) {
-                if (socketRole.revealed == false) {
+              if (socketRole.hasDayAbility === true) {
+                if (socketRole.revealed === false) {
                   abilityButton.setAttribute("onclick", "actionHandler(this)");
                   abilityButton.style.display = "flex";
                   abilityButton.classList.add("game-button-ability-norounding");
                   voteButton.classList.add("game-button-vote-norounding");
                   element.children[1].id = "";
                   element.children[1].src = "";
-                } else if (socketRole.revealed == true) {
+                } else if (socketRole.revealed === true) {
                   abilityButton.setAttribute("onclick", "");
                   abilityButton.style.display = "none";
                   abilityButton.classList.remove(
@@ -1280,7 +1282,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
                 element.classList.remove("game-player-unselectable");
               }
             }
-          } else if (players[i].type == "none") {
+          } else if (players[i].type === "none") {
             currentElement.classList.remove("game-player-evil");
             element.classList.remove("game-player-unselectable");
           }
@@ -1301,7 +1303,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
           stateButton.innerText = "dead";
           // if dead
 
-          if (players[i].type == "evil+dead") {
+          if (players[i].type === "evil+dead") {
             // dead evil
             currentElement.classList.add(
               "game-player-evil",
@@ -1309,14 +1311,14 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             );
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
-          } else if (players[i].type == "client+dead") {
+          } else if (players[i].type === "client+dead") {
             element.children[0].id = "game-show-mark";
             element.children[0].src = "/assets/icons/briefcase.svg";
             currentElement.classList.add("game-player-dead");
             currentElement.classList.remove("game-player-evil");
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
-          } else if (players[i].type == "target+dead") {
+          } else if (players[i].type === "target+dead") {
             element.children[0].id = "game-show-mark";
             element.children[0].src = "/assets/icons/target.svg";
             currentElement.classList.add("game-player-dead");
@@ -1324,7 +1326,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
           } 
-          else if (players[i].type == "mayor+dead") {
+          else if (players[i].type === "mayor+dead") {
             element.children[1].id = "game-show-mark";
             element.children[1].src = "/assets/icons/megaphone.svg";
             currentElement.classList.add("game-player-dead");
@@ -1332,7 +1334,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             element.classList.add("game-player-dead");
             element.classList.remove("game-player-unselectable");
           } 
-          else if (players[i].type == "mayor+dead+target") {
+          else if (players[i].type === "mayor+dead+target") {
             element.children[0].id = "game-show-mark";
             element.children[0].src = "/assets/icons/target.svg";
             element.children[1].id = "game-show-mark";
@@ -1352,39 +1354,39 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             element.classList.remove("game-player-unselectable");
           }
 
-          if (players[i].theTeam == "evil") {
+          if (players[i].theTeam === "evil") {
             currentElement.classList.add("game-player-evil");
           } 
-          else if (players[i].theTeam == "good") {
+          else if (players[i].theTeam === "good") {
             currentElement.classList.add("game-player-good");
           } 
-          else if (players[i].theTeam == "neutral") {
+          else if (players[i].theTeam === "neutral") {
             currentElement.classList.add("game-player-neutral");
           } 
         } else {
-          if (players[i].theTeam == "evil") {
+          if (players[i].theTeam === "evil") {
             currentElement.classList.add("game-player-evil");
           } 
-          else if (players[i].theTeam == "good") {
+          else if (players[i].theTeam === "good") {
             currentElement.classList.add("game-player-good");
           } 
-          else if (players[i].theTeam == "neutral") {
+          else if (players[i].theTeam === "neutral") {
             currentElement.classList.add("game-player-neutral");
           } 
           
-          if (players[i].type == "client") {
+          if (players[i].type === "client") {
             element.children[0].id = "game-show-mark";
             element.children[0].src = "/assets/icons/briefcase.svg";
           } 
-          else if (players[i].type == "target") {
+          else if (players[i].type === "target") {
             element.children[0].id = "game-show-mark";
             element.children[0].src = "/assets/icons/target.svg";
           } 
-          else if (players[i].type == "mayor") {
+          else if (players[i].type === "mayor") {
             element.children[1].id = "game-show-mark";
             element.children[1].src = "/assets/icons/megaphone.svg";
           } 
-          else if (players[i].type == "mayor+target") {
+          else if (players[i].type === "mayor+target") {
             element.children[0].id = "game-show-mark";
             element.children[0].src = "/assets/icons/target.svg";
             element.children[1].id = "game-show-mark";
@@ -1415,7 +1417,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             stateButton.classList.remove("game-button-unselectable");
             stateButton.innerText = "dead";
             // if dead
-            if (players[i].type == "evil+dead") {
+            if (players[i].type === "evil+dead") {
               // dead evil
               currentElement.classList.add(
                 "game-player-evil",
@@ -1423,14 +1425,14 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               );
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
-            } else if (players[i].type == "client+dead") {
+            } else if (players[i].type === "client+dead") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/briefcase.svg";
               currentElement.classList.add("game-player-dead");
               currentElement.classList.remove("game-player-evil");
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
-            } else if (players[i].type == "target+dead") {
+            } else if (players[i].type === "target+dead") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/target.svg";
               currentElement.classList.add("game-player-dead");
@@ -1438,7 +1440,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
             } 
-            else if (players[i].type == "mayor+dead") {
+            else if (players[i].type === "mayor+dead") {
               element.children[1].id = "game-show-mark";
               element.children[1].src = "/assets/icons/megaphone.svg";
               currentElement.classList.add("game-player-dead");
@@ -1446,7 +1448,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
             } 
-            else if (players[i].type == "mayor+dead+target") {
+            else if (players[i].type === "mayor+dead+target") {
               element.children[0].id = "game-show-mark";
             element.children[0].src = "/assets/icons/target.svg";
               element.children[1].id = "game-show-mark";
@@ -1465,22 +1467,22 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
             }
-            if (players[i].theTeam == "evil") {
+            if (players[i].theTeam === "evil") {
               currentElement.classList.add("game-player-evil");
             } 
-            else if (players[i].theTeam == "good") {
+            else if (players[i].theTeam === "good") {
               currentElement.classList.add("game-player-good");
             } 
-            else if (players[i].theTeam == "neutral") {
+            else if (players[i].theTeam === "neutral") {
               currentElement.classList.add("game-player-neutral");
             } 
           } else {
             // ! FIX THIS (everyone, night)
 
             if (socketRole.hasNightAbility) {
-              if (socketRole.team == "evil") {
+              if (socketRole.team === "evil") {
                 if (socketRole.type.includes("surgeon")) {
-                  if (players[i].type == "evil") {
+                  if (players[i].type === "evil") {
                     currentElement.classList.add("game-player-evil");
                     element.classList.remove("game-player-unselectable");
                     abilityButton.setAttribute(
@@ -1493,7 +1495,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
                     stateButton.style.display = "none";
                     stateButton.classList.remove("game-button-dead");
                     stateButton.classList.remove("game-button-unselectable");
-                  } else if (players[i].type == "evil+unselectable") {
+                  } else if (players[i].type === "evil+unselectable") {
                     currentElement.classList.add("game-player-evil");
                     element.classList.add("game-player-unselectable");
                     abilityButton.setAttribute("onclick", "");
@@ -1517,7 +1519,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
                   }
                 }
                 if (socketRole.type.includes("witch")) {
-                  if (players[i].type == "evil+unselectable") {
+                  if (players[i].type === "evil+unselectable") {
                     currentElement.classList.add("game-player-evil");
                     element.classList.add("game-player-unselectable");
                     abilityButton.setAttribute("onclick", "");
@@ -1548,7 +1550,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
                   }
                 }
                 if (socketRole.type.includes("framer")) {
-                  if (players[i].type == "evil+unselectable") {
+                  if (players[i].type === "evil+unselectable") {
                     currentElement.classList.add("game-player-evil");
                     element.classList.add("game-player-unselectable");
                     abilityButton.setAttribute("onclick", "");
@@ -1588,8 +1590,8 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
                 stateButton.classList.remove("game-button-unselectable");
               }
             } else {
-              if (socketRole.team == "evil") {
-                if (players[i].type == "evil+unselectable") {
+              if (socketRole.team === "evil") {
+                if (players[i].type === "evil+unselectable") {
                   currentElement.classList.add("game-player-evil");
                   element.classList.add("game-player-unselectable");
                   abilityButton.setAttribute("onclick", "");
@@ -1600,7 +1602,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
                   stateButton.classList.remove("game-button-dead");
                   stateButton.classList.add("game-button-unselectable");
                   stateButton.innerText = "unselectable";
-                } else if (players[i].type == "none") {
+                } else if (players[i].type === "none") {
                   currentElement.classList.remove("game-player-evil");
                   element.classList.remove("game-player-unselectable");
                   abilityButton.setAttribute("onclick", "");
@@ -1629,18 +1631,18 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             element.classList.remove("game-player-dead");
             currentElement.classList.remove("game-player-dead");
             // Client, Target, Evil (variations), None
-            if (players[i].type == "client") {
+            if (players[i].type === "client") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/briefcase.svg";
-            } else if (players[i].type == "target") {
+            } else if (players[i].type === "target") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/target.svg";
             } 
-            else if (players[i].type == "mayor") {
+            else if (players[i].type === "mayor") {
               element.children[1].id = "game-show-mark";
               element.children[1].src = "/assets/icons/megaphone.svg";
             } 
-            else if (players[i].type == "mayor+target") {
+            else if (players[i].type === "mayor+target") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/target.svg";
               element.children[1].id = "game-show-mark";
@@ -1663,7 +1665,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             stateButton.classList.remove("game-button-unselectable");
             stateButton.innerText = "dead";
             // if dead
-            if (players[i].type == "evil+dead") {
+            if (players[i].type === "evil+dead") {
               // dead evil
               currentElement.classList.add(
                 "game-player-evil",
@@ -1671,14 +1673,14 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               );
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
-            } else if (players[i].type == "client+dead") {
+            } else if (players[i].type === "client+dead") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/briefcase.svg";
               currentElement.classList.add("game-player-dead");
               currentElement.classList.remove("game-player-evil");
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
-            } else if (players[i].type == "target+dead") {
+            } else if (players[i].type === "target+dead") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/target.svg";
               currentElement.classList.add("game-player-dead");
@@ -1686,7 +1688,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
             } 
-            else if (players[i].type == "mayor+dead") {
+            else if (players[i].type === "mayor+dead") {
               element.children[1].id = "game-show-mark";
               element.children[1].src = "/assets/icons/megaphone.svg";
               currentElement.classList.add("game-player-dead");
@@ -1694,7 +1696,7 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
             } 
-            else if (players[i].type == "mayor+dead+target") {
+            else if (players[i].type === "mayor+dead+target") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/target.svg";
               element.children[1].id = "game-show-mark";
@@ -1713,13 +1715,13 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
               element.classList.add("game-player-dead");
               element.classList.remove("game-player-unselectable");
             }
-            if (players[i].theTeam == "evil") {
+            if (players[i].theTeam === "evil") {
               currentElement.classList.add("game-player-evil");
             } 
-            else if (players[i].theTeam == "good") {
+            else if (players[i].theTeam === "good") {
               currentElement.classList.add("game-player-good");
             } 
-            else if (players[i].theTeam == "neutral") {
+            else if (players[i].theTeam === "neutral") {
               currentElement.classList.add("game-player-neutral");
             } 
           } else {
@@ -1735,29 +1737,29 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
             currentElement.classList.remove("game-player-dead");
             element.classList.remove("game-player-unselectable");
             // Client, Target, Evil (variations), None
-            if (players[i].type == "client") {
+            if (players[i].type === "client") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/briefcase.svg";
-            } else if (players[i].type == "target") {
+            } else if (players[i].type === "target") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/target.svg";
             } 
-            else if (players[i].type == "mayor") {
+            else if (players[i].type === "mayor") {
               element.children[1].id = "game-show-mark";
               element.children[1].src = "/assets/icons/megaphone.svg";
             } 
-            else if (players[i].type == "mayor+target") {
+            else if (players[i].type === "mayor+target") {
               element.children[0].id = "game-show-mark";
               element.children[0].src = "/assets/icons/target.svg";
               element.children[1].id = "game-show-mark";
               element.children[1].src = "/assets/icons/megaphone.svg";
             } 
-            else if (players[i].type == "evil") {
+            else if (players[i].type === "evil") {
               element.children[0].id = "";
               element.children[0].src = "";
               currentElement.classList.add("game-player-evil");
               element.classList.remove("game-player-unselectable");
-            } else if (players[i].type == "none") {
+            } else if (players[i].type === "none") {
               element.children[0].id = "";
               element.children[0].src = "";
               currentElement.classList.remove("game-player-evil");
@@ -1767,10 +1769,10 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
         }
       }
     }
-    if (colCount == 0) {
+    if (colCount === 0) {
       checkCount++;
       colCount = 1;
-    } else if (colCount == 1) {
+    } else if (colCount === 1) {
       checkCount++;
       colCount = 0;
     }
@@ -1778,31 +1780,31 @@ function setPlayers(players, cycle, phase, isDead, socketPlayer, socketRole, pro
 }
 
 socket.on("fetchedPlayerCardPress", (name, team, mission) => {
-  var playerIcon = document.getElementById("game-player-card-icon");
-  var playerRole = document.getElementById("game-player-card-role");
-  var playerMission = document.getElementById("game-player-card-mission");
-  var playerTeam = team.charAt(0).toUpperCase() + team.slice(1);
-  playerIcon.src = "/assets/rolecards/" + name + ".webp";
-  playerRole.innerText = name + ` (${playerTeam})`;
+  const playerIcon = document.getElementById("game-player-card-icon");
+  const playerRole = document.getElementById("game-player-card-role");
+  const playerMission = document.getElementById("game-player-card-mission");
+  const playerTeam = team.charAt(0).toUpperCase() + team.slice(1);
+  playerIcon.src = `/assets/rolecards/${name}.webp`;
+  playerRole.innerText = `${name} (${playerTeam})`;
   playerMission.innerText = mission;
 });
 
 function showGameUI(toShow) {
   if (toShow) {
-    var body = document.getElementById("game-body");
+    const body = document.getElementById("game-body");
     body.classList.add("game-background");
-    var game = document.getElementById("game");
+    const game = document.getElementById("game");
     game.style.display = "flex";
   } else {
-    var body = document.getElementById("game-body");
+    const body = document.getElementById("game-body");
     body.classList.remove("game-background");
-    var game = document.getElementById("game");
+    const game = document.getElementById("game");
     game.style.display = "none";
   }
 }
 
 function showWaiting(toShow = false) {
-  var waiting = document.getElementsByClassName("game-waiting-container")[0];
+  const waiting = document.getElementsByClassName("game-waiting-container")[0];
   if (toShow) {
     waiting.style.display = "flex";
   } else {
@@ -1820,34 +1822,34 @@ function showRoleCard(
 ) {
   if (toShow) {
     console.log("showing card");
-    var roleCardContainer = document.getElementsByClassName(
+    const roleCardContainer = document.getElementsByClassName(
       "game-rolecard-container"
     )[0];
-    var roleCard = document.getElementsByClassName("game-rolecard")[0];
+    const roleCard = document.getElementsByClassName("game-rolecard")[0];
     roleCardContainer.style.display = "flex";
     roleCard.id = role;
-    var roleCardTitle = document.getElementsByClassName(
+    const roleCardTitle = document.getElementsByClassName(
       "game-rolecard-title"
     )[0];
     roleCardTitle.innerText = name;
-    var roleCardDescription = document.getElementsByClassName(
+    const roleCardDescription = document.getElementsByClassName(
       "game-rolecard-description"
     )[0];
     roleCardDescription.innerText = description;
-    var roleCardMission = document.getElementsByClassName(
+    const roleCardMission = document.getElementsByClassName(
       "game-rolecard-mission"
     )[0];
     roleCardMission.style.backgroundColor = `var(--${team}-bg-mission`
     roleCardMission.innerText = mission;
-    var readyButton = document.getElementsByClassName("game-ready-button")[0];
-    var icon = document.getElementsByClassName("game-rolecard-icon")[0];
-    icon.src = "/assets/rolecards/" + name + ".webp";
+    const readyButton = document.getElementsByClassName("game-ready-button")[0];
+    const icon = document.getElementsByClassName("game-rolecard-icon")[0];
+    icon.src = `/assets/rolecards/${name}.webp`;
 
     if (team.includes("good")) {
       roleCardTitle.classList.add("game-rolecard-good-fg");
       roleCardMission.classList.add("game-rolecard-good-fg");
       readyButton.classList.add("game-rolecard-good-bg");
-    } else if (team == "evil") {
+    } else if (team === "evil") {
       roleCardTitle.classList.add("game-rolecard-evil-fg");
       roleCardMission.classList.add("game-rolecard-evil-fg");
       readyButton.classList.add("game-rolecard-evil-bg");
@@ -1857,21 +1859,21 @@ function showRoleCard(
       readyButton.classList.add("game-rolecard-neutral-bg");
     }
   } else {
-    var roleCardContainer = document.getElementsByClassName(
+    const roleCardContainer = document.getElementsByClassName(
       "game-rolecard-container"
     )[0];
-    var roleCard = document.getElementsByClassName("game-rolecard")[0];
+    const roleCard = document.getElementsByClassName("game-rolecard")[0];
     roleCardContainer.style.display = "none";
     roleCard.id = role;
-    var roleCardTitle = document.getElementsByClassName(
+    const roleCardTitle = document.getElementsByClassName(
       "game-rolecard-title"
     )[0];
     roleCardTitle.innerText = name;
-    var roleCardDescription = document.getElementsByClassName(
+    const roleCardDescription = document.getElementsByClassName(
       "game-rolecard-description"
     )[0];
     roleCardDescription.innerText = description;
-    var roleCardMission = document.getElementsByClassName(
+    const roleCardMission = document.getElementsByClassName(
       "game-rolecard-mission"
     )[0];
     roleCardMission.innerText = mission;
@@ -1880,24 +1882,24 @@ function showRoleCard(
 
 
 function changeUI(theme) {
-  var body = document.getElementById("game-body");
-  var playerCard = document.getElementById("game-player-card");
-  var playerCardQuestionMark = document.getElementById(
+  const body = document.getElementById("game-body");
+  const playerCard = document.getElementById("game-player-card");
+  const playerCardQuestionMark = document.getElementById(
     "game-player-card-questionmark"
   );
-  var playerCardDivider = document.getElementById("game-player-card-divider");
-  var playerCardButton = document.getElementById("game-player-card-button");
-  var messageBox = document.getElementById("game-messagebox");
-  var gamePanel = document.getElementById("game-panel");
-  var gameClock = document.getElementById("game-clock");
-  var gameClockDivider = document.getElementById("game-clock-divider");
-  var messages = document.getElementById("game-message-scroller").children;
-  var scrollDown = document.getElementById("game-messagebox-scrolldown");
-  var chat = document.getElementById("game-messagebox-chat");
-  var chatInput = document.getElementById("game-chat");
-  var chatSend = document.getElementById("game-messagebox-chat-send");
-  var musicRangeSliderLabel = document.getElementById("musicRangeSliderLabel");
-  var sfxRangeSliderLabel = document.getElementById("sfxRangeSliderLabel");
+  const playerCardDivider = document.getElementById("game-player-card-divider");
+  const playerCardButton = document.getElementById("game-player-card-button");
+  const messageBox = document.getElementById("game-messagebox");
+  const gamePanel = document.getElementById("game-panel");
+  const gameClock = document.getElementById("game-clock");
+  const gameClockDivider = document.getElementById("game-clock-divider");
+  const messages = document.getElementById("game-message-scroller").children;
+  const scrollDown = document.getElementById("game-messagebox-scrolldown");
+  const chat = document.getElementById("game-messagebox-chat");
+  const chatInput = document.getElementById("game-chat");
+  const chatSend = document.getElementById("game-messagebox-chat-send");
+  const musicRangeSliderLabel = document.getElementById("musicRangeSliderLabel");
+  const sfxRangeSliderLabel = document.getElementById("sfxRangeSliderLabel");
 
   if (theme.includes("Night")) {
     body.classList.remove("game-background-day");
@@ -1922,7 +1924,7 @@ function changeUI(theme) {
     sfxRangeSliderLabel.classList.remove("game-day-fg");
     musicRangeSliderLabel.classList.add("game-night-fg");
     musicRangeSliderLabel.classList.remove("game-day-fg");
-    for (var i = 0; i < messages.length; i++) {
+    for (let i = 0; i < messages.length; i++) {
       messages[i].classList.add("game-message-night");
       messages[i].classList.remove("game-message-day");
       if (messages[i].className.includes("alert")) {
@@ -1999,7 +2001,7 @@ function changeUI(theme) {
     sfxRangeSliderLabel.classList.add("game-day-fg");
     musicRangeSliderLabel.classList.remove("game-night-fg");
     musicRangeSliderLabel.classList.add("game-day-fg");
-    for (var i = 0; i < messages.length; i++) {
+    for (let i = 0; i < messages.length; i++) {
       messages[i].classList.remove("game-message-night");
       messages[i].classList.add("game-message-day");
       if (messages[i].className.includes("alert")) {
@@ -2057,7 +2059,7 @@ function changeUI(theme) {
 }
 
 function sendMessageInDeathChat() {
-  var chatInput = document.getElementById("game-chat");
+  const chatInput = document.getElementById("game-chat");
   if (chatInput.value.length > 0) {
     socket.emit("sendChatMessageDead", getPlayerID(), chatInput.value);
     chatInput.value = "";
@@ -2065,9 +2067,9 @@ function sendMessageInDeathChat() {
 }
 
 function showDeathChat(toShow=false) {
-  var chat = document.getElementById("game-messagebox-chat");
-  var chatInput = document.getElementById("game-chat");
-  var chatSend = document.getElementById("game-messagebox-chat-send");
+  const chat = document.getElementById("game-messagebox-chat");
+  const chatInput = document.getElementById("game-chat");
+  const chatSend = document.getElementById("game-messagebox-chat-send");
   if (toShow) {
     chat.style.display = "flex";
     chatSend.setAttribute("onclick", "sendMessageInDeathChat()");
@@ -2078,23 +2080,23 @@ function showDeathChat(toShow=false) {
 }
 
 function checkIfDead(phase, isDead) {
-  var playersContainer = document.getElementById("game-players-container");
+  const playersContainer = document.getElementById("game-players-container");
   if (isDead) {
-    var body = document.getElementById("game-body");
+    const body = document.getElementById("game-body");
     body.classList.add("game-background-dead");
     playersContainer.style.opacity = "100%";
   } else if (!isDead) {
-    if (phase == "voting" || phase == "actions") {
+    if (phase === "voting" || phase === "actions") {
       playersContainer.style.opacity = "100%";
     } else if (
-      phase == "nightMessages" ||
-      phase == "discussion" ||
-      phase == "recap" ||
-      phase == "dayMessages"
+      phase === "nightMessages" ||
+      phase === "discussion" ||
+      phase === "recap" ||
+      phase === "dayMessages"
       ) {
         playersContainer.style.opacity = "35%";
       }
-      var body = document.getElementById("game-body");
+      const body = document.getElementById("game-body");
       body.classList.remove("game-background-dead");
   }
 }
@@ -2116,12 +2118,12 @@ function showGame(allReady) {
     socket.emit("initGame", getPlayerID());
     socket.emit("requestPlayerCard", getPlayerID(), "first");
     socket.on("fetchedPlayerCardFirst", (name, team, mission) => {
-      var playerIcon = document.getElementById("game-player-card-icon");
-      var playerRole = document.getElementById("game-player-card-role");
-      var playerMission = document.getElementById("game-player-card-mission");
-      var playerTeam = team.charAt(0).toUpperCase() + team.slice(1);
-      playerIcon.src = "/assets/rolecards/" + name + ".webp";
-      playerRole.innerText = name + ` (${playerTeam})`;
+      const playerIcon = document.getElementById("game-player-card-icon");
+      const playerRole = document.getElementById("game-player-card-role");
+      const playerMission = document.getElementById("game-player-card-mission");
+      const playerTeam = team.charAt(0).toUpperCase() + team.slice(1);
+      playerIcon.src = `/assets/rolecards/${name}.webp`;
+      playerRole.innerText = `${name} (${playerTeam})`;
       playerMission.innerText = mission;
     });
     socket.emit("setPlayers", getPlayerID(), "first");
@@ -2149,7 +2151,7 @@ socket.on("showGameFirst", (allReady) => {
 // musicToggle = true;
 function toggleAudio() {
   playSFX("popAudio", 25);
-  var audio = document.getElementById("game-audio-toggle");
+  const audio = document.getElementById("game-audio-toggle");
   if (audioToggle) {
     audioToggle = false;
     audio.src = "/assets/icons/audio_off.svg";
@@ -2171,7 +2173,7 @@ function toggleAudio() {
 }
 function toggleMusic() {
   playSFX("popAudio", 25);
-  var music = document.getElementById("game-music-toggle");
+  const music = document.getElementById("game-music-toggle");
   if (musicToggle) {
     musicToggle = false;
     music.src = "/assets/icons/music_off.svg";
@@ -2200,48 +2202,48 @@ function pauseAll() {
   pauseAudio("dayMusic");
 } 
 socket.on("clock", (counter, phase, cycle, cycleCount, theDurations) => {
-  var clock = document.getElementById("game-time");
-  var theMinutes = document.getElementById("game-time-minutes");
-  var theSeconds = document.getElementById("game-time-seconds");
-  var gameCycle = document.getElementById("game-cycle-text");
-  var durations = Object.values(theDurations);
-  if (phase == "voting" || phase == "actions") {
-    if (counter == 10) {
+  const clock = document.getElementById("game-time");
+  const theMinutes = document.getElementById("game-time-minutes");
+  const theSeconds = document.getElementById("game-time-seconds");
+  const gameCycle = document.getElementById("game-cycle-text");
+  const durations = Object.values(theDurations);
+  if (phase === "voting" || phase === "actions") {
+    if (counter === 10) {
       playSFX("clockAudio", 50);
     }
   }
-  if (cycle == "Day") {
+  if (cycle === "Day") {
     playMusic("dayMusic", 40, true)
-    if (phase == "voting") {
-      if (counter == durations[1].voting) {
+    if (phase === "voting") {
+      if (counter === durations[1].voting) {
         playSFX("votingAudio", 50);
       }
     }
   } else {
     pauseAudio("dayMusic");
   }
-  if (cycle == "Night") {
+  if (cycle === "Night") {
     playMusic("nightMusic", 40, true)
-    if (phase == "actions") {
-      if (counter == durations[0].actions) {
+    if (phase === "actions") {
+      if (counter === durations[0].actions) {
         playSFX("nightAudio", 50);
       }
     }
   } else {
     pauseAudio("nightMusic")
   }
-  if (phase == "recap") {
-    if (counter == durations[1].recap) {
+  if (phase === "recap") {
+    if (counter === durations[1].recap) {
       playSFX("dayAudio", 50);
     }
   }
   
-  var minutes = Math.floor(counter/60);
-  var seconds = counter - (minutes * 60)
+  const minutes = Math.floor(counter/60);
+  const seconds = counter - (minutes * 60)
   if (minutes < 10 && seconds < 10) {
     // 0M:0S
-    theMinutes.innerText = "0" + minutes;
-    theSeconds.innerText = "0" + seconds;
+    theMinutes.innerText = `0${minutes}`;
+    theSeconds.innerText = `0${seconds}`;
     // clock.innerText = "0" + minutes + ":0" + seconds;
   } 
   else if (minutes >= 10 && seconds >= 10) {
@@ -2253,12 +2255,12 @@ socket.on("clock", (counter, phase, cycle, cycleCount, theDurations) => {
   else if (minutes >= 10 && seconds < 10) {
     // MM:0S
     theMinutes.innerText = minutes;
-    theSeconds.innerText = "0" + seconds;
+    theSeconds.innerText = `0${seconds}`;
     // clock.innerText = minutes + ":0" + seconds;
   } 
   else if (minutes < 10 && seconds >= 10) {
     // 0M:SS
-    theMinutes.innerText = "0" + minutes;
+    theMinutes.innerText = `0${minutes}`;
     theSeconds.innerText = seconds;
     // clock.innerText = "0" + minutes + ":" + seconds;
   } 
@@ -2267,7 +2269,7 @@ socket.on("clock", (counter, phase, cycle, cycleCount, theDurations) => {
   } else if (cycle.includes("Day")) {
     document.getElementById("game-cycle-icon").src = "/assets/icons/day.svg";
   }
-  gameCycle.innerText = cycle + " " + cycleCount;
+  gameCycle.innerText = `${cycle} ${cycleCount}`;
 });
 
 socket.on(

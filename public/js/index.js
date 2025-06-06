@@ -1,7 +1,7 @@
-const domain = "https://eyesopen.up.railway.app/";
+const domain = "http://localhost:3000";
 const socket = io(domain, { secure: true });
 
-const lobby = domain + "lobby/";
+const lobby = `${domain}/lobby/`;
 
 
 socket.on("connect", () => {
@@ -33,8 +33,8 @@ function pauseAll() {
 }
 
 function pauseAudio(toPause) {
-  var audio = document.getElementById(toPause);
-  var pausePromise = audio.pause();
+  const audio = document.getElementById(toPause);
+  const pausePromise = audio.pause();
   if (pausePromise !== undefined) {
     pausePromise.then(_ => {
     })
@@ -46,7 +46,7 @@ function pauseAudio(toPause) {
 function handleVol(vol) {
   let num = Number(vol);
   
-  if (isNaN(num) || num < 0 || num > 100) {
+  if (Number.isNaN(num) || num < 0 || num > 100) {
     num = 0.5;
   }
   
@@ -60,12 +60,12 @@ function handleVol(vol) {
 }
 
 function playAudio(toPlay, vol=100, wait=false) {
-  var audio = document.getElementById(toPlay);
-  vol = handleVol(vol);
+  const audio = document.getElementById(toPlay);
+  const volume = handleVol(vol);
   if (wait) {
-    audio.volume = vol;
+    audio.volume = volume;
     audio.loop = true;
-    var playPromise = audio.play();
+    const playPromise = audio.play();
     if (playPromise !== undefined) {
       playPromise.then(_ => {
       })
@@ -74,9 +74,9 @@ function playAudio(toPlay, vol=100, wait=false) {
     }
   } else {
     if (audio.paused) {
-      audio.volume = vol;
+      audio.volume = volume;
       audio.loop = true;
-      var playPromise = audio.play();
+      const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.then(_ => {
         })
@@ -88,40 +88,40 @@ function playAudio(toPlay, vol=100, wait=false) {
 }
 
 function loadPlayersInLobby(slots) {
-  var thePlayers = document.getElementById("players");
-  var columns = thePlayers.children;
-  for (var col = 0; col < columns.length; col++) {
-    var array = columns[col];
+  const thePlayers = document.getElementById("players");
+  const columns = thePlayers.children;
+  for (let col = 0; col < columns.length; col++) {
+    const array = columns[col];
     for (let i = 0; i < array.length; i++) {
-      var currentPlayer = array[i];
+      const currentPlayer = array[i];
       currentPlayer.id = "player-hidden";
       currentPlayer.children[0].id = "";
       currentPlayer.children[0].innerText = "";
     }
   }
-  var playerCount = 0;
-  var colCount = 0;
-  var col1 = document.getElementById("players-col1").children
-  var col2 = document.getElementById("players-col2").children
-  var currentColumn = col1;
-  for (var [key, value] of Object.entries(slots)) {
+  let playerCount = 0;
+  let colCount = 0;
+  const col1 = document.getElementById("players-col1").children
+  const col2 = document.getElementById("players-col2").children
+  let currentColumn = col1;
+  for (const [key, value] of Object.entries(slots)) {
     
-    if (playerCount == 2) {
+    if (playerCount === 2) {
       colCount++;
       playerCount = 0;
     }
 
-    var playerElement = currentColumn[colCount];
+    const playerElement = currentColumn[colCount];
     if (value.userID !== undefined) {
       playerElement.id = "";
       playerElement.children[0].id = value.userID;
       playerElement.children[0].innerText = value.userName;
 
-      if (currentColumn == col1) {
+      if (currentColumn === col1) {
         currentColumn = col2
         playerCount++;
       }
-      else if (currentColumn == col2) {
+      else if (currentColumn === col2) {
         currentColumn = col1;
         playerCount++;
       }
@@ -138,13 +138,13 @@ socket.on("updateLobbyPlayers", (slots) => {
 })
 
 function hideKick() {
-  var overlayPopup = document.getElementById("overlay-popup1");
+  const overlayPopup = document.getElementById("overlay-popup1");
   overlayPopup.style.display = "none";
-  var overlayPopupConfirm = document.getElementById("overlay-popup2");
+  const overlayPopupConfirm = document.getElementById("overlay-popup2");
   overlayPopupConfirm.style.display = "none";
-  var kickPopup = document.getElementById("kick");
+  const kickPopup = document.getElementById("kick");
   kickPopup.style.display = "none";
-  var kickPopupConfirm = document.getElementById("kickConfirm");
+  const kickPopupConfirm = document.getElementById("kickConfirm");
   kickPopupConfirm.style.display = "none"
 }
 function displayKick() {
@@ -152,31 +152,31 @@ function displayKick() {
   socket.on("fetchLobbyPlayers", (slots) => {
     loadPlayersInLobby(slots)
   })
-  var overlayPopup = document.getElementById("overlay-popup1");
+  const overlayPopup = document.getElementById("overlay-popup1");
   overlayPopup.style.display = "flex";
   
-  var kickPopup = document.getElementById("kick");
+  const kickPopup = document.getElementById("kick");
   kickPopup.style.display = "flex";
 }
 function hideKickConfirm() {
-  var overlayPopupConfirm = document.getElementById("overlay-popup2");
+  const overlayPopupConfirm = document.getElementById("overlay-popup2");
   overlayPopupConfirm.style.display = "none";
-  var kickPopupConfirm = document.getElementById("kickConfirm");
+  const kickPopupConfirm = document.getElementById("kickConfirm");
   kickPopupConfirm.style.display = "none"
 }
 function displayKickConfirm() {
-  var overlayPopupConfirm = document.getElementById("overlay-popup2");
+  const overlayPopupConfirm = document.getElementById("overlay-popup2");
   overlayPopupConfirm.style.display = "flex";
-  var kickPopupConfirm = document.getElementById("kickConfirm");
+  const kickPopupConfirm = document.getElementById("kickConfirm");
   kickPopupConfirm.style.display = "flex"
 }
-var playerToKickID = null;
+let playerToKickID = null;
 function kickPlayer(element) {
-  var playerContainer = element.parentElement;
-  var playerBubble = playerContainer.children[0];
+  const playerContainer = element.parentElement;
+  const playerBubble = playerContainer.children[0];
   if (playerBubble.id !== null || playerBubble.id !== undefined) {
     displayKickConfirm();
-    document.getElementById("playerToKick").innerText = "Kick " + playerBubble.innerText + " from lobby?"
+    document.getElementById("playerToKick").innerText = `Kick ${playerBubble.innerText} from lobby?`
     playerToKickID = playerBubble.id;
   }
 }
@@ -190,7 +190,7 @@ function kickConfirm() {
 
         socket.emit("checkRoomCode", roomCode, getPlayerID(), "press");
           socket.on("roomCodeResponsePress", (status) => {
-            if (status == "full") {
+            if (status === "full") {
               displayKick();
             } else {
               setTimeout(() => {
@@ -206,10 +206,10 @@ function kickConfirm() {
 
 
 function showChangeUsername(toShow = false) {
-  if (toShow == true) {
+  if (toShow === true) {
     document.getElementById("changeUsername").style.display = "flex";
     document.getElementById("links").style.marginTop = "2.9rem";
-  } else if (toShow == false) {
+  } else if (toShow === false) {
     document.getElementById("links").style.marginTop = "5rem";
     document.getElementById("changeUsername").style.display = "none";
   }
@@ -221,10 +221,10 @@ socket.on("showChangeUsername", (toShow) => {
 
 
 function addEventListeners() {
-  var theCodeInput = document.getElementById("code");
-  var theUserInput = document.getElementById("inputUser");
-  var theChangeNameInput = document.getElementById("inputChangeName");
-  var theHostInput = document.getElementById("inputHost");
+  const theCodeInput = document.getElementById("code");
+  const theUserInput = document.getElementById("inputUser");
+  const theChangeNameInput = document.getElementById("inputChangeName");
+  const theHostInput = document.getElementById("inputHost");
   document.addEventListener("visibilitychange", (e) => {
     if (document.visibilityState === 'visible') {
       playIntro();
@@ -235,7 +235,7 @@ function addEventListeners() {
   theCodeInput.addEventListener("keydown", (e) => {
     if (!e.repeat) {
       if (e.key !== null) {
-        if (e.key == "Enter") {
+        if (e.key === "Enter") {
           checkRoomCode();
         }
       }
@@ -244,7 +244,7 @@ function addEventListeners() {
   theUserInput.addEventListener("keydown", (e) => {
     if (!e.repeat) {
       if (e.key !== null) {
-        if (e.key == "Enter") {
+        if (e.key === "Enter") {
           checkName(false);
         }
       }
@@ -253,7 +253,7 @@ function addEventListeners() {
   theChangeNameInput.addEventListener("keydown", (e) => {
     if (!e.repeat) {
       if (e.key !== null) {
-        if (e.key == "Enter") {
+        if (e.key === "Enter") {
           changeName();
         }
       }
@@ -262,7 +262,7 @@ function addEventListeners() {
   theHostInput.addEventListener("keydown", (e) => {
     if (!e.repeat) {
       if (e.key !== null) {
-        if (e.key == "Enter") {
+        if (e.key === "Enter") {
           checkName(true);
         }
       }
@@ -270,27 +270,27 @@ function addEventListeners() {
   });
 }
 async function animateCards() {
-  var cards = ["Villager", "Investigator", "Doctor", "Mayor", "Trapper", "Godfather", "Mafioso", "Surgeon", "Witch", "Framer", "Jester", "Serial Killer", "Executioner", "Lawyer"];
-  var container = document.getElementsByClassName("animated-cards-container")[0];
-  for (var row = 0; row < container.children.length; row++) {
-    var seen = [];
-    var i = 0;
+  const cards = ["Villager", "Investigator", "Doctor", "Mayor", "Trapper", "Godfather", "Mafioso", "Surgeon", "Witch", "Framer", "Jester", "Serial Killer", "Executioner", "Lawyer"];
+  const container = document.getElementsByClassName("animated-cards-container")[0];
+  for (let row = 0; row < container.children.length; row++) {
+    const seen = [];
+    let i = 0;
     while (true) {
-      if (i == cards.length) {
+      if (i === cards.length) {
         break;
       }
-      var rand = random(0, cards.length - 1);
+      const rand = random(0, cards.length - 1);
       if (!seen.includes(cards[rand])) {
         seen.push(cards[rand]);
-        var element = document.createElement("img");
-        element.alt = cards[rand] + " card"
-        var imgClass = "animated-card";
+        const element = document.createElement("img");
+        element.alt = `${cards[rand]} card`
+        const imgClass = "animated-card";
         element.classList.add(imgClass)
         element.loading = "lazy";
         element.fetchPriority = "low";
         element.decoding = "async";
-        var imgSrc = "/assets/rolecards/";
-        element.src = imgSrc + cards[rand] + ".webp";
+        const imgSrc = "/assets/rolecards/";
+        element.src = `${imgSrc + cards[rand]}.webp`;
         i++;
         container.children[row].append(element);
       }
@@ -299,13 +299,13 @@ async function animateCards() {
 }
 
 async function animateTitle() {
-  var titles = document.getElementsByClassName("title-eyesopen");
+  const titles = document.getElementsByClassName("title-eyesopen");
   if (titles) {
-    var title1 = titles[0];
-    var title2 = titles[1];
-    var title3 = titles[2];
+    const title1 = titles[0];
+    const title2 = titles[1];
+    const title3 = titles[2];
     title1.classList.remove("hidden");
-    for (var i = 0; i < titles.length; i++) {
+    for (let i = 0; i < titles.length; i++) {
       titles[i].classList.remove("gelatine-light");
     }
     title1.setAttribute("data-label","active_title");
@@ -359,10 +359,10 @@ function resetCookiePlayerID(override = false) {
     if (getPlayerID() !== "null" && getPlayerID() !== undefined) {
       console.log("ID exists before user, setting to null");
       document.cookie = "eyesopenID=null; path=/";
-    } else if (getPlayerID() == undefined) {
+    } else if (getPlayerID() === undefined) {
       console.log("ID is undefined, setting to null");
       document.cookie = "eyesopenID=null; path=/";
-    } else if (getPlayerID() == "null") {
+    } else if (getPlayerID() === "null") {
       console.log("ID is already null");
     }
   }
@@ -389,17 +389,18 @@ function requestID(inputVal = "", isHost = "") {
   console.log("You connect with id", socket.id);
   socket.emit("requestID", socket.id, getPlayerID());
   socket.on("playerID", (playerID) => {
+    console.log("playerID received from server:", playerID);
     if (playerID == null) {
       window.location.reload();
     } else {
       console.log("playerID from server:", playerID);
-      if (getPlayerID() == "null") {
+      if (getPlayerID() === "null") {
         document.cookie = `eyesopenID=${playerID}; path=/; max-age=${fiveHours}; SameSite=Lax`;
         socket.emit("completedID", getPlayerID());
       }
-      if (isHost == true) {
+      if (isHost === true) {
         createUserHost(inputVal);
-      } else if (isHost == false) {
+      } else if (isHost === false) {
         createUserNotHost(inputVal);
       }
     }
@@ -407,8 +408,8 @@ function requestID(inputVal = "", isHost = "") {
 }
 
 function getPlayerID() {
-  var cookies = document.cookie.split(";");
-  for (var i = 0; i < cookies.length; i++) {
+  const cookies = document.cookie.split(";");
+  for (let i = 0; i < cookies.length; i++) {
     if (cookies[i].includes("eyesopenID")) {
       return cookies[i].split("=")[1];
     }
@@ -443,7 +444,7 @@ function displayChangeUsername() {
   if (checkIfSessionExists()) {
     socket.emit("requestUsername", getPlayerID());
     socket.on("fetchedUsername", (username) => {
-      let input = document.getElementById("inputChangeName");
+      const input = document.getElementById("inputChangeName");
       document.getElementById("overlay").style.display = "block";
       document.getElementById("changeName").style.display = "flex";
       input.focus();
@@ -484,7 +485,7 @@ function displayHost() {
         console.log(roomCode);
         socket.emit("checkRoomCode", roomCode, getPlayerID(), "press");
         socket.on("roomCodeResponsePress", (status) => {
-          if (status == "full") {
+          if (status === "full") {
             displayKick();
           } else {
             setTimeout(() => {
@@ -572,7 +573,7 @@ function join(inputVal) {
 
 function checkRoomCode() {
   requestID();
-  var inputVal = document.getElementById("code").value.toUpperCase();
+  const inputVal = document.getElementById("code").value.toUpperCase();
   socket.emit("checkRoomCode", inputVal, getPlayerID(), "press");
   if (inputVal.length !== 5) {
     roomCodeError();
@@ -585,12 +586,12 @@ function checkRoomCode() {
       }
     });
     socket.on("roomCodeResponsePress", (status) => {
-      if (status == "valid") {
+      if (status === "valid") {
         roomCodeCorrect();
         join(inputVal);
-      } else if (status == "invalid") {
+      } else if (status === "invalid") {
         roomCodeInvalid();
-      } else if (status == "full") {
+      } else if (status === "full") {
         roomFull();
       }
     });
@@ -633,7 +634,7 @@ function userNameCorrect() {
 }
 
 function changeName() {
-  var inputVal = document.getElementById("inputChangeName").value;
+  const inputVal = document.getElementById("inputChangeName").value;
   if (inputVal.length < 1) {
     changeUsernameShortError();
   } else {
@@ -643,8 +644,8 @@ function changeName() {
 }
 
 function showNotification(type) {
-  if (type == "newName") {
-    var theNotification = document.getElementById("index-notification");
+  if (type === "newName") {
+    const theNotification = document.getElementById("index-notification");
     theNotification.style.display = "flex";
     theNotification.innerText = "Username has been updated! (~‾⌣‾)~";
     setTimeout(() => {
@@ -654,20 +655,20 @@ function showNotification(type) {
 }
 
 function hideNotification() {
-  var theNotification = document.getElementById("index-notification");
+  const theNotification = document.getElementById("index-notification");
   theNotification.style.display = "none";
 }
 
 function checkName(isHost) {
   if (isHost) {
-    var inputVal = document.getElementById("inputHost").value;
+    const inputVal = document.getElementById("inputHost").value;
     if (inputVal.length < 1) {
       hostNameShortError();
     } else {
       requestID(inputVal, true);
     }
   } else {
-    var inputVal = document.getElementById("inputUser").value;
+    const inputVal = document.getElementById("inputUser").value;
     if (inputVal.length < 1) {
       userNameShortError();
     } else {

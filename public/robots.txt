@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://eyesopen.up.railway.app/sitemap.xml
+Sitemap: https://eyesopen.petrusmatiros.com/sitemap.xml

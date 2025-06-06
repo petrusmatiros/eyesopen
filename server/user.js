@@ -1,6 +1,6 @@
-var { Player } = require("./player");
+import { Player } from "./player.js";
 
-class User {
+export class User {
   constructor(playerID = undefined, name = "") {
     this.playerID = playerID;
     this.name = name;
@@ -26,10 +26,6 @@ class User {
   }
   getName() {
     return this.name;
-  }
-
-  getPlayer() {
-    return this.player;
   }
   getReadyLobby() {
     return this.readyLobby;
@@ -79,7 +75,3 @@ class User {
     this.currentRoom = currentRoom;
   }
 }
-
-module.exports = {
-  User,
-};

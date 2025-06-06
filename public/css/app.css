@@ -75,7 +75,7 @@ body {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -khtml-user-select: none;
+  user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   font-size: 1rem;
@@ -1163,7 +1163,7 @@ input[type="text"]:focus {
   max-width: 12.5rem;
   max-width: 12.5rem;
   padding: 1rem;
-  border-radius: 0.5rem;;
+  border-radius: 0.5rem;
   background-color: rgba(38, 38, 38, 0.35);
   backdrop-filter: blur(1rem);
   -webkit-backdrop-filter: blur(1rem);

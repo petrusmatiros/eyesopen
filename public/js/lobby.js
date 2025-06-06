@@ -1,7 +1,7 @@
-const domain = "https://eyesopen.up.railway.app/";
+const domain = "http://localhost:3000";
 const socket = io(domain, {secure: true});
 
-const lobby = domain + "lobby/";
+const lobby = `${domain}/lobby/`;
 
 const minPlayers = 3;
 
@@ -16,32 +16,31 @@ function resetCookiePlayerID(override = false) {
     if (getPlayerID() !== "null" && getPlayerID() !== undefined) {
       console.log("ID exists before user, setting to null");
       document.cookie = "eyesopenID=null; path=/";
-    } else if (getPlayerID() == undefined) {
+    } else if (getPlayerID() === undefined) {
       console.log("ID is undefined, setting to null");
       document.cookie = "eyesopenID=null; path=/";
-    } else if (getPlayerID() == "null") {
+    } else if (getPlayerID() === "null") {
       console.log("ID is already null");
     }
   }
 }
 
 function revealLobby() {
-  var theLobby = document.getElementById("lobby-without-logo");
-  var theLobbyCode = document.getElementById("lobby-code-container");
+  const theLobby = document.getElementById("lobby-without-logo");
+  const theLobbyCode = document.getElementById("lobby-code-container");
   theLobby.style.display = "flex";
   theLobbyCode.style.display = "flex";
 }
 
-var test = false;
 socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
   socket.on("userExists", (userExists) => {
     if (!userExists) {
       resetCookiePlayerID();
-      window.location.href = window.location.href + "/join";
+      window.location.href = `${window.location.href}/join`;
     } else {
-      var URL = "";
-      var room = "";
+      let URL = "";
+      let room = "";
 
       if (window.location.href.endsWith("/")) {
         URL = window.location.href.replace("http://", "");
@@ -53,7 +52,7 @@ socket.on("connect", () => {
         socket.emit("checkRoomCode", room, getPlayerID(), "press");
       }
       socket.on("roomCodeResponsePress", (status) => {
-        if (status == "full") {
+        if (status === "full") {
           window.location.href = domain;
         }
       });
@@ -74,8 +73,8 @@ socket.on("connect", () => {
       revealLobby();
       socket.emit("checkUserApartOfGame", getPlayerID(), room, "app");
       socket.on("apartOfGameApp", (apartOfGame, inProgress, code) => {
-        if (apartOfGame && inProgress == true) {
-          if (window.location.href.includes("/game") == false) {
+        if (apartOfGame && inProgress === true) {
+          if (window.location.href.includes("/game") === false) {
             if (window.location.href.endsWith("/")) {
               window.location.href += "game";
             } else if (!window.location.href.endsWith("/")) {
@@ -130,12 +129,12 @@ socket.on("connect", () => {
             canPickRole = isHost;
             console.log("SETTING HOST VISIBILITY");
             document.getElementById("roles").classList.add("selectable");
-            var array = document.getElementsByClassName("lobby-role-tag");
-            for (var i = 0; i < array.length; i++) {
+            const array = document.getElementsByClassName("lobby-role-tag");
+            for (let i = 0; i < array.length; i++) {
               array[i].setAttribute("onclick", "selectRole(this)");
               array[i].style.cursor = "pointer";
             }
-            var startButton =
+            const startButton =
               document.getElementsByClassName("lobby-button start");
             startButton[0].style.display = "inline";
             revealSettingsButtons();
@@ -143,12 +142,12 @@ socket.on("connect", () => {
           } else {
             console.log("REMOVING HOST VISIBILITY");
             document.getElementById("roles").classList.remove("selectable");
-            var array = document.getElementsByClassName("lobby-role-tag");
-            for (var i = 0; i < array.length; i++) {
+            const array = document.getElementsByClassName("lobby-role-tag");
+            for (let i = 0; i < array.length; i++) {
               array[i].setAttribute("onclick", "");
               array[i].style.cursor = "not-allowed";
             }
-            var startButton =
+            const startButton =
               document.getElementsByClassName("lobby-button start");
             startButton[0].style.display = "none";
           }
@@ -201,19 +200,19 @@ socket.on("connect", () => {
                 document.getElementById("player-count").style.color =
                   "var(--light-fg)";
                 document.getElementById("player-count").innerText =
-                  amountUnready + " player(s) not ready";
+                  `${amountUnready} player(s) not ready`;
               }
             }
 
             socket.on("reqSatisfied", (valid) => {
               if (valid) {
-                var start = document.getElementById("start-button");
+                const start = document.getElementById("start-button");
 
                 start.style.opacity = "100%";
                 start.style.cursor = "pointer";
                 start.setAttribute("onclick", "startGame()");
               } else {
-                var start = document.getElementById("start-button");
+                const start = document.getElementById("start-button");
 
                 start.style.opacity = "35%";
                 start.style.cursor = "not-allowed";
@@ -279,8 +278,8 @@ function pauseAll() {
 }
 
 function pauseAudio(toPause) {
-  var audio = document.getElementById(toPause);
-  var pausePromise = audio.pause();
+  const audio = document.getElementById(toPause);
+  const pausePromise = audio.pause();
   if (pausePromise !== undefined) {
     pausePromise.then(_ => {
     })
@@ -292,7 +291,7 @@ function pauseAudio(toPause) {
 function handleVol(vol) {
   let num = Number(vol);
   
-  if (isNaN(num) || num < 0 || num > 100) {
+  if (Number.isNaN(num) || num < 0 || num > 100) {
     num = 0.5;
   }
   
@@ -306,12 +305,12 @@ function handleVol(vol) {
 }
 
 function playAudio(toPlay, vol=100, wait=false, loop=false) {
-  var audio = document.getElementById(toPlay);
-  vol = handleVol(vol);
+  const audio = document.getElementById(toPlay);
+  const volume = handleVol(vol);
   if (wait) {
-    audio.volume = vol;
+    audio.volume = volume;
     audio.loop = loop;
-    var playPromise = audio.play();
+    const playPromise = audio.play();
     if (playPromise !== undefined) {
       playPromise.then(_ => {
       })
@@ -320,9 +319,9 @@ function playAudio(toPlay, vol=100, wait=false, loop=false) {
     }
   } else {
     if (audio.paused) {
-      audio.volume = vol;
+      audio.volume = volume;
       audio.loop = loop;
-      var playPromise = audio.play();
+      const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.then(_ => {
         })
@@ -342,10 +341,10 @@ function resetGameSettingsError(type = "") {
   document.getElementById("lobby-gamesettings-help").style.opacity = "0%";
   document.getElementById("lobby-gamesettings-help").innerText = "";
 
-  var actionInput = document.getElementById("actionInput");
-  var discussionInput = document.getElementById("discussionInput");
-  var votingInput = document.getElementById("votingInput");
-  if (type == "all") {
+  const actionInput = document.getElementById("actionInput");
+  const discussionInput = document.getElementById("discussionInput");
+  const votingInput = document.getElementById("votingInput");
+  if (type === "all") {
     actionInput.style.border = "2px solid #b1b1b1";
     actionInput.classList.remove("lobby-gamesetting-error");
 
@@ -356,19 +355,19 @@ function resetGameSettingsError(type = "") {
     votingInput.classList.remove("lobby-gamesetting-error");
   }
   else {
-    if (type == "action") {
+    if (type === "action") {
       if (actionInput.className.includes("lobby-gamesetting-error")) {
         actionInput.style.border = "2px solid #b1b1b1";
         actionInput.classList.remove("lobby-gamesetting-error");
       } 
     }
-    else if (type == "discussion") {
+    else if (type === "discussion") {
       if (discussionInput.className.includes("lobby-gamesetting-error")) {
         discussionInput.style.border = "2px solid #b1b1b1";
         discussionInput.classList.remove("lobby-gamesetting-error");
       } 
     }
-    else if (type == "voting") {
+    else if (type === "voting") {
       if (discussionInput.className.includes("lobby-gamesetting-error")) {
         discussionInput.style.border = "2px solid #b1b1b1";
         discussionInput.classList.remove("lobby-gamesetting-error");
@@ -392,17 +391,17 @@ function resetGameSettingsError(type = "") {
 }
 
 function gameSettingError(type) {
-  var theElementId = "";
+  let theElementId = "";
 
-  if (type == "action") {
-    theElementId = type + "Input";
-  } else if (type == "discussion") {
-    theElementId = type + "Input";
-  } else if (type == "voting") {
-    theElementId = type + "Input";
+  if (type === "action") {
+    theElementId = `${type}Input`;
+  } else if (type === "discussion") {
+    theElementId = `${type}Input`;
+  } else if (type === "voting") {
+    theElementId = `${type}Input`;
   }
   document.getElementById("lobby-gamesettings-help").style.opacity = "100%";
-  var theElement = document.getElementById(theElementId);
+  const theElement = document.getElementById(theElementId);
   theElement.classList.add("lobby-gamesetting-error");
   theElement.style.border = "2px solid hsl(0, 100%, 45%)";
   document.getElementById("lobby-gamesettings-help").innerText =
@@ -410,10 +409,10 @@ function gameSettingError(type) {
 }
 
 function selectShowRole() {
-  var showRoleInput = document.getElementsByClassName("lobby-gamesettings-checkbox")[0];
-  var showRoleCheck = document.getElementById("checkbox-check");
-  var toShow = false;
-  if (showRoleInput.id == "showrole-checked") {
+  const showRoleInput = document.getElementsByClassName("lobby-gamesettings-checkbox")[0];
+  const showRoleCheck = document.getElementById("checkbox-check");
+  let toShow = false;
+  if (showRoleInput.id === "showrole-checked") {
     showRoleInput.id = "";
     showRoleCheck.style.opacity = "0%";
     toShow = false;
@@ -427,21 +426,21 @@ function selectShowRole() {
 
 
 function selectVoteMessageSettings(element) {
-  var theButtonContainer = element.children[0]
-  var theButton = theButtonContainer.children[0];
+  const theButtonContainer = element.children[0]
+  const theButton = theButtonContainer.children[0];
   if (
-    theButton.id == "voteMessagesHidden" ||
-    theButton.id == "voteMessagesAnonymous" ||
-    theButton.id == "voteMessagesVisible"
+    theButton.id === "voteMessagesHidden" ||
+    theButton.id === "voteMessagesAnonymous" ||
+    theButton.id === "voteMessagesVisible"
   ) {
-    var inputType = "";
-    var radioHidden = document.getElementById("voteMessagesHidden");
-    var radioAnonymous = document.getElementById("voteMessagesAnonymous");
-    var radioVisible = document.getElementById("voteMessagesVisible");
-    var radioHiddenParentContainer = radioHidden.parentElement.parentElement;
-    var radioAnonymousParentContainer = radioAnonymous.parentElement.parentElement;
-    var radioVisibleParentContainer = radioVisible.parentElement.parentElement;
-    if (theButton.id == "voteMessagesHidden") {
+    let inputType = "";
+    const radioHidden = document.getElementById("voteMessagesHidden");
+    const radioAnonymous = document.getElementById("voteMessagesAnonymous");
+    const radioVisible = document.getElementById("voteMessagesVisible");
+    const radioHiddenParentContainer = radioHidden.parentElement.parentElement;
+    const radioAnonymousParentContainer = radioAnonymous.parentElement.parentElement;
+    const radioVisibleParentContainer = radioVisible.parentElement.parentElement;
+    if (theButton.id === "voteMessagesHidden") {
       inputType = "hidden";
       radioHiddenParentContainer.id = "votemessage-checked";
       radioHidden.style.backgroundColor = "var(--game-setting-clicked)";
@@ -449,7 +448,7 @@ function selectVoteMessageSettings(element) {
       radioVisible.style.backgroundColor = "var(--game-setting)";
       radioAnonymousParentContainer.id = "";
       radioVisibleParentContainer.id = "";
-    } else if (theButton.id == "voteMessagesAnonymous") {
+    } else if (theButton.id === "voteMessagesAnonymous") {
       inputType = "anonymous";
       radioHiddenParentContainer.id = "";
       radioHidden.style.backgroundColor = "var(--game-setting)";
@@ -457,7 +456,7 @@ function selectVoteMessageSettings(element) {
       radioVisible.style.backgroundColor = "var(--game-setting)";
       radioAnonymousParentContainer.id = "votemessage-checked";
       radioVisibleParentContainer.id = "";
-    } else if (theButton.id == "voteMessagesVisible") {
+    } else if (theButton.id === "voteMessagesVisible") {
       inputType = "visible";
       radioHidden.style.backgroundColor = "var(--game-setting)";
       radioAnonymous.style.backgroundColor = "var(--game-setting)";
@@ -474,21 +473,21 @@ function selectVoteMessageSettings(element) {
 function checkNumber(element) {
   // do something
   if (
-    element.id == "actionInput" ||
-    element.id == "discussionInput" ||
-    element.id == "votingInput"
+    element.id === "actionInput" ||
+    element.id === "discussionInput" ||
+    element.id === "votingInput"
   ) {
-    var MIN_SECONDS = 5;
-    var MAX_SECONDS = 300;
-    var inputType = "";
-    var durationToChange = "";
-    if (element.id == "actionInput") {
+    const MIN_SECONDS = 5;
+    const MAX_SECONDS = 300;
+    let inputType = "";
+    let durationToChange = "";
+    if (element.id === "actionInput") {
       inputType = "action";
       durationToChange = "actions";
-    } else if (element.id == "discussionInput") {
+    } else if (element.id === "discussionInput") {
       inputType = "discussion";
       durationToChange = "discussion";
-    } else if (element.id == "votingInput") {
+    } else if (element.id === "votingInput") {
       inputType = "voting";
       durationToChange = "voting";
     }
@@ -496,19 +495,18 @@ function checkNumber(element) {
     if (element.value < MIN_SECONDS || element.value > MAX_SECONDS) {
       gameSettingError(inputType);
       return false;
-    } else {
-      resetGameSettingsError(inputType);
-      document.getElementById(inputType + "Input").style.border =
-        "2px solid #b1b1b1";
-        socket.emit(
-          "setDuration",
-          getPlayerID(),
-          element.valueAsNumber,
-          durationToChange
-        );
-      
-      return true;
     }
+    resetGameSettingsError(inputType);
+    document.getElementById(`${inputType}Input`).style.border =
+      "2px solid #b1b1b1";
+      socket.emit(
+        "setDuration",
+        getPlayerID(),
+        element.valueAsNumber,
+        durationToChange
+      );
+    
+    return true;
   }
 }
 
@@ -522,9 +520,9 @@ function resetGameSettings() {
   loadGameSettings();
 }
 function saveGameSettings() {
-  var actionsInput = document.getElementById("actionInput");
-  var discussionInput = document.getElementById("discussionInput");
-  var votingInput = document.getElementById("votingInput");
+  const actionsInput = document.getElementById("actionInput");
+  const discussionInput = document.getElementById("discussionInput");
+  const votingInput = document.getElementById("votingInput");
   if (
     checkNumber(actionsInput) &&
     checkNumber(discussionInput) &&
@@ -538,50 +536,50 @@ function saveGameSettings() {
 function hideGameSettings() {
   resetNotSavedGameSettings();
   resetGameSettingsError();
-  var gameSettingsContainer = document.getElementById(
+  const gameSettingsContainer = document.getElementById(
     "lobby-gamesettings-container"
   );
-  var gameSettingsOverlay = document.getElementById("overlay-gamesettings");
+  const gameSettingsOverlay = document.getElementById("overlay-gamesettings");
   gameSettingsContainer.style.display = "none";
   gameSettingsOverlay.style.display = "none";
 }
 
 function loadPlayersInLobby(slots) {
-  var thePlayers = document.getElementById("kick-players");
-  var columns = thePlayers.children;
-  for (var col = 0; col < columns.length; col++) {
-    var array = columns[col];
+  const thePlayers = document.getElementById("kick-players");
+  const columns = thePlayers.children;
+  for (let col = 0; col < columns.length; col++) {
+    const array = columns[col];
     for (let i = 0; i < array.length; i++) {
-      var currentPlayer = array[i];
+      const currentPlayer = array[i];
       currentPlayer.id = "player-hidden";
       currentPlayer.children[0].id = "";
       currentPlayer.children[0].innerText = "";
     }
   }
-  var playerCount = 0;
-  var colCount = 0;
-  var col1 = document.getElementById("players-col1").children
-  var col2 = document.getElementById("players-col2").children
-  var playersInLobby = 0;
-  var currentColumn = col1;
-  for (var [key, value] of Object.entries(slots)) {
+  let playerCount = 0;
+  let colCount = 0;
+  const col1 = document.getElementById("players-col1").children
+  const col2 = document.getElementById("players-col2").children
+  let playersInLobby = 0;
+  let currentColumn = col1;
+  for (const [key, value] of Object.entries(slots)) {
     
-    if (playerCount == 2) {
+    if (playerCount === 2) {
       colCount++;
       playerCount = 0;
     }
 
-    var playerElement = currentColumn[colCount];
+    const playerElement = currentColumn[colCount];
     if (value.userID !== undefined) {
       playerElement.id = "";
-      playerElement.children[0].id = "kick+" + value.userID;
+      playerElement.children[0].id = `kick+${value.userID}`;
       playerElement.children[0].innerText = value.userName;
       playersInLobby++;
-      if (currentColumn == col1) {
+      if (currentColumn === col1) {
         currentColumn = col2
         playerCount++;
       }
-      else if (currentColumn == col2) {
+      else if (currentColumn === col2) {
         currentColumn = col1;
         playerCount++;
       }
@@ -592,7 +590,7 @@ function loadPlayersInLobby(slots) {
     }
   }
 
-  if (playersInLobby == 1) {
+  if (playersInLobby === 1) {
     thePlayers.classList.add("no-gap");
   } else {
     thePlayers.classList.remove("no-gap");
@@ -604,13 +602,13 @@ socket.on("updateLobbyPlayers", (slots) => {
 })
 
 function hideKick() {
-  var overlayPopup = document.getElementById("overlay-popup1");
+  const overlayPopup = document.getElementById("overlay-popup1");
   overlayPopup.style.display = "none";
-  var overlayPopupConfirm = document.getElementById("overlay-popup2");
+  const overlayPopupConfirm = document.getElementById("overlay-popup2");
   overlayPopupConfirm.style.display = "none";
-  var kickPopup = document.getElementById("kick");
+  const kickPopup = document.getElementById("kick");
   kickPopup.style.display = "none";
-  var kickPopupConfirm = document.getElementById("kickConfirm");
+  const kickPopupConfirm = document.getElementById("kickConfirm");
   kickPopupConfirm.style.display = "none"
 }
 function displayKick() {
@@ -618,31 +616,31 @@ function displayKick() {
   socket.on("fetchLobbyPlayers", (slots) => {
     loadPlayersInLobby(slots)
   })
-  var overlayPopup = document.getElementById("overlay-popup1");
+  const overlayPopup = document.getElementById("overlay-popup1");
   overlayPopup.style.display = "flex";
   
-  var kickPopup = document.getElementById("kick");
+  const kickPopup = document.getElementById("kick");
   kickPopup.style.display = "flex";
 }
 function hideKickConfirm() {
-  var overlayPopupConfirm = document.getElementById("overlay-popup2");
+  const overlayPopupConfirm = document.getElementById("overlay-popup2");
   overlayPopupConfirm.style.display = "none";
-  var kickPopupConfirm = document.getElementById("kickConfirm");
+  const kickPopupConfirm = document.getElementById("kickConfirm");
   kickPopupConfirm.style.display = "none"
 }
 function displayKickConfirm() {
-  var overlayPopupConfirm = document.getElementById("overlay-popup2");
+  const overlayPopupConfirm = document.getElementById("overlay-popup2");
   overlayPopupConfirm.style.display = "flex";
-  var kickPopupConfirm = document.getElementById("kickConfirm");
+  const kickPopupConfirm = document.getElementById("kickConfirm");
   kickPopupConfirm.style.display = "flex"
 }
-var playerToKickID = null;
+let playerToKickID = null;
 function kickPlayer(element) {
-  var playerContainer = element.parentElement;
-  var playerBubble = playerContainer.children[0];
+  const playerContainer = element.parentElement;
+  const playerBubble = playerContainer.children[0];
   if (playerBubble.id !== null || playerBubble.id !== undefined) {
     displayKickConfirm();
-    document.getElementById("playerToKick").innerText = "Kick " + playerBubble.innerText + " from lobby?"
+    document.getElementById("playerToKick").innerText = `Kick ${playerBubble.innerText} from lobby?`
     playerToKickID = playerBubble.id;
   }
 }
@@ -660,24 +658,24 @@ function revealSettingsButtons() {
   document.getElementById("lobby-kickpanel-icon").style.display = "flex";
 }
 socket.on("fetchedGameSettings", (settings) => {
-  var actionsInput = document.getElementById("actionInput");
-  var discussionInput = document.getElementById("discussionInput");
-  var votingInput = document.getElementById("votingInput");
-  var showRoleInput = document.getElementsByClassName("lobby-gamesettings-checkbox")[0];
-  var showRoleCheck = document.getElementById("checkbox-check");
-  var radioHidden = document.getElementById("voteMessagesHidden");
-  var radioAnonymous = document.getElementById("voteMessagesAnonymous");
-  var radioVisible = document.getElementById("voteMessagesVisible");
-  var radioHiddenParentContainer = radioHidden.parentElement.parentElement;
-  var radioAnonymousParentContainer = radioAnonymous.parentElement.parentElement;
-  var radioVisibleParentContainer = radioVisible.parentElement.parentElement;
+  const actionsInput = document.getElementById("actionInput");
+  const discussionInput = document.getElementById("discussionInput");
+  const votingInput = document.getElementById("votingInput");
+  const showRoleInput = document.getElementsByClassName("lobby-gamesettings-checkbox")[0];
+  const showRoleCheck = document.getElementById("checkbox-check");
+  const radioHidden = document.getElementById("voteMessagesHidden");
+  const radioAnonymous = document.getElementById("voteMessagesAnonymous");
+  const radioVisible = document.getElementById("voteMessagesVisible");
+  const radioHiddenParentContainer = radioHidden.parentElement.parentElement;
+  const radioAnonymousParentContainer = radioAnonymous.parentElement.parentElement;
+  const radioVisibleParentContainer = radioVisible.parentElement.parentElement;
   // Durations
-  actionsInput.value = settings["actions"]["value"];
-  discussionInput.value = settings["discussion"]["value"];
-  votingInput.value = settings["voting"]["value"];
+  actionsInput.value = settings.actions.value;
+  discussionInput.value = settings.discussion.value;
+  votingInput.value = settings.voting.value;
 
   // Show roles?
-  if (settings["showRoles"]["value"]) {
+  if (settings.showRoles.value) {
     showRoleInput.id = "showrole-checked";
     showRoleCheck.style.opacity = "100%";
   } else {
@@ -687,21 +685,21 @@ socket.on("fetchedGameSettings", (settings) => {
   }
 
   // Vote messages
-  if (settings["voteMessages"]["value"] == "hidden") {
+  if (settings.voteMessages.value === "hidden") {
     radioHiddenParentContainer.id = "votemessage-checked";
       radioHidden.style.backgroundColor = "var(--game-setting-clicked)";
       radioAnonymous.style.backgroundColor = "var(--game-setting)";
       radioVisible.style.backgroundColor = "var(--game-setting)";
       radioAnonymousParentContainer.id = "";
       radioVisibleParentContainer.id = "";
-  } else if (settings["voteMessages"]["value"] == "anonymous") {
+  } else if (settings.voteMessages.value === "anonymous") {
     radioHiddenParentContainer.id = "";
       radioHidden.style.backgroundColor = "var(--game-setting)";
       radioAnonymous.style.backgroundColor = "var(--game-setting-clicked)";
       radioVisible.style.backgroundColor = "var(--game-setting)";
       radioAnonymousParentContainer.id = "votemessage-checked";
       radioVisibleParentContainer.id = "";
-  } else if (settings["voteMessages"]["value"] == "visible") {
+  } else if (settings.voteMessages.value === "visible") {
     radioHidden.style.backgroundColor = "var(--game-setting)";
       radioAnonymous.style.backgroundColor = "var(--game-setting)";
       radioVisible.style.backgroundColor = "var(--game-setting-clicked)";
@@ -716,17 +714,17 @@ function loadGameSettings() {
 
 function showGameSettings() {
   loadGameSettings();
-  var gameSettingsContainer = document.getElementById(
+  const gameSettingsContainer = document.getElementById(
     "lobby-gamesettings-container"
   );
-  var gameSettingsOverlay = document.getElementById("overlay-gamesettings");
+  const gameSettingsOverlay = document.getElementById("overlay-gamesettings");
   gameSettingsContainer.style.display = "flex";
   gameSettingsOverlay.style.display = "flex";
 }
 
 function getSeenNotification() {
-  var cookies = document.cookie.split(";");
-  for (var i = 0; i < cookies.length; i++) {
+  const cookies = document.cookie.split(";");
+  for (let i = 0; i < cookies.length; i++) {
     if (cookies[i].includes("seenNotification")) {
       return cookies[i].split("=")[1];
     }
@@ -736,11 +734,11 @@ function getSeenNotification() {
 const fiveHours = 60 * 60 * 5;
 
 function showNotification(type) {
-  if (type == "copy") {
+  if (type === "copy") {
     if (getSeenNotification() !== "true") {
       navigator.clipboard.writeText(window.location.href);
       document.cookie = `seenNotification=true; path=/; max-age=${fiveHours}; SameSite=Lax`;
-      var theNotification = document.getElementById("lobby-notification");
+      const theNotification = document.getElementById("lobby-notification");
       theNotification.style.display = "flex";
       theNotification.innerText = "Copied link to clipboard. Share it! ᕕ( ᐛ )ᕗ";
       setTimeout(() => {
@@ -751,7 +749,7 @@ function showNotification(type) {
 }
 
 function hideNotification() {
-  var theNotification = document.getElementById("lobby-notification");
+  const theNotification = document.getElementById("lobby-notification");
   theNotification.style.display = "none";
 }
 
@@ -772,15 +770,15 @@ function hideCard() {
   document
     .getElementById("adjusted-close-button")
     .setAttribute("onclick", "hideInfo()");
-  var displayContainer = document.getElementById(
+  const displayContainer = document.getElementById(
     "lobby-rolecard-display-container"
   );
-  var displayRole = document.getElementById("lobby-rolecard-display-role");
-  var displayDescription = document.getElementById(
+  const displayRole = document.getElementById("lobby-rolecard-display-role");
+  const displayDescription = document.getElementById(
     "lobby-rolecard-display-description"
   );
-  var displayImage = document.getElementById("lobby-rolecard-display-image");
-  var displayMission = document.getElementById(
+  const displayImage = document.getElementById("lobby-rolecard-display-image");
+  const displayMission = document.getElementById(
     "lobby-rolecard-display-mission"
   );
   displayContainer.style.display = "none";
@@ -794,25 +792,25 @@ function showCard(element) {
   // show overlay
   document.getElementById("overlay-rolecards").setAttribute("onclick", "");
   document.getElementById("adjusted-close").setAttribute("onclick", "");
-  var displayContainer = document.getElementById(
+  const displayContainer = document.getElementById(
     "lobby-rolecard-display-container"
   );
-  var displayRole = document.getElementById("lobby-rolecard-display-role");
-  var displayDescription = document.getElementById(
+  const displayRole = document.getElementById("lobby-rolecard-display-role");
+  const displayDescription = document.getElementById(
     "lobby-rolecard-display-description"
   );
-  var displayImage = document.getElementById("lobby-rolecard-display-image");
-  var displayMission = document.getElementById(
+  const displayImage = document.getElementById("lobby-rolecard-display-image");
+  const displayMission = document.getElementById(
     "lobby-rolecard-display-mission"
   );
-  var targetElementID = element.id.replace("-card", "");
+  const targetElementID = element.id.replace("-card", "");
   socket.emit("requestLobbyDisplayCard", getPlayerID(), targetElementID);
   socket.on("fetchedLobbyDisplayCard", (name, team, description, mission) => {
     displayRole.innerText = name;
     displayDescription.innerText = description;
     displayMission.innerText = mission;
     displayMission.style.backgroundColor = `var(--${team}-bg-mission`;
-    theSrc = "/assets/rolecards/" + name + ".webp";
+    theSrc = `/assets/rolecards/${name}.webp`;
     displayImage.src = theSrc;
     if (team.includes("good")) {
       displayRole.classList.add("good-selected-color");
@@ -890,20 +888,20 @@ socket.on("ready-status-lobby", (users) => {
 });
 
 function readyStatusLobby(users) {
-  var lobbyButtons = document.getElementsByClassName(
+  const lobbyButtons = document.getElementsByClassName(
     "lobby-button-container"
   )[0];
   lobbyButtons.style.display = "flex";
-  for (var i = 0; i < users.length; i++) {
+  for (let i = 0; i < users.length; i++) {
     if (document.getElementById(users[i].thePlayerID) !== null) {
       if (users[i].readyLobby) {
-        var status = document.getElementById(users[i].thePlayerID).parentElement
+        const status = document.getElementById(users[i].thePlayerID).parentElement
           .children[1];
         status.innerText = "ready";
         status.id = "status-ready";
         
       } else if (!users[i].readyLobby) {
-        var status = document.getElementById(users[i].thePlayerID).parentElement
+        const status = document.getElementById(users[i].thePlayerID).parentElement
         .children[1];
         status.innerText = "not ready";
         status.id = "status-notready";
@@ -940,7 +938,7 @@ function roleCounter(element) {
 }
 
 function roleReqHandler(roles, users) {
-  if (roles == users) {
+  if (roles === users) {
     //? same amount of roles as players
     socket.emit("reqHandler", getPlayerID(), "rolesEqualUsers", true);
     document.getElementById("lobby-req-check-roles").style.display = "inline";
@@ -1010,9 +1008,9 @@ function roleHandler(element) {
 }
 
 function updateRoles(roles) {
-  var array = document.getElementsByClassName("lobby-role-tag");
-  for (var i = 0; i < array.length; i++) {
-    var element = array[i];
+  const array = document.getElementsByClassName("lobby-role-tag");
+  for (let i = 0; i < array.length; i++) {
+    const element = array[i];
     if (roles.includes(element.id)) {
       if (element.className.includes("good")) {
         element.classList.add("good-selected");
@@ -1036,7 +1034,7 @@ function updateRoles(roles) {
 }
 
 function pickRole(element, op) {
-  var role = element.id;
+  const role = element.id;
   socket.emit("pickRole", getPlayerID(), role, op);
 }
 
@@ -1055,18 +1053,18 @@ function toggleLobbyButton(element) {
 }
 
 function updatePlayerSlots(host, slots, proxyID) {
-  for (var [key, value] of Object.entries(slots)) {
-    if (value.taken == true) {
-      var slot = document.getElementById(key);
+  for (const [key, value] of Object.entries(slots)) {
+    if (value.taken === true) {
+      const slot = document.getElementById(key);
       slot.innerText = value.userName;
       if (value.userID !== undefined) {
         slot.parentElement.id = value.userID;
         slot.parentElement.parentElement.id = "joined";
-        var status = slot.parentElement.parentElement.children[1];
-        if (value.userID == host) {
+        const status = slot.parentElement.parentElement.children[1];
+        if (value.userID === host) {
           slot.parentElement.parentElement.classList.add("joined-host");
           slot.parentElement.parentElement.classList.remove("joined-self", "joined-other", "empty");
-        } else if (value.userID == proxyID) {
+        } else if (value.userID === proxyID) {
           slot.parentElement.parentElement.classList.add("joined-self");
           slot.parentElement.parentElement.classList.remove("joined-host", "joined-other", "empty");
         } else {
@@ -1075,12 +1073,12 @@ function updatePlayerSlots(host, slots, proxyID) {
         }
       }
       // status.innerText = "not ready";
-    } else if (value.taken == false) {
-      var slot = document.getElementById(key);
+    } else if (value.taken === false) {
+      const slot = document.getElementById(key);
       slot.innerText = value.userName;
       slot.parentElement.id = value.userID;
       slot.parentElement.parentElement.id = "";
-      var status = slot.parentElement.parentElement.children[1];
+      const status = slot.parentElement.parentElement.children[1];
       status.id = "";
       slot.parentElement.parentElement.classList.add("empty");
       slot.parentElement.parentElement.classList.remove("joined-self", "joined-host", "joined-other");
@@ -1089,8 +1087,8 @@ function updatePlayerSlots(host, slots, proxyID) {
 }
 
 function getPlayerID() {
-  var cookies = document.cookie.split(";");
-  for (var i = 0; i < cookies.length; i++) {
+  const cookies = document.cookie.split(";");
+  for (let i = 0; i < cookies.length; i++) {
     if (cookies[i].includes("eyesopenID")) {
       return cookies[i].split("=")[1];
     }
@@ -1098,7 +1096,7 @@ function getPlayerID() {
 }
 
 function copyToClipboard() {
-  var copyText = document.getElementById("roomcode-copy");
+  const copyText = document.getElementById("roomcode-copy");
   navigator.clipboard.writeText(copyText.innerText);
   copyButtonAnimate();
   showClearCheck();

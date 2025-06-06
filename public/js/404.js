@@ -1,7 +1,7 @@
-const domain = "https://eyesopen.up.railway.app/";
+const domain = "http://localhost:3000";
 const socket = io(domain, {secure: true});
 
-const lobby = domain + "lobby/";
+const lobby = `${domain}/lobby/`;
 
 socket.on("connect", () => {
   socket.emit("checkUser", getPlayerID());
@@ -14,13 +14,13 @@ socket.on("connect", () => {
   });
 });
 
-var theHeader = document.getElementById("header");
-var preFix = "Beep Boop";
-var robotFrames = ["└[∵]┘", "┌[∵]┐"];
+const theHeader = document.getElementById("header");
+const preFix = "Beep Boop";
+const robotFrames = ["└[∵]┘", "┌[∵]┐"];
 
 setInterval(() => {
-  var rand = random(0, robotFrames.length - 1);
-  theHeader.innerText = preFix + " " + robotFrames[rand];
+  const rand = random(0, robotFrames.length - 1);
+  theHeader.innerText = `${preFix} ${robotFrames[rand]}`;
 }, 850);
 
 function random(min, max) {
@@ -38,18 +38,18 @@ function resetCookiePlayerID(override = false) {
     if (getPlayerID() !== "null" && getPlayerID() !== undefined) {
       console.log("ID exists before user, setting to null");
       document.cookie = "eyesopenID=null; path=/";
-    } else if (getPlayerID() == undefined) {
+    } else if (getPlayerID() === undefined) {
       console.log("ID is undefined, setting to null");
       document.cookie = "eyesopenID=null; path=/";
-    } else if (getPlayerID() == "null") {
+    } else if (getPlayerID() === "null") {
       console.log("ID is already null");
     }
   }
 }
 
 function getPlayerID() {
-  var cookies = document.cookie.split(";");
-  for (var i = 0; i < cookies.length; i++) {
+  const cookies = document.cookie.split(";");
+  for (let i = 0; i < cookies.length; i++) {
     if (cookies[i].includes("eyesopenID")) {
       return cookies[i].split("=")[1];
     }

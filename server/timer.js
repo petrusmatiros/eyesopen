@@ -1,4 +1,4 @@
-class Timer {
+export class Timer {
   constructor() {
     this.duration = 0;
     this.counter = 0;
@@ -37,7 +37,3 @@ class Timer {
     this.setCounter(this.getCounter() - 1);
   }
 }
-
-module.exports = {
-  Timer,
-};

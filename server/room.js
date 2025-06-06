@@ -1,6 +1,6 @@
-var { Game } = require("./game");
+import { Game } from "./game.js";
 
-class Room {
+export class Room {
   constructor(host) {
     this.users = [];
     this.roles = [];
@@ -131,6 +131,3 @@ class Room {
     this.host = host;
   }
 }
-module.exports = {
-  Room,
-};

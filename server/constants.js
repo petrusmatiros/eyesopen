@@ -1,19 +1,19 @@
-global.ACTIONS = 30;
-global.NIGHTMESSAGES = 5;
-global.RECAP = 7;
-global.DISCUSSION = 15;
-global.VOTING = 120;
-global.DAYMESSAGES = 7;
-global.SHOWROLES = true;
-global.VOTEMESSAGES = "visible"
-global.MIN_SECONDS = 5;
-global.MAX_SECONDS = 300;
-global.BREAK_LIMIT = 100;
-global.minRoles = 3;
-global.minPlayers = 3;
-global.maxPlayers = 14;
-global.maxNoDeaths = 10;
-global.roleTypes = {
+export const ACTIONS = 30;
+export const NIGHTMESSAGES = 5;
+export const RECAP = 7;
+export const DISCUSSION = 15;
+export const VOTING = 120;
+export const DAYMESSAGES = 7;
+export const SHOWROLES = true;
+export const VOTEMESSAGES = "visible"
+export const MIN_SECONDS = 5;
+export const MAX_SECONDS = 300;
+export const BREAK_LIMIT = 100;
+export const minRoles = 3;
+export const minPlayers = 3;
+export const maxPlayers = 14;
+export const maxNoDeaths = 10;
+export const roleTypes = {
   Villager: "villager",
   Investigator: "investigator",
   Doctor: "doctor",
@@ -29,3 +29,4 @@ global.roleTypes = {
   Executioner: "executioner",
   Lawyer: "lawyer",
 };
+
