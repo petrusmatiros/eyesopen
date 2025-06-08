@@ -74,9 +74,8 @@ jobs:
 
             echo "[+] Running new container..."
             docker run -d --name $APP_NAME \
-              -e NODE_ENV=${{ secrets.NODE_ENV }} \
-              -e PORT=${{ secrets.PORT }} \
-              -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
+              -e NODE_ENV=${{ vars.NODE_ENV }} \
+              -e PORT=${{ vars.PORT }} \
               -p 127.0.0.1:8080:3000 \
               $APP_NAME:$IMAGE_TAG || (docker logs $APP_NAME && exit 1)
 
