@@ -1,4 +1,4 @@
-const domain = "http://localhost:3000";
+const domain = "https://eyesopen.petrusmatiros.com";
 const socket = io(domain, {secure: true});
 
 const lobby = `${domain}/lobby/`;
