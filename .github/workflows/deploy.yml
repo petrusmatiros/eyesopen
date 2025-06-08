@@ -3,8 +3,8 @@ name: Build and deploy to production
 on:
   workflow_dispatch:
 
-env:
-  APP_NAME: odd-duck  # Change per repo or override in GitHub Variables
+# env:
+#   APP_NAME: my-app  # Change per repo or override in GitHub Variables
 
 jobs:
   deploy:
