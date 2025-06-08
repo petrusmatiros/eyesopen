@@ -3,76 +3,52 @@ name: Build and deploy to production
 on:
   workflow_dispatch:
 
+env:
+  APP_NAME: odd-duck  # Change per repo or override in GitHub Variables
+
 jobs:
   deploy:
-    environment: production
     runs-on: ubuntu-latest
-
-    env:
-      APP_NAME: ${{ vars.APP_NAME }}
-      NODE_ENV: ${{ vars.NODE_ENV }}
-      PORT: ${{ vars.PORT }}
+    environment: production
 
     steps:
-      - name: Checkout repository
+      - name: 📦 Checkout source
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
+      - name: 🔨 Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Extract short SHA
+      - name: 🏷️ Get short SHA
         id: sha
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Build Docker image with version tag
-        run: |
-          docker build --no-cache -t $APP_NAME:latest -t $APP_NAME:${{ steps.sha.outputs.sha_short }} .
-
-      - name: Show built image digests
-        run: docker images --no-trunc | grep $APP_NAME
-
-      - name: Save Docker image to tarball
-        run: docker save $APP_NAME:${{ steps.sha.outputs.sha_short }} -o image.tar
-
-      - name: Verify image exists and permissions
-        run: |
-          ls -lh image.tar
-          sha256sum image.tar
-          chmod 644 image.tar
-
-      - name: Clean up previous image tar on server
-        uses: appleboy/ssh-action@v1.0.0
+      - name: 🐳 Build Docker image
+        uses: docker/build-push-action@v5
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          passphrase: ${{ secrets.SERVER_SSH_PASSPHRASE }}
-          script: rm -rf /tmp/image.tar
+          context: .
+          push: false
+          tags: |
+            ${{ env.APP_NAME }}:latest
+            ${{ env.APP_NAME }}:${{ steps.sha.outputs.sha_short }}
+          load: true
 
-      - name: Pre-check for existing /tmp/image.tar
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          passphrase: ${{ secrets.SERVER_SSH_PASSPHRASE }}
-          script: |
-            if [ -d /tmp/image.tar ]; then
-              echo "ERROR: /tmp/image.tar is a directory. Removing it now."
-              rm -rf /tmp/image.tar
-            fi
+      - name: 🧊 Save image to unique tarball
+        run: |
+          export IMAGE_FILE=image-${{ env.APP_NAME }}-${{ steps.sha.outputs.sha_short }}.tar
+          echo "IMAGE_FILE=$IMAGE_FILE" >> $GITHUB_ENV
+          docker save $APP_NAME:${{ steps.sha.outputs.sha_short }} -o $IMAGE_FILE
 
-      - name: Upload image tarball to server
+      - name: 📤 Upload image to server
         uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           passphrase: ${{ secrets.SERVER_SSH_PASSPHRASE }}
-          source: "./image.tar"
-          target: "/tmp/"
+          source: ${{ env.IMAGE_FILE }}
+          target: /tmp/
 
-      - name: Deploy on server via SSH
+      - name: 🚀 Deploy container on server
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -80,44 +56,40 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           passphrase: ${{ secrets.SERVER_SSH_PASSPHRASE }}
           script: |
-            export APP_NAME=${{ vars.APP_NAME }}
-            export PORT=${{ vars.PORT }}
-            export NODE_ENV=${{ vars.NODE_ENV }}
-            export IMAGE_TAG=${{ steps.sha.outputs.sha_short }}
+            set -e
+            APP_NAME=${{ env.APP_NAME }}
+            IMAGE_TAG=${{ steps.sha.outputs.sha_short }}
+            IMAGE_FILE=image-${APP_NAME}-${IMAGE_TAG}.tar
 
-            echo "Removing existing container and images..."
+            echo "[+] Loading Docker image..."
+            docker load -i /tmp/$IMAGE_FILE
+
+            echo "[+] Stopping old container..."
             docker rm -f $APP_NAME || true
-            docker images --filter=reference="$APP_NAME*" -q | xargs -r docker rmi -f || true
 
-            echo "Loading new image..."
-            docker load -i /tmp/image.tar
-            docker images --no-trunc | grep $APP_NAME
-
-            echo "Starting new container..."
+            echo "[+] Running new container..."
             docker run -d --name $APP_NAME \
-              -e NODE_ENV=$NODE_ENV \
-              -e PORT=$PORT \
+              -e NODE_ENV=${{ secrets.NODE_ENV }} \
+              -e PORT=${{ secrets.PORT }} \
+              -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
               -p 127.0.0.1:8080:3000 \
               $APP_NAME:$IMAGE_TAG || (docker logs $APP_NAME && exit 1)
 
-            echo "Prune unused images and cleanup..."
+            echo "[+] Cleaning up image..."
+            rm -f /tmp/$IMAGE_FILE
             docker image prune -f
-            rm -f /tmp/image.tar
 
-      - name: Clean up local Docker image
+      - name: 🧹 Clean up runner
         run: |
           docker rmi $APP_NAME:${{ steps.sha.outputs.sha_short }} || true
           docker rmi $APP_NAME:latest || true
+          docker system prune -f
+          docker volume prune -f
 
-      - name: Notify deployment success
+      - name: ✅ Notify success
         if: success()
         run: echo "✅ Deployment of $APP_NAME succeeded!"
 
-      - name: Notify deployment failure
+      - name: ❌ Notify failure
         if: failure()
         run: echo "❌ Deployment of $APP_NAME failed!"
-
-      - name: Post deployment cleanup on runner
-        run: |
-          docker system prune -f
-          docker volume prune -f
