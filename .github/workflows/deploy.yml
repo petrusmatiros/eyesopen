@@ -41,7 +41,7 @@ jobs:
         run: |
           export IMAGE_FILE=image-${{ vars.APP_NAME }}-${{ steps.sha.outputs.sha_short }}.tar
           echo "IMAGE_FILE=$IMAGE_FILE" >> $GITHUB_ENV
-          docker save $APP_NAME:${{ steps.sha.outputs.sha_short }} -o $IMAGE_FILE
+          docker save ${{ vars.APP_NAME }}:${{ steps.sha.outputs.sha_short }} -o $IMAGE_FILE
 
       - name: 📤 Upload image to server
         uses: appleboy/scp-action@v1.0.0
@@ -86,15 +86,15 @@ jobs:
 
       - name: 🧹 Clean up runner
         run: |
-          docker rmi $APP_NAME:${{ steps.sha.outputs.sha_short }} || true
-          docker rmi $APP_NAME:latest || true
+          docker rmi ${{ vars.APP_NAME }}:${{ steps.sha.outputs.sha_short }} || true
+          docker rmi ${{ vars.APP_NAME }}:latest || true
           docker system prune -f
           docker volume prune -f
 
       - name: ✅ Notify success
         if: success()
-        run: echo "✅ Deployment of $APP_NAME succeeded!"
+        run: echo "✅ Deployment of ${{ vars.APP_NAME }} succeeded!"
 
       - name: ❌ Notify failure
         if: failure()
-        run: echo "❌ Deployment of $APP_NAME failed!"
+        run: echo "❌ Deployment of ${{ vars.APP_NAME }} failed!"
