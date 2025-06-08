@@ -17,7 +17,7 @@ jobs:
 
       - name: 🔍 Debug ENV vars
         run: |
-          echo "APP_NAME=${APP_NAME}"
+          echo "APP_NAME=${{ vars.APP_NAME }}"
           echo "SHA=${{ steps.sha.outputs.sha_short }}"
 
       - name: 🔨 Set up Docker Buildx
@@ -33,13 +33,13 @@ jobs:
           context: .
           push: false
           tags: |
-            ${{ env.APP_NAME }}:latest
-            ${{ env.APP_NAME }}:${{ steps.sha.outputs.sha_short }}
+            ${{ vars.APP_NAME }}:latest
+            ${{ vars.APP_NAME }}:${{ steps.sha.outputs.sha_short }}
           load: true
 
       - name: 🧊 Save image to unique tarball
         run: |
-          export IMAGE_FILE=image-${{ env.APP_NAME }}-${{ steps.sha.outputs.sha_short }}.tar
+          export IMAGE_FILE=image-${{ vars.APP_NAME }}-${{ steps.sha.outputs.sha_short }}.tar
           echo "IMAGE_FILE=$IMAGE_FILE" >> $GITHUB_ENV
           docker save $APP_NAME:${{ steps.sha.outputs.sha_short }} -o $IMAGE_FILE
 
@@ -62,7 +62,7 @@ jobs:
           passphrase: ${{ secrets.SERVER_SSH_PASSPHRASE }}
           script: |
             set -e
-            APP_NAME=${{ env.APP_NAME }}
+            APP_NAME=${{ vars.APP_NAME }}
             IMAGE_TAG=${{ steps.sha.outputs.sha_short }}
             IMAGE_FILE=image-${APP_NAME}-${IMAGE_TAG}.tar
 
