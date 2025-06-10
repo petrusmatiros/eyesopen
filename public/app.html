@@ -2,45 +2,59 @@
 <html lang="en">
 
 <head>
+  <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Meta tags -->
-  <meta property="og:url" content="https://eyesopen.up.railway.app"/>
-  <meta property="og:title" content="Eyes Open"/>
-  <meta property="og:title" content="Eyes Open"/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:description" content="Mafia/ToS/Werewolf inspired web based game. Play the famous social deduction game with 14 unique roles, on your phone!"/>
-  <meta property="og:image" content="https://eyesopen.up.railway.app/eyesopen.svg"/>
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
   <!-- Title and Meta description -->
   <title>Eyes Open</title>
-  <meta
-    name="description"
-    content="Mafia/Werewolf/ToS inspired web based game"
-  />
-  <meta name="keywords" content="eyes open, Eyes Open, Eyes open, Eyes Open Game, eyes open game, eyes open mafia, eyes open Town Of Salem, eyes open werewolf, eyes open online, eyes open petrus matiros" />
+  <meta name="description" content="Mafia/Werewolf/ToS inspired web based game" />
+  <meta name="keywords"
+    content="eyes open, Eyes Open, Eyes open, Eyes Open Game, eyes open game, eyes open mafia, eyes open Town Of Salem, eyes open werewolf, eyes open online, eyes open petrus matiros" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-video-preview:-1, max-image-preview:large">
+
+  <meta name="author" content="petrusmatiros" />
+  <meta name="theme-color" content="#ffffff" />
+  <!-- Open Graph Meta -->
+  <meta name="og:title" content="Eyes Open" />
+  <meta name="og:description" content="Mafia/Werewolf/ToS inspired web based game" />
+  <meta name="og:locale" content="en_US" />
+  <meta name="og:image" content="/web-app-manifest-512x512.png" />
+  <meta name="og:image:alt" content="Eyes Open Logo" />
+  <meta name="og:url" content="https://eyesopen.petrusmatiros.com" />
+  <meta name="og:type" content="website" />
+  <!-- Twitter Meta -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Eyes Open" />
+  <meta name="twitter:description" content="Mafia/Werewolf/ToS inspired web based game" />
+  <meta name="twitter:image" content="/web-app-manifest-512x512.png" />
+  <meta name="twitter:image:alt" content="Eyes Open Logo" />
+  <meta name="twitter:site" content="@petrusmatiros" />
+  <meta name="twitter:creator" content="@petrusmatiros" />
+  <meta name="twitter:url" content="https://eyesopen.petrusmatiros.com" />
   
-  <link rel="author" href="petrus.matiros@gmail.com" />
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg" sizes="32x32" href="/assets/icons/favicon.svg" />
   <link rel="stylesheet" href="/css/lobby.css" />
   <link rel="stylesheet" href="/css/app.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
   <!-- optionally increase loading priority -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap">
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap">
 
   <link
-      href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-      media="print"
-      onload="this.onload=null;this.removeAttribute('media');"
-    />
+    href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" />
   <script defer src="https://unpkg.com/socket.io-client@4.5.0/dist/socket.io.min.js"></script>
   <script defer src="/js/app.js"></script>
   <!-- no-JS fallback -->
   <noscript>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap">
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap">
   </noscript>
 </head>
 
@@ -94,19 +108,9 @@
           Scroll for me</div>
       </div>
       <div class="game-messagebox-chat game-night-fg" id="game-messagebox-chat">
-        <input
-        type="text"
-        class=""
-        id="game-chat"
-        name="game-chat"
-        placeholder="Type to chat with dead players"
-        autocomplete="off"
-        autofocus
-        enterkeyhint="done"
-        minlength="1"
-        maxlength="300"
-        />
-        <img class="game-messagebox-chat-send" id="game-messagebox-chat-send" alt="send button" >
+        <input type="text" class="" id="game-chat" name="game-chat" placeholder="Type to chat with dead players"
+          autocomplete="off" autofocus enterkeyhint="done" minlength="1" maxlength="300" />
+        <img class="game-messagebox-chat-send" id="game-messagebox-chat-send" alt="send button">
       </div>
     </div>
 
@@ -136,7 +140,10 @@
         </div>
         <div class="game-clock-divider game-night-border" id="game-clock-divider"></div>
         <!-- Clock time -->
-        <div class="game-time" id="game-time"><div id="game-time-minutes">--</div><div id="game-time-divisor">:</div><div id="game-time-seconds">--</div>
+        <div class="game-time" id="game-time">
+          <div id="game-time-minutes">--</div>
+          <div id="game-time-divisor">:</div>
+          <div id="game-time-seconds">--</div>
         </div>
       </div>
       <!-- Players -->
@@ -412,7 +419,7 @@
     <div class="game-cemetery pop-light4">
       <div class="game-cemetery-wrapper">
         <div class="game-cemetery-title">CEMETERY</div>
-        <div class="game-deceased" id ="game-deceased">
+        <div class="game-deceased" id="game-deceased">
           <div class="game-deadplayer"></div>
           <div class="game-deadplayer"></div>
           <div class="game-deadplayer"> </div>
@@ -435,13 +442,13 @@
     <!-- Audio buttons -->
     <div class="game-audio-buttons pop-light4" id="game-audio-buttons">
       <div>
-        <input type="range" id="musicRangeSlider" name="music"
-               min="0" max="100" step="10" value="50" oninput="changeMusicVolume(this)"> 
+        <input type="range" id="musicRangeSlider" name="music" min="0" max="100" step="10" value="50"
+          oninput="changeMusicVolume(this)">
         <label for="music" id="musicRangeSliderLabel">Music:</label>
       </div>
       <div>
-        <input type="range" id="sfxRangeSlider" name="sfx"
-               min="0" max="100" step="10" value="50" oninput="changeSFXVolume(this)"> 
+        <input type="range" id="sfxRangeSlider" name="sfx" min="0" max="100" step="10" value="50"
+          oninput="changeSFXVolume(this)">
         <label for="sfx" id="sfxRangeSliderLabel">SFX:</label>
       </div>
       <!-- <div class="game-audio-button" onclick="toggleAudio()">
@@ -460,13 +467,8 @@
     <div class="game-overlay" id="overlay-leave" onclick="hideLeave()"></div>
     <div class="game-popup gelatine-light-fixed shadow-light" id="leave">
       <div class="game-close">
-        <img
-          class="game-close-button"
-          id="game-popup-close"
-          onclick="hideLeave()"
-          src="/assets/icons/close.svg"
-          alt="close x icon"
-        />
+        <img class="game-close-button" id="game-popup-close" onclick="hideLeave()" src="/assets/icons/close.svg"
+          alt="close x icon" />
       </div>
       <div class="game-popup-text" id="leave-text">Leave game?</div>
       <img class="game-popup-icon" alt="thinking emoji" src="/assets/icons/think.svg">
@@ -488,7 +490,7 @@
     </div>
 
   </div>
-  
+
 
 </body>
 

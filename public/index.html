@@ -1,351 +1,282 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Meta -->
-    <title>Eyes Open</title>
-    <meta
-      name="description"
-      content="Mafia/Werewolf/ToS inspired web based game"
-      />
-      <meta name="keywords" content="eyes open, Eyes Open, Eyes open, Eyes Open Game, eyes open game, eyes open mafia, eyes open Town Of Salem, eyes open werewolf, eyes open online, eyes open petrus matiros" />
-    <meta name="robots" content="index, follow, max-snippet:-1, max-video-preview:-1, max-image-preview:large">
 
-    
-    <link rel="author" href="petrus.matiros@gmail.com" />
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg" sizes="32x32" href="/assets/icons/favicon.svg" />
-    <link rel="stylesheet" href="/css/index.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <!-- Title and Meta description -->
+  <title>Eyes Open</title>
+  <meta name="description" content="Mafia/Werewolf/ToS inspired web based game" />
+  <meta name="keywords"
+    content="eyes open, Eyes Open, Eyes open, Eyes Open Game, eyes open game, eyes open mafia, eyes open Town Of Salem, eyes open werewolf, eyes open online, eyes open petrus matiros" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-video-preview:-1, max-image-preview:large">
 
-    <!-- optionally increase loading priority -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap">
+  <meta name="author" content="petrusmatiros" />
+  <meta name="theme-color" content="#ffffff" />
+  <!-- Open Graph Meta -->
+  <meta name="og:title" content="Eyes Open" />
+  <meta name="og:description" content="Mafia/Werewolf/ToS inspired web based game" />
+  <meta name="og:locale" content="en_US" />
+  <meta name="og:image" content="/web-app-manifest-512x512.png" />
+  <meta name="og:image:alt" content="Eyes Open Logo" />
+  <meta name="og:url" content="https://eyesopen.petrusmatiros.com" />
+  <meta name="og:type" content="website" />
+  <!-- Twitter Meta -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Eyes Open" />
+  <meta name="twitter:description" content="Mafia/Werewolf/ToS inspired web based game" />
+  <meta name="twitter:image" content="/web-app-manifest-512x512.png" />
+  <meta name="twitter:image:alt" content="Eyes Open Logo" />
+  <meta name="twitter:site" content="@petrusmatiros" />
+  <meta name="twitter:creator" content="@petrusmatiros" />
+  <meta name="twitter:url" content="https://eyesopen.petrusmatiros.com" />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-      media="print"
-      onload="this.onload=null;this.removeAttribute('media');"
-    />
-    <script
-      defer
-      src="https://unpkg.com/socket.io-client@4.5.0/dist/socket.io.min.js"
-    ></script>
+  <link rel="stylesheet" href="/css/index.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <script defer src="/js/index.js"></script>
+  <!-- optionally increase loading priority -->
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap">
 
-    <!-- no-JS fallback -->
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap">
-    </noscript>
-  </head>
-  <body class="body-main" id="body" ontouchstart="playIntro()" onclick="playIntro()">
-    <div class="animations-container">
-      <!-- Animated cards container -->
-      <div class="animated-cards-container">
-        <!-- Animated cards row 1 -->
-        <div class="animated-cards">
-          
-        </div>
-        <!-- Animated cards row 2 -->
-        <div class="animated-cards">
-          
-        </div>
-        <!-- Animated cards row 3 -->
-        <div class="animated-cards">
-          
-        </div>
-        <!-- Animated cards row 4 -->
-        <div class="animated-cards">
-          
-        </div>
-        <!-- Animated cards row 5 -->
-        <div class="animated-cards">
-          
-        </div>
-        <!-- Animated cards row 6 -->
-        <div class="animated-cards">
-          
-        </div>
-        <!-- Animated cards row 7 -->
-        <div class="animated-cards">
-          
-        </div>
+  <link
+    href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" />
+  <script defer src="https://unpkg.com/socket.io-client@4.5.0/dist/socket.io.min.js"></script>
+
+  <script defer src="/js/index.js"></script>
+
+  <!-- no-JS fallback -->
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap">
+  </noscript>
+</head>
+
+<body class="body-main" id="body" ontouchstart="playIntro()" onclick="playIntro()">
+  <div class="animations-container">
+    <!-- Animated cards container -->
+    <div class="animated-cards-container">
+      <!-- Animated cards row 1 -->
+      <div class="animated-cards">
+
+      </div>
+      <!-- Animated cards row 2 -->
+      <div class="animated-cards">
+
+      </div>
+      <!-- Animated cards row 3 -->
+      <div class="animated-cards">
+
+      </div>
+      <!-- Animated cards row 4 -->
+      <div class="animated-cards">
+
+      </div>
+      <!-- Animated cards row 5 -->
+      <div class="animated-cards">
+
+      </div>
+      <!-- Animated cards row 6 -->
+      <div class="animated-cards">
+
+      </div>
+      <!-- Animated cards row 7 -->
+      <div class="animated-cards">
 
       </div>
 
     </div>
-    <div class="navbar-main">
-      <div class="navbar-container">
-        <a href="/" class="logo-link"
-          ><img class="logo" alt="eyesopen logo" src="/assets/icons/eyesopen.svg"
-        /></a>
+
+  </div>
+  <div class="navbar-main">
+    <div class="navbar-container">
+      <a href="/" class="logo-link"><img class="logo" alt="eyesopen logo" src="/assets/icons/eyesopen.svg" /></a>
+    </div>
+  </div>
+
+  <audio id="introAudio" src="/assets/audio/intro.mp3"></audio>
+
+  <div class="menu" id="index-with-logo">
+    <img id="title-frame1" class="title-eyesopen gelatine-light" alt="Eyes Open title"
+      src="/assets/icons/eyesopen_title1.svg">
+    <img id="title-frame2" class="title-eyesopen gelatine-light hidden" alt="Eyes Open title"
+      src="/assets/icons/eyesopen_title2.svg">
+    <img id="title-frame3" class="title-eyesopen gelatine-light hidden" alt="Eyes Open title"
+      src="/assets/icons/eyesopen_title3.svg">
+
+    <div class="title-button-container">
+      <a class="title-button pop-light1 shadow-light" onclick="displayHost()">Host new game</a>
+      <div class="title-button pop-light2 shadow-light" onclick="displayUser()">Join game</div>
+      <div class="title-button shadow-light" id="changeUsername" onclick="displayChangeUsername()">Change username</div>
+    </div>
+    <div class="overlay" id="overlay" onclick="closeCard()"></div>
+
+    <div class="card-input shadow-light" id="user">
+      <div class="close">
+        <img class="close-button" onclick="hideUser()" src="/assets/icons/close.svg" alt="close x icon" />
       </div>
+      <div class="join-info">What's your name adventurer?</div>
+      <p class="join-help" id="user-help"></p>
+      <input type="text" id="inputUser" name="inputUser" placeholder="ChilliCheese" autocomplete="off" autofocus
+        enterkeyhint="done" required minlength="1" maxlength="12" size="20" />
+      <div class="confirm-button" onclick="checkName(false)">Confirm</div>
+    </div>
+    <div class="card-input shadow-light" id="changeName">
+      <div class="close">
+        <img class="close-button" onclick="hideChangeUsername()" src="/assets/icons/close.svg" alt="close x icon" />
+      </div>
+      <div class="join-info">What will your new name be?</div>
+      <p class="join-help" id="changeName-help"></p>
+      <input type="text" id="inputChangeName" name="inputChangeName" placeholder="New username" autocomplete="off"
+        autofocus enterkeyhint="done" required minlength="1" maxlength="12" size="20" />
+      <div class="confirm-button" onclick="changeName()">Update</div>
     </div>
 
-    <audio id="introAudio" src="/assets/audio/intro.mp3"></audio>
-
-    <div class="menu" id="index-with-logo">
-      <img id="title-frame1" class="title-eyesopen gelatine-light" alt="Eyes Open title" src="/assets/icons/eyesopen_title1.svg">
-      <img id="title-frame2" class="title-eyesopen gelatine-light hidden" alt="Eyes Open title" src="/assets/icons/eyesopen_title2.svg">
-      <img id="title-frame3" class="title-eyesopen gelatine-light hidden" alt="Eyes Open title" src="/assets/icons/eyesopen_title3.svg">
-
-      <div class="title-button-container">
-        <a class="title-button pop-light1 shadow-light" onclick="displayHost()">Host new game</a>
-        <div class="title-button pop-light2 shadow-light" onclick="displayUser()">Join game</div>
-        <div class="title-button shadow-light" id="changeUsername" onclick="displayChangeUsername()">Change username</div>
+    <div class="card-input shadow-light" id="host">
+      <div class="close">
+        <img class="close-button" onclick="hideHost()" src="/assets/icons/close.svg" alt="close x icon" />
       </div>
-      <div class="overlay" id="overlay" onclick="closeCard()"></div>
+      <div class="join-info">What's your name oh great one?</div>
+      <p class="join-help" id="host-help"></p>
+      <input type="text" id="inputHost" name="inputHost" placeholder="FluffyKiller" autocomplete="off" autofocus
+        enterkeyhint="done" required minlength="1" maxlength="12" size="20" />
+      <div class="confirm-button" onclick="checkName(true)">Confirm</div>
+    </div>
 
-      <div class="card-input shadow-light" id="user">
-        <div class="close">
-          <img
-            class="close-button"
-            onclick="hideUser()"
-            src="/assets/icons/close.svg"
-            alt="close x icon"
-          />
-        </div>
-        <div class="join-info">What's your name adventurer?</div>
-        <p class="join-help" id="user-help"></p>
-        <input
-          type="text"
-          id="inputUser"
-          name="inputUser"
-          placeholder="ChilliCheese"
-          autocomplete="off"
-          autofocus
-          enterkeyhint="done"
-          required
-          minlength="1"
-          maxlength="12"
-          size="20"
-        />
-        <div class="confirm-button" onclick="checkName(false)">Confirm</div>
+    <div class="card-input shadow-light" id="join-room">
+      <div class="close">
+        <img class="close-button" onclick="hideJoin()" src="/assets/icons/close.svg" alt="close x icon" />
       </div>
-      <div class="card-input shadow-light" id="changeName">
-        <div class="close">
-          <img
-            class="close-button"
-            onclick="hideChangeUsername()"
-            src="/assets/icons/close.svg"
-            alt="close x icon"
-          />
-        </div>
-        <div class="join-info">What will your new name be?</div>
-        <p class="join-help" id="changeName-help"></p>
-        <input
-          type="text"
-          id="inputChangeName"
-          name="inputChangeName"
-          placeholder="New username"
-          autocomplete="off"
-          autofocus
-          enterkeyhint="done"
-          required
-          minlength="1"
-          maxlength="12"
-          size="20"
-        />
-        <div class="confirm-button" onclick="changeName()">Update</div>
+      <div class="join-info">Enter the room code</div>
+      <p class="join-help" id="join-help"></p>
+      <input type="text" id="code" name="code" placeholder="F0211" autocomplete="off" autofocus enterkeyhint="done"
+        required minlength="5" maxlength="5" size="9" />
+      <div class="confirm-button" onclick="checkRoomCode()">Join</div>
+    </div>
+
+    <div class="overlay" id="overlay-popup1" onclick="hideKick()"></div>
+
+
+    <!-- Kick -->
+    <div class="popup shadow-light" id="kick">
+      <div class="close">
+        <img class="close-button" id="popup-close" onclick="hideKick()" src="/assets/icons/close.svg"
+          alt="close x icon" />
+      </div>
+      <div class="popup-text">
+        <div class="popup-title" id="popup-title">The room you created is full</div>
+        <div class="popup-subtitle" id="popup-subtitle">Kick someone out to be able to join</div>
       </div>
 
-      <div class="card-input shadow-light" id="host">
-        <div class="close">
-          <img
-            class="close-button"
-            onclick="hideHost()"
-            src="/assets/icons/close.svg"
-            alt="close x icon"
-          />
-        </div>
-        <div class="join-info">What's your name oh great one?</div>
-        <p class="join-help" id="host-help"></p>
-        <input
-          type="text"
-          id="inputHost"
-          name="inputHost"
-          placeholder="FluffyKiller"
-          autocomplete="off"
-          autofocus
-          enterkeyhint="done"
-          required
-          minlength="1"
-          maxlength="12"
-          size="20"
-        />
-        <div class="confirm-button" onclick="checkName(true)">Confirm</div>
-      </div>
-
-      <div class="card-input shadow-light" id="join-room">
-        <div class="close">
-          <img
-            class="close-button"
-            onclick="hideJoin()"
-            src="/assets/icons/close.svg"
-            alt="close x icon"
-          />
-        </div>
-        <div class="join-info">Enter the room code</div>
-        <p class="join-help" id="join-help"></p>
-        <input
-          type="text"
-          id="code"
-          name="code"
-          placeholder="F0211"
-          autocomplete="off"
-          autofocus
-          enterkeyhint="done"
-          required
-          minlength="5"
-          maxlength="5"
-          size="9"
-        />
-        <div class="confirm-button" onclick="checkRoomCode()">Join</div>
-      </div>
-
-      <div class="overlay" id="overlay-popup1" onclick="hideKick()"></div>
-      
-
-      <!-- Kick -->
-      <div class="popup shadow-light" id="kick">
-        <div class="close">
-          <img
-            class="close-button"
-            id="popup-close"
-            onclick="hideKick()"
-            src="/assets/icons/close.svg"
-            alt="close x icon"
-          />
-        </div>
-        <div class="popup-text">
-          <div class="popup-title" id="popup-title">The room you created is full</div>
-          <div class="popup-subtitle" id="popup-subtitle">Kick someone out to be able to join</div>
-        </div>
-
-        <div class="players" id="players">
-          <div class="players-col" id="players-col1">
-            <div class="player-container" id="player-hidden">
-              <div class="player-bubble">--</div>
-              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
-            </div>
-            <div class="player-container" id="player-hidden">
-              <div class="player-bubble">--</div>
-              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
-            </div>
-            <div class="player-container" id="player-hidden">
-              <div class="player-bubble">--</div>
-              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
-            </div>
-            <div class="player-container" id="player-hidden">
-              <div class="player-bubble">--</div>
-              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
-            </div>
-            <div class="player-container" id="player-hidden">
-              <div class="player-bubble">--</div>
-              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
-            </div>
-            <div class="player-container" id="player-hidden">
-              <div class="player-bubble">--</div>
-              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
-            </div>
-            <div class="player-container" id="player-hidden">
-              <div class="player-bubble">--</div>
-              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
-            </div>
+      <div class="players" id="players">
+        <div class="players-col" id="players-col1">
+          <div class="player-container" id="player-hidden">
+            <div class="player-bubble">--</div>
+            <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
           </div>
-          <div class="players-col" id="players-col2">
-            <div class="player-container" id="player-hidden">
-              <div class="player-bubble">--</div>
-              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
-            </div>
-            <div class="player-container" id="player-hidden">
-              <div class="player-bubble">--</div>
-              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
-            </div>
-            <div class="player-container" id="player-hidden">
-              <div class="player-bubble">--</div>
-              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
-            </div>
-            <div class="player-container" id="player-hidden">
-              <div class="player-bubble">--</div>
-              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
-            </div>
-            <div class="player-container" id="player-hidden">
-              <div class="player-bubble">--</div>
-              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
-            </div>
-            <div class="player-container" id="player-hidden">
-              <div class="player-bubble">--</div>
-              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
-            </div>
-            <div class="player-container" id="player-hidden">
-              <div class="player-bubble">--</div>
-              <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
-            </div>
+          <div class="player-container" id="player-hidden">
+            <div class="player-bubble">--</div>
+            <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+          </div>
+          <div class="player-container" id="player-hidden">
+            <div class="player-bubble">--</div>
+            <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+          </div>
+          <div class="player-container" id="player-hidden">
+            <div class="player-bubble">--</div>
+            <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+          </div>
+          <div class="player-container" id="player-hidden">
+            <div class="player-bubble">--</div>
+            <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+          </div>
+          <div class="player-container" id="player-hidden">
+            <div class="player-bubble">--</div>
+            <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+          </div>
+          <div class="player-container" id="player-hidden">
+            <div class="player-bubble">--</div>
+            <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
           </div>
         </div>
-
-
+        <div class="players-col" id="players-col2">
+          <div class="player-container" id="player-hidden">
+            <div class="player-bubble">--</div>
+            <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+          </div>
+          <div class="player-container" id="player-hidden">
+            <div class="player-bubble">--</div>
+            <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+          </div>
+          <div class="player-container" id="player-hidden">
+            <div class="player-bubble">--</div>
+            <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+          </div>
+          <div class="player-container" id="player-hidden">
+            <div class="player-bubble">--</div>
+            <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+          </div>
+          <div class="player-container" id="player-hidden">
+            <div class="player-bubble">--</div>
+            <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+          </div>
+          <div class="player-container" id="player-hidden">
+            <div class="player-bubble">--</div>
+            <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+          </div>
+          <div class="player-container" id="player-hidden">
+            <div class="player-bubble">--</div>
+            <img class="player-kick" alt="red x icon" src="/assets/icons/cross.svg" onclick="kickPlayer(this)">
+          </div>
+        </div>
       </div>
 
-      <div class="overlay" id="overlay-popup2" onclick="hideKickConfirm()"></div>
-      <!-- Kick confirm -->
-      <div class="popup shadow-light" id="kickConfirm">
-        <div class="close">
-          <img
-            class="close-button"
-            id="popup-close"
-            onclick="hideKickConfirm()"
-            src="/assets/icons/close.svg"
-            alt="close x icon"
-          />
-        </div>
-        <div class="popup-text">
-          <div class="popup-title" id="playerToKick">Kick</div>
-        </div>
-        <img class="popup-icon" alt="devil emoji" src="/assets/icons/devil.svg">
-        <div class="popup-buttons">
-          <div class="popup-nobutton" onclick="hideKickConfirm()">Nope</div>
-          <div class="popup-yesbutton" onclick="kickConfirm()">Yeet them!</div>
-        </div>
-      </div>
 
-
-      <div class="links" id="links">
-        <p class="designed-by">
-          design & illustration by
-          <span class="author-dark">Beatriz Ines Avila Cutiño</span>
-        </p>
-        <p class="designed-by">
-          code & design by
-          <span class="author-dark"
-            ><a
-              class="linkto-dark"
-              href="https://www.github.com/petrusmatiros"
-              target="_blank"
-              >Petrus Matiros</a
-            ></span
-          >
-        </p>
-        <a
-          class="github"
-          href="https://www.github.com/petrusmatiros/eyesopen"
-          target="_blank"
-        >
-          <img
-          class="github-icon"
-          alt="github logo"
-          src="/assets/icons/github_logo.svg"
-          >
-        </a>
-      </div>
-
-      <!-- Notification badge -->
-      <div class="index-notification" id="index-notification" onclick="hideNotification()"></div>
     </div>
-  </body>
+
+    <div class="overlay" id="overlay-popup2" onclick="hideKickConfirm()"></div>
+    <!-- Kick confirm -->
+    <div class="popup shadow-light" id="kickConfirm">
+      <div class="close">
+        <img class="close-button" id="popup-close" onclick="hideKickConfirm()" src="/assets/icons/close.svg"
+          alt="close x icon" />
+      </div>
+      <div class="popup-text">
+        <div class="popup-title" id="playerToKick">Kick</div>
+      </div>
+      <img class="popup-icon" alt="devil emoji" src="/assets/icons/devil.svg">
+      <div class="popup-buttons">
+        <div class="popup-nobutton" onclick="hideKickConfirm()">Nope</div>
+        <div class="popup-yesbutton" onclick="kickConfirm()">Yeet them!</div>
+      </div>
+    </div>
+
+
+    <div class="links" id="links">
+      <p class="designed-by">
+        design & illustration by
+        <span class="author-dark">Beatriz Ines Avila Cutiño</span>
+      </p>
+      <p class="designed-by">
+        code & design by
+        <span class="author-dark"><a class="linkto-dark" href="https://www.github.com/petrusmatiros"
+            target="_blank">Petrus Matiros</a></span>
+      </p>
+      <a class="github" href="https://www.github.com/petrusmatiros/eyesopen" target="_blank">
+        <img class="github-icon" alt="github logo" src="/assets/icons/github_logo.svg">
+      </a>
+    </div>
+
+    <!-- Notification badge -->
+    <div class="index-notification" id="index-notification" onclick="hideNotification()"></div>
+  </div>
+</body>
+
 </html>
