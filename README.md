@@ -35,7 +35,7 @@
 
 ## Link to website
 <!-- #### TBD -->
-https://eyesopen.glitch.me/
+https://eyesopen.petrusmatiros.com/
  
  Enjoy ^-^
 
