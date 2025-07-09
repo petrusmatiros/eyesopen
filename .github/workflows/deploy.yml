@@ -76,7 +76,7 @@ jobs:
             docker run -d --name $APP_NAME \
               -e NODE_ENV=${{ vars.NODE_ENV }} \
               -e PORT=${{ vars.PORT }} \
-              -p 127.0.0.1:8080:3000 \
+              -p 127.0.0.1:8082:3000 \
               $APP_NAME:$IMAGE_TAG || (docker logs $APP_NAME && exit 1)
 
             echo "[+] Cleaning up image..."
