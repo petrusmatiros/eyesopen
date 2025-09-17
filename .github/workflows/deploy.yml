@@ -73,7 +73,7 @@ jobs:
             docker rm -f $APP_NAME || true
 
             echo "[+] Running new container..."
-            docker run -d --name $APP_NAME \
+            docker run -d --restart unless-stopped --name $APP_NAME \
               -e NODE_ENV=${{ vars.NODE_ENV }} \
               -e PORT=${{ vars.PORT }} \
               -p 127.0.0.1:8082:3000 \
